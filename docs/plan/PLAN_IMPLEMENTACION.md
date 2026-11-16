@@ -26,7 +26,7 @@ El repo `JosMart04/EquipoA_ErnestoInvestingAI` tiene hoy solo la base del profes
 | H-03 | **El «Agresivo» del profesor (N2-36: 16,07 % / 17,52 %) rinde y arriesga menos que el «Moderado» (N2-37: 16,49 % / 17,92 %)** y no es el punto de mayor retorno del frente (N2-40: 17,13 %). | La interfaz no afirma ningún orden entre niveles: muestra `descripcion` y las cifras del JSON. Se documenta junto con el tope 0,35 (I-06). |
 | H-04 | **La base incumple contraste en oscuro:** texto blanco sobre `--ac` `#7db7ff` = 2,08:1 (página actual del menú, `button.primary`, `.skip`); velas `#b3261e` sobre panel oscuro 2,51:1; borde de controles `--bd` 1,39:1 (< 3:1, WCAG 1.4.11); Okabe-Ito `#E69F00` (2,25) y `#56B4E9` (2,31) sobre blanco. | Tokens nuevos `--on-ac`, `--bd-ctl`, `--serie-1…6` por tema y una prueba unitaria de contraste sobre `styles.css`. |
 | H-05 | §4.1 permite módulos ES, pero `python -m http.server` en Windows toma el MIME de `.js` del registro; si está mal, los módulos fallan y los scripts clásicos no. El profesor ejecuta así. | **Todo el camino del Modo profesor usa scripts clásicos.** `js/lib` y Workers en «formato dual» (global + `module.exports`) con `importScripts`. Único `import()` dinámico: MediaPipe desde el CDN. |
-| H-06 | «Merge solo con CI en verde», pero `qa.yml` es T-51 (miércoles). | Hasta que exista: puerta local (`node --test tests/unit/` + protocolo de humo de §13 + SHA-256). Pido a CX adelantar un `qa.yml` mínimo. |
+| H-06 | «Merge solo con CI en verde», pero `qa.yml` es T-51 (miércoles). | Hasta que exista: puerta local (`node --test "tests/unit/*.test.mjs"` + protocolo de humo de §13 + SHA-256). Pido a CX adelantar un `qa.yml` mínimo. |
 | H-07 | CC-F-01 construye Clasificación sin P03, y PROMPTS_INICIALES no trae `<extensiones_equipo modulo="clasificacion">`: hueco de evidencia para R-FLU-03 / D-14. | **Decidido por Josué:** se sigue sin P03. Clasificación se construye bajo CC-F-01 siguiendo la lista de tareas y restricciones de P03; se registra así en `docs/ia/prompts/CC.md` y en la bitácora para que CX lo declare en `PROMPTS_USADOS.md`. |
 | H-08 | Menú móvil: el plan dice < 900 px; el export de Figma colapsa a < 1180 px. | 1180 px (la guía manda seguir el Figma); 9 enlaces + 4 controles no caben antes. |
 | H-09 | Falta `.nojekyll` (Pages compila con Jekyll; `PLAN_MAESTRO.md` tiene front matter y `${{ }}`). | Se agrega en T-01. |
@@ -148,7 +148,7 @@ Parte de PLAN_MAESTRO §5 y añade:
 | `senales.js` | filtro One Euro, ajuste afín por mínimos cuadrados (calibración), detectores con histéresis (parpadeo, boca, pellizco, palma) |
 
 - **Workers** clásicos (`js/workers/optimizador.worker.js`, `backtest.worker.js`): `importScripts("../lib/…")`; el archivo exporta `manejar(mensaje, publicar)` para probarlo en Node. Protocolo de §7.2: `{tipo:"calcular", params}` → `progreso` / `resultado` / `error`; cancelar = `terminate()`.
-- **Runner:** `node --test tests/unit/` (sin dependencias, compatible con Node 22). Archivos `*.test.mjs`.
+- **Runner:** `node --test "tests/unit/*.test.mjs"` (sin dependencias, compatible con Node 22). Archivos `*.test.mjs`.
 - **Pruebas ancladas a los datos del profesor:** mediana y p10/p90 de los 18 modelos reproducen `06` (±0,005); `metricasCurva` y `drawdown` reproducen `09` en las 7 series; SPY/QQQ/EPU y 1/N se reproducen desde `02` (±0,001); nuestra frontera con `04` no queda por encima (en riesgo) de `07.markowitz_*`.
 - **Propiedades:** símplex (suma, límites, idempotencia, optimalidad frente a puntos factibles al azar); frontera monótona; NSGA factible, mutuamente no dominado, determinista con semilla y nunca mejor que Markowitz más allá de la tolerancia; backtest sin mirar el futuro (cambiar precios posteriores no cambia pesos anteriores).
 - **Pruebas del núcleo:** paridad de claves ES/EN y de parámetros; toda clave usada en HTML/JS existe; diccionarios sin cifras; contraste de tokens (texto ≥ 4,5; bordes y series ≥ 3); 9 páginas con un `h1`, un `styles.css` y un `common.js`; ninguna tercera clase en HTML, JS ni i18n; sin `type="module"`.
@@ -233,13 +233,13 @@ Antes de programar MediaPipe leo `vision.d.ts` de la 1.2.3 en el CDN (no doy por
 | T-29 | Conformidad con Figma, correcciones de QA y P08, congelamiento | varios | R-FLU-01/06 | todo | CI verde; 0 *serious*/*critical* en axe | 4 h | CC-O jue–vie |
 | T-90 | Comandos de voz | `js/a11y/voz.js` | D-07 b | todo en verde | 10 comandos en Chrome, ES y EN | 2 h | CC-O vie |
 
-**Peticiones a CX** (van en el 📨 del PR-1; sus filas T-30…T-64 no se tocan): aplicar C-01 y C-02 en `validar_contrato.py` y en `backtesting.py`; agregar I-09…I-11; adelantar un `qa.yml` mínimo (validador + `node --test tests/unit/` + escaneo de secretos); exportar `tests/fixtures/opt_referencia.json` con `{tickers, mu, cov, tope, rf, frontera[], backtest:{entrada, salida}}`; usar los selectores de §4 y §8 en las pruebas E2E.
+**Peticiones a CX** (van en el 📨 del PR-1; sus filas T-30…T-64 no se tocan): aplicar C-01 y C-02 en `validar_contrato.py` y en `backtesting.py`; agregar I-09…I-11; adelantar un `qa.yml` mínimo (validador + `node --test "tests/unit/*.test.mjs"` + escaneo de secretos); exportar `tests/fixtures/opt_referencia.json` con `{tickers, mu, cov, tope, rf, frontera[], backtest:{entrada, salida}}`; usar los selectores de §4 y §8 en las pruebas E2E.
 
 ## 12. Ejecución de hoy (Fase B)
 
 Orden **aprobado por Josué** (cambia el de CC-F-01: Clasificación sube al tercer lugar): **PR-1** plan + contrato → **PR-2** núcleo → **PR-3** Clasificación → **PR-4** `js/lib` + Workers → **PR-5** núcleo de accesibilidad. Total estimado ≈ 9 h de agente.
 
-Por bloque: rama `cc/T-xx-…` → commits `feat(...): … [R-…] [T-…]` → `node --test tests/unit/` + protocolo de humo + SHA-256 de `data/` → PR → merge → comprobar Pages → HANDOFF, tablero y bitácora → 📨 a CX si le afecta.
+Por bloque: rama `cc/T-xx-…` → commits `feat(...): … [R-…] [T-…]` → `node --test "tests/unit/*.test.mjs"` + protocolo de humo + SHA-256 de `data/` → PR → merge → comprobar Pages → HANDOFF, tablero y bitácora → 📨 a CX si le afecta.
 
 **Si se acaba el día, se recorta de abajo hacia arriba:** manos → cabeza-mirada → Workers → backtest → NSGA-III. Lo recortado queda especificado en este plan y marcado en HANDOFF. Si escribes «cierra», termino el commit en curso, dejo HANDOFF exacto y no empiezo nada más.
 
@@ -247,7 +247,7 @@ Por bloque: rama `cc/T-xx-…` → commits `feat(...): … [R-…] [T-…]` → 
 
 ## 13. Verificación
 
-- **Unitarias:** `node --test tests/unit/` en verde antes de cada merge.
+- **Unitarias:** `node --test "tests/unit/*.test.mjs"` en verde antes de cada merge.
 - **Protocolo de humo** (navegador integrado sobre `python -m http.server 8000`; la configuración local `.claude/launch.json` se excluye en `.git/info/exclude`): 9 páginas × {profesor, real} × {claro, oscuro} × {ES, EN}: consola sin errores; `scrollWidth ≤ clientWidth` a 390 px; 9 enlaces con `aria-current`; `[data-aviso]` visible; recorrido con Tab y foco visible.
 - **Clasificación:** 468 `td[data-celda]`; ningún texto fuera de SUBE/BAJA (UP/DOWN); filtros por grupo y familia; orden de métricas con Enter/Espacio y `aria-sort`; enlaces `?t=`.
 - **Datos:** SHA-256 de `data/` contra el Anexo B.3 antes de cada merge.

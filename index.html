@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="es-PE"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dashboard · Ernesto Investing AI</title><link rel="stylesheet" href="css/styles.css">
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script></head>
 <body data-page="dashboard"><main>
@@ -7,19 +7,68 @@
 <div class="grid" id="kpis" aria-live="polite"></div>
 <h2>Velas del activo (últimas 120 sesiones sintéticas)</h2>
 <div class="row"><div><label for="sel">Activo</label><select id="sel"></select></div><div><label for="grp">Filtrar tabla por grupo</label><select id="grp"><option value="">Todos</option></select></div></div>
-<div id="chart" class="chart" role="img" aria-label="Gráfico de velas del activo seleccionado"></div>
+<div id="chart" style="margin-top:1rem"></div>
 <h2>Universo de 26 activos</h2>
-<div class="tw"><table><caption class="mut" style="text-align:left;padding:.4rem">Variaciones y riesgo (datos sintéticos)</caption><thead><tr><th scope="col">Ticker</th><th scope="col" class="l">Grupo</th><th scope="col">Último</th><th scope="col">1 d</th><th scope="col">5 d</th><th scope="col">1 m</th><th scope="col">3 m</th><th scope="col">Vol. anual</th><th scope="col">Beta</th></tr></thead><tbody id="tb"></tbody></table></div>
+<div class="tw"><table><caption>Variaciones y riesgo (datos sintéticos)</caption><thead><tr><th scope="col">Ticker</th><th scope="col" class="l">Grupo</th><th scope="col">Último</th><th scope="col">1 d</th><th scope="col">5 d</th><th scope="col">1 m</th><th scope="col">3 m</th><th scope="col">Vol. anual</th><th scope="col">Beta</th></tr></thead><tbody id="tb"></tbody></table></div>
 <script src="js/common.js"></script>
 <script>
-let D,O,ch;
-window.init=async()=>{ D=await loadJSON("10_dashboard_mercado.json"); O=await loadJSON("03_ohlcv_sintetico_120d.json");
- $("#kpis").innerHTML=["SPY","QQQ","EPU"].map(t=>{const d=D.find(x=>x.ticker===t);return `<div class="card kpi"><div class="mut">${t} · ${d.nombre}</div><div class="v">${fmt.usd(d.ultimo)}</div><div class="${fmt.cls(d.var_1d_pct)}">${fmt.pct(d.var_1d_pct)} hoy</div></div>`}).join("");
- $("#sel").innerHTML=D.map(d=>`<option>${d.ticker}</option>`).join(""); const gs=[...new Set(D.map(d=>d.grupo))]; $("#grp").insertAdjacentHTML("beforeend",gs.map(g=>`<option>${g}</option>`).join(""));
- $("#sel").onchange=draw; $("#grp").onchange=table; table(); draw(); window.addEventListener("resize",()=>ch&&ch.resize()); window.onTheme=draw; };
-function table(){ const g=$("#grp").value; $("#tb").innerHTML=D.filter(d=>!g||d.grupo===g).map(d=>`<tr><th scope="row">${d.ticker}</th><td class="l">${d.grupo}</td><td>${fmt.n(d.ultimo)}</td>${["var_1d_pct","var_5d_pct","var_1m_pct","var_3m_pct"].map(k=>`<td class="${fmt.cls(d[k])}">${fmt.pct(d[k])}</td>`).join("")}<td>${d.volatilidad_anual_pct} %</td><td>${d.beta_vs_SPY}</td></tr>`).join(""); }
-function draw(){ const t=$("#sel").value,s=O.series[t]; const el=$("#chart"); if(!window.echarts){el.textContent="No se pudo cargar ECharts (se requiere conexión).";return}
- if(ch)ch.dispose(); ch=echarts.init(el); const dark=document.documentElement.getAttribute("data-theme")==="dark"||(!document.documentElement.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme:dark)").matches); const tc=dark?"#e9eff5":"#14202e";
- ch.setOption({animation:false,textStyle:{color:tc},tooltip:{trigger:"axis"},grid:{left:55,right:15,top:20,bottom:45},xAxis:{type:"category",data:O.fechas,axisLabel:{color:tc}},yAxis:{scale:true,axisLabel:{color:tc},splitLine:{lineStyle:{color:dark?"#2c3a49":"#d3dce6"}}},
-  dataZoom:[{type:"inside"},{type:"slider",height:18}],series:[{type:"candlestick",name:t,data:s.o.map((o,i)=>[o,s.c[i],s.l[i],s.h[i]]),itemStyle:{color:"#0a7d3c",color0:"#b3261e",borderColor:"#0a7d3c",borderColor0:"#b3261e"}}]}); }
+/* Módulo heredado de la base. Sigue con window.init hasta que T-19 lo pase a js/dashboard.js;
+   el gráfico de velas ya usa el contenedor común EIA.ui.grafico (pestañas Gráfico | Tabla | Resumen y Escuchar). */
+let D, O, graf;
+window.init = async () => {
+  D = await loadJSON("10_dashboard_mercado.json");
+  O = await loadJSON("03_ohlcv_sintetico_120d.json");
+  $("#kpis").innerHTML = ["SPY", "QQQ", "EPU"].map(t => {
+    const d = D.find(x => x.ticker === t);
+    return `<div class="card kpi"><div class="mut">${t} · ${d.nombre}</div><div class="v">${fmt.usd(d.ultimo)}</div><div>${EIA.ui.variacion(d.var_1d_pct)} hoy</div></div>`;
+  }).join("");
+  $("#sel").innerHTML = D.map(d => `<option>${d.ticker}</option>`).join("");
+  const gs = [...new Set(D.map(d => d.grupo))];
+  $("#grp").insertAdjacentHTML("beforeend", gs.map(g => `<option value="${g}">${EIA.nombre("grupo", g)}</option>`).join(""));
+  $("#sel").onchange = draw;
+  $("#grp").onchange = table;
+  table();
+  draw();
+};
+function table() {
+  const g = $("#grp").value;
+  $("#tb").innerHTML = D.filter(d => !g || d.grupo === g).map(d => `<tr><th scope="row">${d.ticker}</th><td class="l">${EIA.nombre("grupo", d.grupo)}</td><td>${fmt.n(d.ultimo)}</td>${
+    ["var_1d_pct", "var_5d_pct", "var_1m_pct", "var_3m_pct"].map(k => `<td>${EIA.ui.variacion(d[k])}</td>`).join("")}<td>${fmt.pct(d.volatilidad_anual_pct, 1, { signo: false })}</td><td>${fmt.n(d.beta_vs_SPY)}</td></tr>`).join("");
+}
+function draw() {
+  const t = $("#sel").value, s = O.series[t], n = O.fechas.length;
+  if (graf) graf.destruir();
+  const num = v => EIA.esc(fmt.n(v));
+  graf = EIA.ui.grafico($("#chart"), {
+    id: "velas",
+    titulo: EIA.t("dashboard.velas_titulo", { ticker: t }),
+    // Los colores salen de los tokens CSS del tema activo: el gráfico cambia de tema con el sitio
+    opciones: c => ({
+      textStyle: { color: c.fg }, tooltip: { trigger: "axis" }, grid: { left: 55, right: 15, top: 20, bottom: 45 },
+      xAxis: { type: "category", data: O.fechas, axisLabel: { color: c.mut }, axisLine: { lineStyle: { color: c.bd } } },
+      yAxis: { scale: true, axisLabel: { color: c.mut }, splitLine: { lineStyle: { color: c.bd } } },
+      dataZoom: [{ type: "inside" }, { type: "slider", height: 18, textStyle: { color: c.mut } }],
+      series: [{ type: "candlestick", name: t, data: s.o.map((o, i) => [o, s.c[i], s.l[i], s.h[i]]),
+        itemStyle: { color: c.up, color0: c.dn, borderColor: c.up, borderColor0: c.dn } }]
+    }),
+    tabla: () => ({
+      titulo: EIA.t("dashboard.velas_tabla", { ticker: t }),
+      columnas: [
+        { clave: "f", titulo: EIA.t("dashboard.col_fecha"), tipo: "texto", ordenable: true, fmt: v => EIA.esc(EIA.fmt.fecha(v)) },
+        { clave: "o", titulo: EIA.t("dashboard.col_apertura"), tipo: "num", ordenable: true, fmt: num },
+        { clave: "h", titulo: EIA.t("dashboard.col_maximo"), tipo: "num", ordenable: true, fmt: num },
+        { clave: "l", titulo: EIA.t("dashboard.col_minimo"), tipo: "num", ordenable: true, fmt: num },
+        { clave: "c", titulo: EIA.t("dashboard.col_cierre"), tipo: "num", ordenable: true, fmt: num },
+        { clave: "v", titulo: EIA.t("dashboard.col_volumen"), tipo: "num", ordenable: true, fmt: v => EIA.esc(EIA.fmt.compacto(v)) }
+      ],
+      filas: O.fechas.map((f, i) => ({ f, o: s.o[i], h: s.h[i], l: s.l[i], c: s.c[i], v: s.v[i] })),
+      claveFila: x => x.f
+    }),
+    resumen: () => EIA.t("dashboard.velas_resumen", {
+      ticker: t, ultimo: fmt.usd(s.c[n - 1]), fecha: EIA.fmt.fecha(O.fechas[n - 1], "larga"), n: EIA.fmt.ent(n),
+      variacion: fmt.pct((s.c[n - 1] / s.c[0] - 1) * 100), min: fmt.usd(Math.min(...s.l)), max: fmt.usd(Math.max(...s.h))
+    }),
+    sonido: () => ({ valores: s.c })
+  });
+}
 </script></main></body></html>
