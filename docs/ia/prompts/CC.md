@@ -26,3 +26,79 @@ Formato: `## AAAA-MM-DD HH:MM · Claude Code · <modelo>` y el prompt completo e
   <output>Resumen corto: URL del repo, URL de Pages, resultado del SHA-256 y lista de lo que quedó en figma-src/.</output>
 </prompt>
 ```
+
+## 2026-11-16 15:10 · Claude Code · Claude Fable 5.2 (modo Plan)
+
+El mensaje empezó con esta línea de Josué y siguió con el prompt:
+
+```text
+📨 MENSAJE PARA CC: D-16 aplicada. CX trabajará en su clon independiente. Contrato sin cambios; T-30 sigue pendiente de implementación.
+```
+
+```xml
+<prompt id="CC-F-01" nombre="Fable: plan de implementación y base del sistema Ernesto Investing AI">
+  <role>
+Eres el arquitecto y desarrollador front-end principal del sistema Ernesto Investing AI (IHC 2026-II, FISI-UNMSM, Equipo A).
+Dominas HTML, CSS y JavaScript sin frameworks, accesibilidad WCAG 2.2 AA, visualización con ECharts, optimización de portafolios (Markowitz, NSGA-II, NSGA-III) y visión por computadora en el navegador con MediaPipe.
+Eres riguroso: no das nada por hecho sin evidencia ejecutada.
+  </role>
+  <context>
+- Repositorio: JosMart04/EquipoA_ErnestoInvestingAI (esta carpeta). Lee primero CLAUDE.md.
+- Fuente de verdad, en este orden: docs/contexto/GUIA_PROFESOR_S13.pdf (la guía; léela COMPLETA), docs/contexto/PLAN_MAESTRO.md (léelo COMPLETO: decisiones D-01 a D-15, requisitos R-*, contrato §5, arquitectura §4, algoritmos §7, diseño §8, accesibilidad §9, i18n §10, propiedad de rutas §13.2, cronograma §14, protocolo §15).
+- Código base del profesor: index.html, watchlist.html, trading.html, leaderboard.html, 5 páginas stub, js/common.js, js/stub.js, css/styles.css; data/ con 13 JSON que NUNCA se modifican.
+- HOY (lunes 16-nov-2026) es tu ÚNICO día de trabajo. Desde mañana continúa Claude Code con Opus 5.5, que retomará leyendo docs/plan/PLAN_IMPLEMENTACION.md y docs/ia/HANDOFF.md. Tu plan debe ser lo bastante detallado para que otro modelo lo ejecute sin ambigüedad.
+- En paralelo trabaja Codex (GPT-6 Astra) en pipeline/, data_real/, tools/validar_contrato.py, tests/e2e|a11y|datos, .github/workflows y docs del informe. No toques sus rutas.
+- Entrega: viernes 20-nov-2026 a las 16:00 (límite 18:00). Mockups de Figma Make a cargo de Opus 5.5 en otro chat: https://www.figma.com/make/BWA9B3JoRbAWZiVoPSyoBO
+  </context>
+  <task>
+FASE A — MODO PLAN (no escribas archivos todavía)
+1. Lee la guía, el PLAN_MAESTRO, CLAUDE.md y todo el código base. Revisa el estado real del repo: git status, estructura, y SHA-256 de data/ contra el Anexo B.3 del plan.
+2. Presenta un PLAN DE IMPLEMENTACIÓN detallado con tareas atómicas T-01, T-02, … Cada tarea lleva: objetivo; archivos; R-IDs que cubre; dependencias; criterio de aceptación verificable; estimación; responsable (CC-F hoy / CC-O desde el martes / CX); orden. Debe incluir:
+   a) La API definitiva de js/common.js (firmas y eventos), compatible con $, fmt, loadJSON y store de la base.
+   b) La estructura de i18n y de los componentes comunes (ficha IA, avisos por modo, tabla ordenable, contenedor de gráfico con Gráfico/Tabla/Resumen/Escuchar, control de modo, menú móvil).
+   c) El contrato de datos refinado (docs/CONTRATO_DATOS.md v1.0.0) a partir de §5.
+   d) El diseño de js/lib (símplex con tope, Markowitz, NSGA-II, NSGA-III, backtest, estadística) y de los Workers, con su estrategia de pruebas unitarias.
+   e) El plan por módulo (9), indicando qué prompt del profesor (P03 a P07) se usa en cada uno y qué <extensiones_equipo> se agregan.
+   f) El plan de accesibilidad: bus de entrada, puntero virtual, barrido, cámara, cabeza-mirada, manos y voz (última fase).
+   g) Los riesgos técnicos y cómo verificarás cada uno.
+3. Señala con franqueza cualquier contradicción, hueco o idea poco realista del PLAN_MAESTRO frente a la guía o frente al tiempo disponible, y propone la corrección.
+
+FASE B — DESPUÉS DE MI APROBACIÓN
+4. Escribe docs/plan/PLAN_IMPLEMENTACION.md y docs/CONTRATO_DATOS.md (v1.0.0). Agrega tus tareas y las de CX a docs/ia/TABLERO.md. Copia este prompt literal en docs/ia/prompts/CC.md.
+5. Ejecuta en este orden de prioridad (§14, lunes), con una rama cc/T-xx por bloque y un PR por bloque:
+   (1) núcleo: js/common.js y css/styles.css (modo profesor/real, capa de datos, estado, i18n, cabecera con menú móvil, avisos, ficha IA, tabla ordenable, contenedor de gráfico, tema que también cambia los gráficos);
+   (2) docs/CONTRATO_DATOS.md;
+   (3) js/lib + js/workers + tests/unit;
+   (4) núcleo de accesibilidad: bus-entrada, puntero, camara, cabeza-mirada, manos y panel de preferencias, en una versión funcional mínima;
+   (5) el módulo de Clasificación completo como MÓDULO DE REFERENCIA, que los demás imitarán.
+   Haz merge a main solo con las pruebas en verde.
+6. Al terminar CADA bloque:
+   - actualiza docs/ia/HANDOFF.md (hecho; en curso; siguiente paso exacto; trampas conocidas; cómo probar);
+   - agrega un mensaje en docs/ia/BITACORA.md;
+   - imprime en el chat el bloque «📨 MENSAJE PARA CX» si algo le afecta (por ejemplo la API de datos, el contrato o los selectores para pruebas E2E).
+7. Si te escribo «cierra», o si notas que se acaba tu sesión, deja HANDOFF.md impecable para Opus 5.5 y haz commit de todo.
+  </task>
+  <constraints>
+- Nunca modificar data/. Nunca escribir secretos.
+- HTML + CSS + JS puro, sin compilación ni frameworks. ECharts 5.5.1 desde https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js. MediaPipe Tasks Vision 1.2.3 solo bajo demanda, al activar la cámara.
+- Un solo css/styles.css y un solo js/common.js; nada duplicado.
+- El Modo profesor es el que se abre por defecto y cumple la guía al pie de la letra; tiene prioridad absoluta sobre el Modo real y sobre la accesibilidad avanzada.
+- Clasificación solo SUBE/BAJA. Color nunca como único canal (palabra + ▲/▼). Contraste ≥ 4,5:1 en claro y oscuro. Teclado completo, foco visible y «Saltar al contenido». Alternativa en tabla para cada gráfico. Sin desborde horizontal a 390 px.
+- Ninguna cifra escrita a mano: todo se lee de data/ o data_real/ (o se deriva y se declara).
+- Comentarios del código en español. Textos visibles mediante i18n (ES-PE y EN-US), sin concatenar cadenas.
+- Respeta la propiedad de rutas (§13.2) y el protocolo de mensajes (§15.4).
+  </constraints>
+  <output>
+Fase A: el plan completo en el chat, para mi aprobación.
+Fase B: archivos, commits y PR. Al final de cada bloque, un resumen breve más los bloques 📨.
+  </output>
+  <verification>
+- python -m http.server 8000: las 9 páginas cargan sin errores de consola en ambos modos (el real puede mostrar «sin datos todavía» si CX no publicó data_real/).
+- tests/unit pasa (node --test o el runner que definas).
+- Clasificación: 468 celdas; solo SUBE/BAJA; filtros; métricas ordenables con teclado; sin desborde a 390 px.
+- data/ con los mismos SHA-256 del Anexo B.3.
+  </verification>
+</prompt>
+```
+
+**Respuestas de Josué a las preguntas del modo Plan (2026-11-16 15:30):** orden de hoy = «Clasificación primero» (D-18); modelos de MediaPipe = «Sí, guardarlos en el repo» (D-19); prompt P03 = «Sigue sin P03» (D-20). Después aprobó el plan (`docs/plan/PLAN_IMPLEMENTACION.md`).
