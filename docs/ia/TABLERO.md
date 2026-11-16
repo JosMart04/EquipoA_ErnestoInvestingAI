@@ -8,7 +8,7 @@ Fable completa las tareas de CC (T-01 a T-29) en `docs/plan/PLAN_IMPLEMENTACION.
 |---|---|---|---|---|---|---|
 | T-00 | Preparar el repo, Pages, docs/contexto, CLAUDE.md, AGENTS.md | JM | pendiente | main | R-INT-09, R-ENT-02 | PLAN_MAESTRO §15.1 |
 | T-01…T-29 | (las define Fable en PLAN_IMPLEMENTACION.md) | CC | pendiente | | | |
-| T-30 | Validador del contrato (ambos modos, SHA-256 de data/) | CX | pendiente | | R-DAT-*, I-01…I-08 | |
+| T-30 | Validador del contrato (ambos modos, SHA-256 de data/) | CX | pendiente | | R-DAT-*, I-01…I-08 | Prerrequisito D-16 listo: clon separado preparado en cx/T-30-preparar-clon; 13/13 hashes verificados. Implementación del validador aún pendiente. |
 | T-31 | Pipeline v0: descarga + mercado (01, 02, 03, 04, 10, 11, 12, 13, precios, cierres, meta) | CX | pendiente | | D-03, D-04 | |
 | T-32 | Workflow actualizar-datos.yml (diario, cortes, completo) | CX | pendiente | | D-04 | |
 | T-33 | 11 clasificadores ML + 05 real | CX | pendiente | | R-CLA-* | |
