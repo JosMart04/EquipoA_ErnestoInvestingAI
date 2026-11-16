@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* Variante oscura por clase (html.dark) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Tokens del sistema (los mismos de css/styles.css del sitio real; PLAN_MAESTRO §8.1) */
+:root {
+  --bg: #f6f8fb; --panel: #ffffff; --fg: #14202e; --mut: #4d5b6b; --bd: #d3dce6;
+  --ac: #0b4f9c; --up: #0a7d3c; --dn: #b3261e; --warn: #8a5a00; --hl: #e8f1fb;
+  --up-1: #e3f4e8; --up-2: #c4e8cf; --up-3: #9fd8b0; --up-t: #0a3d1f;
+  --dn-1: #fbe5e3; --dn-2: #f5c9c5; --dn-3: #eea69f; --dn-t: #5c1410;
+  --aviso: #fff8e6; --on-ac: #ffffff;
+}
+.dark {
+  --bg: #0e141b; --panel: #17202b; --fg: #e9eff5; --mut: #aab7c4; --bd: #2c3a49;
+  --ac: #7db7ff; --up: #52d18a; --dn: #ff8a80; --warn: #ffcc66; --hl: #1e2c3d;
+  --up-1: #15331f; --up-2: #1c4a2b; --up-3: #236339; --up-t: #d8f5e2;
+  --dn-1: #3a1a18; --dn-2: #522320; --dn-3: #6e2d29; --dn-t: #ffe1de;
+  --aviso: #2a2412; --on-ac: #0e141b;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-fg: var(--fg);
+  --color-mut: var(--mut);
+  --color-bd: var(--bd);
+  --color-ac: var(--ac);
+  --color-up: var(--up);
+  --color-dn: var(--dn);
+  --color-warn: var(--warn);
+  --color-hl: var(--hl);
+  --color-aviso: var(--aviso);
+  --color-on-ac: var(--on-ac);
+  --font-sans: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --radius-card: 12px;
+  --radius-ctl: 8px;
+}
+
+html, body { background: var(--bg); color: var(--fg); }
+body { font-family: var(--font-sans); font-size: 16px; line-height: 1.55; margin: 0; }
+html { scroll-padding-top: 76px; }
+:focus-visible { outline: 3px solid var(--ac); outline-offset: 2px; }
+.skip { position: absolute; left: -999px; top: 0; background: var(--ac); color: #fff; padding: .6rem 1rem; z-index: 99; }
+.skip:focus { left: 8px; top: 8px; }
+
+/* Celdas del mapa de calor: color + palabra + símbolo (nunca solo color) */
+.c-up-1 { background: var(--up-1); color: var(--up-t); }
+.c-up-2 { background: var(--up-2); color: var(--up-t); }
+.c-up-3 { background: var(--up-3); color: var(--up-t); }
+.c-dn-1 { background: var(--dn-1); color: var(--dn-t); }
+.c-dn-2 { background: var(--dn-2); color: var(--dn-t); }
+.c-dn-3 { background: var(--dn-3); color: var(--dn-t); }
+
+/* Puntero virtual del modo cabeza/mirada (HUD de demostración) */
+@keyframes llenar { from { stroke-dashoffset: 113; } to { stroke-dashoffset: 0; } }
+.dwell circle.prog { stroke-dasharray: 113; animation: llenar 1.2s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .dwell circle.prog { animation: none; stroke-dashoffset: 40; } }

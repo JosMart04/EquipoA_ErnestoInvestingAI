@@ -1,0 +1,31 @@
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+# Node / pruebas
+node_modules/
+tests/test-results/
+tests/playwright-report/
+tests/blob-report/
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+pipeline/.cache/
+pipeline/modelos_cache/
+# Secretos (nunca se suben)
+.env
+.env.*
+*.pem
+*.key
+*credentials*.json
+secrets.*
+*.secret
+# Mockups de Figma Make: el código de trabajo no va al repo (D-05)
+figma-make-workspace/
+# Video y audio de trabajo (se publican fuera del repo)
+video/
+*.mp4
+*.wav

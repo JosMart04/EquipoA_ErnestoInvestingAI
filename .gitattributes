@@ -1,0 +1,21 @@
+# Finales de línea LF en todo el repo (los scripts de Linux y Actions los necesitan)
+* text=auto eol=lf
+# Datos del profesor y export de Figma: NUNCA se normalizan (deben quedar byte a byte)
+data/** -text
+figma-src/** -text
+# Scripts de Windows
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+# Binarios
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.task binary
+*.wasm binary
+*.woff2 binary
+*.zip binary
+*.mp3 binary
+*.mp4 binary
