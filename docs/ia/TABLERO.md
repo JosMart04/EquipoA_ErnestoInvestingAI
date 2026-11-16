@@ -8,13 +8,13 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | ID | Tarea | Resp. | Estado | Rama / PR | Requisitos | Notas |
 |---|---|---|---|---|---|---|
 | T-00 | Preparar el repo, Pages, docs/contexto, CLAUDE.md, AGENTS.md | JM | pendiente | main | R-INT-09, R-ENT-02 | PLAN_MAESTRO §15.1 |
-| T-01 | Plan de implementación, tablero, prompt literal, D-17…D-21, `.nojekyll` | CC-F | en revisión | cc/T-01-plan | R-INT-09 | PLAN_IMPLEMENTACION §11 |
-| T-02 | `docs/CONTRATO_DATOS.md` v1.0.0 + C-01 y C-02 | CC-F | en revisión | cc/T-01-plan | R-DAT-01…03 | Espera ACK de CX |
-| T-03 | Núcleo: `EIA`, eventos, estado, modo, capa de datos, tema | CC-F | pendiente | cc/T-03-nucleo | R-INT-03/04/10, D-02 | |
-| T-04 | i18n: motor, diccionarios, `Intl`, mapa de presentación | CC-F | pendiente | cc/T-03-nucleo | R-I18N-01, R-REG-07 | |
-| T-05 | Shell y hoja de estilos (tokens, cabecera, menú < 1180 px, avisos) | CC-F | pendiente | cc/T-03-nucleo | R-INT-01/02/06/07/08, R-A11Y-01/02/04 | |
-| T-06 | Componentes comunes (ficha IA, tabla ordenable, contenedor de gráfico…) | CC-F | pendiente | cc/T-03-nucleo | R-IHC-01, R-CLA-03, R-A11Y-03/05 | |
-| T-07 | 9 páginas sobre el shell nuevo + pruebas del núcleo | CC-F | pendiente | cc/T-03-nucleo | R-INT-01/06, R-HER-01 | |
+| T-01 | Plan de implementación, tablero, prompt literal, D-17…D-21, `.nojekyll` | CC-F | hecho | cc/T-01-plan · PR #2 | R-INT-09 | PLAN_IMPLEMENTACION §11 |
+| T-02 | `docs/CONTRATO_DATOS.md` v1.0.0 + C-01 y C-02 | CC-F | hecho | cc/T-01-plan · PR #2 | R-DAT-01…03 | Espera ACK de CX |
+| T-03 | Núcleo: `EIA`, eventos, estado, modo, capa de datos, tema | CC-F | hecho | cc/T-03-nucleo | R-INT-03/04/10, D-02 | |
+| T-04 | i18n: motor, diccionarios, `Intl`, mapa de presentación | CC-F | hecho | cc/T-03-nucleo | R-I18N-01, R-REG-07 | |
+| T-05 | Shell y hoja de estilos (tokens, cabecera, menú < 1180 px, avisos) | CC-F | hecho | cc/T-03-nucleo | R-INT-01/02/06/07/08, R-A11Y-01/02/04 | |
+| T-06 | Componentes comunes (ficha IA, tabla ordenable, contenedor de gráfico…) | CC-F | hecho | cc/T-03-nucleo | R-IHC-01, R-CLA-03, R-A11Y-03/05 | |
+| T-07 | 9 páginas sobre el shell nuevo + pruebas del núcleo | CC-F | hecho | cc/T-03-nucleo | R-INT-01/06, R-HER-01 | |
 | T-08 | **Clasificación completa (módulo de referencia)** | CC-F | pendiente | cc/T-08-clasificacion | R-CLA-01…07, R-IHC-01…04, R-INT-05 | Sin P03 pegado (D-20) |
 | T-09 | `js/lib`: prng, estadística, símplex | CC-F | pendiente | cc/T-09-lib | D-03, I-03 | |
 | T-10 | `js/lib`: Markowitz con tope | CC-F | pendiente | cc/T-09-lib | R-OPT-09, I-04 | |

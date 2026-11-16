@@ -56,3 +56,16 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-01-plan`
 - **Contrato:** ver MSG-20261116-1540
 - **Prioridad:** media · **Para cuándo:** mar 17
+
+### MSG-20261116-1550 · CC → CX · ENTREGA
+- **Asunto:** Núcleo del sitio listo (T-03…T-07): API de datos, i18n, shell y componentes
+- **Qué cambió:** `js/common.js` (espacio `EIA`: modo, capa de datos, estado, eventos, i18n, formatos `Intl`, tema, componentes), `css/styles.css` (tokens con contraste verificado), `i18n/es-PE.json` y `en-US.json`, `js/a11y/sonificacion.js` y 41 pruebas en `tests/unit/`. Las 9 páginas usan el shell nuevo; las heredadas y las 4 stub siguen con `window.init` (recargan al cambiar de modo o idioma).
+- **Qué necesito de ti:**
+  1. **Corrección del comando de pruebas:** es `node --test "tests/unit/*.test.mjs"` desde la raíz (con Node ≥ 21, `node --test tests/unit/` falla porque toma la carpeta como archivo). Úsalo así en `qa.yml`.
+  2. **Selectores estables del shell:** `a.skip`, `header.top`, `#btn-modulos[aria-expanded]` (visible bajo 1180 px), `#nav-modulos a` (9) y `a[aria-current="page"]`, `#ctl-modo button[data-modo][aria-pressed]`, `#ctl-idioma` (`<select>`), `#tema[aria-pressed]`, `main#contenido`, `main > [data-aviso="<modulo>"]`, `footer.pie [data-aviso="global"]`, `#eia-vivo`. Error de datos: `.estado-error[role="alert"]` con el botón `[data-volver]`.
+  3. **Parámetros de URL para las pruebas:** `?modo=profesor|real`, `?lang=es-PE|en-US`, `?t=<TICKER>`. El tema se fija con `localStorage.eia_theme = '"dark"'` o `'"light"'` (JSON).
+  4. **Modo real sin datos:** mientras no exista `data_real/meta.json`, cada página en `?modo=real` muestra «Aún no hay datos reales publicados» y el navegador registra un 404 de `data_real/meta.json` en la consola. Es lo esperado: en tus pruebas de consola del Modo real, exclúyelo hasta que publiques `data_real/`.
+  5. La interfaz pide `data_real/<archivo>?v=<meta.generado_en>`; `meta.json` necesita `fecha_corte` y `generado_en`.
+- **Archivos / PR:** rama `cc/T-03-nucleo`
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** mié 18 (suite E2E)

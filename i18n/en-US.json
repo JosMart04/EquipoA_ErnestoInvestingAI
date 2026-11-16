@@ -1,0 +1,200 @@
+{
+  "comun": {
+    "saltar": "Skip to content",
+    "inicio": "Start",
+    "cerrar": "Close",
+    "todos": "All",
+    "activo": "Asset",
+    "grupo": "Group",
+    "familia": "Family",
+    "modelo": "Model",
+    "confianza": "Confidence: {nivel}"
+  },
+  "nav": {
+    "etiqueta": "System modules",
+    "modulos": "Modules",
+    "dashboard": "Dashboard",
+    "watchlist": "Watchlist & alerts",
+    "trading": "Paper trading",
+    "leaderboard": "Leaderboard",
+    "clasificacion": "Classification",
+    "regresion": "30-day regression",
+    "optimizador": "Optimizer",
+    "portafolios": "Portfolios",
+    "backtesting": "Backtesting"
+  },
+  "shell": {
+    "datos": "Data:",
+    "datos_grupo": "Data mode",
+    "modo_profesor": "Course · {fecha}",
+    "modo_profesor_sin_fecha": "Course",
+    "modo_real": "Real · Yahoo {fecha}",
+    "modo_real_sin_fecha": "Real · Yahoo",
+    "idioma": "Language",
+    "tema": "Theme",
+    "tema_titulo": "Switch between light and dark theme",
+    "anuncio_modo_profesor": "You are now viewing the course's synthetic data as of the {fecha} close.",
+    "anuncio_modo_real": "You are now viewing real data as of the {fecha} close.",
+    "anuncio_modo_real_sin": "Real data mode is on, but no real data has been published yet.",
+    "anuncio_tema_oscuro": "Dark theme on.",
+    "anuncio_tema_claro": "Light theme on.",
+    "anuncio_idioma": "Language: English (United States).",
+    "pie_creditos": "Team A · HCI 2026-II · FISI-UNMSM. Base system and synthetic data by Ernesto D. Cancho-Rodríguez (CC BY 4.0)."
+  },
+  "aviso": {
+    "profesor": {
+      "global": "Educational material with synthetic data (realistic patterns, prices anchored to the {fecha} close). These are not real prices or investment advice. The forecasts, classifications, NSGA-II, NSGA-III and backtesting in this system are simulated.",
+      "generico": "Synthetic data · simulated results",
+      "clasificacion": "Synthetic data · simulated classification",
+      "regresion": "Synthetic data · simulated forecast, not investment advice",
+      "optimizador": "NSGA-II and NSGA-III are simulated: no evolutionary algorithm was run",
+      "portafolios": "Synthetic data · simulated results",
+      "backtesting": "Backtesting on synthetic history · past performance does not guarantee future results",
+      "leaderboard": "Synthetic data · fictional sample league"
+    },
+    "real": {
+      "global": "Real Yahoo Finance data as of the {fecha} close, downloaded with yfinance (a project not affiliated with Yahoo) for educational purposes; it may be delayed or contain errors. Models trained by Team A. Not investment advice.",
+      "generico": "Real Yahoo Finance data as of the {fecha} close (downloaded with yfinance for educational purposes; may be delayed or contain errors) · Models trained by Team A · Not investment advice",
+      "trading": "Real Yahoo Finance prices as of the {fecha} close · orders are simulated · Not investment advice",
+      "leaderboard": "Fictional sample league · your rank uses real prices as of the {fecha} close · Not investment advice",
+      "sin_datos": "Real mode: no real data has been published yet.",
+      "vencido": {
+        "one": "Note: this data is {n} business day old.",
+        "other": "Note: this data is {n} business days old."
+      }
+    }
+  },
+  "ficha": {
+    "titulo": "AI fact sheet",
+    "que_hace": "What it does",
+    "que_tan_bien": "How well it does it",
+    "por_que": "Why it says what it says",
+    "controlas": "What you control",
+    "ignorar": "How to dismiss it"
+  },
+  "tabla": {
+    "ordenada_asc": "Table sorted by {columna}, lowest first.",
+    "ordenada_desc": "Table sorted by {columna}, highest first."
+  },
+  "grafico": {
+    "vistas": "Chart view",
+    "pestana_grafico": "Chart",
+    "pestana_tabla": "Table",
+    "pestana_resumen": "Summary",
+    "escuchar": "Listen",
+    "sin_echarts": "The chart library could not be loaded (a connection is required). The same data is in the Table tab."
+  },
+  "error": {
+    "titulo": "The data could not be loaded",
+    "http": "Could not read {archivo} (status {estado}).",
+    "json": "The file {archivo} is not valid.",
+    "servidor": "Open the site from a web server (GitHub Pages or “python -m http.server”), not by double-clicking the file.",
+    "sin_reales_titulo": "No real data has been published yet",
+    "sin_reales_texto": "{archivo} was not found in the real data. Course mode is still available with the course's synthetic data.",
+    "volver_profesor": "Back to Course mode"
+  },
+  "dashboard": {
+    "velas_titulo": "{ticker} candlesticks",
+    "velas_tabla": "{ticker} candlesticks: open, high, low, close and volume per session",
+    "velas_resumen": "{ticker}: last close {ultimo} on {fecha}. Over the {n} sessions in the chart it changed {variacion}; the low was {min} and the high {max}.",
+    "col_fecha": "Date",
+    "col_apertura": "Open",
+    "col_maximo": "High",
+    "col_minimo": "Low",
+    "col_cierre": "Close",
+    "col_volumen": "Volume"
+  },
+  "datos": {
+    "senal": { "SUBE": "UP", "BAJA": "DOWN" },
+    "confianza": { "alta": "high", "media": "medium", "baja": "low" },
+    "familia": { "ML": "ML", "DL": "DL" },
+    "familia_larga": { "ML": "Machine Learning", "DL": "Deep Learning" },
+    "nivel": { "Conservador": "Conservative", "Moderado": "Moderate", "Agresivo": "Aggressive" },
+    "referencia": { "Igual ponderado (1/N)": "Equal weight (1/N)" },
+    "alerta_tipo": {
+      "precio_sobre": "Price above",
+      "precio_bajo": "Price below",
+      "var_1d_menor_a_pct": "Daily change below",
+      "var_1d_mayor_a_pct": "Daily change above"
+    },
+    "grupo": {
+      "Magnificas 7": "Magnificent 7",
+      "Mineras con operaciones en Peru": "Miners operating in Peru",
+      "ETF sectoriales": "Sector ETFs",
+      "ETF globales y Peru": "Global & Peru ETFs"
+    },
+    "sector": {
+      "Autos electricos": "Electric vehicles",
+      "Cobre": "Copper",
+      "Comunicaciones": "Communications",
+      "Consumo basico": "Consumer staples",
+      "Consumo discrecional": "Consumer discretionary",
+      "Diversificada": "Diversified",
+      "Energia": "Energy",
+      "Financiero": "Financials",
+      "Industriales": "Industrials",
+      "Inmobiliario": "Real estate",
+      "Materiales": "Materials",
+      "Mercado EE.UU. amplio": "Broad US market",
+      "Nasdaq-100": "Nasdaq-100",
+      "Oro/cobre": "Gold & copper",
+      "Oro/plata/cobre": "Gold, silver & copper",
+      "Peru": "Peru",
+      "Plata/oro": "Silver & gold",
+      "Salud": "Health care",
+      "Semiconductores": "Semiconductors",
+      "Servicios publicos": "Utilities",
+      "Tecnologia": "Technology"
+    },
+    "modelo": {
+      "Regresion logistica": "Logistic regression",
+      "SVC (kernel RBF)": "SVC (RBF kernel)",
+      "k-vecinos (kNN)": "k-nearest neighbors (kNN)",
+      "Naive Bayes gaussiano": "Gaussian Naive Bayes",
+      "Arbol de decision": "Decision tree",
+      "Random Forest": "Random Forest",
+      "Extra Trees": "Extra Trees",
+      "AdaBoost": "AdaBoost",
+      "Gradient Boosting": "Gradient Boosting",
+      "XGBoost": "XGBoost",
+      "LightGBM": "LightGBM",
+      "MLP (red densa)": "MLP (dense network)",
+      "RNN simple": "Simple RNN",
+      "LSTM": "LSTM",
+      "GRU": "GRU",
+      "BiLSTM": "BiLSTM",
+      "CNN 1D": "CNN 1D",
+      "Transformer": "Transformer",
+      "Regresion lineal": "Linear regression",
+      "Ridge": "Ridge",
+      "Lasso": "Lasso",
+      "Elastic Net": "Elastic Net",
+      "SVR (RBF)": "SVR (RBF)"
+    },
+    "modelo_corto": {
+      "Regresion logistica": "LogR",
+      "SVC (kernel RBF)": "SVC",
+      "k-vecinos (kNN)": "kNN",
+      "Naive Bayes gaussiano": "NB",
+      "Arbol de decision": "Tree",
+      "Random Forest": "RF",
+      "Extra Trees": "ET",
+      "AdaBoost": "Ada",
+      "Gradient Boosting": "GB",
+      "XGBoost": "XGB",
+      "LightGBM": "LGBM",
+      "MLP (red densa)": "MLP",
+      "RNN simple": "RNN",
+      "LSTM": "LSTM",
+      "GRU": "GRU",
+      "BiLSTM": "BiLSTM",
+      "CNN 1D": "CNN",
+      "Transformer": "Trf",
+      "Regresion lineal": "Lin",
+      "Ridge": "Ridge",
+      "Lasso": "Lasso",
+      "Elastic Net": "EN",
+      "SVR (RBF)": "SVR"
+    }
+  }
+}
