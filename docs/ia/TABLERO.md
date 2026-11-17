@@ -37,20 +37,20 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-27 | A11y (a) completa y (e) barrido | CC-O | pendiente | | D-07 a/e/f, R-A11Y-05 | mié |
 | T-28 | A11y (c) y (d) completas | CC-O | pendiente | | D-07 c/d | jue |
 | T-29 | Conformidad con Figma, correcciones de QA y P08, congelamiento | CC-O | pendiente | | R-FLU-01/06 | jue–vie |
-| T-30 | Validador del contrato (ambos modos, SHA-256 de data/) | CX | pendiente | | R-DAT-*, I-01…I-08 | |
-| T-31 | Pipeline v0: descarga + mercado (01, 02, 03, 04, 10, 11, 12, 13, precios, cierres, meta) | CX | pendiente | | D-03, D-04 | |
+| T-30 | Validador del contrato (ambos modos, SHA-256 de data/) | CX | pendiente | cx/T-51-ci-referencias-datos | R-DAT-*, I-01…I-08 | ACK C-01/I-03b y C-02; I-09/I-10/I-11 comprobadas en tests/datos. Validador completo aún pendiente. |
+| T-31 | Pipeline v0: descarga + mercado (01, 02, 03, 04, 10, 11, 12, 13, precios, cierres, meta) | CX | en curso | cx/T-51-ci-referencias-datos | D-03, D-04 | Entrega parcial: meta + cierres reales de 26 tickers / 2.115 sesiones, corte 2026-11-16. Restan 01–13 y precios por activo. |
 | T-32 | Workflow actualizar-datos.yml (diario, cortes, completo) | CX | pendiente | | D-04 | |
 | T-33 | 11 clasificadores ML + 05 real | CX | pendiente | | R-CLA-* | |
 | T-34 | 11 regresores ML + 06 real | CX | pendiente | | R-REG-* | |
 | T-35 | 7 DL (clasificación y regresión) | CX | pendiente | | R-CLA-*, R-REG-* | |
 | T-36 | 07 optimizador (cvxpy + pymoo) + 08 portafolios | CX | pendiente | | R-OPT-*, R-POR-* | |
-| T-37 | 09 backtesting real | CX | pendiente | | R-BT-* | |
+| T-37 | 09 backtesting real | CX | pendiente | cx/T-51-ci-referencias-datos | R-BT-* | ACK C-02: referencia 1/N diaria sin comisión; volatilidad poblacional y fecha publicada en sesión siguiente verificadas. |
 | T-38 | Cortes históricos (12 fines de mes) | CX | pendiente | | D-03 | |
-| T-39 | Fixtures de referencia para las pruebas JS | CX | pendiente | | §7.3 | |
+| T-39 | Fixtures de referencia para las pruebas JS | CX | en revisión | cx/T-51-ci-referencias-datos | §7.3 | opt_referencia.json: 35 puntos independientes con cvxpy; activa la prueba JS pendiente. Fixture de backtest queda pendiente. |
 | T-50 | Suite E2E + axe + datos | CX | pendiente | | §11 | |
-| T-51 | qa.yml (CI) + escaneo de secretos | CX | pendiente | | R-ETI-03 | |
+| T-51 | qa.yml (CI) + escaneo de secretos | CX | en revisión | cx/T-51-ci-referencias-datos | R-ETI-03 | QA mínima: patrón Node entre comillas, 16 pruebas Python y Gitleaks. E2E/axe se incorporarán con T-50. |
 | T-60 | Auditoría P08 | CX | pendiente | | R-FLU-06 | |
-| T-61 | README + PROMPTS_USADOS.md | CX | pendiente | | R-ENT-02, R-ENT-05 | |
+| T-61 | README + PROMPTS_USADOS.md | CX | en curso | cx/T-51-ci-referencias-datos | R-ENT-02, R-ENT-05 | README: atribución Yahoo/yfinance y alcance parcial; resto de documentación y PROMPTS_USADOS pendiente. |
 | T-62 | Informe PDF S13_EquipoA_Informe.pdf | CX | pendiente | | R-ENT-04 | |
 | T-63 | Guía de accesibilidad para el usuario | CX | pendiente | | §9 | |
 | T-64 | Video (opcional) | CX | pendiente | | D-11 | |

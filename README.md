@@ -1,5 +1,27 @@
 # Ernesto Investing AI — sistema base (Semana 13, IHC 2026-II)
 
+## Estado del Equipo A (17-nov-2026)
+
+El sitio del equipo se desarrolla sobre la base descrita abajo. Ya cuenta con
+núcleo compartido, Clasificación, bibliotecas de optimización y núcleo de
+accesibilidad; el avance detallado está en `docs/ia/HANDOFF.md`.
+
+- [Sitio del equipo](https://josmart04.github.io/EquipoA_ErnestoInvestingAI/).
+- [Figma Make](https://www.figma.com/make/BWA9B3JoRbAWZiVoPSyoBO) y
+  [prototipo publicado](https://misty-umber-07813177.figma.site/).
+- `data/` conserva los 13 JSON sintéticos del profesor, sin cambios.
+- `data_real/` es una **entrega parcial**: metadatos y cierres ajustados de 26
+  activos, 2.115 sesiones comunes (19-jun-2018 a 16-nov-2026). Procedencia:
+  **Yahoo Finance vía yfinance**, proyecto no afiliado a Yahoo, con fines
+  educativos; pueden existir retrasos o errores. No es asesoría de inversión.
+  Estos datos no están cubiertos por la licencia del material base.
+- Aún faltan los 13 JSON del Modo real y el entrenamiento de los modelos;
+  los módulos que los requieren mostrarán el archivo ausente.
+- [Reproducción y pruebas de la entrega de CX](pipeline/README.md).
+  `qa.yml` ejecuta las pruebas JS con el patrón entre comillas, pruebas Python
+  de datos/descarga y escaneo de secretos. E2E/axe y el validador completo
+  siguen pendientes.
+
 **ES** · Versión base y adaptada del sistema web que el Equipo A construyó en la Semana 4 (Dashboard, Watchlist y alertas, Trading simulado y Leaderboard, con tema claro/oscuro y vista móvil). Está reescrita en HTML + CSS + JavaScript puro, sin compilación, y lee **datos sintéticos** de la carpeta `data/`. Es el punto de partida del Trabajo Grupal de la Semana 13: *Sistema web integrado Ernesto Investing AI con clasificación, regresión, IA de portafolios en 3 niveles de riesgo y backtesting*.
 
 **EN** · Baseline, adapted version of the web system built by Team A in Week 4 (Dashboard, Watchlist and alerts, simulated Trading, Leaderboard, light/dark theme and mobile view), rewritten as plain HTML + CSS + JavaScript with no build step. It reads **synthetic data** from `data/`. It is the starting point for the Week 13 group assignment.
