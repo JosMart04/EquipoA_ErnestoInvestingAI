@@ -265,6 +265,16 @@ button.estrella[aria-pressed="true"] { background: none; color: var(--warn); }
 #verificacion table { margin-top: .25rem; }
 #verificacion th, #verificacion td { position: static; }
 
+/* ───────────── Watchlist: alertas disparadas (icono + texto + borde, nunca solo color) ───────────── */
+.insignia-disparada { display: inline-flex; align-items: center; gap: .25rem; border: 2px solid var(--dn); color: var(--dn); border-radius: 6px; padding: 0 .4rem; font-weight: 700; font-size: .8rem; white-space: nowrap; }
+tr.fila-disparada > * { background: var(--dn-1); color: var(--dn-t); }
+tr.fila-disparada > th { box-shadow: inset 4px 0 0 var(--dn); }
+.resumen-alertas { font-weight: 600; }
+.alerta-celda { white-space: nowrap; }
+svg.mini { color: var(--ac); display: block; max-width: 100%; }
+input.umbral { width: 8rem; }
+button.quitar { min-height: 1.75rem; padding: .1rem .5rem; }
+
 /* ───────────── Optimizador: composición del punto y elegibles ───────────── */
 #frontera .chart:focus-visible { outline-offset: 4px; }
 .metricas-punto { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem 1rem; margin: .5rem 0; }

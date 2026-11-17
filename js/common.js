@@ -686,7 +686,7 @@
 
   /** Tabla accesible y ordenable con teclado.
       cfg = {id, titulo, columnas:[{clave, titulo, tipo:"num"|"texto", ordenable, valor?(fila), fmt?(valor, fila) → HTML ya escapado, clase}],
-             filas, claveFila(fila), orden:{clave, dir}, alElegir(fila), elegida} */
+             filas, claveFila(fila), orden:{clave, dir}, alElegir(fila), elegida, claseFila(fila) → clase CSS opcional de la fila} */
   EIA.ui.tabla = function (destino, cfg) {
     let filas = cfg.filas || [], orden = cfg.orden ? Object.assign({}, cfg.orden) : null, elegida = cfg.elegida;
     const cols = cfg.columnas, id = cfg.id || "tabla-" + (++_uid);
@@ -702,7 +702,8 @@
       const vis = col ? EIA.ordenarFilas(filas, col, orden.dir) : filas;
       cuerpo.innerHTML = vis.map(f => {
         const k = clave(f);
-        return `<tr data-clave="${esc(k)}"${elegida != null && k === String(elegida) ? ' class="elegida" aria-current="true"' : ""}>` + cols.map((c, i) => {
+        const clases = [elegida != null && k === String(elegida) ? "elegida" : "", cfg.claseFila ? cfg.claseFila(f) || "" : ""].filter(Boolean).join(" ");
+        return `<tr data-clave="${esc(k)}"${clases ? ' class="' + esc(clases) + '"' : ""}${elegida != null && k === String(elegida) ? ' aria-current="true"' : ""}>` + cols.map((c, i) => {
           const crudo = c.valor ? c.valor(f) : f[c.clave];
           const html = c.fmt ? c.fmt(crudo, f) : esc(crudo);
           if (i === 0) return `<th scope="row" class="l">${cfg.alElegir ? `<button type="button" class="enlace" data-elegir="${esc(k)}">${html}</button>` : html}</th>`;
