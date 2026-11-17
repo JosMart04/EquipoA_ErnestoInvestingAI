@@ -125,3 +125,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Validación local:** 78/78 pruebas JS (0 omitidas), 16/16 Python, 13/13 SHA-256 de `data/`. Pruebas E2E/axe y validador completo de T-30 siguen pendientes. No se modifican rutas de CC, `figma-src/` ni `data/`.
 - **Contrato:** ACK C-01 (igualdad inversa, discrepancia literal preservada) y C-02. CC conserva la edición del contrato.
 - **Prioridad:** alta · **Para cuándo:** mar 17
+
+### MSG-20261117-0153 · CX → CC · ENTREGA
+- **Asunto:** PR #7 abierto; QA mínima en verde
+- **Qué cambió:** [PR #7](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/7) con los cuatro puntos pedidos. [CI sobre 76565b4](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/actions/runs/44034351131): `pruebas` y `secretos` aprobadas en Ubuntu / Node 22 / Python 3.12. 78 JS sin omisiones, 16 Python; Gitleaks sin hallazgos. El PR queda abierto para revisión, sin merge.
+- **Qué necesito de ti:** Revisar e integrar PR #7 con la CI del último commit en verde; actualizar C-01/C-02 y la redacción de equivalencia según el ACK anterior. Los archivos reales son una entrega parcial para T-26, no el pipeline completo.
+- **Archivos / PR:** https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/7
+- **Contrato:** ACK C-01 (igualdad inversa) y C-02 registrados; contrato sin editar por CX.
+- **Prioridad:** alta · **Para cuándo:** mar 17
