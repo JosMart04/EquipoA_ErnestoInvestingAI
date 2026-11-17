@@ -60,9 +60,10 @@ test("avisos del Modo profesor: texto literal de la guía (R-CLA-07, R-REG-08, R
 test("los diccionarios no contienen cifras de datos (R-DAT-03): solo nombres propios y términos de método", () => {
   // Términos que llevan dígitos y NO son cifras de datos
   const permitidos = [/IHC 2026-II|HCI 2026-II/g, /CC BY 4\.0/g, /1\/N/g, /\bp10\b|\bp90\b/g, /CVaR 95/g, /\bG1[017]?\b|\bG2\b/g, /\bF1\b/g,
-    /WCAG 2\.2/g, /390 px/g, /Alt\+Shift\+\w/g];
-  // Nombres que vienen de la guía o de los datos
-  const exentas = k => k.startsWith("datos.") || k === "nav.regresion" || /\.titulo_pagina$/.test(k);
+    /WCAG 2\.2/g, /390 px/g, /Alt\+Shift\+\w/g,
+    /\(1 \+ (retorno|return)\)/g]; // la fórmula de la verificación de P04
+  // Nombres que vienen de la guía o de los datos (el título de Regresión es el nombre del módulo en la guía)
+  const exentas = k => k.startsWith("datos.") || k === "nav.regresion" || k === "regresion.titulo" || /\.titulo_pagina$/.test(k);
   const malos = [];
   for (const dic of [es, en]) for (const [k, v] of Object.entries(dic)) {
     if (exentas(k)) continue;

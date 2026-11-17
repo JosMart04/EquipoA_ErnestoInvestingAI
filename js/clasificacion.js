@@ -105,18 +105,6 @@
     });
   }
 
-  /** Selector de fecha de corte: solo en el Modo real y si hay más de una fecha. */
-  async function pintarCorte() {
-    const caja = $("#corte-real");
-    caja.hidden = true;
-    if (EIA.modo() !== "real") return;
-    const cortes = await EIA.cortes();
-    if (cortes.length < 2) return;
-    const actual = EIA.corte() || cortes[0];
-    $("#corte").innerHTML = cortes.map((c, i) => `<option value="${esc(c)}"${c === actual ? " selected" : ""}>${esc(i === 0 ? t("clasificacion.corte_ultimo", { fecha: EIA.fmt.fecha(c) }) : EIA.fmt.fecha(c))}</option>`).join("");
-    caja.hidden = false;
-  }
-
   function pintarFiltros() {
     const f = leerFiltros();
     const grupos = Array.from(new Set(D.universo.map(a => a.grupo)));
@@ -263,7 +251,6 @@
       const el = e.target;
       if (el.id === "filtro-grupo") { guardarFiltros({ grupo: el.value }); pintarDatos(); }
       else if (el.id === "solo-watchlist") { guardarFiltros({ soloWatch: el.checked }); pintarDatos(); }
-      else if (el.id === "corte") EIA.setCorte(el.value === el.options[0].value ? null : el.value);
       else if (el.dataset.modelo) {
         const oc = ocultos().filter(m => m !== el.dataset.modelo);
         if (!el.checked) oc.push(el.dataset.modelo);
@@ -283,7 +270,7 @@
     if (!elegido || !D.c05.predicciones[elegido]) elegido = D.c05.predicciones[pedido] ? pedido : D.universo[0].ticker;
     enlazar();
     pintarFicha();
-    pintarCorte();
+    EIA.ui.selectorCorte($("#corte-real"));
     pintarFiltros();
     pintarDatos();
     pintarHonestidad();

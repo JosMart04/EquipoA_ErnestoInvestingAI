@@ -1,10 +1,54 @@
 <!doctype html>
 <html lang="es-PE"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Regresión de precios a 30 sesiones · Ernesto Investing AI</title><link rel="stylesheet" href="css/styles.css"></head>
+<title data-i18n="regresion.titulo_pagina">Regresión de precios a 30 sesiones · Ernesto Investing AI</title><link rel="stylesheet" href="css/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script></head>
 <body data-page="regresion"><main>
-<h1>Regresión de precios a 30 sesiones</h1>
-<div class="stub"><p><strong>Módulo por construir por su equipo.</strong> Proyectar 30 precios diarios futuros por activo con 18 regresores (11 de ML y 7 de DL), la mediana del ensamble y la banda p10–p90.</p>
-<h2>Qué debe contener</h2><ul><li>Gráfico: historia reciente + 30 sesiones proyectadas por modelo y el ensamble con su banda.</li><li>Selector de activo y de modelo (todos, solo ML, solo DL).</li><li>Tabla de métricas por modelo (MAPE, MAE, RMSE, mejora frente a la persistencia).</li><li>Etiqueta de retorno proyectado a 30 sesiones coloreada por signo.</li></ul>
-<p class="mut">Datos de entrada: <code>data/06_regresores_precio_30d.json</code>, <code>data/02_precios_sinteticos_504d.json</code>. Todos están simulados (patrones realistas).</p></div>
-<h2>Vista previa de los datos de entrada</h2><div id="prev"></div>
-<script src="js/common.js"></script><script>window.STUB={files:['06_regresores_precio_30d.json', '02_precios_sinteticos_504d.json']}</script><script src="js/stub.js"></script></main></body></html>
+<h1 data-i18n="regresion.titulo">Regresión de precios a 30 sesiones</h1>
+<p class="sub" data-i18n="regresion.sub">¿Hacia dónde podría ir el precio? Cada modelo proyecta un camino; la banda muestra cuánto discrepan.</p>
+<!-- El aviso de simulación lo inserta js/common.js aquí, según el modo de datos -->
+<div id="ficha"></div>
+
+<section class="card" id="corte-real" hidden>
+  <label for="corte" data-i18n="comun.corte_rotulo">Fecha de corte de los modelos</label>
+  <select id="corte"></select>
+</section>
+
+<section class="card" aria-labelledby="h-controles">
+  <h2 id="h-controles" data-i18n="regresion.controles">Activo y modelos</h2>
+  <div class="row">
+    <div><label for="activo" data-i18n="comun.activo">Activo</label>
+      <div class="fila-chips"><select id="activo"></select><button type="button" id="estrella" class="estrella" aria-pressed="false"><span aria-hidden="true">☆</span></button></div></div>
+    <div><span class="rotulo" data-i18n="comun.familia">Familia</span><div id="filtro-familia"></div></div>
+    <div><span class="rotulo" data-i18n="regresion.ventana">Historia</span><div id="ventana"></div></div>
+  </div>
+  <div class="row">
+    <label class="casilla"><input type="checkbox" id="solo-watchlist"> <span data-i18n="regresion.solo_watchlist">Solo mi watchlist</span></label>
+    <label class="casilla"><input type="checkbox" id="ver-banda" checked> <span data-i18n="regresion.ver_banda">Banda p10–p90 de los modelos</span></label>
+    <label class="casilla"><input type="checkbox" id="ver-cono" checked> <span data-i18n="regresion.ver_cono">Cono de volatilidad</span></label>
+  </div>
+  <details id="modelos-visibles"><summary data-i18n="regresion.modelos_visibles">Modelos visibles</summary><div id="lista-modelos" class="lista-casillas"></div></details>
+  <p id="contador" class="mut" role="status"></p>
+</section>
+
+<div class="dos-col">
+  <div id="grafico"></div>
+  <section class="card" id="retorno" aria-live="polite"></section>
+</div>
+
+<section class="card" id="verificacion"></section>
+
+<section class="card" aria-labelledby="h-metricas">
+  <h2 id="h-metricas" data-i18n="regresion.metricas_titulo">Métricas por modelo</h2>
+  <p class="mut" data-i18n="regresion.metricas_ayuda">Elige un modelo para resaltar su línea en el gráfico. Los encabezados ordenan la tabla.</p>
+  <div id="metricas"></div>
+  <dl class="definiciones">
+    <dt data-i18n="regresion.col_mape">MAPE</dt><dd data-i18n="regresion.def_mape">Error porcentual medio del precio a fin de horizonte. Menos es mejor.</dd>
+    <dt data-i18n="regresion.col_mae">MAE</dt><dd data-i18n="regresion.def_mae">Error medio del retorno del horizonte, en puntos porcentuales.</dd>
+    <dt data-i18n="regresion.col_rmse">RMSE</dt><dd data-i18n="regresion.def_rmse">Como el MAE, pero castiga más los errores grandes.</dd>
+    <dt data-i18n="regresion.col_r2">R² de retornos</dt><dd data-i18n="regresion.def_r2">Qué parte de la variación de los retornos explica el modelo: cero es nada y uno es todo.</dd>
+    <dt data-i18n="regresion.col_mejora">Mejora frente a la persistencia</dt><dd data-i18n="regresion.def_mejora">Cuánto reduce el MAPE frente a suponer que el precio no cambia. Positivo: el modelo aporta algo.</dd>
+  </dl>
+</section>
+<script src="js/common.js"></script>
+<script src="js/regresion.js"></script>
+</main></body></html>

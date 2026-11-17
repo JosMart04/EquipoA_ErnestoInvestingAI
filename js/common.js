@@ -341,7 +341,8 @@
     pct: (x, d = 2, op) => nf({ style: "percent", minimumFractionDigits: d, maximumFractionDigits: d, signDisplay: op && op.signo === false ? "auto" : "exceptZero" }).format(Number(x) / 100),
     /** Probabilidad 0–1 como número («0.62»). */
     prob: (p, d = 2) => nf({ minimumFractionDigits: d, maximumFractionDigits: d }).format(Number(p)),
-    usd: x => nf({ style: "currency", currency: "USD" }).format(Number(x)),
+    /** Dólares; d decimales (2 por defecto). */
+    usd: (x, d) => nf(d == null ? { style: "currency", currency: "USD" } : { style: "currency", currency: "USD", minimumFractionDigits: d, maximumFractionDigits: d }).format(Number(x)),
     compacto: x => nf({ notation: "compact", maximumFractionDigits: 1 }).format(Number(x)),
     /** Fecha ISO (día de sesión) en UTC para que no se corra un día en Lima. Lo que no es fecha (p. ej. "inicio") se traduce. */
     fecha(iso, estilo) {
@@ -631,6 +632,20 @@
     destino.innerHTML = `<details class="ficha-ia"${abierta ? " open" : ""}><summary><span aria-hidden="true">ⓘ</span> ${esc(t("ficha.titulo"))}</summary><dl>${
       pautas.map(([g, k]) => `<div><dt><span class="pauta">${g}</span> ${esc(t("ficha." + k))}</dt><dd>${esc(filas[k])}</dd></div>`).join("")}</dl></details>`;
     $("details", destino).addEventListener("toggle", ev => EIA.estado.set("eia_ficha", ev.target.open));
+  };
+
+  /** Selector de fecha de corte de los modelos (solo Modo real y con más de un corte).
+      caja: contenedor (oculto por defecto) que tiene un <label> y un <select>. Al cambiar, emite "eia:corte". */
+  EIA.ui.selectorCorte = async function (caja) {
+    const m = montar(caja);
+    caja.hidden = true;
+    if (EIA.modo() !== "real") return;
+    const cortes = await EIA.cortes();
+    if (cortes.length < 2) return;
+    const sel = $("select", caja), actual = EIA.corte() || cortes[0];
+    sel.innerHTML = cortes.map((c, i) => `<option value="${esc(c)}"${c === actual ? " selected" : ""}>${esc(i === 0 ? EIA.t("comun.corte_ultimo", { fecha: EIA.fmt.fecha(c) }) : EIA.fmt.fecha(c))}</option>`).join("");
+    sel.addEventListener("change", () => EIA.setCorte(sel.value === cortes[0] ? null : sel.value), { signal: m.control.signal });
+    caja.hidden = false;
   };
 
   /** Control segmentado: botones con aria-pressed. opciones = [[valor, texto], …]. */
