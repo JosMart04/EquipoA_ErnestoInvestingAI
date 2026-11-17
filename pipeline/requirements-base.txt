@@ -1,0 +1,6 @@
+# Entrega parcial T-31/T-39: cierres ajustados y referencia cvxpy.
+yfinance==1.8.0
+numpy==2.5.5
+pandas==3.1.1
+cvxpy==1.9.3
+exchange-calendars==4.13.3
