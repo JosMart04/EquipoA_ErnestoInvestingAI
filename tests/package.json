@@ -1,6 +1,13 @@
 {
   "name": "ernesto-investing-ai-pruebas",
   "private": true,
-  "scripts": {"test:e2e": "playwright test --config=e2e/playwright.config.mjs"},
-  "devDependencies": {"@playwright/test": "1.65.1", "echarts": "5.5.1", "@mediapipe/tasks-vision": "1.2.3"}
+  "scripts": {
+    "test:e2e": "playwright test --config=e2e/playwright.config.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@mediapipe/tasks-vision": "1.2.3",
+    "@playwright/test": "1.65.1",
+    "echarts": "5.5.1"
+  }
 }

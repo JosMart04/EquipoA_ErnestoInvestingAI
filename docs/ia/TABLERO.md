@@ -38,18 +38,18 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-28a | **Arreglo:** la cámara se congelaba al primer segundo (el HUD sacaba el `<video>` del documento); vigilante del video; gestos de mano (D-22); histéresis del puntero; recorrido de la cabeza | CC-O | hecho | PR #8 | D-07 c/d | Verificado con MediaPipe real y video falso; **falta la prueba de Josué con webcam** |
 | T-28 | A11y (c) y (d) completas | CC-O | pendiente | | D-07 c/d | jue |
 | T-29 | Conformidad con Figma, correcciones de QA y P08, congelamiento | CC-O | pendiente | | R-FLU-01/06 | jue–vie |
-| T-30 | Validador del contrato (ambos modos, SHA-256 de data/) | CX | pendiente | cx/T-51-ci-referencias-datos · PR #7 | R-DAT-*, I-01…I-08 | ACK C-01/I-03b y C-02; I-09/I-10/I-11 comprobadas en tests/datos. Validador completo aún pendiente. |
-| T-31 | Pipeline v0: descarga + mercado (01, 02, 03, 04, 10, 11, 12, 13, precios, cierres, meta) | CX | en curso | cx/T-51-ci-referencias-datos · PR #7 | D-03, D-04 | Entrega parcial: meta + cierres reales de 26 tickers / 2.115 sesiones, corte 2026-11-16. Restan 01–13 y precios por activo. |
-| T-32 | Workflow actualizar-datos.yml (diario, cortes, completo) | CX | pendiente | | D-04 | |
-| T-33 | 11 clasificadores ML + 05 real | CX | pendiente | | R-CLA-* | |
-| T-34 | 11 regresores ML + 06 real | CX | pendiente | | R-REG-* | |
-| T-35 | 7 DL (clasificación y regresión) | CX | pendiente | | R-CLA-*, R-REG-* | |
-| T-36 | 07 optimizador (cvxpy + pymoo) + 08 portafolios | CX | pendiente | | R-OPT-*, R-POR-* | |
-| T-37 | 09 backtesting real | CX | pendiente | cx/T-51-ci-referencias-datos · PR #7 | R-BT-* | ACK C-02: referencia 1/N diaria sin comisión; volatilidad poblacional y fecha publicada en sesión siguiente verificadas. |
-| T-38 | Cortes históricos (12 fines de mes) | CX | pendiente | | D-03 | |
+| T-30 | Validador del contrato (ambos modos, SHA-256 de data/) | CX | en revisión | cx/T-50-accesibilidad-pipeline | R-DAT-*, I-01…I-11 | Validador implementado; profesor pasa, discrepancia literal R-REG-09 preservada; pruebas de corrupción. Validación real al terminar entrenamiento. |
+| T-31 | Pipeline v0: descarga + mercado (01, 02, 03, 04, 10, 11, 12, 13, precios, cierres, meta) | CX | en curso | cx/T-50-accesibilidad-pipeline | D-03, D-04 | OHLCV de 26 activos y VIX descargado al 2026-11-16. Generador completo implementado; publicación validada en curso. |
+| T-32 | Workflow actualizar-datos.yml (diario, cortes, completo) | CX | en revisión | cx/T-50-accesibilidad-pipeline | D-04 | Workflow manual de solo lectura entrega artefacto. Cron y push del bot a main rechazados por revisión automática; propuesta concreta en docs/informe/T-32-propuesta.md, requiere autorización. |
+| T-33 | 11 clasificadores ML + 05 real | CX | en curso | cx/T-50-accesibilidad-pipeline | R-CLA-* | Implementado; entrenamiento, generación y validación del corte actual y doce cortes históricos en curso. |
+| T-34 | 11 regresores ML + 06 real | CX | en curso | cx/T-50-accesibilidad-pipeline | R-REG-* | Implementado; entrenamiento, generación y validación del corte actual y doce cortes históricos en curso. |
+| T-35 | 7 DL (clasificación y regresión) | CX | en curso | cx/T-50-accesibilidad-pipeline | R-CLA-*, R-REG-* | Implementado; entrenamiento, generación y validación del corte actual y doce cortes históricos en curso. |
+| T-36 | 07 optimizador (cvxpy + pymoo) + 08 portafolios | CX | en curso | cx/T-50-accesibilidad-pipeline | R-OPT-*, R-POR-* | Implementado; entrenamiento, generación y validación del corte actual y doce cortes históricos en curso. |
+| T-37 | 09 backtesting real | CX | en curso | cx/T-50-accesibilidad-pipeline | R-BT-* | Implementado; entrenamiento, generación y validación del corte actual y doce cortes históricos en curso. |
+| T-38 | Cortes históricos (12 fines de mes) | CX | en curso | cx/T-50-accesibilidad-pipeline | D-03 | Implementado; entrenamiento, generación y validación del corte actual y doce cortes históricos en curso. |
 | T-39 | Fixtures de referencia para las pruebas JS | CX | en revisión | cx/T-51-ci-referencias-datos · PR #7 | §7.3 | opt_referencia.json: 35 puntos independientes con cvxpy; activa la prueba JS pendiente. Fixture de backtest queda pendiente. |
-| T-50 | Suite E2E + axe + datos | CX | en revisión | cx/T-50-e2e-backtesting · PR #18 | §11 | PR #15 integrado (40 E2E); se agregan 4 de Backtesting: curvas/métricas y Agresivo → 12 rebalanceos a 1280/390. Parcial real + 4 casos aislando ausencia de 09 con fixture de 13. Total 48; resta axe, temas y otros flujos. |
-| T-51 | qa.yml (CI) + escaneo de secretos | CX | en revisión | PR #7 y #15 integrados | R-ETI-03 | Jobs pruebas, secretos y e2e con evidencias integrados; la suite descubre también Backtesting. Resta axe al completar T-50. |
+| T-50 | Suite E2E + axe + datos | CX | en revisión | cx/T-50-accesibilidad-pipeline | §11 | 190/192 iniciales: 120 funcionales y 70/72 axe. Contraste de Backtesting claro falla (issue #21). Fixture 13 corregido y probado con 200/cuerpo/?v=; 88/88 regresiones posteriores. Modo completo se verificará con 01–13. |
+| T-51 | qa.yml (CI) + escaneo de secretos | CX | en revisión | cx/T-50-accesibilidad-pipeline | R-ETI-03 | Integra axe, ambos temas/anchos, validación y pruebas causales de pipeline. Hallazgo de CC #21 impide declarar toda QA verde. |
 | T-60 | Auditoría P08 | CX | pendiente | | R-FLU-06 | |
 | T-61 | README + PROMPTS_USADOS.md | CX | en curso | cx/T-51-ci-referencias-datos · PR #7 | R-ENT-02, R-ENT-05 | README: atribución Yahoo/yfinance y alcance parcial; resto de documentación y PROMPTS_USADOS pendiente. |
 | T-62 | Informe PDF S13_EquipoA_Informe.pdf | CX | pendiente | | R-ENT-04 | |

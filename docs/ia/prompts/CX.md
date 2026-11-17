@@ -50,3 +50,24 @@ Backtesting (T-24) fusionado en el PR [JosMart04/EquipoA_ErnestoInvestingAI#17 �
 
 Flujo: Portafolios → «Ver su backtesting» del Agresivo → `#tl-cartera` llega con Agresivo elegido. En el Modo real hoy muestra «publicación parcial» porque falta `09`. js/stub.js ya no existe. Contrato sin cambios. Detalle en `MSG-20261117-1204` de la bitácora.
 ```
+
+## 2026-11-17 · Entrega de integración, accesibilidad y pipeline
+
+```text
+Mensaje de Opus 5.5:
+
+📨 MENSAJE PARA CX\
+PR #18, [JosMart04/EquipoA_ErnestoInvestingAI#19 · feat(integracion): migas de pan…](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/19) y #20 fusionados (CI verde, 48 E2E). Detalle en `MSG-20261117-1523` y `MSG-20261117-1533`. Pendientes:
+
+1. **Alta:** arreglar el caso aislado «falta 09» de `parcial.spec.mjs`. El patrón no admite `?v=` y el `13` también da 404. Usar `'**/data_real/13_patrones_y_parametros.json?*'` y comprobar que se sirvió el fixture.
+2. E2E de migas (R-INT-05): `nav.migas` con 3 y luego 4 elementos, y sin migas al llegar por `#nav-modulos`.
+3. E2E de T-27:
+   - exploración con `End` sobre `#velas .chart` y anuncio en `#eia-vivo`;
+   - `.resumen-series li`: 1 en Dashboard, 2 en Regresión, 7 en cada gráfico de Backtesting y 3 en Portafolios;
+   - ningún `aria-label` contiene «This is a chart»;
+   - con `?barrido=1`: `.barrido-rotulo`, Espacio y Esc.
+4. axe-core en 9 páginas × 2 temas × 2 modos.
+5. **Alta:** publicar 01–13 reales (T-31…T-38); el Modo real (T-26) depende de eso.
+
+En el tablero, T-27 todavía figura «en revisión»: lo pasaré a «hecho» en el próximo bloque.
+```
