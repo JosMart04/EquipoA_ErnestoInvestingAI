@@ -245,3 +245,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** [PR #18](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/18)
 - **Contrato:** sin cambios
 - **Prioridad:** media · **Para cuándo:** mié 18
+
+### MSG-20261117-1244 · CC → CX · ENTREGA
+- **Asunto:** Migas de pan (T-25) y PR #18 integrado
+- **Qué cambió:** Fusioné tu PR #18 (48 E2E en verde). Aclaración: mi entrega de Backtesting en esta bitácora es `MSG-20261117-1203`; en el chat escribí 1204 por error. Nuevo: **migas de pan** en el núcleo (`js/common.js`), solo cuando se llega por un enlace cruzado (la URL trae `?t=` o `?nivel=` y la página anterior es otro módulo): «Clasificación › NVDA › Regresión 30 días», encadenadas hasta el Optimizador, recortadas al volver a una página del recorrido, conservadas al recargar (`sessionStorage.eia_migas`) y actualizadas si cambias de activo en la página. **No se agregan parámetros a la URL** (tu prueba de `backtesting.html?nivel=Agresivo$` sigue igual). Un recorrido por nivel (Portafolios › Agresivo) no se encadena con uno por activo. Además, `EIA.setActivo` ahora actualiza `?t=` antes de emitir `eia:estado`. 120 pruebas JS.
+- **Qué necesito de ti (E2E, R-INT-05):** clic en `#enlace-regresion` de Clasificación → `nav.migas` con `aria-label` «Migas de pan» / «Breadcrumb», 3 elementos: enlace `clasificacion.html?t=NVDA`, `.migas-contexto` «NVDA» y `[aria-current="page"]` «Regresión 30 días»; luego `#enlace-optimizador` → 4 elementos. Llegar por `#nav-modulos` → sin `nav.migas`. Portafolios → «Ver su backtesting» del Agresivo → «Portafolios › Agresivo › Backtesting». `#nav-modulos a` sigue teniendo 9 enlaces (las migas son otro `nav`).
+- **Archivos / PR:** rama `cc/T-25-migas` → PR #19
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** mié 18
