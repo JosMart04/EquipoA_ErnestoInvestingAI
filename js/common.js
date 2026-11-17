@@ -420,6 +420,25 @@
     return cargados.get(src);
   };
 
+  /** Lanza un cálculo en un Worker de js/workers/ (solo Modo real con rango personalizado; PLAN_MAESTRO §7.2).
+      Devuelve {promesa, cancelar()}. op.alProgresar(pct) recibe el avance de 0 a 100. */
+  EIA.trabajo = function (nombre, params, op) {
+    const w = new Worker("js/workers/" + nombre + ".worker.js?v=" + EIA.version);
+    let cancelar = () => {};
+    const promesa = new Promise((ok, falla) => {
+      cancelar = () => { w.terminate(); falla(Object.assign(new Error("cancelado"), { cancelado: true })); };
+      w.onmessage = e => {
+        const m = e.data || {};
+        if (m.tipo === "progreso") { if (op && op.alProgresar) op.alProgresar(m.pct); }
+        else if (m.tipo === "resultado") { w.terminate(); ok(m.datos); }
+        else if (m.tipo === "error") { w.terminate(); falla(new Error(m.mensaje)); }
+      };
+      w.onerror = e => { w.terminate(); falla(new Error(e.message || "Error en el Worker " + nombre)); };
+      w.postMessage({ tipo: "calcular", params });
+    });
+    return { promesa, cancelar: () => cancelar() };
+  };
+
   /* ───────────── Shell: cabecera, menú de módulos, controles y pie ───────────── */
   let menuAbierto = false;
   function plantillaCabecera() {
