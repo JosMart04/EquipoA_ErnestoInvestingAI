@@ -54,7 +54,7 @@
   EIA.modulo({
     id: "leaderboard",
     async cargar() {
-      const [c12, c10, c11] = await Promise.all([EIA.datos(ARCHIVO_LIGA), EIA.datos(ARCHIVO_MERCADO), EIA.datos(ARCHIVO_DEMO)]);
+      const [c12, c10, c11] = await EIA.todos([EIA.datos(ARCHIVO_LIGA), EIA.datos(ARCHIVO_MERCADO), EIA.datos(ARCHIVO_DEMO)]);
       return { c12, c10, c11 };
     },
     pintar

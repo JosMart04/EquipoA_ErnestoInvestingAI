@@ -279,7 +279,7 @@
   EIA.modulo({
     id: "clasificacion",
     async cargar() {
-      const [c05, universo, parametros] = await Promise.all([EIA.datos(ARCHIVO), EIA.universo(), EIA.datos(ARCHIVO_PARAMETROS)]);
+      const [c05, universo, parametros] = await EIA.todos([EIA.datos(ARCHIVO), EIA.universo(), EIA.datos(ARCHIVO_PARAMETROS)]);
       return { c05, universo, horizonte: parametros.parametros.N_FC };
     },
     pintar

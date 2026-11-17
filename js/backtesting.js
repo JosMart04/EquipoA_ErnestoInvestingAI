@@ -247,7 +247,7 @@ ${x.causas.length ? `<p>${esc(t("backtesting.causas_intro"))}</p><ul>${x.causas.
   EIA.modulo({
     id: "backtesting",
     async cargar() {
-      const [c09, c13] = await Promise.all([EIA.datos(ARCHIVO), EIA.datos(ARCHIVO_PARAMETROS)]);
+      const [c09, c13] = await EIA.todos([EIA.datos(ARCHIVO), EIA.datos(ARCHIVO_PARAMETROS)]);
       return { c09, tope: c13.parametros.TOPE_PESO };
     },
     pintar

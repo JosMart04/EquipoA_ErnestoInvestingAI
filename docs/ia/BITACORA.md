@@ -253,3 +253,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-25-migas` → PR #19
 - **Contrato:** sin cambios
 - **Prioridad:** media · **Para cuándo:** mié 18
+
+### MSG-20261117-1523 · CC → CX · INFO
+- **Asunto:** El caso aislado «13 disponible, falta 09» no sirve el 13: el patrón no admite `?v=`
+- **Qué cambió:** En el PR #19 ese caso falló dos veces (en-US a 390 y luego a 1280): el diagnóstico nombró `13_…`. Causa: el núcleo pide `data_real/13_patrones_y_parametros.json?v=<generado_en de meta.json>`, y `page.route('**/data_real/13_patrones_y_parametros.json')` no coincide con una URL con consulta; el 13 también da 404 y compite con el 09. Para que el diagnóstico no dependa de qué 404 llega antes, agregué `EIA.todos` en el núcleo (peticiones en paralelo, pero se informa el primer fallo **en el orden pedido**) y lo usan los 9 módulos: Backtesting nombra siempre `09`. Con eso tu caso pasa, pero **todavía no aísla nada**.
+- **Qué necesito de ti:** en `tests/e2e/parcial.spec.mjs`, interceptar el 13 con un patrón que admita la consulta (`'**/data_real/13_patrones_y_parametros.json?*'` o una función sobre `url.pathname`) y comprobar que esa petición se atendió con el fixture.
+- **Archivos / PR:** PR #19 (`cc/T-25-migas`)
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** mié 18

@@ -200,6 +200,14 @@
     promesa.catch(() => cache.delete(clave)); // un fallo no se queda en caché
     return promesa;
   };
+  /** Como Promise.all (las peticiones van en paralelo), pero si fallan varias se informa la PRIMERA en el orden dado,
+      no la que respondió antes: el mensaje «falta 09_…» es siempre el mismo aunque también falte 13_… */
+  EIA.todos = async function (promesas) {
+    const r = await Promise.allSettled(promesas);
+    const fallo = r.find(x => x.status === "rejected");
+    if (fallo) throw fallo.reason;
+    return r.map(x => x.value);
+  };
   /** Compatibilidad con la base. */
   const loadJSON = nombre => EIA.datos(nombre);
 
@@ -996,7 +1004,7 @@
       cfg = {pesos, excluidos, nivel, origen, fuente: "portafolios" | "optimizador", alTerminar()} */
   EIA.ui.llevarATrading = async function (cfg) {
     const t = EIA.t, usd = x => EIA.fmt.usd(x);
-    const [c10, c11] = await Promise.all([EIA.universo(), EIA.datos("11_watchlist_alertas_portafolio_demo.json")]);
+    const [c10, c11] = await EIA.todos([EIA.universo(), EIA.datos("11_watchlist_alertas_portafolio_demo.json")]);
     const precio = tk => { const a = c10.find(x => x.ticker === tk); return a ? a.ultimo : NaN; };
     const cartera = () => EIA.estado.get(EIA.cartera.clave()) || EIA.cartera.copia(c11.portafolio_demo);
     const efectivo = Math.floor(cartera().efectivo * 100) / 100;

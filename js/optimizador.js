@@ -315,7 +315,7 @@
   EIA.modulo({
     id: "optimizador",
     async cargar() {
-      const [c07, c05, c06, universo] = await Promise.all([EIA.datos(ARCHIVO), EIA.datos(ARCHIVO_CLASIF), EIA.datos(ARCHIVO_REGRES), EIA.universo()]);
+      const [c07, c05, c06, universo] = await EIA.todos([EIA.datos(ARCHIVO), EIA.datos(ARCHIVO_CLASIF), EIA.datos(ARCHIVO_REGRES), EIA.universo()]);
       return { c07, c05, c06, universo };
     },
     pintar

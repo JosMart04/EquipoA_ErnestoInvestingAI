@@ -195,7 +195,7 @@
   EIA.modulo({
     id: "dashboard",
     async cargar() {
-      const [c10, c03, c02] = await Promise.all([EIA.datos(ARCHIVO_MERCADO), EIA.datos(ARCHIVO_VELAS), EIA.datos(ARCHIVO_CIERRES)]);
+      const [c10, c03, c02] = await EIA.todos([EIA.datos(ARCHIVO_MERCADO), EIA.datos(ARCHIVO_VELAS), EIA.datos(ARCHIVO_CIERRES)]);
       return { c10, c03, c02 };
     },
     pintar

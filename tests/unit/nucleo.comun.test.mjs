@@ -135,3 +135,10 @@ test("R-INT-05: migas de pan solo al llegar por un enlace cruzado, encadenadas y
   assert.deepEqual(EIA.calcularMigas({ pagina: "clasificacion", contexto: "t", anterior: { pagina: "backtesting", href: "backtesting.html?nivel=Agresivo" }, guardado: { pagina: "backtesting", contexto: "nivel", ruta: [{ pagina: "portafolios", href: "portafolios.html" }] } }).map(x => x.pagina), ["backtesting"]);
   assert.deepEqual(EIA.calcularMigas({ pagina: "backtesting", contexto: "nivel", anterior: { pagina: "portafolios", href: "portafolios.html" }, guardado: { pagina: "optimizador", contexto: "t", ruta: r2 } }).map(x => x.pagina), ["portafolios"]);
 });
+
+test("EIA.todos: en paralelo, pero el error es el primero en el orden pedido (el diagnóstico no depende de qué 404 llega antes)", async () => {
+  const espera = (ms, v, falla) => new Promise((ok, mal) => setTimeout(() => (falla ? mal(new Error(v)) : ok(v)), ms));
+  assert.deepEqual(await EIA.todos([espera(5, "a"), espera(1, "b")]), ["a", "b"]);
+  // 13 falla antes que 09, pero se informa 09 (el archivo principal del módulo va primero)
+  await assert.rejects(EIA.todos([espera(20, "09", true), espera(1, "13", true)]), /09/);
+});

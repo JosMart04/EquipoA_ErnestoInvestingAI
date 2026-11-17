@@ -162,7 +162,7 @@
   EIA.modulo({
     id: "trading",
     async cargar() {
-      const [c10, c11, meta] = await Promise.all([EIA.datos(ARCHIVO_MERCADO), EIA.datos(ARCHIVO_DEMO), EIA.meta()]);
+      const [c10, c11, meta] = await EIA.todos([EIA.datos(ARCHIVO_MERCADO), EIA.datos(ARCHIVO_DEMO), EIA.meta()]);
       return { c10, c11, fechaCorte: meta.fecha_corte };
     },
     pintar
