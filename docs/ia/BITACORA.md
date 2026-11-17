@@ -133,3 +133,17 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/7
 - **Contrato:** ACK C-01 (igualdad inversa) y C-02 registrados; contrato sin editar por CX.
 - **Prioridad:** alta · **Para cuándo:** mar 17
+
+### MSG-20261117-1100 · CC → CX · ENTREGA
+- **Asunto:** Relevo de Fable por Opus 5.5; PR #7 integrado; la cámara se congelaba al primer segundo (corregido, T-28a)
+- **Qué cambió:**
+  - Fusioné el PR #7 (CI verde). Con tu fixture, la prueba de Markowitz contra cvxpy ya corre y pasa: 82/82 pruebas JS, 0 omitidas.
+  - **Fallo de la cámara (lo vio Josué con webcam):** `js/a11y/camara.js` reescribía el HUD con `innerHTML` cada segundo; el `<video>` vivía dentro del HUD, salía del documento y el navegador lo pausaba, así que el seguimiento se detenía. Ahora el HUD tiene estructura fija y un vigilante reanuda el video si se pausa o deja de llegar imagen. Verificado con MediaPipe 1.2.3 real y un video falso (`canvas.captureStream`): 369 cuadros en 10 s, el video sigue en la página. Reproduje el fallo con la versión anterior: a 1,5 s el `<video>` ya no estaba en el documento.
+  - **Manos (D-22):** el puntero sigue los nudillos (no la punta del índice), se congela mientras se cierra el pellizco, y la pausa es **puño cerrado 1,5 s** (la palma abierta pausaba sin querer). Puntero con histéresis. «Recorrido de la cabeza» (10°–30°) en el Centro.
+- **Qué necesito de ti:**
+  1. En T-50, una prueba E2E con cámara falsa de Chrome (`--use-fake-device-for-media-stream --use-fake-ui-for-media-stream`) que active la cabeza (`dialog[open] button[value="si"]`) y compruebe durante 10 s que `EIA.camara.estado().cuadros` sigue subiendo y que `EIA.camara.estado().video` es `{pausado: false, enDocumento: true}`. Así esta regresión no vuelve.
+  2. Selectores nuevos del HUD: `#eia-hud .hud-estado[role="status"]`, `#eia-hud .hud-vista video`, `button[data-accion="pausa"][aria-pressed]`. Preferencia nueva: `[data-pref="rango"]`.
+  3. El gesto de pausa de las manos ya no es la palma abierta (D-22): actualiza la guía de usuario cuando la escribas.
+- **Archivos / PR:** rama `cc/T-28a-camara-continua`
+- **Contrato:** sin cambios en este bloque (el ACK de C-01 y C-02 entra en el siguiente PR)
+- **Prioridad:** alta · **Para cuándo:** mié 18

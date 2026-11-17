@@ -1,7 +1,8 @@
 /* js/a11y/camara.js — ciclo de vida de la cámara para las modalidades «cabeza» y «manos» (PLAN_MAESTRO §9.5).
    · Consentimiento previo: la imagen se procesa SOLO en el navegador; no se envía ni se guarda.
    · MediaPipe Tasks Vision 1.2.3 se descarga únicamente aquí, al activar la cámara (D-12). GPU con respaldo en CPU.
-   · HUD permanente «Cámara activa» con Detener (también Esc), Pausa y Recentrar. Se detiene el análisis si la pestaña se oculta.
+   · HUD permanente «Cámara activa» con Detener (también Esc), Pausa y Recentrar. Se detiene el análisis si la pestaña se oculta
+     y un vigilante reanuda el video si se pausa o deja de llegar imagen.
    · El sitio es multipágina: al navegar, la cámara se reanuda sola en la página siguiente (consentimiento de la sesión).
    · Una sola modalidad a la vez.
    · Guion simulado (?camara=simulada&mod=cabeza|manos): alimenta el mismo camino con resultados sintéticos, sin cámara ni
@@ -15,7 +16,9 @@
   const CDN = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.3";
   const CLAVE_SESION = "eia_cam", CLAVE_CONSENTIMIENTO = "eia_cam_ok";
   let estado = "apagada", modalidad = null, modulo = null, video = null, flujo = null, detector = null, vision = null, fileset = null;
-  let raf = 0, hud = null, simulada = false, cuadros = 0, tFps = 0, fps = 0, ultimoTiempoVideo = -1;
+  const RANGO_POR_DEFECTO = 18, ESPERA_CUADRO_MS = 1500; // grados de giro hasta el borde; espera máxima entre cuadros
+  let raf = 0, hud = null, simulada = false, cuadros = 0, cuadrosTotales = 0, tFps = 0, fps = 0, ultimoTiempoVideo = -1;
+  let ultimoCuadro = 0, tDeteccion = 0, sinCuadros = false, avisoPrevio = null;
 
   const t = (k, p) => EIA.t(k, p), esc = EIA.esc;
   const sesion = { get: k => { try { return global.sessionStorage.getItem(k); } catch (e) { return null; } },
@@ -33,25 +36,41 @@
     });
   }
 
+  /* El HUD se crea UNA sola vez y después solo se cambian textos. Nunca se reescribe con innerHTML: el <video> de la
+     cámara vive dentro del HUD, y si sale del documento el navegador lo pausa y el seguimiento se congela
+     (fue el fallo de la versión anterior: el puntero solo se movía el primer segundo). */
+  function crearHUD() {
+    hud = document.createElement("div"); hud.id = "eia-hud"; hud.setAttribute("role", "region");
+    hud.innerHTML = `<p class="hud-titulo"><span class="hud-punto" aria-hidden="true">●</span> <span class="hud-nombre"></span></p>
+<p class="hud-estado" role="status" aria-live="polite"></p>
+<div class="hud-vista"></div>
+<div class="hud-botones"><button type="button" data-accion="pausa"></button><button type="button" data-accion="recentrar"></button><button type="button" data-accion="detener" class="hud-detener"></button></div>`;
+    hud.setAttribute("aria-label", t("a11y.cam_activa"));
+    document.body.appendChild(hud);
+    hud.addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      if (b.dataset.accion === "detener") detener();
+      else if (b.dataset.accion === "pausa") { EIA.bus.alternarPausa(); pintarHUD(); }
+      else if (b.dataset.accion === "recentrar" && modulo) { modulo.recentrar(); EIA.ui.anunciar(t("a11y.cam_recentrado")); }
+    });
+  }
+  const ponerTexto = (sel, texto) => { const n = hud.querySelector(sel); if (n.textContent !== texto) n.textContent = texto; };
   function pintarHUD(mensaje) {
-    if (!hud) {
-      hud = document.createElement("div"); hud.id = "eia-hud"; hud.setAttribute("role", "status");
-      document.body.appendChild(hud);
-      hud.addEventListener("click", e => {
-        const b = e.target.closest("button"); if (!b) return;
-        if (b.dataset.accion === "detener") detener();
-        else if (b.dataset.accion === "pausa") { EIA.bus.alternarPausa(); pintarHUD(); }
-        else if (b.dataset.accion === "recentrar" && modulo) modulo.recentrar();
-      });
-    }
-    const pausado = EIA.bus && EIA.bus.pausado();
+    if (!hud) crearHUD();
+    const pausado = EIA.bus && EIA.bus.pausado(), aviso = modulo && modulo.estado.aviso;
     const linea = mensaje || (estado === "cargando" ? t("a11y.cam_cargando")
+      : sinCuadros ? t("a11y.cam_sin_cuadros")
       : pausado ? t("a11y.cam_pausada")
+      : aviso ? t(aviso)
       : modulo && modulo.estado.detectado ? t(modalidad === "cabeza" ? "a11y.cam_cara_ok" : "a11y.cam_mano_ok", { fps: EIA.fmt.ent(fps) })
       : t(modalidad === "cabeza" ? "a11y.cam_cara_no" : "a11y.cam_mano_no"));
-    hud.innerHTML = `<p class="hud-titulo"><span class="hud-punto" aria-hidden="true">●</span> ${esc(t(simulada ? "a11y.cam_simulada" : "a11y.cam_activa"))} · ${esc(t("a11y.mod_" + modalidad))}</p>
-<p class="hud-estado">${esc(linea)}</p>
-<div class="hud-botones"><button type="button" data-accion="pausa">${esc(t(pausado ? "a11y.cam_reanudar" : "a11y.cam_pausar"))}</button><button type="button" data-accion="recentrar">${esc(t("a11y.cam_recentrar"))}</button><button type="button" data-accion="detener" class="hud-detener">${esc(t("a11y.cam_detener"))}</button></div>`;
+    ponerTexto(".hud-nombre", t("a11y.cam_titulo", { estado: t(simulada ? "a11y.cam_simulada" : "a11y.cam_activa"), modalidad: t("a11y.mod_" + modalidad) }));
+    ponerTexto(".hud-estado", linea);
+    const bp = hud.querySelector('[data-accion="pausa"]');
+    ponerTexto('[data-accion="pausa"]', t(pausado ? "a11y.cam_reanudar" : "a11y.cam_pausar"));
+    bp.setAttribute("aria-pressed", String(!!pausado));
+    ponerTexto('[data-accion="recentrar"]', t("a11y.cam_recentrar"));
+    ponerTexto('[data-accion="detener"]', t("a11y.cam_detener"));
   }
 
   async function cargarVision() {
@@ -62,19 +81,41 @@
 
   function configuracion() {
     const p = prefs();
-    return { clic: p.clic || "permanencia", invertirX: !!p.invertirX, invertirY: !!p.invertirY };
+    return { clic: p.clic || "permanencia", invertirX: !!p.invertirX, invertirY: !!p.invertirY, rango: p.rango || RANGO_POR_DEFECTO };
   }
+  /** Bucle de análisis: un cuadro nuevo del video → detectForVideo → el módulo emite comandos al bus.
+      Un vigilante reanuda el video si se pausó o si deja de llegar imagen. */
   function ciclo() {
     if (estado !== "activa") return;
     const ahora = performance.now();
-    if (!document.hidden && video && video.readyState >= 2 && video.currentTime !== ultimoTiempoVideo) {
-      ultimoTiempoVideo = video.currentTime;
-      try { modulo.procesar(detector.detectForVideo(video, ahora), ahora, configuracion()); } catch (e) { fallar(e); return; }
-      cuadros++;
+    if (!document.hidden && video) {
+      if (video.paused) reanudarVideo();
+      if (video.readyState >= 2 && video.currentTime !== ultimoTiempoVideo) {
+        ultimoTiempoVideo = video.currentTime; ultimoCuadro = ahora;
+        if (sinCuadros) { sinCuadros = false; pintarHUD(); }
+        // detectForVideo exige marcas de tiempo estrictamente crecientes
+        tDeteccion = Math.max(ahora, tDeteccion + 1);
+        try { modulo.procesar(detector.detectForVideo(video, tDeteccion), tDeteccion, configuracion()); } catch (e) { fallar(e); return; }
+        cuadros++; cuadrosTotales++;
+        if (modulo.estado.aviso !== avisoPrevio) { avisoPrevio = modulo.estado.aviso; pintarHUD(); } // p. ej. «mantén el puño…»
+      } else if (ahora - ultimoCuadro > ESPERA_CUADRO_MS) {
+        if (!sinCuadros) { sinCuadros = true; pintarHUD(); }
+        reanudarVideo(); ultimoCuadro = ahora;
+      }
     }
     if (ahora - tFps > 1000) { fps = cuadros * 1000 / (ahora - tFps); cuadros = 0; tFps = ahora; pintarHUD(); }
     raf = requestAnimationFrame(ciclo);
   }
+  function reanudarVideo() {
+    if (!video || !flujo) return;
+    if (!hud.contains(video)) hud.querySelector(".hud-vista").appendChild(video); // por si algo lo sacó del documento
+    const p = video.play(); if (p && p.catch) p.catch(() => { /* el vigilante lo reintentará */ });
+  }
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden || estado !== "activa" || simulada) return;
+    ultimoCuadro = performance.now(); tFps = ultimoCuadro; cuadros = 0;
+    reanudarVideo();
+  });
 
   /** Guion simulado: va del centro al elemento indicado y se queda quieto (permanencia) o hace el gesto de clic. */
   function cicloSimulado(objetivoCss) {
@@ -88,6 +129,7 @@
       const k = Math.max(0, Math.min(1, (s - 0.4) / 0.8));          // 0,4 s en el centro; 0,8 s de viaje
       const gesto = s > 1.6 && s < 2.3;                             // gesto de clic entre 1,6 s y 2,3 s
       modulo.procesar(modulo.sintetico({ u: c.u + (d.u - c.u) * k, v: c.v + (d.v - c.v) * k, parpadeo: gesto, boca: gesto, pellizco: gesto }), ahora, configuracion());
+      cuadrosTotales++;
       if (ahora - tFps > 1000) { tFps = ahora; pintarHUD(); }
       raf = requestAnimationFrame(paso);
     };
@@ -137,8 +179,8 @@
       catch (e) { detector = await modulo.crearDetector(vision, fileset, "CPU"); } // respaldo sin GPU
       estado = "activa"; sesion.set(CLAVE_SESION, mod);
       EIA.puntero.activar({ permanencia, ms: p.ms || 900 });
-      pintarHUD(); hud.appendChild(video);
-      tFps = performance.now(); cuadros = 0;
+      pintarHUD(); hud.querySelector(".hud-vista").appendChild(video);
+      tFps = ultimoCuadro = performance.now(); cuadros = 0; cuadrosTotales = 0; sinCuadros = false; ultimoTiempoVideo = -1;
       EIA.ui.anunciar(t("a11y.cam_anuncio_activa"));
       raf = requestAnimationFrame(ciclo);
       return true;
@@ -162,5 +204,5 @@
   document.addEventListener("keydown", e => { if (e.key === "Escape" && estado !== "apagada" && !document.querySelector("dialog[open]")) detener(); });
   global.addEventListener("pagehide", () => { if (flujo) flujo.getTracks().forEach(p => p.stop()); }); // la sesión se conserva para reanudar
 
-  EIA.camara = { iniciar, detener, estado: () => ({ estado, modalidad, simulada, fps }), CLAVE_SESION };
+  EIA.camara = { iniciar, detener, estado: () => ({ estado, modalidad, simulada, fps, cuadros: cuadrosTotales, video: video ? { pausado: video.paused, enDocumento: document.contains(video) } : null }), CLAVE_SESION, RANGO_POR_DEFECTO };
 })(window);

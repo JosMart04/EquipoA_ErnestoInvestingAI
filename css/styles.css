@@ -325,6 +325,7 @@ body.modo-puntero button.enlace, body.modo-puntero th button.orden, body.modo-pu
 .hud-botones { display: flex; flex-wrap: wrap; gap: .4rem; }
 .hud-botones button { flex: 1 1 auto; }
 .hud-detener { background: var(--dn); color: var(--panel); border-color: var(--dn); font-weight: 700; }
+.hud-vista:empty { display: none; }
 .hud-video { display: block; width: 100%; max-height: 7rem; object-fit: cover; border-radius: 8px; margin-top: .5rem; transform: scaleX(-1); /* espejo */ }
 
 /* ───────────── Alto contraste (≥ 7:1): se activa en el Centro de accesibilidad ───────────── */
