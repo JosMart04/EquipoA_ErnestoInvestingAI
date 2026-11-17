@@ -4,13 +4,13 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 13:30 (Lima)
+- Fecha y hora: 2026-11-17 14:45 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-17-regresion` → PR #10 (Regresión)
+- Rama / último commit: `cc/T-18-optimizador` → PR #11 (Optimizador)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **88/88, ninguna omitida**. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **95/95, ninguna omitida**. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -24,6 +24,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **88/88, 
 | #8 | T-28a | **La cámara se congelaba al primer segundo**: el HUD se reescribía con `innerHTML` y sacaba el `<video>` del documento. HUD fijo + vigilante del video; manos y puntero más estables (D-22) | MediaPipe real + video falso: 369 cuadros en 10 s; la versión anterior perdía el `<video>` a 1,5 s |
 | #9 | T-02b | Contrato: ACK de C-01 (solo igualdad inversa) y C-02; la cota ampliada ya no se llama «equivalente»; R-REG-09 literal sigue incumpliéndose. Aviso «publicación parcial» en Modo real | 27 cargas: 9 páginas × (real ES 390, real EN 1280, profesor 390) |
 | #10 | T-17 | **Regresión** (P04): historia + 30 sesiones, mediana, banda p10–p90, cono, tabla de 30 precios, métricas ordenables, verificación R-REG-09 de las dos formas. Selector de corte movido al núcleo | 1280 y 390 px, ES y EN sin recargar, tema del gráfico; 27 cargas de humo |
+| #11 | T-18 | **Optimizador** (P05): dispersión riesgo–retorno con Markowitz (línea; elegibles, universo o ambas), NSGA-II (círculos) y NSGA-III (triángulos coloreados por CVaR, con escala); interruptores; selección con clic, con el teclado (flechas + Enter) o desde la tabla; composición con barras, métricas y comprobación R-OPT-09; explicación de por qué NSGA queda debajo, medida en los datos; elegibles con su razón y mensaje para `?t=`; recálculo deshabilitado en Modo profesor | 95/95; navegador: teclado, Enter, tabla de 135 puntos, interruptores, EN sin recargar, 390 px; 27 cargas de humo. **El clic con ratón real no se pudo simular** (panel oculto): el manejador sí funciona |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -43,11 +44,11 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **88/88, 
 - El atajo `Alt+Shift+A` con una pulsación real (el evento sintético llega y abre el panel).
 
 ## En curso (estado exacto)
-- Nada a medias tras el PR #10. Lo siguiente es T-18 Optimizador.
+- Nada a medias tras el PR #11. Lo siguiente es T-19…T-22 (heredados).
 
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
-2. **T-18 Optimizador** (P05 + extensiones de `docs/contexto/PROMPTS_INICIALES.md`). Copia la estructura de `js/regresion.js` (gráfico con `EIA.ui.grafico`, selector de corte con `EIA.ui.selectorCorte`) y de `js/clasificacion.js`. En el Modo profesor **no** llames a `EIA.trabajo` (hay una prueba que cuenta los `new Worker`); el recálculo va en T-26.
+2. **T-19…T-22** (Dashboard, Watchlist, Trading, Leaderboard): pasar cada uno de `window.init` a `EIA.modulo` con su `js/<modulo>.js`, sus textos a i18n y lo pedido en PLAN_MAESTRO §8.3 M1–M4. Después T-23 Portafolios y T-24 Backtesting (P06) y T-25 integración ("Llevar a Trading" desde Portafolios y desde el Optimizador).
 3. T-19…T-22: pasar los heredados de `window.init` a `EIA.modulo` con su `js/<modulo>.js` y sus textos a i18n.
 4. Cuando Josué vuelva a probar la webcam, ajusta signos y umbrales con lo que reporte.
 
