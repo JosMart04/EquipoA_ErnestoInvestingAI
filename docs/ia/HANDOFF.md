@@ -1,16 +1,16 @@
 # HANDOFF — estado para quien retome
 
-> Lo actualiza **Claude Code al terminar cada bloque**. Fable 5.2 cerró aquí su jornada; sigue Opus 5.5.
+> Lo actualiza **Claude Code al terminar cada bloque**. Fable 5.2 hizo T-01…T-16 el lunes; desde el martes 17 trabaja Opus 5.5 (CC-O).
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 01:30 (Lima)
-- Modelo: Claude Fable 5.2 (Claude Code)
-- Rama / último commit: `cc/T-14-a11y` → PR #6 (núcleo de accesibilidad), el último bloque de Fable
+- Fecha y hora: 2026-11-17 11:45 (Lima)
+- Modelo: Claude Opus 5.5 (Claude Code)
+- Rama / último commit: `cc/T-02b-contrato-ack` → PR #9 (contrato con los ACK y aviso de publicación parcial)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **78 pruebas: 77 pasan, 1 se salta** (espera el fixture de CX).
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **82/82, ninguna omitida**. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -20,34 +20,37 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **78 prue
 | #4 | T-08 | **Clasificación completa, módulo de referencia** | 468 celdas, solo SUBE/BAJA, filtros, orden con teclado, sin desborde a 390 px, EN sin recargar |
 | #5 | T-09…T-13 | `js/lib/*` (Markowitz, NSGA-II, NSGA-III, backtest…), `js/workers/*`, `EIA.trabajo()` | Markowitz = `07` del profesor (≤ 0,02 pp); referencias de `09` exactas; en navegador: optimizador 1,4 s, backtest 0,16 s |
 | #6 | T-14…T-16 | Centro de accesibilidad, bus de entrada, puntero virtual, cámara, cabeza-mirada, manos, `js/lib/senales.js`, modelos en `assets/mediapipe/` | Ver la sección siguiente |
+| #7 (CX) | T-31, T-39, T-51 | `qa.yml`, fixture cvxpy (35 puntos), `data_real/meta.json` y `cierres_historicos.json` | Fusionado por CC-O con CI verde; la prueba Markowitz vs cvxpy ya corre y pasa |
+| #8 | T-28a | **La cámara se congelaba al primer segundo**: el HUD se reescribía con `innerHTML` y sacaba el `<video>` del documento. HUD fijo + vigilante del video; manos y puntero más estables (D-22) | MediaPipe real + video falso: 369 cuadros en 10 s; la versión anterior perdía el `<video>` a 1,5 s |
+| #9 | T-02b | Contrato: ACK de C-01 (solo igualdad inversa) y C-02; la cota ampliada ya no se llama «equivalente»; R-REG-09 literal sigue incumpliéndose. Aviso «publicación parcial» en Modo real | 27 cargas: 9 páginas × (real ES 390, real EN 1280, profesor 390) |
 
 ### Accesibilidad: qué está probado y qué no
 
-**Probado por mí en el navegador (con resultados sintéticos, sin cámara):**
+**Probado en el navegador sin webcam (Fable el 16, Opus el 17):**
+- **Bucle real de la cámara** (PR #8): MediaPipe 1.2.3 cargado de verdad con un video falso (`canvas.captureStream`): 369 cuadros en 10 s (46 por segundo), el `<video>` sigue en la página y sin pausa. Con un detector sustituto en movimiento: el puntero sigue moviéndose a los 10 s con la cabeza; con la mano abierta no se pausa; el puño 1,5 s pausa y reanuda; si algo saca el `<video>`, el vigilante lo devuelve.
 - Centro de accesibilidad (`#btn-a11y` o `Alt+Shift+A`): tamaño de texto, alto contraste, reducir movimiento, espaciado, subrayar enlaces y tramas; se guardan en `eia_a11y` y se aplican en todas las páginas.
 - Puntero virtual con `?puntero=raton`: permanencia sobre un botón (un solo clic, sin repetir), `<select>` → diálogo de opciones → elige una, abrir y cerrar el Centro, enlace de otro módulo.
 - Guion simulado (`EIA.camara.iniciar("cabeza" | "manos", {simulada: true, objetivo: "#tema"})` o `?camara=simulada&mod=cabeza&objetivo=%23tema`): **cabeza + permanencia**, **cabeza + parpadeo largo** y **mano + pellizco** llevan el puntero al botón y hacen clic; Esc detiene; al detener se quitan HUD, puntero y `modo-puntero`.
 - Sin cámara no se descarga MediaPipe (comprobado en los recursos de la página).
 
 **NO probado (necesita una persona con webcam; Anexo A: Adrian y Augusto):**
-- Que `getUserMedia` + MediaPipe 1.2.3 arranquen (GPU y respaldo en CPU) y a cuántos cuadros por segundo. La API se escribió leyendo `vision.d.ts` de la 1.2.3, pero nunca se ejecutó.
+- **Josué probó la versión del PR #6 el 17-nov: el puntero solo se movía el primer instante.** La causa se corrigió en el PR #8; **falta que vuelva a probarlo** con la cámara real (al menos 1 minuto con la cabeza y 1 con la mano, en dos páginas).
 - **El signo de los ejes de la cabeza.** `senales.anguloCabeza` supone la matriz de MediaPipe en orden por columnas. Si el puntero va al revés, hay dos casillas «Invertir» en el Centro; si hace falta, cambia el valor por defecto de `sx`/`sy` en `js/a11y/cabeza-mirada.js`.
-- Umbrales reales de parpadeo (0,5 durante 400 ms), boca (0,5 durante 300 ms), pellizco (0,35 / 0,5) y palma (1 s).
+- Umbrales reales de parpadeo (0,5 durante 400 ms), boca (0,5 durante 300 ms), pellizco (0,35 / 0,5) y puño (1,5 s); el recorrido por defecto de la cabeza (18°).
 - La reanudación de la cámara al cambiar de página (`sessionStorage.eia_cam`).
 - Lectores de pantalla reales (NVDA, Narrador, TalkBack).
 - El atajo `Alt+Shift+A` con una pulsación real (el evento sintético llega y abre el panel).
 
 ## En curso (estado exacto)
-- Nada a medias. Fable no deja ramas abiertas.
+- Nada a medias tras el PR #9. Lo siguiente es T-17 Regresión.
 
-## Siguiente paso exacto (Opus, martes 17)
-1. `git pull`; `node --test "tests/unit/*.test.mjs"`; abre `clasificacion.html` y lee `js/clasificacion.js` entero: es el patrón.
+## Siguiente paso exacto
+1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
 2. **T-17 Regresión** (P04 + extensiones de `docs/contexto/PROMPTS_INICIALES.md`) y **T-18 Optimizador** (P05). Copia la estructura: modelo de vista puro + `tests/unit/<modulo>.test.mjs` + `EIA.modulo({id, cargar, pintar})` + claves `"<modulo>": {…}` en los dos diccionarios.
-   - Regresión: el gráfico va con `EIA.ui.grafico` (ya da Tabla, Resumen y Escuchar). La verificación R-REG-09 se muestra con **I-03b**, no con «1 centavo».
+   - Regresión: el gráfico va con `EIA.ui.grafico` (ya da Tabla, Resumen y Escuchar). Muestra **las dos comprobaciones** de R-REG-09: la literal de la guía (1 centavo; falla en MSFT, AMZN, META, TSLA y SPY) y la igualdad inversa I-03b (pasa en los 26). No digas que R-REG-09 «se cumple» (contrato N-1, ACK de CX).
    - Optimizador: en el Modo profesor **no** llames a `EIA.trabajo` (hay una prueba que cuenta los `new Worker`). El recálculo va en T-26.
 3. T-19…T-22: pasar los heredados de `window.init` a `EIA.modulo` con su `js/<modulo>.js` y sus textos a i18n.
-4. Pide a Josué una prueba de 5 minutos con webcam (cabeza y manos) y ajusta signos y umbrales.
-5. Revisa si CX respondió `ACK` a C-01 y C-02 y si ya existe `qa.yml`.
+4. Cuando Josué vuelva a probar la webcam, ajusta signos y umbrales con lo que reporte.
 
 ## Cómo se hace un módulo (el ejemplo vivo es `js/clasificacion.js` + `tests/unit/clasificacion.test.mjs`)
 1. HTML mínimo: `<body data-page="<id>">`, un `<h1>`, un `<p class="sub">`, contenedores vacíos con `id`, `js/common.js` y luego `js/<id>.js`. Texto estático con `data-i18n="clave"`. Sin cifras en el HTML.
@@ -68,6 +71,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **78 prue
 ## Trampas conocidas
 - **Comando de pruebas:** `node --test "tests/unit/*.test.mjs"` (con la carpeta sola, Node ≥ 21 falla).
 - **El panel de navegador integrado de Claude, cuando está oculto, no ejecuta `requestAnimationFrame` ni entrega el evento `close` de `<dialog>`.** Por eso `EIA.ui.dialogo` finaliza también tras `submit`, `cancel` y `cerrar()`, y para probar el puntero sin ver el panel sustituí `requestAnimationFrame` por un temporizador dentro de la prueba. En un navegador normal no pasa.
+- **Nunca reescribas con `innerHTML` un nodo que contenga el `<video>` de la cámara:** al salir del documento el navegador lo pausa y el seguimiento se congela (fue el fallo del 17-nov; hay una prueba que vigila `camara.js`).
+- **Modo real hoy:** `data_real/` solo tiene `meta.json` y `cierres_historicos.json`. Cada módulo muestra «publicación parcial» y nombra el archivo que falta; es lo esperado hasta que CX publique 01–13.
 - **El navegador cachea `js/common.js` y los `i18n/*.json`** con `python -m http.server`: tras editarlos, recarga forzada (Ctrl+F5).
 - **Remontar componentes:** `EIA.ui.tabla`, `segmentado` y `grafico` cancelan sus oyentes anteriores al montarse otra vez sobre el mismo nodo (`montar()` en `common.js`). Si creas un componente nuevo con `addEventListener` sobre `destino`, usa `montar(destino).control.signal`.
 - **Formato de `js/lib`:** cada archivo publica `EIALib.<nombre>` y `module.exports`; las dependencias se piden con `dep("nombre")`. En un Worker se cargan con `importScripts` **en orden de dependencia** (estadistica y simplex antes de markowitz; markowitz antes de nsga2, nsga3 y backtest).
@@ -77,14 +82,13 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **78 prue
 - **El «Agresivo» de `08` rinde menos que el «Moderado»** (nota N-4): no escribir textos que afirmen un orden entre niveles.
 - **Texto sobre `--ac`:** usar siempre `--on-ac` (blanco fijo da 2,08:1 en oscuro; hay una prueba que lo vigila).
 - **Los diccionarios i18n no llevan cifras** (prueba «sin cifras de datos»): los números entran como parámetros. Las claves que terminan en `_` son prefijos (`"a11y.mod_" + modalidad`).
-- **Modo real sin `data_real/`:** cada página registra un 404 de `data_real/meta.json` en la consola; es lo esperado.
 - **Páginas con `window.init`** (Dashboard, Watchlist, Trading, Leaderboard y las 4 stub): su texto estático sigue solo en español y recargan al cambiar de modo o idioma.
 - `09.fechas[0]` es `"inicio"`, no una fecha (I-06). `EIA.fmt.fecha("inicio")` ya lo traduce.
 - El Agresivo del backtesting del profesor usa tope 0,35 aunque `08` diga 25 % (nota N-3): se documenta, no se corrige.
 - `es-PE` en `Intl` usa punto decimal: `+2.93%`, `USD 355.63`. Las fechas ISO se formatean en **UTC**.
 - En el celular (≤ 640 px) la cabecera no es fija, a propósito: ocupa varias filas.
 - `figma-src/` trae sus propios `.gitignore` y `.gitattributes`: son parte del export y no se tocan.
-- Aún no hay CI: se fusiona con puerta local (plan §13).
+- La CI es `.github/workflows/qa.yml` (de CX): fusiona solo con `pruebas` y `secretos` en verde.
 
 ## Cómo probar
 - `python -m http.server 8000` → http://127.0.0.1:8000 (o `?modo=real`, `?lang=en-US`, `?t=NVDA`)

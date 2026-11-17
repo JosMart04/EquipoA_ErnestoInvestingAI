@@ -9,7 +9,7 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 |---|---|---|---|---|---|---|
 | T-00 | Preparar el repo, Pages, docs/contexto, CLAUDE.md, AGENTS.md | JM | pendiente | main | R-INT-09, R-ENT-02 | PLAN_MAESTRO §15.1 |
 | T-01 | Plan de implementación, tablero, prompt literal, D-17…D-21, `.nojekyll` | CC-F | hecho | cc/T-01-plan · PR #2 | R-INT-09 | PLAN_IMPLEMENTACION §11 |
-| T-02 | `docs/CONTRATO_DATOS.md` v1.0.0 + C-01 y C-02 | CC-F | hecho | cc/T-01-plan · PR #2 | R-DAT-01…03 | Espera ACK de CX |
+| T-02 | `docs/CONTRATO_DATOS.md` v1.0.0 + C-01 y C-02 | CC-F → CC-O | hecho | PR #2 · PR #9 | R-DAT-01…03 | ACK de CX (C-01 solo igualdad inversa; C-02). Aclaración editorial en PR #9 |
 | T-03 | Núcleo: `EIA`, eventos, estado, modo, capa de datos, tema | CC-F | hecho | cc/T-03-nucleo | R-INT-03/04/10, D-02 | |
 | T-04 | i18n: motor, diccionarios, `Intl`, mapa de presentación | CC-F | hecho | cc/T-03-nucleo | R-I18N-01, R-REG-07 | |
 | T-05 | Shell y hoja de estilos (tokens, cabecera, menú < 1180 px, avisos) | CC-F | hecho | cc/T-03-nucleo | R-INT-01/02/06/07/08, R-A11Y-01/02/04 | |
@@ -35,7 +35,7 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-25 | Integración P07: estado compartido, enlaces, «Llevar a Trading» | CC-O | pendiente | | R-INT-03/05, R-POR-04 | mié |
 | T-26 | Modo real en los 9 módulos, cortes y recálculo en Workers | CC-O | pendiente | | D-02, D-03 | mié; depende de T-31…T-38 |
 | T-27 | A11y (a) completa y (e) barrido | CC-O | pendiente | | D-07 a/e/f, R-A11Y-05 | mié |
-| T-28a | **Arreglo:** la cámara se congelaba al primer segundo (el HUD sacaba el `<video>` del documento); vigilante del video; gestos de mano (D-22); histéresis del puntero; recorrido de la cabeza | CC-O | en revisión | cc/T-28a-camara-continua | D-07 c/d | Verificado con MediaPipe real y video falso; **falta la prueba de Josué con webcam** |
+| T-28a | **Arreglo:** la cámara se congelaba al primer segundo (el HUD sacaba el `<video>` del documento); vigilante del video; gestos de mano (D-22); histéresis del puntero; recorrido de la cabeza | CC-O | hecho | PR #8 | D-07 c/d | Verificado con MediaPipe real y video falso; **falta la prueba de Josué con webcam** |
 | T-28 | A11y (c) y (d) completas | CC-O | pendiente | | D-07 c/d | jue |
 | T-29 | Conformidad con Figma, correcciones de QA y P08, congelamiento | CC-O | pendiente | | R-FLU-01/06 | jue–vie |
 | T-30 | Validador del contrato (ambos modos, SHA-256 de data/) | CX | pendiente | cx/T-51-ci-referencias-datos · PR #7 | R-DAT-*, I-01…I-08 | ACK C-01/I-03b y C-02; I-09/I-10/I-11 comprobadas en tests/datos. Validador completo aún pendiente. |

@@ -136,7 +136,7 @@ Las comprueban `tools/validar_contrato.py` (CX) y, las que tocan a la interfaz, 
 | I-01 | Los 26 tickers de `01` aparecen, y solo ellos, en `02`, `03`, `04`, `05`, `06`, `10` y `13.parametros_por_ticker`. |
 | I-02 | `05`: 18 modelos (11 ML + 7 DL) con los nombres exactos. `senal = "SUBE"` ⇔ `prob_sube ≥ 0,5`; `votos_sube` = número de SUBE; `votos_baja = 18 − votos_sube`; `prob_media` = media de las 18 (±0,0015); `consenso = "SUBE"` ⇔ `prob_media ≥ 0,5`; `confianza` según `\|prob_media − 0,5\|` (`alta` ≥ 0,08; `media` ≥ 0,04; si no `baja`). `VP + FP + VN + FN = n_prueba`. |
 | I-03 | `06`: `ensamble_mediana[i]` = mediana de los 18 modelos (±0,005, medido); `banda_p10`/`banda_p90` = percentiles 10 y 90 con interpolación lineal (±0,005); cono = `mediana × exp(±1,2816 · σ_d · √h)` con `σ_d = volatilidad_anual / √252`. |
-| **I-03b** | **R-REG-09, forma verificable:** `round((ensamble_mediana[29] / precio_ultimo − 1) · 100, 2) = retorno_proyectado_30d_pct` (exacto, 26/26). De forma equivalente, `\|ensamble_mediana[29] − precio_ultimo · (1 + r/100)\| ≤ 0,01 + precio_ultimo × 0,00005`. Ver sección 8, nota N-1. |
+| **I-03b** | **R-REG-09, forma verificable:** `round((ensamble_mediana[29] / precio_ultimo − 1) · 100, 2) = retorno_proyectado_30d_pct` (exacto, 26/26). **Esta igualdad inversa es la única comprobación normativa** (ACK de CX, C-01). La cota `\|ensamble_mediana[29] − precio_ultimo · (1 + r/100)\| ≤ 0,01 + precio_ultimo × 0,00005` es solo un **diagnóstico más permisivo**: no es equivalente a la igualdad y no la sustituye. Ver sección 8, nota N-1. |
 | I-04 | `07`: `0 ≤ peso ≤ tope_peso_por_activo`; `Σ pesos ∈ [0,98; 1,02]`; `sharpe = (retorno − 100 · tasa_libre_riesgo) / volatilidad` (±0,01); `elegibles` = activos con `consenso = SUBE` **y** `retorno_proyectado_30d_pct > 0`, en el orden de `01` (medido: idéntico). |
 | I-05 | `08`: tres niveles en el orden Conservador, Moderado, Agresivo; `Σ pesos ≈ 1`; `razon` = `"{n}/18 clasificadores = SUBE; proyeccion mediana 30 sesiones {±x.xx} %"`. |
 | I-06 | `09`: `fechas[0] = "inicio"`; `curva[0] = 100`; `len(curva) = len(fechas)`; en carteras además `len(drawdown) = len(fechas)` y `drawdown ≤ 0`; **R-BT-06:** `\|curva[-1]/100 − 1 − retorno_total_pct/100\| ≤ 0,0005`. |
@@ -202,6 +202,9 @@ Reglas adicionales: las de PLAN_MAESTRO §5.4 (liga ficticia marcada, umbrales d
 | `meta.fecha_corte` con más de 5 días hábiles | Aviso de antigüedad en el control de modo y en el aviso del módulo |
 | Falta un campo opcional | Se deriva (sección 5) o se omite la fila; nunca error |
 | `tickers_con_problemas` no vacío | Nota visible con los tickers |
+| **Publicación parcial:** existe `meta.json`, pero falta el archivo que pide el módulo | El módulo muestra «Aún no hay datos reales publicados» nombrando el archivo, y su aviso y el del pie pasan a «publicación parcial» (`aviso.real.parcial`): no se afirma que haya modelos reales |
+
+**Estado de la publicación real (17-nov-2026, PR #7 de CX):** solo `meta.json` y `cierres_historicos.json` (26 activos, 2.115 sesiones comunes del 2018-06-19 al 2026-11-16, ajustados). Faltan los 13 archivos de mercado y modelos, `precios/` y `cortes/`: **el Modo real todavía no está operativo** en ningún módulo.
 
 Las peticiones a `data_real/` llevan `?v=<meta.generado_en>` para esquivar la caché de Pages; `meta.json` se pide con `cache: "no-cache"`.
 
@@ -209,7 +212,7 @@ Las peticiones a `data_real/` llevan `?v=<meta.generado_en>` para esquivar la ca
 
 | Nota | Qué pasa | Qué hace el equipo |
 |---|---|---|
-| **N-1** | La verificación de P04 (`mediana[29] ≈ último × (1 + r/100)` con 1 centavo) **no se cumple al pie de la letra** en 5 de 26 activos: META 0,0214; MSFT 0,0147; SPY 0,0131; TSLA 0,0124; AMZN 0,0101. Causa: `retorno_proyectado_30d_pct` está redondeado a 2 decimales, y media centésima de punto sobre un precio de 500–760 son 2,5–3,8 centavos | Se verifica con I-03b, que descuenta ese redondeo. Se declara en el informe |
+| **N-1** | La verificación de P04 (`mediana[29] ≈ último × (1 + r/100)` con 1 centavo) **no se cumple al pie de la letra** en 5 de 26 activos: META 0,0214; MSFT 0,0147; SPY 0,0131; TSLA 0,0124; AMZN 0,0101. Causa: `retorno_proyectado_30d_pct` está redondeado a 2 decimales, y media centésima de punto sobre un precio de 500–760 son 2,5–3,8 centavos | Se verifica con I-03b (igualdad inversa), que descuenta ese redondeo. **Aceptar I-03b no aprueba la comprobación literal de la guía:** R-REG-09 a un centavo sigue incumpliéndose en MSFT, AMZN, META, TSLA y SPY (máximo 0,021411 US$, META). La interfaz de Regresión muestra las dos comprobaciones y su resultado, y el informe lo declara |
 | **N-2** | La referencia «Igual ponderado (1/N)» se reproduce con rebalanceo **diario** sin comisión (diferencia 0,000), no mensual | I-10. El pipeline y `js/lib/backtest.js` la calculan igual |
 | **N-3** | En `09` el Agresivo llega a pesos de 0,35 aunque `08` dice «tope 25 %» | Se muestra tal cual y se explica |
 | **N-4** | En `08` el «Agresivo» (N2-36: 16,07 % de retorno, 17,52 % de volatilidad) rinde y arriesga **menos** que el «Moderado» (N2-37: 16,49 %, 17,92 %) y no es el punto de mayor retorno del frente (N2-40: 17,13 %) | La interfaz no afirma ningún orden entre niveles: muestra `descripcion` y las cifras |
@@ -221,5 +224,6 @@ Las peticiones a `data_real/` llevan `?v=<meta.generado_en>` para esquivar la ca
 | ID | Versión | Fecha | Cambio | Estado |
 |---|---|---|---|---|
 | — | 1.0.0 | 2026-11-16 | Versión inicial a partir de PLAN_MAESTRO §5, con I-09, I-11, la sección 5 (derivados) y las notas N-1…N-6 | vigente |
-| **C-01** | 1.0.0 | 2026-11-16 | R-REG-09 se valida con **I-03b** (forma inversa o tolerancia `0,01 + último × 0,00005`), no con 1 centavo fijo | **pendiente de ACK de CX** |
-| **C-02** | 1.0.0 | 2026-11-16 | 1/N = rebalanceo **diario** sin comisión (I-10), en lugar del «mensual» de PLAN_MAESTRO §6.3 | **pendiente de ACK de CX** |
+| **C-01** | 1.0.0 | 2026-11-16 | R-REG-09 se valida con **I-03b: igualdad inversa exacta**, no con 1 centavo fijo. La cota ampliada queda solo como diagnóstico | **aceptado** (ACK de CX, MSG-20261117-0150, solo para la igualdad inversa) |
+| **C-02** | 1.0.0 | 2026-11-16 | 1/N = rebalanceo **diario** sin comisión (I-10), en lugar del «mensual» de PLAN_MAESTRO §6.3 | **aceptado** (ACK de CX, MSG-20261117-0150; error máximo 0,00049) |
+| — | 1.0.0 | 2026-11-17 | Aclaración editorial (CC-O): I-03b ya no llama «equivalente» a la cota ampliada; N-1 declara que R-REG-09 literal sigue incumpliéndose; §7 describe la publicación parcial. Sin cambio de esquema | vigente |

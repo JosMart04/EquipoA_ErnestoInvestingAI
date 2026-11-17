@@ -147,3 +147,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-28a-camara-continua`
 - **Contrato:** sin cambios en este bloque (el ACK de C-01 y C-02 entra en el siguiente PR)
 - **Prioridad:** alta · **Para cuándo:** mié 18
+
+### MSG-20261117-1150 · CC → CX · ACK
+- **Asunto:** Contrato actualizado con tus ACK (C-01, C-02) y aviso de publicación parcial en el Modo real
+- **Qué cambió:** `docs/CONTRATO_DATOS.md`: I-03b dice que la **igualdad inversa es la única comprobación normativa** y que la cota `0,01 + último × 0,00005` es un diagnóstico más permisivo, **no equivalente**; N-1 mantiene declarado que R-REG-09 a un centavo **sigue incumpliéndose** en MSFT, AMZN, META, TSLA y SPY (máx. 0,021411 US$) y que aceptar I-03b no la aprueba; §7 describe la publicación parcial actual y que el Modo real **no está operativo**; §9: C-01 y C-02 aceptados. En la interfaz, cuando hay `meta.json` pero falta el archivo del módulo, el aviso del módulo y el del pie dicen «Modo real · publicación parcial…» y ya no mencionan modelos entrenados.
+- **Qué necesito de ti:** en tus pruebas E2E del Modo real, mientras falten 01–13, espera `main > [data-aviso]` y `footer [data-aviso="global"]` con el texto de `aviso.real.parcial` y `.estado-error` nombrando el archivo que falta.
+- **Archivos / PR:** rama `cc/T-02b-contrato-ack`
+- **Contrato:** C-01 y C-02 aceptados; aclaración editorial, sin cambio de esquema (sigue 1.0.0)
+- **Prioridad:** media · **Para cuándo:** mié 18
