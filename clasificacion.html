@@ -1,10 +1,48 @@
 <!doctype html>
 <html lang="es-PE"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Clasificación binaria de tendencia · Ernesto Investing AI</title><link rel="stylesheet" href="css/styles.css"></head>
+<title data-i18n="clasificacion.titulo_pagina">Clasificación binaria de tendencia · Ernesto Investing AI</title><link rel="stylesheet" href="css/styles.css"></head>
 <body data-page="clasificacion"><main>
-<h1>Clasificación binaria de tendencia</h1>
-<div class="stub"><p><strong>Módulo por construir por su equipo.</strong> Mostrar, para cada activo, la señal SUBE/BAJA de los 18 clasificadores (11 de Machine Learning y 7 de Deep Learning), sus métricas y el consenso. Solo hay dos clases: no existe una tercera salida.</p>
-<h2>Qué debe contener</h2><ul><li>Tabla activo × modelo con probabilidad de SUBE, resaltada por color y etiqueta.</li><li>Tarjeta de consenso por activo (votos, probabilidad media, confianza).</li><li>Métricas por modelo: exactitud, precisión, recall, F1, AUC y matriz de confusión.</li><li>Filtro por grupo (Magníficas 7, mineras con operaciones en Perú, ETF sectoriales, ETF globales y Perú).</li></ul>
-<p class="mut">Datos de entrada: <code>data/05_clasificadores_binarios.json</code>. Todos están simulados (patrones realistas).</p></div>
-<h2>Vista previa de los datos de entrada</h2><div id="prev"></div>
-<script src="js/common.js"></script><script>window.STUB={files:['05_clasificadores_binarios.json']}</script><script src="js/stub.js"></script></main></body></html>
+<h1 data-i18n="clasificacion.titulo">Clasificación binaria de tendencia</h1>
+<p class="sub" data-i18n="clasificacion.sub">¿Sube o baja cada activo? Solo hay dos clases: SUBE o BAJA.</p>
+<!-- El aviso de simulación lo inserta js/common.js aquí, según el modo de datos -->
+<div id="ficha"></div>
+
+<section class="card" id="corte-real" hidden>
+  <label for="corte" data-i18n="clasificacion.corte_rotulo">Fecha de corte de los modelos</label>
+  <select id="corte"></select>
+</section>
+
+<section class="card" aria-labelledby="h-filtros">
+  <h2 id="h-filtros" data-i18n="clasificacion.filtros">Filtros</h2>
+  <div class="row">
+    <div><label for="filtro-grupo" data-i18n="comun.grupo">Grupo</label><select id="filtro-grupo"></select></div>
+    <div><span class="rotulo" data-i18n="comun.familia">Familia</span><div id="filtro-familia"></div></div>
+    <div><span class="rotulo" data-i18n="clasificacion.vista">Vista</span><div id="vista"></div></div>
+    <label class="casilla"><input type="checkbox" id="solo-watchlist"> <span data-i18n="clasificacion.solo_watchlist">Solo mi watchlist</span></label>
+  </div>
+  <details id="modelos-visibles"><summary data-i18n="clasificacion.modelos_visibles">Modelos visibles</summary><div id="lista-modelos" class="lista-casillas"></div></details>
+  <p id="contador" class="mut" role="status"></p>
+</section>
+
+<div class="dos-col">
+  <section class="card" aria-labelledby="h-mapa">
+    <h2 id="h-mapa" data-i18n="clasificacion.mapa_titulo">Mapa de calor: probabilidad de SUBE por activo y modelo</h2>
+    <p class="mut" data-i18n="clasificacion.mapa_ayuda">Cada celda dice SUBE o BAJA con su símbolo y la probabilidad de SUBE. Elige un activo para ver su consenso.</p>
+    <div id="mapa-envoltura"></div>
+  </section>
+  <section class="card" id="consenso" aria-labelledby="h-consenso"></section>
+</div>
+
+<div class="dos-col">
+  <section class="card" aria-labelledby="h-metricas">
+    <h2 id="h-metricas" data-i18n="clasificacion.metricas_titulo">Métricas por modelo</h2>
+    <p class="mut" data-i18n="clasificacion.metricas_ayuda">Elige un modelo para ver su matriz de confusión. Los encabezados ordenan la tabla.</p>
+    <div id="metricas"></div>
+  </section>
+  <section class="card" id="matriz-confusion" aria-live="polite"></section>
+</div>
+
+<section class="card" id="honestidad"></section>
+<script src="js/common.js"></script>
+<script src="js/clasificacion.js"></script>
+</main></body></html>

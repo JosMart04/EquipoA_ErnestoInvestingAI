@@ -4,9 +4,9 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-16 15:50 (Lima)
+- Fecha y hora: 2026-11-16 20:35 (Lima)
 - Modelo: Claude Fable 5.2 (Claude Code)
-- Rama / último commit: `cc/T-03-nucleo` → PR-2 (núcleo)
+- Rama / último commit: `cc/T-08-clasificacion` → PR-3 (Clasificación)
 
 ## Hecho (con evidencia)
 - **CC-F-00:** repo creado desde la base del profesor (`e9d711e`), `figma-src/` sin editar, Pages activo. SHA-256 de `data/`: 13/13.
@@ -18,14 +18,17 @@
   - `index.html`: el gráfico de velas ya usa `EIA.ui.grafico` (Gráfico | Tabla | Resumen + Escuchar).
   - **Evidencia:** `node --test "tests/unit/*.test.mjs"` → 41/41. Humo en navegador: 9 páginas a 390 px y 1280 px, profesor y real, ES y EN: sin desborde, 9 enlaces, `aria-current`, aviso por módulo, sin claves i18n faltantes; consola sin errores en Modo profesor. Comprobado a mano por script: el gráfico cambia de color con el tema, orden con `aria-sort` y anuncio, flechas en las pestañas, cambio de activo sin recargar, menú con `aria-expanded` y Esc.
 
+- **T-08 (PR-3), Clasificación, MÓDULO DE REFERENCIA:** `clasificacion.html` + `js/clasificacion.js` (modelo de vista puro + pintado + `EIA.modulo`). Mapa de calor 26 × 18 = 468 celdas con color + símbolo + palabra; vistas «Matriz» y «Por activo» (por defecto bajo 640 px); filtros por grupo, familia, watchlist y modelos visibles; consenso con enlaces `?t=`; métricas ordenables; matriz de confusión; bloque de honestidad calculado; ficha IA. **Evidencia:** 51/51 pruebas; en navegador a 1280 y 390 px, ES y EN (cambio de idioma sin recargar), profesor y real: sin desborde, solo SUBE/BAJA (UP/DOWN), consola sin errores en Modo profesor.
+
 ## En curso (estado exacto)
-- Nada a medias. Lo siguiente es el PR-3 (Clasificación).
+- Nada a medias. Lo siguiente es el PR-4 (`js/lib` + Workers).
 
 ## Siguiente paso exacto
-1. Rama `cc/T-08-clasificacion`: T-08 del plan §11 y §8 (`clasificacion.html`, `js/clasificacion.js`, claves `clasificacion.*` en los dos diccionarios, `tests/unit/clasificacion.test.mjs`). Es el **módulo de referencia**.
-2. Luego T-09…T-13 (`js/lib` + Workers) y T-14…T-16 (accesibilidad), en ese orden (D-18).
+1. Rama `cc/T-09-lib`: T-09 a T-13 del plan §7 y §11 (`js/lib/*`, `js/workers/*`, `tests/unit/lib.*.test.mjs`).
+2. Luego T-14…T-16 (accesibilidad).
+3. Martes (Opus): T-17 Regresión y T-18 Optimizador **copiando la estructura de `js/clasificacion.js`**.
 
-## Cómo se hace un módulo (resumen; el ejemplo vivo será Clasificación)
+## Cómo se hace un módulo (el ejemplo vivo es `js/clasificacion.js` + `tests/unit/clasificacion.test.mjs`)
 1. HTML mínimo: `<body data-page="<id>">`, un `<h1>`, contenedores vacíos con `id`, `js/common.js` y luego `js/<id>.js`. Texto estático con `data-i18n="clave"`.
 2. `js/<id>.js` en formato dual: funciones **puras** de «modelo de vista» (probadas en Node) + `EIA.modulo({id, cargar, pintar})`.
 3. `cargar()` pide los JSON con `EIA.datos(...)`; `pintar(datos)` reconstruye la vista (se llama otra vez al cambiar idioma, modo o corte).

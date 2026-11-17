@@ -28,6 +28,7 @@ test("toda clave usada en el HTML y el JS existe en los diccionarios", () => {
     const txt = leer(a);
     // Literales con forma de clave cuya raíz es una sección del diccionario
     for (const m of txt.matchAll(/["'`]([a-z_]+(?:\.[A-Za-z_0-9]+)+)["'`]/g)) {
+      if (/\.(html|js|json)$/.test(m[1])) continue; // nombres de archivo, no claves
       if (raices.includes(m[1].split(".")[0]) && !existe(m[1])) faltan.push(a + ": " + m[1]);
     }
     if (!a.endsWith(".html")) continue; // los atributos data-i18n solo se revisan en las páginas

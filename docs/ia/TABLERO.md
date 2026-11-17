@@ -15,7 +15,7 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-05 | Shell y hoja de estilos (tokens, cabecera, menú < 1180 px, avisos) | CC-F | hecho | cc/T-03-nucleo | R-INT-01/02/06/07/08, R-A11Y-01/02/04 | |
 | T-06 | Componentes comunes (ficha IA, tabla ordenable, contenedor de gráfico…) | CC-F | hecho | cc/T-03-nucleo | R-IHC-01, R-CLA-03, R-A11Y-03/05 | |
 | T-07 | 9 páginas sobre el shell nuevo + pruebas del núcleo | CC-F | hecho | cc/T-03-nucleo | R-INT-01/06, R-HER-01 | |
-| T-08 | **Clasificación completa (módulo de referencia)** | CC-F | pendiente | cc/T-08-clasificacion | R-CLA-01…07, R-IHC-01…04, R-INT-05 | Sin P03 pegado (D-20) |
+| T-08 | **Clasificación completa (módulo de referencia)** | CC-F | hecho | cc/T-08-clasificacion | R-CLA-01…07, R-IHC-01…04, R-INT-05 | Sin P03 pegado (D-20) |
 | T-09 | `js/lib`: prng, estadística, símplex | CC-F | pendiente | cc/T-09-lib | D-03, I-03 | |
 | T-10 | `js/lib`: Markowitz con tope | CC-F | pendiente | cc/T-09-lib | R-OPT-09, I-04 | |
 | T-11 | `js/lib`: NSGA-II y NSGA-III | CC-F | pendiente | cc/T-09-lib | I-04 | |
