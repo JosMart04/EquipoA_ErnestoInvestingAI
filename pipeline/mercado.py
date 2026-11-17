@@ -1,6 +1,7 @@
 """Exportación del contrato sin reutilizar resultados sintéticos."""
 from datetime import datetime, timezone, timedelta
 import json
+import math
 import numpy as np
 import exchange_calendars as xcals
 from .descarga_cierres import ROOT,FUENTE
@@ -10,6 +11,14 @@ def plantilla(n): return json.loads((ROOT/'data'/ARCHIVOS[n]).read_text(encoding
 def fechas(index): return index.strftime('%Y-%m-%d').tolist()
 def numeros(a,d=6): return np.asarray(a).round(d).tolist()
 
+def parametros_json(x):
+    # XGBoost utiliza NaN como sentinela en el parámetro "missing".
+    # Solo se convierte metadata del estimador; nunca precios ni métricas.
+    if isinstance(x,dict):return {k:parametros_json(v) for k,v in x.items()}
+    if isinstance(x,list):return [parametros_json(v) for v in x]
+    if isinstance(x,float) and not math.isfinite(x):return str(x)
+    return x
+
 def pronosticos(panel,resultados,vol):
     corte=panel.index[-1];ts=list(panel)
     cal=xcals.get_calendar('XNYS',start=str(corte.date()),end=str((corte+timedelta(days=100)).date()))
@@ -18,7 +27,7 @@ def pronosticos(panel,resultados,vol):
     c05={'definicion':'SUBE si P(t+30)>P(t); BAJA en otro caso. Modelos de panel reales, prueba temporal externa con embargo de 30 sesiones.','modelos':[],'predicciones':{},'tasa_base_sube':audit['tasa_base_sube'],'metodologia':audit}
     c06={'fechas_pronostico':futuras,'modelos':[],'predicciones':{},'metodologia':audit}
     for clave,destino in [('clasificacion',c05),('regresion',c06)]:
-        for m in resultados[clave]: destino['modelos'].append({'modelo':m['modelo'],'familia':m['familia'],**m['metricas'],'hiperparametros':m['entrenamiento']})
+        for m in resultados[clave]: destino['modelos'].append({'modelo':m['modelo'],'familia':m['familia'],**m['metricas'],'hiperparametros':parametros_json(m['entrenamiento'])})
     for j,t in enumerate(ts):
         modelos=[{'modelo':m['modelo'],'familia':m['familia'],'prob_sube':round(float(m['actual'][j]),3)} for m in resultados['clasificacion']]
         for m in modelos: m['senal']='SUBE' if m['prob_sube']>=0.5 else 'BAJA'
