@@ -416,7 +416,20 @@ body.modo-puntero button.enlace, body.modo-puntero th button.orden, body.modo-pu
 [data-espaciado="amplio"] body { line-height: 1.8; letter-spacing: .12em; word-spacing: .16em; }
 [data-espaciado="amplio"] p { margin-bottom: 2em; }
 [data-enlaces="subrayados"] a { text-decoration: underline; }
+/* Fuente legible: Atkinson Hyperlegible o Verdana si están instaladas (el sitio no descarga fuentes) */
+[data-fuente="legible"] body, [data-fuente="legible"] button, [data-fuente="legible"] input, [data-fuente="legible"] select, [data-fuente="legible"] textarea { font-family: "Atkinson Hyperlegible", Verdana, Tahoma, sans-serif; }
+/* Cursor grande: flecha de 44 px con borde blanco, visible en los dos temas */
+[data-cursor="grande"], [data-cursor="grande"] * { cursor: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'44'%20height%3D'44'%20viewBox%3D'0%200%2044%2044'%3E%3Cpath%20d%3D'M4%203%20L4%2037%20L13%2029%20L19%2042%20L26%2039%20L20%2026%20L32%2026%20Z'%20fill%3D'black'%20stroke%3D'white'%20stroke-width%3D'2.5'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E") 4 3, auto !important; }
 [data-movimiento="reducido"] *, [data-movimiento="reducido"] *::before, [data-movimiento="reducido"] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* ───────────── Accesibilidad de los gráficos y barrido (T-27) ───────────── */
+.graf-ayuda { font-size: .85rem; margin: .4rem 0 0; }
+.resumen-series { margin: .5rem 0; padding-left: 1.2rem; }
+.resumen-series li { margin: .25rem 0; }
+/* Barrido con un interruptor: marco grueso con doble borde (se ve sobre cualquier fondo) y rótulo fijo abajo */
+.barrido-marco { position: absolute; z-index: 9998; pointer-events: none; border: 5px solid var(--warn); border-radius: 10px; box-shadow: 0 0 0 3px var(--bg), inset 0 0 0 3px var(--bg); }
+.barrido-marco.salir { border-style: dashed; }
+.barrido-rotulo { position: fixed; z-index: 9999; left: 50%; bottom: 1rem; transform: translateX(-50%); width: max-content; max-width: calc(100vw - 2rem); margin: 0; padding: .6rem 1rem; border-radius: 10px; background: var(--fg); color: var(--bg); font-weight: 700; text-align: center; pointer-events: none; }

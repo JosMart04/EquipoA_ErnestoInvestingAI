@@ -55,26 +55,12 @@
     fijarObjetivo(cercano(x, y));
   }
 
-  /** Diálogo con las opciones de un <select> (el nativo no se abre con un clic sintético). */
-  function abrirOpciones(sel) {
-    const lista = document.createElement("div"); lista.className = "opciones-select";
-    const etiqueta = (sel.labels && sel.labels[0] && sel.labels[0].textContent) || sel.getAttribute("aria-label") || "";
-    Array.from(sel.options).forEach(o => {
-      const b = document.createElement("button");
-      b.type = "button"; b.textContent = o.textContent; b.setAttribute("aria-pressed", String(o.selected));
-      b.addEventListener("click", () => { sel.value = o.value; sel.dispatchEvent(new Event("change", { bubbles: true })); dlg.cerrar(); });
-      lista.appendChild(b);
-    });
-    const dlg = EIA.ui.dialogo({ titulo: etiqueta.trim() || EIA.t("a11y.elige_opcion"), contenido: lista });
-    dlg.abrir();
-  }
-
   function pulsar() {
     const el = objetivo || document.elementFromPoint(x, y);
     if (!el) return;
     anillo.classList.remove("clic"); void anillo.offsetWidth; anillo.classList.add("clic"); // destello
     bloqueado = el; progreso(0);
-    if (el.tagName === "SELECT") { abrirOpciones(el); return; }
+    if (el.tagName === "SELECT") { EIA.ui.opcionesSelect(el); return; }
     if (el.focus) el.focus({ preventScroll: true });
     if (el.click) el.click();
   }
@@ -97,7 +83,8 @@
   const alMoverRaton = e => EIA.bus.emitir("MOVER_PUNTERO", { x: e.clientX, y: e.clientY });
 
   EIA.bus.on("MOVER_PUNTERO", d => mover(d.x, d.y));
-  EIA.bus.on("ACTIVAR", d => { if (activo) { d.manejado = true; pulsar(); } });
+  // Con el barrido encendido, ACTIVAR (parpadeo, boca, pellizco) es su interruptor y no un clic bajo el puntero
+  EIA.bus.on("ACTIVAR", d => { if (activo && !(EIA.barrido && EIA.barrido.activo())) { d.manejado = true; pulsar(); } });
 
   EIA.puntero = {
     /** op = {permanencia, ms, iman, raton} */

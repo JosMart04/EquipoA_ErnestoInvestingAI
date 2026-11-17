@@ -122,7 +122,9 @@
         filas, claveFila: f => f.ticker
       }),
       resumen: () => t("portafolios.resumen", { lista: D.c08.niveles.map(n => t("portafolios.resumen_nivel", { nivel: EIA.nombre("nivel", n.nivel), n: Object.keys(n.pesos).length, top: principales(n, 1)[0].ticker, peso: pct(principales(n, 1)[0].peso * 100, 1) })).join(" ") }),
-      sonido: () => ({ valores: filas.map(f => f.pesos[1]) })
+      // T-27: cada nivel es una serie de categorías (activos); el punto i es la serie i de ECharts en la barra del nivel k
+      sonido: () => ({ inicial: 1, series: D.c08.niveles.map((n, k) => ({ nombre: EIA.nombre("nivel", n.nivel), tipo: "categorias",
+        valores: filas.map(f => f.pesos[k] * 100), etiquetas: filas.map(f => f.ticker), formato: v => pct(v, 1), tip: i => ({ seriesIndex: i, dataIndex: k }) })) })
     });
   }
 
