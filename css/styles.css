@@ -265,6 +265,20 @@ button.estrella[aria-pressed="true"] { background: none; color: var(--warn); }
 #verificacion table { margin-top: .25rem; }
 #verificacion th, #verificacion td { position: static; }
 
+/* ───────────── Optimizador: composición del punto y elegibles ───────────── */
+#frontera .chart:focus-visible { outline-offset: 4px; }
+.metricas-punto { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem 1rem; margin: .5rem 0; }
+.metricas-punto dt { color: var(--mut); font-size: .85rem; }
+.metricas-punto dd { margin: 0; font-size: 1.15rem; font-weight: 700; }
+.pesos th, .pesos td { position: static; }
+.barra-peso { display: inline-block; width: 6rem; height: .7rem; border: 1px solid var(--bd-ctl); border-radius: 999px; overflow: hidden; vertical-align: middle; margin-right: .35rem; }
+.barra-peso > span { display: block; height: 100%; background: var(--ac); }
+.comprobacion { font-weight: 600; }
+.lista-elegibles { list-style: none; margin: .5rem 0 0; padding: 0; display: grid; gap: .35rem; }
+.lista-elegibles > li { border: 1px solid var(--bd); border-radius: 8px; padding: .35rem .6rem; }
+.lista-elegibles > li.elegida { border-color: var(--ac); box-shadow: inset 4px 0 0 var(--ac); }
+.nota-activo { font-weight: 600; }
+
 /* ───────────── Clasificación: mapa de calor, consenso y matriz de confusión ───────────── */
 .mapa-region { max-height: 36rem; }
 .mapa { font-size: .78rem; width: auto; min-width: 100%; }

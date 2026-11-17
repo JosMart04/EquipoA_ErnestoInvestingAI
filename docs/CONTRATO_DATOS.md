@@ -161,6 +161,8 @@ No están en los JSON; se calculan en el navegador y se declaran aquí y en el i
 | Drawdown de referencias | `curva / máximo acumulado − 1` | Backtesting |
 | Valor y retorno del usuario | `efectivo + Σ cantidad × 10.ultimo`, frente al valor inicial de `11.portafolio_demo` a su `costo` | Trading, Leaderboard |
 | Suma y máximo de pesos | `Σ pesos` y `max(pesos)` | Comprobación visible del Optimizador (R-OPT-09) |
+| Exceso de volatilidad de NSGA frente a Markowitz | Para cada punto NSGA dentro del rango de retornos de `markowitz_elegibles`: su volatilidad menos la de la curva al mismo retorno (interpolación lineal); media y máximo. En `data/`: NSGA-II 0,27 pp (máx. 0,79) y NSGA-III 0,51 pp (máx. 3,15) | Explicación del Optimizador (R-OPT-04) y ficha IA |
+| Razón de elegibilidad | `05.votos_sube`, `05.consenso` y `06.retorno_proyectado_30d_pct` del activo | Lista de elegibles y mensaje con `?t=` (R-OPT-05) |
 
 ## 6. Constantes de método
 
