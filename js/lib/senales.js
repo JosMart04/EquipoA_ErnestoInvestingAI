@@ -57,7 +57,9 @@
         } else if (valor <= o.off) { desde = null; disparado = false; }
         return false;
       },
-      reiniciar() { desde = null; disparado = false; }
+      reiniciar() { desde = null; disparado = false; },
+      /** Fracción (0–1) del tiempo sostenido mientras el gesto está en curso y aún no disparó. */
+      progreso: tMs => (desde === null || disparado ? 0 : Math.max(0, Math.min(1, (tMs - desde) / o.minMs)))
     };
   }
 
@@ -95,13 +97,23 @@
     const pares = [[8, 6], [12, 10], [16, 14], [20, 18]];
     return pares.every(([punta, nudillo]) => distancia(lm[punta], lm[0]) > 1.15 * distancia(lm[nudillo], lm[0])) && razonPellizco(lm) > 0.6;
   }
+  /** ¿Puño cerrado? Las cuatro puntas (8, 12, 16, 20) quedan más cerca de la muñeca que sus nudillos medios (6, 10, 14, 18).
+      Es el gesto de pausa: no se confunde con señalar (índice extendido), con la mano abierta ni con el pellizco. */
+  function punoCerrado(lm) {
+    const pares = [[8, 6], [12, 10], [16, 14], [20, 18]];
+    return pares.every(([punta, nudillo]) => distancia(lm[punta], lm[0]) < distancia(lm[nudillo], lm[0]));
+  }
+  /** Punto de la mano que mueve el puntero: el medio de los nudillos del índice y del medio (landmarks 5 y 9).
+      Casi no se mueve al pellizcar, a diferencia de la punta del índice. */
+  function puntoMano(lm) { return { x: (lm[5].x + lm[9].x) / 2, y: (lm[5].y + lm[9].y) / 2 }; }
+
   /** Lleva un punto de la imagen (0–1) dentro de la «caja activa» central a 0–1 de pantalla, en espejo (como un espejo real). */
   function mapaCaja(x, y, margen) {
     const g = margen == null ? 0.2 : margen, lado = 1 - 2 * g, lim = v => Math.max(0, Math.min(1, v));
     return { u: lim(1 - (x - g) / lado), v: lim((y - g) / lado) };
   }
 
-  const api = { filtroOneEuro, ajusteAfin, detectorSostenido, detectorPellizco, anguloCabeza, matrizCabeza, razonPellizco, palmaAbierta, mapaCaja, distancia };
+  const api = { filtroOneEuro, ajusteAfin, detectorSostenido, detectorPellizco, anguloCabeza, matrizCabeza, razonPellizco, palmaAbierta, punoCerrado, puntoMano, mapaCaja, distancia };
   L.senales = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof self !== "undefined" ? self : globalThis);

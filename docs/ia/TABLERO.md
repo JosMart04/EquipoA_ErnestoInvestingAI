@@ -23,7 +23,7 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-13 | Workers y `EIA.trabajo` | CC-F | hecho | cc/T-09-lib | D-03, R-OPT-08 | |
 | T-14 | A11y: preferencias, panel y anunciador (f) | CC-F | hecho | cc/T-14-a11y | D-07 f, R-A11Y-04 | |
 | T-15 | A11y: bus de entrada y puntero virtual | CC-F | hecho | cc/T-14-a11y | D-07 c/d/e | |
-| T-16 | A11y: cámara, cabeza-mirada, manos, señales | CC-F | hecho | cc/T-14-a11y | D-07 c/d, D-12 | Probado con guion simulado; **falta la prueba humana con webcam** |
+| T-16 | A11y: cámara, cabeza-mirada, manos, señales | CC-F | hecho | cc/T-14-a11y | D-07 c/d, D-12 | Se congelaba tras el primer segundo: corregido en T-28a |
 | T-17 | Regresión (P04) | CC-O | pendiente | | R-REG-01…09 | mar |
 | T-18 | Optimizador (P05), Modo profesor | CC-O | pendiente | | R-OPT-01…09 | mar |
 | T-19 | Dashboard ampliado | CC-O | pendiente | | R-HER-01 | mar |
@@ -35,6 +35,7 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-25 | Integración P07: estado compartido, enlaces, «Llevar a Trading» | CC-O | pendiente | | R-INT-03/05, R-POR-04 | mié |
 | T-26 | Modo real en los 9 módulos, cortes y recálculo en Workers | CC-O | pendiente | | D-02, D-03 | mié; depende de T-31…T-38 |
 | T-27 | A11y (a) completa y (e) barrido | CC-O | pendiente | | D-07 a/e/f, R-A11Y-05 | mié |
+| T-28a | **Arreglo:** la cámara se congelaba al primer segundo (el HUD sacaba el `<video>` del documento); vigilante del video; gestos de mano (D-22); histéresis del puntero; recorrido de la cabeza | CC-O | en revisión | cc/T-28a-camara-continua | D-07 c/d | Verificado con MediaPipe real y video falso; **falta la prueba de Josué con webcam** |
 | T-28 | A11y (c) y (d) completas | CC-O | pendiente | | D-07 c/d | jue |
 | T-29 | Conformidad con Figma, correcciones de QA y P08, congelamiento | CC-O | pendiente | | R-FLU-01/06 | jue–vie |
 | T-30 | Validador del contrato (ambos modos, SHA-256 de data/) | CX | pendiente | cx/T-51-ci-referencias-datos · PR #7 | R-DAT-*, I-01…I-08 | ACK C-01/I-03b y C-02; I-09/I-10/I-11 comprobadas en tests/datos. Validador completo aún pendiente. |

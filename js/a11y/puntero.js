@@ -1,6 +1,6 @@
 /* js/a11y/puntero.js — puntero virtual (PLAN_MAESTRO §9.3): un anillo grande que no es el cursor del sistema.
    Convierte MOVER_PUNTERO y ACTIVAR del bus en acciones sobre la página:
-     · imán: se engancha al elemento interactivo más cercano dentro de un radio;
+     · imán: se engancha al elemento interactivo más cercano dentro de un radio, con histéresis para que el temblor no lo suelte;
      · permanencia (dwell): clic tras quedarse quieto sobre un elemento, con anillo de progreso;
      · zonas de desplazamiento arriba y abajo;
      · un <select> nativo no se puede abrir por programa: se muestra un diálogo con sus opciones.
@@ -12,7 +12,7 @@
 
   const INTERACTIVOS = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),summary,[role="tab"],[tabindex]:not([tabindex="-1"])';
   const CIRCUNFERENCIA = 113; // 2·π·18, la del anillo de progreso
-  const cfg = { permanencia: true, ms: 900, iman: 80, zona: 0.08, velocidadDesplazamiento: 14 };
+  const cfg = { permanencia: true, ms: 900, iman: 80, zona: 0.08, velocidadDesplazamiento: 14, histeresis: 16 };
   let activo = false, x = 0, y = 0, anillo = null, objetivo = null, desde = 0, bloqueado = null, raf = 0, conRaton = false;
 
   function crearAnillo() {
@@ -46,6 +46,12 @@
     x = Math.max(0, Math.min(global.innerWidth - 1, nx)); y = Math.max(0, Math.min(global.innerHeight - 1, ny));
     if (!activo) return;
     anillo.style.transform = "translate(" + (x - 28) + "px," + (y - 28) + "px)";
+    // Histéresis: mientras el puntero siga dentro del objetivo actual (ampliado unos píxeles) se conserva, aunque otro
+    // elemento quede más cerca. Así el temblor no reinicia la permanencia ni salta entre botones vecinos.
+    if (objetivo && objetivo.isConnected) {
+      const r = objetivo.getBoundingClientRect(), h = cfg.histeresis;
+      if (r.width > 0 && x >= r.left - h && x <= r.right + h && y >= r.top - h && y <= r.bottom + h) return;
+    }
     fijarObjetivo(cercano(x, y));
   }
 

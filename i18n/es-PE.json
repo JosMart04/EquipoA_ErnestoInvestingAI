@@ -164,7 +164,15 @@
     "cam_error_sin_camara": "No se encontró ninguna cámara. El sitio sigue funcionando con teclado y ratón.",
     "cam_error_general": "No se pudo iniciar el control por cámara. El sitio sigue funcionando con teclado y ratón.",
     "cam_anuncio_activa": "Cámara activa. Pulsa Esc para detenerla.",
-    "cam_anuncio_detenida": "Cámara detenida."
+    "cam_anuncio_detenida": "Cámara detenida.",
+    "cam_titulo": "{estado} · {modalidad}",
+    "cam_recentrado": "Puntero recentrado: la posición actual de tu cabeza es el centro de la pantalla.",
+    "cam_sin_cuadros": "La cámara no envía imagen; reintentando…",
+    "cam_puno_pausar": "Mantén el puño cerrado para pausar…",
+    "cam_puno_reanudar": "Mantén el puño cerrado para reanudar…",
+    "rango": "Recorrido de la cabeza",
+    "rango_ayuda": "Grados que hay que girar la cabeza para llegar al borde de la pantalla. Menos grados: el puntero va más rápido.",
+    "grados": "{n}°"
   },
   "clasificacion": {
     "titulo_pagina": "Clasificación binaria de tendencia · Ernesto Investing AI",

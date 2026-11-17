@@ -164,7 +164,15 @@
     "cam_error_sin_camara": "No camera was found. The site still works with keyboard and mouse.",
     "cam_error_general": "Camera control could not start. The site still works with keyboard and mouse.",
     "cam_anuncio_activa": "Camera on. Press Esc to stop it.",
-    "cam_anuncio_detenida": "Camera stopped."
+    "cam_anuncio_detenida": "Camera stopped.",
+    "cam_titulo": "{estado} · {modalidad}",
+    "cam_recentrado": "Pointer recentered: your current head position is now the center of the screen.",
+    "cam_sin_cuadros": "The camera is not sending images; retrying…",
+    "cam_puno_pausar": "Keep your fist closed to pause…",
+    "cam_puno_reanudar": "Keep your fist closed to resume…",
+    "rango": "Head range",
+    "rango_ayuda": "Degrees you need to turn your head to reach the edge of the screen. Fewer degrees: the pointer moves faster.",
+    "grados": "{n}°"
   },
   "clasificacion": {
     "titulo_pagina": "Binary trend classification · Ernesto Investing AI",

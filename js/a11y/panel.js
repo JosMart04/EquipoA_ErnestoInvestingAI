@@ -7,7 +7,8 @@
   const EIA = global.EIA, $ = global.$, $$ = global.$$;
   if (EIA.a11y) return;
   const t = (k, p) => EIA.t(k, p), esc = EIA.esc;
-  const leer = () => Object.assign({ texto: 100, ms: 900, clic: "permanencia" }, EIA.estado.get("eia_a11y"));
+  const RANGO = 18; // grados de giro hasta el borde de la pantalla (el mismo valor por defecto que js/a11y/cabeza-mirada.js)
+  const leer = () => Object.assign({ texto: 100, ms: 900, clic: "permanencia", rango: RANGO }, EIA.estado.get("eia_a11y"));
   function guardar(cambio) {
     const p = Object.assign(leer(), cambio);
     EIA.estado.set("eia_a11y", p);
@@ -34,6 +35,9 @@ ${interruptor("contraste", p)}${interruptor("movimiento", p)}${interruptor("espa
 <select id="pref-clic" data-pref="clic">${["permanencia", "parpadeo", "boca"].map(c => `<option value="${c}"${p.clic === c ? " selected" : ""}>${esc(t("a11y.clic_" + c))}</option>`).join("")}</select></div>
 <div class="fila-pref"><label for="pref-ms">${esc(t("a11y.ms"))}: <output id="pref-ms-valor">${esc(EIA.fmt.num(p.ms / 1000, 1))}</output></label>
 <input type="range" id="pref-ms" data-pref="ms" min="500" max="2000" step="100" value="${Number(p.ms)}"></div>
+<div class="fila-pref"><label for="pref-rango">${esc(t("a11y.rango"))}: <output id="pref-rango-valor">${esc(t("a11y.grados", { n: EIA.fmt.ent(p.rango) }))}</output></label>
+<input type="range" id="pref-rango" data-pref="rango" min="10" max="30" step="2" value="${Number(p.rango)}"></div>
+<p class="mut">${esc(t("a11y.rango_ayuda"))}</p>
 ${interruptor("invertirX", p)}${interruptor("invertirY", p)}
 <h3>${esc(t("a11y.sec_ayuda"))}</h3>
 <ul><li>${esc(t("a11y.atajo_panel"))}</li><li>${esc(t("a11y.atajo_esc"))}</li><li>${esc(t("a11y.ayuda_teclado"))}</li></ul>`;
@@ -49,6 +53,7 @@ ${interruptor("invertirX", p)}${interruptor("invertirY", p)}
       const p = guardar({ [clave]: valor });
       if (clave === "texto") $("#pref-texto-valor", caja).textContent = EIA.fmt.pct(p.texto, 0, { signo: false });
       if (clave === "ms") $("#pref-ms-valor", caja).textContent = EIA.fmt.num(p.ms / 1000, 1);
+      if (clave === "rango") $("#pref-rango-valor", caja).textContent = t("a11y.grados", { n: EIA.fmt.ent(p.rango) });
       if (clave === "decal" || clave === "movimiento" || clave === "contraste") EIA.emit("eia:tema", { tema: EIA.tema() }); // los gráficos se redibujan
     });
     caja.addEventListener("click", async e => {

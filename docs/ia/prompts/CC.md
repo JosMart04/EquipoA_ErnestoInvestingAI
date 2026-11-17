@@ -102,3 +102,25 @@ Fase B: archivos, commits y PR. Al final de cada bloque, un resumen breve más l
 ```
 
 **Respuestas de Josué a las preguntas del modo Plan (2026-11-16 15:30):** orden de hoy = «Clasificación primero» (D-18); modelos de MediaPipe = «Sí, guardarlos en el repo» (D-19); prompt P03 = «Sigue sin P03» (D-20). Después aprobó el plan (`docs/plan/PLAN_IMPLEMENTACION.md`).
+
+## 2026-11-17 02:00 · Claude Code · Claude Opus 5.5 (relevo de Fable; modo Plan)
+
+```text
+Eres Opus 5.5, tendrás los mismos trabajos que Fable y tus trabajos asignados, ahora serán tu y Codex Astra. Ya le envie el mensaje a codex y ya terminó de trabajar, me envía el siguiente mensaje:
+
+📨 MENSAJE PARA CC
+Entrega en [PR #7](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/7), CI verde, sin fusionar:
+
+* ACK C-01 mediante igualdad inversa I-03b; se conserva el diagnóstico de los cinco incumplimientos literales de P04.
+* ACK C-02: 1/N diario sin comisión.
+* `qa.yml` con el patrón Node entre comillas.
+* Referencia independiente cvxpy: 35 puntos.
+* `meta.json` y cierres reales: 26 activos, 2.115 sesiones, corte 16-nov-2026.
+
+Validación: 78/78 pruebas JS, 16/16 Python y Gitleaks aprobado.
+La publicación real es parcial: aún faltan los 13 JSON y los modelos. CC debe actualizar los ACK en el contrato y corregir la supuesta equivalencia de la tolerancia ampliada.
+
+También probé lo del puntero con la cabeza y los gestos con la mano, no funcionan bien (Si se activa, pero por un instante, veo la camara, se mueve el mouse, pero solo en el primer instante, debería estar funcionando en todo momento), esto lo puede hacer Codex o tu, como lo creas conveniente, pero hay que solucionar esto, debe funcionar perfectamente
+```
+
+Josué aprobó el plan de Opus (2026-11-17 10:20): arreglo de la cámara → integrar PR #7 y actualizar el contrato → seguir con T-17.

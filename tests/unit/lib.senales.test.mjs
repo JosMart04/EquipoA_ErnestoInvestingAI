@@ -87,3 +87,49 @@ test("los textos del centro de accesibilidad existen en los dos idiomas", () => 
     for (const k of ["mod_cabeza", "mod_manos", "clic_permanencia", "clic_parpadeo", "clic_boca"]) assert.ok(a[k], l + " " + k);
   }
 });
+
+// ── Regresión del 17-nov: el puntero solo se movía el primer instante (cámara congelada y pausa accidental) ──
+
+/** Mano sintética como la de js/a11y/manos.js: nudillos en (0,5; 0,5). */
+function mano({ pellizco = false, palma = false, puno = false } = {}) {
+  const ix = 0.5, iy = 0.5, lm = Array.from({ length: 21 }, () => ({ x: ix, y: iy }));
+  const pon = (i, dx, dy) => { lm[i] = { x: ix + dx, y: iy + dy }; };
+  pon(0, 0, 0.16); pon(5, -0.02, 0); pon(9, 0.02, 0); pon(13, 0.05, 0.01); pon(17, 0.08, 0.02);
+  pon(6, -0.02, -0.05); pon(8, -0.02, puno ? 0.04 : -0.10);
+  for (const [punta, nudillo, dx] of [[12, 10, 0.02], [16, 14, 0.05], [20, 18, 0.08]]) { pon(nudillo, dx, -0.05); pon(punta, dx, palma ? -0.10 : 0.04); }
+  if (pellizco) lm[4] = { x: lm[8].x + 0.01, y: lm[8].y + 0.01 }; else pon(4, -0.12, 0.02);
+  return lm;
+}
+
+test("puño cerrado: es el gesto de pausa y no se confunde con señalar, la palma abierta ni el pellizco", () => {
+  assert.equal(S.punoCerrado(mano({ puno: true })), true);
+  assert.equal(S.punoCerrado(mano()), false, "señalar con el índice");
+  assert.equal(S.punoCerrado(mano({ palma: true })), false, "mano abierta: así se mueve el puntero y no debe pausar");
+  assert.equal(S.punoCerrado(mano({ pellizco: true })), false, "pellizco");
+  assert.equal(S.palmaAbierta(mano({ palma: true })), true);
+});
+
+test("el punto que mueve el puntero no se desplaza al pellizcar", () => {
+  const a = S.puntoMano(mano()), b = S.puntoMano(mano({ pellizco: true })), c = S.puntoMano(mano({ palma: true }));
+  assert.deepEqual(a, b); assert.deepEqual(a, c);
+  assert.ok(S.razonPellizco(mano({ pellizco: true })) < 0.35);
+  assert.ok(S.razonPellizco(mano()) >= 0.5, "sin pellizco el puntero no se congela");
+});
+
+test("detector sostenido: el progreso sube hasta disparar y vuelve a cero", () => {
+  const d = S.detectorSostenido({ on: 0.5, off: 0.5, minMs: 1500 });
+  assert.equal(d.progreso(0), 0);
+  d.paso(1, 0); d.paso(1, 750);
+  cerca(d.progreso(750), 0.5, 1e-9, "a la mitad");
+  assert.equal(d.paso(1, 1500), true);
+  assert.equal(d.progreso(1600), 0, "tras disparar no muestra progreso");
+});
+
+test("cámara: el HUD no se reescribe con innerHTML después de crearse (sacaría el <video> y lo pausaría)", () => {
+  const src = leer("js", "a11y", "camara.js").replace(/\/\*[\s\S]*?\*\//g, "");
+  const usos = src.match(/\.innerHTML\s*=/g) || [];
+  assert.equal(usos.length, 1, "un solo innerHTML: el de crearHUD");
+  const cuerpo = src.slice(src.indexOf("function crearHUD"), src.indexOf("const ponerTexto"));
+  assert.match(cuerpo, /hud\.innerHTML\s*=/);
+  assert.match(src, /video\.paused/, "el bucle vigila que el video siga reproduciéndose");
+});
