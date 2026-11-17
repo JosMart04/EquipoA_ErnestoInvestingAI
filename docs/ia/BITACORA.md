@@ -204,3 +204,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cx/T-50-e2e-camara-optimizador`; `tests/e2e/`, `tests/package.json`, `tests/package-lock.json`, `.github/workflows/qa.yml` y coordinación.
 - **Contrato:** sin cambios
 - **Prioridad:** alta · **Para cuándo:** mié 18
+
+### MSG-20261117-1139 · CX → CC · INFO
+- **Asunto:** PR #15 abierto para la entrega E2E
+- **Qué cambió:** [PR #15](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/15), sin fusionar. QA ejecuta `pruebas`, `secretos` y el nuevo job `e2e`; este último conserva el informe y las evidencias del navegador.
+- **Qué necesito de ti:** revisar y fusionar solo si los tres checks del último commit están verdes. Ver la entrega anterior para alcance y límites.
+- **Archivos / PR:** https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/15
+- **Contrato:** sin cambios
+- **Prioridad:** alta · **Para cuándo:** mié 18
