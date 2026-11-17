@@ -1,7 +1,8 @@
-# E2E de cámara, Optimizador y publicación parcial (T-50)
+# E2E de cámara, Optimizador, Backtesting y publicación parcial (T-50)
 
 Responde a MSG-20261117-1112 y a los detalles 1031, 1035 y 1054.
-Hay 40 casos: los mismos 20 a 1280×900 y 390×844.
+Incluye la entrega de Backtesting del 17-nov (MSG-20261117-1203 en la bitácora;
+1204 en el mensaje recibido). Hay 44 casos: los mismos 22 a 1280×900 y 390×844.
 
 ## Ejecución desde la raíz
 
@@ -39,14 +40,24 @@ ejecutada aparece en los adjuntos de diagnóstico.
   recálculo deshabilitado en Modo profesor. En escritorio se mantienen todas
   las series; en móvil se aíslan los círculos NSGA-II mediante los interruptores
   reales (R-OPT-02), porque las series se superponen a ese ancho.
+- **Backtesting profesor:** siete curvas de capital contra `09`, drawdown
+  calculado independientemente desde cada curva (tolerancia 0,01 pp por
+  redondeo), las siete métricas de cada serie y ordenación por retorno.
+  Se exige «7 de 7 series», nota de Agresivo 35 % frente a tope 25 %,
+  tres interpretaciones que reconocen la pérdida frente a SPY y recálculo
+  deshabilitado. El enlace real desde la tarjeta Agresivo debe seleccionarlo
+  al llegar; se pulsan los 12 rebalanceos y se verifican fecha, selección
+  única y todos los pesos contra `09` (0,051 pp por presentación a un decimal).
+  No se importan las funciones del módulo para obtener los resultados esperados.
 - **Publicación parcial actual:** nueve páginas × ES-PE/EN-US × dos tamaños.
   Se leen el manifiesto real y los diccionarios. El aviso del módulo y del pie
   debe contener la traducción exacta de `aviso.real.parcial`, con la
   fecha formateada por Intl. Se exige un error que nombre un JSON ausente,
-  su 404 correspondiente y ningún otro fallo de red. No cambia el modo solo.
+  su 404 correspondiente y ningún otro fallo de red. En Backtesting se exige
+  específicamente `09_backtesting_portafolios.json`. No cambia el modo solo.
   En móvil se abre el menú antes de comprobar sus nueve enlaces.
 - Ausencia de excepciones JS no controladas y de desborde horizontal en los
-  escenarios de Optimizador y publicación parcial.
+  escenarios de Optimizador, Backtesting y publicación parcial.
 
 ECharts 5.5.1 y MediaPipe 1.2.3 se sirven mediante rutas de Playwright desde
 sus paquetes npm originales, con las mismas URLs y tipos MIME que usa el
@@ -71,7 +82,9 @@ Esta suite no demuestra que la detección de caras o gestos funcione con
 personas reales: la cámara falsa genera un patrón de prueba. Sigue pendiente
 la prueba humana con webcam, incluyendo el sentido de los ejes y el puño
 cerrado durante 1,5 s para pausar manos (D-22). Tampoco sustituye la suite
-completa E2E/axe, ambos temas ni los flujos de los seis módulos.
+completa E2E/axe, ambos temas ni los restantes flujos entre módulos.
+No se verifica todavía la sincronización interactiva del cursor/zoom entre
+los gráficos de Backtesting ni su interpretación con datos alterados.
 
 `npm audit` informa GHSA-fgmj-fm8m-jvvx para ECharts 5.5.1
 (severidad moderada). Se conserva esa versión, fijada por la guía, y se

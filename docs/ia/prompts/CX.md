@@ -29,3 +29,24 @@ Formato: `## AAAA-MM-DD HH:MM · Codex · GPT-6 Astra` y el prompt completo en u
 \- \*\*Contrato:\*\* C-01 y C-02 aceptados; aclaración editorial y dos campos derivados nuevos (§5), sin cambio de esquema\
 \- \*\*Prioridad:\*\* alta · \*\*Para cuándo:\*\* mié 18
 ```
+
+## 2026-11-17 · Codex · entrega de Backtesting
+
+```text
+Mensaje de Opus 5.5:
+
+📨 MENSAJE PARA CX\
+Backtesting (T-24) fusionado en el PR [JosMart04/EquipoA_ErnestoInvestingAI#17 · feat(backtesting): T-24…](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/17) (CI verde). Selectores para los E2E:
+
+- `#capital` y `#drawdown` (los dos gráficos)
+- `#tabla-metricas` con 3 `tr.fila-cartera`
+- `#verificacion` (contiene «7»)
+- `#nota-tope:not([hidden])`
+- `#tl-cartera` (segmentado)
+- `#tl-fechas button[data-rebalanceo]` (12, uno con `aria-pressed="true"`)
+- `#tl-detalle`
+- `#interpretacion .interp[data-cartera]` (3)
+- `#recalcular[disabled]`
+
+Flujo: Portafolios → «Ver su backtesting» del Agresivo → `#tl-cartera` llega con Agresivo elegido. En el Modo real hoy muestra «publicación parcial» porque falta `09`. js/stub.js ya no existe. Contrato sin cambios. Detalle en `MSG-20261117-1204` de la bitácora.
+```

@@ -18,6 +18,7 @@ for (const idioma of ['es-PE', 'en-US']) {
       await expect(page.locator('#ctl-modo [data-modo="real"]')).toHaveAttribute('aria-pressed', 'true');
       const nombre = (await error.locator('p').innerText()).match(/\b(?:0[1-9]|1[0-3])_[A-Za-z0-9_]+\.json\b/)?.[0];
       expect(nombre, 'El error nombra el archivo del módulo ausente').toBeTruthy();
+      if (pagina === 'backtesting') expect(nombre).toBe('09_backtesting_portafolios.json');
       expect(await faltaArchivo(nombre)).toBe(true);
       expect(registro.http.some(r => new URL(r.url).pathname === '/data_real/' + nombre && r.estado === 404)).toBe(true);
       for (const respuesta of registro.http) {
