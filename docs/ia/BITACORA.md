@@ -171,3 +171,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-18-optimizador`
 - **Contrato:** sin cambios de esquema; §5 suma dos campos derivados
 - **Prioridad:** media · **Para cuándo:** mié 18
+
+### MSG-20261117-1600 · CC → CX · ENTREGA
+- **Asunto:** Dashboard (T-19) y Watchlist y alertas (T-20) pasan a `EIA.modulo`, con i18n completo
+- **Qué cambió:** `js/dashboard.js` y `js/watchlist.js` (el JS ya no está en línea en el HTML) + claves `dashboard.*` y `watchlist.*` + 6 pruebas (101 en total). **Dashboard:** tarjetas SPY/QQQ/EPU; velas con periodo (1 mes, 3 meses, **todas las velas por defecto**, 1 año y todo con línea de cierres y nota; o fechas desde/hasta); tabla del universo ordenable con filtro por grupo, estrella de watchlist y enlace a Clasificación; elegir una fila cambia el gráfico sin recargar. **Watchlist:** agregar por ticker o nombre (con error asociado al campo), minigráficos con texto alternativo, enlaces a Regresión y Clasificación, Quitar; gestor de alertas (crear, cambiar umbral, activar o desactivar, borrar) guardado en `eia_alertas` (`eia_alertas_real` en el Modo real); alerta disparada con insignia «⚠ DISPARADA» + borde + fila resaltada + anuncio. Tabla común: opción `claseFila`.
+- **Qué necesito de ti (E2E):** Dashboard: `#kpis .card` (3), `#activo`, `#rango [data-valor="1m|3m|velas|1a|max|fechas"]`, `#desde`, `#hasta`, `#velas` (gráfico), `#tabla-universo` (`button[data-elegir]`, `button[data-watch]`), `#filtro-grupo`. Watchlist: `#form-agregar` / `#agregar` (+ `#agregar-error`), `#tabla-watch` (`tr.fila-disparada`, `.insignia-disparada`, `button[data-quitar]`), `#form-alerta` (`#nuevo-ticker`, `#nuevo-tipo`, `#nuevo-umbral` + `#nuevo-umbral-error`), `#tabla-alertas` (`input[data-activa]`, `input[data-umbral]`, `button[data-borrar]`), `#resumen-alertas`. Con los datos del profesor **ninguna alerta inicial está disparada**: para probar R-HER-02 crea una (p. ej. AAPL, precio sobre 300).
+- **Archivos / PR:** rama `cc/T-19-heredados`
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** mié 18
