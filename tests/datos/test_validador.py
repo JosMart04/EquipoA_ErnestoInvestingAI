@@ -4,7 +4,7 @@ from pathlib import Path
 import shutil
 import tempfile
 import unittest
-from tools.validar_contrato import validar,validar_auditoria,ROOT
+from tools.validar_contrato import validar,validar_auditoria,validar_carteras,cargar,ROOT
 
 class Contrato(unittest.TestCase):
     def test_profesor_y_discrepancia_literal(self):
@@ -21,6 +21,17 @@ class Contrato(unittest.TestCase):
                 corrupto=deepcopy(audit)
                 corrupto[campo]=fechas[fechas.index(audit[campo])-1]
                 with self.assertRaises(ValueError):validar_auditoria(corrupto,fechas,meta['fecha_corte'])
+    def test_fronteras_reales_se_recalculan_desde_pesos_y_datos(self):
+        d={n:cargar(ROOT/'data_real',n) for n in [1,2,4,5,6,7,8]}
+        ts=[a['ticker'] for a in d[1]]
+        validar_carteras(d,ts,'real')
+        for campo in ['retorno_esperado_anual_pct','volatilidad_anual_pct','cvar95_diario_pct']:
+            with self.subTest(campo=campo):
+                corrupto=deepcopy(d)
+                punto=corrupto[7]['markowitz_universo_completo'][0]
+                punto[campo]+=1
+                punto['sharpe']=(punto['retorno_esperado_anual_pct']-4)/punto['volatilidad_anual_pct']
+                with self.assertRaises(ValueError):validar_carteras(corrupto,ts,'real')
     def test_rechaza_corrupcion_de_senal_mediana_y_pesos(self):
         for n,alterar in [
             ('05',lambda d:d['predicciones']['AAPL']['modelos'][0].update(senal='NEUTRO')),

@@ -16,6 +16,11 @@ for (const [pagina, selector] of Object.entries(selectores)) {
     await expect(page.locator('.estado-error')).toHaveCount(0);
     await expect(page.locator('#ctl-modo [data-modo="real"]')).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('main > [data-aviso]')).toContainText(aviso);
+    // PLAN_MAESTRO §4.2: fuente real, liga ficticia y órdenes simuladas.
+    await expect(page.locator('main > [data-aviso]')).toContainText(pagina === 'leaderboard' ? 'Liga ficticia' : 'Yahoo Finance');
+    if (pagina === 'trading') await expect(page.locator('main > [data-aviso]')).toContainText('órdenes son simuladas');
+    await expect(page.locator('footer [data-aviso="global"]')).toContainText('yfinance');
+    await expect(page.locator('footer [data-aviso="global"]')).toContainText('No es asesoría de inversión');
     await expect(page.locator('footer [data-aviso="global"]')).toContainText(avisos.global.replace('{fecha}', fecha));
     await expect(page.locator('footer [data-aviso="global"]')).not.toContainText('publicación parcial');
     expect(meta.fecha_corte).toMatch(/^\d{4}-\d{2}-\d{2}$/);

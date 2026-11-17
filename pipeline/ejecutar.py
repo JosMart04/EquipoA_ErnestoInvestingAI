@@ -60,7 +60,7 @@ def ejecutar(salida,corte=None,modo='completo',epocas=3):
         df=datos[t]
         escribir(staging/'precios'/f'{t}.json',{'ticker':t,'desde':str(df.index[0].date()),'fechas':fechas(df.index),**{k:numeros(df[k],0 if k=='v' else 4) for k in ['o','h','l','c','v']}})
     escribir(staging/'cierres_historicos.json',{'fechas':fechas(panel.index),'cierres':{t:numeros(panel[t],8) for t in panel}})
-    if (salida/'cortes').exists():shutil.copytree(salida/'cortes',staging/'cortes')
+    if modo=='diario' and (salida/'cortes').exists():shutil.copytree(salida/'cortes',staging/'cortes')
     cortes=[]
     if modo in ['completo','cortes']:
         mensuales=panel.groupby(panel.index.to_period('M')).tail(1).index

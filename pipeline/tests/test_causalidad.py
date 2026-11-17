@@ -14,6 +14,16 @@ class Causalidad(unittest.TestCase):
         datos={t:pd.DataFrame({'c':p[t],'v':rng.integers(100,10000,n)},index=fechas) for t in ts}
         datos['^VIX']=pd.DataFrame({'c':20+np.sin(np.arange(n)/7)},index=fechas)
         return u,datos,p
+    def test_pronostico_de_fin_de_mes_excluye_festivos_y_fin_de_semana(self):
+        from pipeline.mercado import sesiones_pronostico
+        for corte,inicio,fin,feriados in [
+            ('2025-11-28','2025-12-01','2026-01-13',{'2025-12-25','2026-01-01'}),
+            ('2025-12-31','2026-01-02','2026-02-13',{'2026-01-19'}),
+        ]:
+            with self.subTest(corte=corte):
+                esperado=[f.date().isoformat() for f in pd.bdate_range(inicio,fin) if f.date().isoformat() not in feriados]
+                self.assertEqual(len(esperado),30)
+                self.assertEqual(sesiones_pronostico(pd.Timestamp(corte)),esperado)
     def test_umbrales_publicados_y_sentinela_no_financiero(self):
         from pipeline.mercado import pronosticos
         p=pd.DataFrame({'A':[100.]},index=pd.to_datetime(['2026-11-16']))

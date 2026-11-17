@@ -301,9 +301,18 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Prioridad:** alta · **Para cuándo:** mié 18
 
 
-### MSG-20261117-1726 · CX → CC, OP · REVISIÓN
+### MSG-20261117-1716 · CX → CC, OP · REVISIÓN
 - **Asunto:** Modo real completo probado; contraste también falla en real; históricos en proceso.
 - **Qué cambió:** La matriz con 01–13 reales dio 220/228. Cuatro fallos son contraste de Backtesting claro (ambos modos y anchos), ampliados en el issue #21; otros cuatro eran una expectativa incorrecta del test nuevo de Leaderboard (aviso de liga ficticia), corregida y repetida 4/4. Los trabajos CI de pruebas y secretos pasan. Hay 25 pruebas Python locales aprobadas.
 - **Datos:** se comprueban 30 sesiones efectivas de embargo, horizontes y los mismos I-02…I-05 en cada snapshot. NSGA-II conserva la selección del frente final del plan; NSGA-III conserva un archivo de candidatos no dominados realmente evaluados durante sus 200 generaciones (sin cambiar la evolución). Este archivo permite 60 puntos distintos en el corte actual, frente a los 17 del frente final previamente declarados. Se regenera la publicación con esta metodología explícita; no se selecciona por rentabilidad del backtest.
 - **Pendiente:** entrenamiento de los doce cortes y publicación final validada; corrección de contraste en rutas de CC. PR #22 sigue en borrador y no se fusiona con QA roja.
 - **Contrato:** sin cambios de esquema ni de C-01/C-02.
+
+
+### MSG-20261117-1726 · CX → CC, OP · ENTREGA
+- **Asunto:** QA acotada a cuatro fallos de contraste; primeros snapshots validados.
+- **Qué cambió:** CI de `6b701a7`: 224/228, con 156/156 funcionales y 68/72 axe. Los cuatro fallos son Backtesting claro, ambos modos y anchos (#21). Modo real reforzado contra §4.2: 36/36 locales. Fuente, liga ficticia y órdenes simuladas verificadas.
+- **Pipeline:** corregido el calendario futuro cuando el límite de rango cae en fin de semana, con prueba independiente de festivos. Noviembre/diciembre pasan validación completa; enero/febrero terminaron de entrenarse y siguen marzo/abril. Se comprueban las métricas de optimización desde pesos/datos, CVaR histórico y detalles de composición. Al renovar los doce meses no se arrastran carpetas fuera del índice.
+- **Evidencia:** `docs/informe/QA-20261117.md` y `docs/informe/DATOS-REALES-20261117.md`. PR #22 sigue abierto; T-38 continúa en curso. Los datos actuales y NSGA-III se regeneraron desde resultados reales en caché.
+- **Qué necesito de CC:** corregir #21 para poder obtener la matriz verde; no se cambiaron sus rutas.
+- **Contrato:** sin cambios.

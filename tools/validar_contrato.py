@@ -74,12 +74,30 @@ def validar_carteras(d,ts,modo):
             w=p['pesos'];exigir(set(w)<=set(ts if clave.endswith('completo') else esperados),'Pesos fuera del universo')
             exigir(0.98<=sum(w.values())<=1.02 and all(0<=v<=d[7]['tope_peso_por_activo']+1e-8 for v in w.values()),'I-04 pesos')
             exigir(abs(p['sharpe']-(p['retorno_esperado_anual_pct']-100*d[7]['tasa_libre_riesgo'])/p['volatilidad_anual_pct'])<=0.01,'I-04 Sharpe')
+            if modo=='real':
+                vector=np.array([w.get(t,0) for t in ts])
+                exigir(abs(vector.sum()-1)<1e-8,'Presupuesto real exacto')
+                cierres=np.array([d[2]['cierres'][t][-253:] for t in ts]).T
+                perdidas=-((cierres[1:]/cierres[:-1]-1)@vector)
+                cola=int(np.ceil(len(perdidas)*0.05))
+                cvar=float(np.partition(perdidas,len(perdidas)-cola)[-cola:].mean()*100)
+                exigir(abs(cvar-p['cvar95_diario_pct'])<1e-4,'CVaR real desde pesos y cierres')
+                if 4 in d:
+                    retorno=float(vector@np.array(d[4]['retorno_esperado_anual_simulado'])*100)
+                    volatilidad=float(np.sqrt(vector@np.array(d[4]['covarianza_anual'])@vector)*100)
+                    exigir(abs(retorno-p['retorno_esperado_anual_pct'])<1e-4,'Retorno real desde pesos y mu')
+                    exigir(abs(volatilidad-p['volatilidad_anual_pct'])<1e-4,'Volatilidad real desde pesos y covarianza')
             if clave.startswith('nsga'):exigir(p['id']==f'N{2 if clave.startswith("nsga2") else 3}-{j+1:02d}','IDs NSGA')
+    grupos={a['ticker']:a['grupo'] for a in cargar(ROOT/'data',1)}
     exigir([p['nivel'] for p in d[8]['niveles']]==['Conservador','Moderado','Agresivo'],'I-05 niveles')
     for p in d[8]['niveles']:
         id=re.search(r'N2-\d+',p['origen']).group();ref=next(a for a in d[7]['nsga2_elegibles'] if a['id']==id)
         exigir(all(p[k]==ref[k] for k in ref if k!='id'),'I-09 origen')
+        if modo=='real':exigir({a['ticker'] for a in p['detalle_activos']}=={t for t,w in p['pesos'].items() if w>=0.01},'Detalle de pesos al menos 1 %')
         for a in p['detalle_activos']:
+            if modo=='real':
+                exigir(a['grupo']==grupos[a['ticker']],'Grupo del portafolio')
+                exigir(abs(a['peso_pct']-p['pesos'][a['ticker']]*100)<1e-5,'Peso porcentual del detalle')
             t=a['ticker'];razon=f"{d[5]['predicciones'][t]['votos_sube']}/18 clasificadores = SUBE; proyeccion mediana 30 sesiones {d[6]['predicciones'][t]['retorno_proyectado_30d_pct']:+.2f} %"
             exigir(a['razon']==razon,'I-05 razón')
 
@@ -104,6 +122,7 @@ def validar_cortes(ruta,ts,historico,meta):
     exigir(all(f in mensuales.values() for f in cortes),'Corte no es última sesión de mes')
     if meta['metodologia']['modo'] in ['completo','cortes']:exigir(cortes==esperados,'Doce cierres mensuales previos')
     exigir(len(cortes)==meta['metodologia']['cortes_publicados'],'Número de cortes meta')
+    exigir({p.name for p in (ruta/'cortes').iterdir() if p.is_dir()}==set(cortes),'Carpetas de cortes fuera del índice')
     for fecha in cortes:
         exigir(fecha<corte,'Corte futuro')
         destino=ruta/'cortes'/fecha

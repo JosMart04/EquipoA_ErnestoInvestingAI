@@ -20,10 +20,16 @@ def parametros_json(x):
     if isinstance(x,float) and not math.isfinite(x):return str(x)
     return x
 
+def sesiones_pronostico(corte):
+    cal=xcals.get_calendar('XNYS',start=str(corte.date()),end=str((corte+timedelta(days=100)).date()))
+    sesiones=cal.sessions.tz_localize(None)
+    futuras=fechas(sesiones[sesiones>corte][:30])
+    if len(futuras)!=30:raise ValueError('Calendario insuficiente para 30 sesiones')
+    return futuras
+
 def pronosticos(panel,resultados,vol):
     corte=panel.index[-1];ts=list(panel)
-    cal=xcals.get_calendar('XNYS',start=str(corte.date()),end=str((corte+timedelta(days=100)).date()))
-    futuras=fechas(cal.sessions_in_range(corte+timedelta(days=1),corte+timedelta(days=100)))[:30]
+    futuras=sesiones_pronostico(corte)
     audit=resultados['auditoria']
     c05={'definicion':'SUBE si P(t+30)>P(t); BAJA en otro caso. Modelos de panel reales, prueba temporal externa con embargo de 30 sesiones.','modelos':[],'predicciones':{},'tasa_base_sube':audit['tasa_base_sube'],'metodologia':audit}
     c06={'fechas_pronostico':futuras,'modelos':[],'predicciones':{},'metodologia':audit}
