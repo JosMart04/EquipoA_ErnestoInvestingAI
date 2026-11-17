@@ -3,6 +3,7 @@ import argparse
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from datetime import datetime, timezone
 import hashlib
+from importlib.metadata import version
 import json
 import os
 from pathlib import Path
@@ -77,7 +78,7 @@ def ejecutar(salida,corte=None,modo='completo',epocas=3):
     reloj=datetime.now(timezone.utc)
     cal,ultimo=corte_cerrado(reloj)
     ahora=reloj.isoformat().replace('+00:00','Z')
-    meta={'version_contrato':'1.0.0','generado_en':ahora,'fecha_corte':corte,'fuente':FUENTE,'tickers_ok':[t for t in panel if not rellenos[t]],'tickers_con_problemas':[t for t in panel if rellenos[t]],'stale':len(cal.sessions_in_range(corte,ultimo))-1>5,'duracion_s':round(time.monotonic()-inicio,3),'commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'aviso':'Datos reales de Yahoo Finance obtenidos con yfinance (proyecto no afiliado a Yahoo). Modelos entrenados por el Equipo A con fines educativos; pueden tener errores. No es asesoría de inversión. Historia ajustada revisable, universo fijo.','metodologia':{'auto_adjust':True,'sesiones_rellenadas':rellenos,'cierres_sha256':hashlib.sha256((staging/'cierres_historicos.json').read_bytes()).hexdigest(),'evaluacion':audit,'modo':modo,'cortes_publicados':len(cortes),'epocas_max_dl':epocas,'diario':'Reentrenamiento DL reducido, no reutiliza pesos entrenados después de la prueba','ajustes_historicos':'Descarga actual ajustada por splits/dividendos; no es una base point-in-time de versiones históricas.'}}
+    meta={'version_contrato':'1.0.0','generado_en':ahora,'fecha_corte':corte,'fuente':FUENTE,'tickers_ok':[t for t in panel if not rellenos[t]],'tickers_con_problemas':[t for t in panel if rellenos[t]],'stale':len(cal.sessions_in_range(corte,ultimo))-1>5,'duracion_s':round(time.monotonic()-inicio,3),'commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'aviso':'Datos reales de Yahoo Finance obtenidos con yfinance (proyecto no afiliado a Yahoo). Modelos entrenados por el Equipo A con fines educativos; pueden tener errores. No es asesoría de inversión. Historia ajustada revisable, universo fijo.','metodologia':{'versiones':{n:version(n) for n in ['yfinance','numpy','pandas','scikit-learn','xgboost','lightgbm','torch','cvxpy','pymoo','exchange-calendars']},'auto_adjust':True,'sesiones_rellenadas':rellenos,'cierres_sha256':hashlib.sha256((staging/'cierres_historicos.json').read_bytes()).hexdigest(),'evaluacion':audit,'modo':modo,'cortes_publicados':len(cortes),'epocas_max_dl':epocas,'diario':'Reentrenamiento DL reducido, no reutiliza pesos entrenados después de la prueba','ajustes_historicos':'Descarga actual ajustada por splits/dividendos; no es una base point-in-time de versiones históricas.'}}
     escribir(staging/'meta.json',meta)
     informe=validar(staging,'real')
     # Valida también la coherencia de cada snapshot con su propio corte y datos pasados.

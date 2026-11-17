@@ -1,10 +1,8 @@
-# E2E de cámara, Optimizador, Backtesting y publicación parcial (T-50)
+# E2E y axe de CX (T-50)
 
-Responde a MSG-20261117-1112 y a los detalles 1031, 1035 y 1054.
-Incluye la entrega de Backtesting del 17-nov (MSG-20261117-1203 en la bitácora;
-1204 en el mensaje recibido). Hay 48 casos: los mismos 24 a 1280×900 y 390×844.
-
-## Ejecución desde la raíz
+Playwright 1.65.1 + axe-core 4.14.0. Cuatro proyectos: escritorio 1280×900 y
+móvil 390×844, cada uno en claro y oscuro. La configuración descubre los
+casos de `tests/e2e/` y `tests/a11y/`.
 
 ```powershell
 npm ci --prefix tests --ignore-scripts
@@ -12,91 +10,71 @@ npx --prefix tests playwright install chromium
 npm --prefix tests run test:e2e
 ```
 
-Python debe estar en PATH. Playwright inicia y detiene un servidor en
-127.0.0.1:8765; no reutiliza otro servidor que pudiera servir un clon distinto.
-En Linux: `npx --prefix tests playwright install --with-deps chromium`.
+Python debe estar en PATH. Playwright inicia y detiene un servidor exclusivo
+en 127.0.0.1:8765. En Linux se instala Chromium con `--with-deps`.
+`E2E_CHROME_PATH` permite señalar una instalación local compatible; la CI
+instala el Chromium de Playwright. Los diagnósticos adjuntan la versión real.
 
-Si ya hay una instalación compatible de Chrome for Testing, se puede indicar
-la ruta absoluta de su ejecutable en `E2E_CHROME_PATH`.
-La CI instala el navegador de Playwright 1.65.1. La versión realmente
-ejecutada aparece en los adjuntos de diagnóstico.
+## Cobertura
 
-## Qué se comprueba
+- Cámara falsa de Chrome, MediaPipe real y consentimiento mediante interfaz:
+  diez segundos con cuadros/currentTime crecientes, mismo vídeo conectado,
+  sin pausa y pista viva. Esc apaga y libera la pista. No detector sustituto.
+- Clic real NSGA-II con coordenadas ECharts y `page.mouse.click`; cambia
+  composición e ID. A 390 se aíslan los círculos con los interruptores reales
+  porque las series se superponen. Escritorio conserva todas las series.
+- Backtesting contra `09`: siete curvas, drawdown independiente (0,01 pp por
+  redondeo), métricas y ordenación, 7/7, nota 35 %/25 %, interpretación sin
+  ocultar pérdidas y recálculo deshabilitado. Agresivo llega seleccionado
+  desde Portafolios con tres migas; se pulsan los doce rebalanceos y se
+  contrastan fechas y todos los pesos (0,051 pp por presentación a un decimal).
+- Migas Clasificación → NVDA → Regresión → Optimizador: 3/4 elementos,
+  contexto y página actual correctos, persistencia al recargar y ausencia al
+  llegar por la navegación principal.
+- T-27: End anuncia último cierre AAPL de `03`; resúmenes por serie con
+  1/2/7+7/3 elementos; ninguna etiqueta contiene «This is a chart»;
+  barrido con Espacio para entrar y Esc para detener.
+- Publicación parcial controlada: nueve páginas × ES/EN. Se mantienen `meta`
+  y los recursos del sitio; las peticiones de 01–13 reciben 404 explícitos.
+  Se exigen aviso exacto de módulo y pie, archivo ausente y su 404, modo
+  conservado y menú móvil. Esto persiste después de publicar datos completos.
+- Falta de 09 aislada: además se sirve `13` desde el JSON profesor como fixture
+  de parámetros. Intercepción por `URL.pathname` compatible con `?v=`; se
+  exige una petición atendida, respuesta 200, cuerpo idéntico, versión del
+  manifiesto y ningún 404 de 13. El diagnóstico debe nombrar 09.
+- Publicación real completa: nueve módulos contra los archivos publicados,
+  contenido visible, sin estado de error ni aviso parcial, atribución y sin
+  fallos HTTP. No usa sustitutos de 01–13.
+- Axe WCAG 2.2 AA: nueve páginas × dos modos en los cuatro proyectos, 72
+  escaneos sin exclusiones de reglas ni elementos. Se espera lista vacía de
+  violaciones y se adjunta el resultado completo, incluidos `incomplete`.
 
-- **Cámara:** entrada desde el Centro de accesibilidad, consentimiento por
-  su botón real, `getUserMedia` con los dispositivos falsos de Chrome,
-  modelo Face Landmarker del repositorio y MediaPipe 1.2.3 real.
-  No se usa `?camara=simulada`, ni `canvas.captureStream`,
-  ni detector sustituto. Tras recibir el primer cuadro se observa el flujo
-  durante al menos 10 segundos, muestreando cada 250 ms. Se exige:
-  vídeo conectado y sin pausa, mismo nodo DOM, pista viva, más cuadros
-  procesados y avance de `currentTime` en cada ventana de un segundo.
-  Esc debe apagar la cámara, quitar el HUD y terminar la pista.
-- **Optimizador:** conversión de coordenadas con la API de ECharts y
-  `page.mouse.click` sobre un círculo NSGA-II distinto del punto
-  inicial. No se llama al manejador, `dispatchAction` ni
-  `HTMLElement.click()`. El encabezado de composición debe cambiar
-  e incluir el ID elegido. Se mantienen las comprobaciones de pesos y el
-  recálculo deshabilitado en Modo profesor. En escritorio se mantienen todas
-  las series; en móvil se aíslan los círculos NSGA-II mediante los interruptores
-  reales (R-OPT-02), porque las series se superponen a ese ancho.
-- **Backtesting profesor:** siete curvas de capital contra `09`, drawdown
-  calculado independientemente desde cada curva (tolerancia 0,01 pp por
-  redondeo), las siete métricas de cada serie y ordenación por retorno.
-  Se exige «7 de 7 series», nota de Agresivo 35 % frente a tope 25 %,
-  tres interpretaciones que reconocen la pérdida frente a SPY y recálculo
-  deshabilitado. El enlace real desde la tarjeta Agresivo debe seleccionarlo
-  al llegar; se pulsan los 12 rebalanceos y se verifican fecha, selección
-  única y todos los pesos contra `09` (0,051 pp por presentación a un decimal).
-  No se importan las funciones del módulo para obtener los resultados esperados.
-- **Publicación parcial actual:** nueve páginas × ES-PE/EN-US × dos tamaños.
-  Se leen el manifiesto real y los diccionarios. El aviso del módulo y del pie
-  debe contener la traducción exacta de `aviso.real.parcial`, con la
-  fecha formateada por Intl. Se exige un error que nombre un JSON ausente,
-  su 404 correspondiente y ningún otro fallo de red. En Backtesting se verifica además el 404 de `09`. Como `09` y `13`
-  faltan y se solicitan en paralelo, el diagnóstico puede nombrar cualquiera.
-- **Ausencia aislada de 09:** cuatro casos adicionales (ES/EN × ambos anchos)
-  sirven `13` desde el JSON profesor como fixture explícito de parámetros;
-  el resto de solicitudes sigue llegando al servidor. Aquí se exige
-  específicamente `09_backtesting_portafolios.json` en el diagnóstico,
-  su 404 y los avisos parciales exactos. No representa la publicación real
-  presente ni permite considerarla completa. No cambia el modo solo.
-  En móvil se abre el menú antes de comprobar sus nueve enlaces.
-- Ausencia de excepciones JS no controladas y de desborde horizontal en los
-  escenarios de Optimizador, Backtesting y publicación parcial.
-
-ECharts 5.5.1 y MediaPipe 1.2.3 se sirven mediante rutas de Playwright desde
-sus paquetes npm originales, con las mismas URLs y tipos MIME que usa el
-sitio. Así la prueba del comportamiento no depende de que jsDelivr responda.
-HTML, CSS, código del sitio y modelos binarios se sirven desde el clon.
-Los JSON también, salvo la ruta de `13` en los cuatro casos explícitos
-que aíslan `09`; no se inventan salidas de datos ni de MediaPipe.
-
-La prueba parcial es una prueba de integración de la publicación presente:
-exige que los archivos que el módulo anuncia como ausentes falten de verdad.
-Cuando se publiquen 01–13, deberá conservarse esa regresión con un escenario
-HTTP parcial controlado y agregarse la cobertura del modo completo, sin
-eliminar las aserciones sobre avisos, archivo y 404.
+ECharts y MediaPipe originales se sirven desde paquetes npm fijados, con
+sus URLs y MIME del sitio. Así se evita depender de jsDelivr durante QA.
+No se cambian el detector ni las APIs de cámara. Los escenarios HTTP parciales
+están explícitamente separados de los de publicación completa.
 
 ## Evidencia y límites
 
-`tests/playwright-report/` contiene el informe HTML.
-Se adjuntan diagnósticos (versión del navegador, HTTP, consola y excepciones),
-muestras de cámara y punto seleccionado. Ante fallo también se guardan
-captura y traza. La CI sube ambos directorios durante siete días.
+Informe HTML en `tests/playwright-report/`; resumen JSON y capturas/trazas de
+fallos en `tests/test-results/`. CI conserva los artefactos siete días.
+Las excepciones JS y peticiones fallidas son errores; los 404 controlados se
+comprueban en sus escenarios específicos.
 
-Esta suite no demuestra que la detección de caras o gestos funcione con
-personas reales: la cámara falsa genera un patrón de prueba. Sigue pendiente
-la prueba humana con webcam, incluyendo el sentido de los ejes y el puño
-cerrado durante 1,5 s para pausar manos (D-22). Tampoco sustituye la suite
-completa E2E/axe, ambos temas ni los restantes flujos entre módulos.
-No se verifica todavía la sincronización interactiva del cursor/zoom entre
-los gráficos de Backtesting ni su interpretación con datos alterados.
+La primera matriz de esta ampliación terminó 190/192: Backtesting profesor
+claro falló por contraste de cinco etiquetas, en ambos anchos. Ver
+`docs/informe/QA-20261117.md` e issue #21. No se desactiva la regla. Después,
+la revisión de HTTP parcial y migas de Agresivo pasó 88/88 casos dirigidos.
+La suite con los datos reales completos suma 228 casos; su resultado se
+registra al publicar la entrega.
 
-`npm audit` informa GHSA-fgmj-fm8m-jvvx para ECharts 5.5.1
-(severidad moderada). Se conserva esa versión, fijada por la guía, y se
-registra para revisión de CC; no se ejecuta una actualización mayor automática.
+No sustituye pruebas humanas con webcam, lector de pantalla, audio o
+interruptor físico. Pendientes fuera de estos casos: sincronización de
+cursor/zoom entre gráficos y flujos restantes de interacción. Pausa de manos:
+puño 1,5 s (D-22). `npm audit` informa GHSA-fgmj-fm8m-jvvx en ECharts 5.5.1
+(moderada); se mantiene la versión fijada por la guía, sin actualización
+mayor automática.
 
-Referencias:
-- [Playwright: navegadores](https://playwright.dev/docs/browsers).
-- [Playwright: servidor para pruebas](https://playwright.dev/docs/test-webserver).
+Referencias: [Playwright/axe](https://playwright.dev/docs/accessibility-testing),
+[navegadores](https://playwright.dev/docs/browsers),
+[servidor](https://playwright.dev/docs/test-webserver).
