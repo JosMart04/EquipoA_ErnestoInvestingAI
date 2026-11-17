@@ -61,12 +61,10 @@ fallos en `tests/test-results/`. CI conserva los artefactos siete días.
 Las excepciones JS y peticiones fallidas son errores; los 404 controlados se
 comprueban en sus escenarios específicos.
 
-La primera matriz de esta ampliación terminó 190/192: Backtesting profesor
-claro falló por contraste de cinco etiquetas, en ambos anchos. Ver
-`docs/informe/QA-20261117.md` e issue #21. No se desactiva la regla. Después,
-la revisión de HTTP parcial y migas de Agresivo pasó 88/88 casos dirigidos.
-La suite con los datos reales completos suma 228 casos; su resultado se
-registra al publicar la entrega.
+La matriz final con 01–13 y doce cortes reales termina **224/228**:
+156/156 funcionales y 68/72 axe. Los cuatro fallos son contraste de
+Backtesting claro en ambos modos y anchos, issue #21. No se desactiva la
+regla. Evidencia y comprobaciones: `docs/informe/QA-20261117.md`.
 
 No sustituye pruebas humanas con webcam, lector de pantalla, audio o
 interruptor físico. Pendientes fuera de estos casos: sincronización de

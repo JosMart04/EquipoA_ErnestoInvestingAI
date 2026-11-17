@@ -19,7 +19,9 @@ Repositorio del equipo: [EquipoA_ErnestoInvestingAI](https://github.com/JosMart0
 - **Real (`data_real/`):** el pipeline de esta entrega descarga OHLCV ajustado,
   entrena los 18 clasificadores y 18 regresores, ejecuta cvxpy/pymoo y calcula
   backtesting causal. El corte y la procedencia están en `meta.json`; los
-  13 archivos conservan el contrato. Los estados parciales se muestran como
+  13 archivos conservan el contrato. Esta entrega incluye doce cortes de
+  fin de mes (nov-2025 a oct-2026), con sus auditorías; ocupa 12,69 MB.
+  Los estados parciales se muestran como
   tales y no activan automáticamente el otro modo.
 - La liga y el Trading son simulados en ambos modos. No se conectan cuentas,
   no se ejecutan órdenes reales y no hay claves de proveedor en el repositorio.

@@ -1,14 +1,14 @@
 # Datos reales · corte 2026-11-16
 
 Publicación en la rama de CX, PR #22; pendiente de revisión y merge. Los nueve
-módulos cargan 01–13. Los doce snapshots se completan antes de cerrar T-38.
+módulos cargan 01–13. Los doce snapshots mensuales están generados y validados.
 
 ## Trazabilidad y evaluación
 
 - Fuente: Yahoo Finance mediante yfinance, precios ajustados. 26 activos,
   2.115 sesiones comunes desde 2018-06-19; historia individual desde 2010 o IPO.
 - Prueba externa: 2025-10-03 a 2026-10-05, 252 fechas × 26 activos
-  = 6,552 observaciones. Última etiqueta: 2026-11-16.
+  = 6552 observaciones. Última etiqueta: 2026-11-16.
 - Entrenamiento externo hasta 2025-08-20, etiqueta hasta
   2025-10-02; 30 sesiones embargadas. Validación
   interna de DL separada de la prueba externa; máximo fijo de tres épocas.
@@ -67,3 +67,34 @@ verifican en la misma escala aunque Yahoo revise después el panel actual.
 El job diario conserva esa versión y el semanal la regenera explícitamente.
 Esto no recupera versiones históricas originales del proveedor: sigue
 siendo una descarga actual de precios ajustados, con la limitación declarada.
+
+## Doce cortes publicados
+
+Cada corte contiene 18 clasificadores y 18 regresores evaluados fuera de
+muestra, más sus fronteras y tres portafolios. Las huellas completas están
+en las auditorías; aquí se muestra su prefijo para facilitar la revisión.
+
+| Corte | Prueba externa | Huella (prefijo) | Elegibles | NSGA-III distintos |
+|---|---|---|---:|---:|
+| 2025-11-28 | 2024-10-15 – 2025-10-16 | `ffcd9478748b` | 19 | 60 |
+| 2025-12-31 | 2024-11-14 – 2025-11-17 | `9a06b6636b86` | 18 | 60 |
+| 2026-01-30 | 2024-12-13 – 2025-12-16 | `5af92ecba3cc` | 25 | 60 |
+| 2026-02-27 | 2025-01-14 – 2026-01-14 | `4e8f8ce8df06` | 25 | 60 |
+| 2026-03-31 | 2025-02-14 – 2026-02-17 | `26fcf0e3c615` | 26 | 60 |
+| 2026-04-30 | 2025-03-18 – 2026-03-18 | `a9a70a81d9cf` | 21 | 60 |
+| 2026-05-29 | 2025-04-15 – 2026-04-16 | `88174d34887e` | 24 | 60 |
+| 2026-06-30 | 2025-05-15 – 2026-05-15 | `194801cf1604` | 26 | 60 |
+| 2026-07-31 | 2025-06-17 – 2026-06-17 | `cd35fc9e4605` | 22 | 60 |
+| 2026-08-31 | 2025-07-18 – 2026-07-20 | `e63f98b5e3d7` | 20 | 60 |
+| 2026-09-30 | 2025-08-18 – 2026-08-18 | `2815d7d53242` | 21 | 60 |
+| 2026-10-30 | 2025-09-18 – 2026-09-18 | `82b1d52bfb25` | 24 | 60 |
+
+Publicación: **12693189 bytes** en 102 JSON (límite 15000000). Incluye 01–13,
+meta, cierres comunes, 26 históricos individuales, índice de cortes y
+los doce grupos de 05–08 + auditoría. El corte actual es 2026-11-16.
+
+La preparación de los 432 resultados históricos se ejecutó aproximadamente
+entre las 16:48 y 18:38 de Lima del 17-nov (dos procesos CPU). La generación
+final desde caché tardó 67.078 s. No se presenta ese segundo tiempo
+como duración del entrenamiento original. Commit generador:
+`346edb0ff12c4a08d593046f520565cabead4cbb`.
