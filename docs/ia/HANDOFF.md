@@ -4,13 +4,13 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 11:12 (Lima)
+- Fecha y hora: 2026-11-17 11:55 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-21-trading-leaderboard` → PR #13 (Trading y Leaderboard)
+- Rama / último commit: `cc/T-23-portafolios` → PR #16 (Portafolios y «Llevar a Trading»)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **107/107, ninguna omitida**. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **113/113, ninguna omitida**. Además, CX tiene 40 E2E con Playwright (PR #15) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -27,6 +27,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **107/107
 | #11 | T-18 | **Optimizador** (P05): dispersión riesgo–retorno con Markowitz (línea; elegibles, universo o ambas), NSGA-II (círculos) y NSGA-III (triángulos coloreados por CVaR, con escala); interruptores; selección con clic, con el teclado (flechas + Enter) o desde la tabla; composición con barras, métricas y comprobación R-OPT-09; explicación de por qué NSGA queda debajo, medida en los datos; elegibles con su razón y mensaje para `?t=`; recálculo deshabilitado en Modo profesor | 95/95; navegador: teclado, Enter, tabla de 135 puntos, interruptores, EN sin recargar, 390 px; 27 cargas de humo. **El clic con ratón real no se pudo simular** (panel oculto): el manejador sí funciona |
 | #12 | T-19, T-20 | **Dashboard** (velas por defecto, periodos, fechas, tabla ordenable con estrella y enlace) y **Watchlist y alertas** (agregar, minigráficos, gestor de alertas, «⚠ DISPARADA» con fila resaltada y anuncio), ambos con `EIA.modulo` e i18n | 101/101; navegador: periodos, fechas, filtros, estrella, alta y baja de alertas, errores con `aria-invalid`; 27 cargas de humo |
 | #13 | T-21, T-22 | **Trading** (vista previa, errores en el campo con `aria-invalid` y foco, posiciones, historial, reinicio con diálogo, tarjeta «Portafolio aplicado») y **Leaderboard** (ranking con tu fila marcada; el retorno sale de tu cartera de Trading). La cartera vive en el núcleo: `EIA.cartera` | 107/107; navegador: errores de cantidad, efectivo y venta; compra; reinicio; Trading → Leaderboard; 27 cargas de humo |
+| #15 (CX) | T-50 | E2E: cámara falsa + MediaPipe real (cuadros crecientes 10 s), clic real en NSGA-II, aviso parcial en 9 páginas | 40 E2E en la CI |
+| #16 | T-23, T-25 (parte) | **Portafolios** (tarjetas, elegir nivel, composición, razones con «Excluir») y **«Llevar a Trading»** compartido (`EIA.ui.llevarATrading`) desde Portafolios y el Optimizador; Trading muestra la cartera aplicada | 113/113; flujo Portafolios → Trading → Leaderboard en el navegador; 390 px; 27 cargas de humo |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -46,11 +48,11 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **107/107
 - El atajo `Alt+Shift+A` con una pulsación real (el evento sintético llega y abre el panel).
 
 ## En curso (estado exacto)
-- Nada a medias tras el PR #13. Los 4 heredados y los 3 primeros módulos nuevos están terminados. Lo siguiente es T-23 Portafolios y T-24 Backtesting.
+- Nada a medias tras el PR #16. Lo siguiente es T-24 Backtesting.
 
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
-2. **T-23 Portafolios y T-24 Backtesting** (P06 + extensiones). Para «Llevar a Trading» (T-25) usa `EIA.cartera.validar` y `EIA.cartera.ejecutar` con `cantidad = floor(monto × peso / precio)` y guarda `eia_elegido = {modo, nivel, origen, pesos, excluidos, llevado_a_trading: true}`: Trading ya muestra la tarjeta «Portafolio aplicado» cuando existe. No afirmes ningún orden entre niveles (contrato N-4).
+2. **T-24 Backtesting** (P06): curvas base 100 y drawdown sincronizado, tabla de métricas, línea de tiempo de rebalanceos, interpretación generada por reglas, R-BT-06 visible y la nota del tope 0,35 del Agresivo (N-3). `backtesting.html?nivel=Moderado` llega desde Portafolios. Después: lo que falta de T-25 (migas de pan) y T-26 (Modo real).
 3. T-19…T-22: pasar los heredados de `window.init` a `EIA.modulo` con su `js/<modulo>.js` y sus textos a i18n.
 4. Cuando Josué vuelva a probar la webcam, ajusta signos y umbrales con lo que reporte.
 
@@ -74,6 +76,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **107/107
 - **Comando de pruebas:** `node --test "tests/unit/*.test.mjs"` (con la carpeta sola, Node ≥ 21 falla).
 - **El panel de navegador integrado de Claude, cuando está oculto, no ejecuta `requestAnimationFrame` ni entrega el evento `close` de `<dialog>`.** Por eso `EIA.ui.dialogo` finaliza también tras `submit`, `cancel` y `cerrar()`, y para probar el puntero sin ver el panel sustituí `requestAnimationFrame` por un temporizador dentro de la prueba. En un navegador normal no pasa.
 - **Nunca reescribas con `innerHTML` un nodo que contenga el `<video>` de la cámara:** al salir del documento el navegador lo pausa y el seguimiento se congela (fue el fallo del 17-nov; hay una prueba que vigila `camara.js`).
+- **«Llevar a Trading»** vive en el núcleo (`EIA.ui.llevarATrading`): úsalo desde cualquier módulo con `{pesos, excluidos, nivel, origen, fuente}`; guarda `eia_elegido.aplicado`, que Trading muestra.
+- **A 390 px los puntos de NSGA-II y NSGA-III se superponen** (lo detectó CX en E2E): para elegir con el dedo hay que apagar series; con teclado o desde la tabla funciona. Mejora pendiente.
 - **Modo real hoy:** `data_real/` solo tiene `meta.json` y `cierres_historicos.json`. Cada módulo muestra «publicación parcial» y nombra el archivo que falta; es lo esperado hasta que CX publique 01–13.
 - **El navegador cachea `js/common.js` y los `i18n/*.json`** con `python -m http.server`: tras editarlos, recarga forzada (Ctrl+F5).
 - **Remontar componentes:** `EIA.ui.tabla`, `segmentado` y `grafico` cancelan sus oyentes anteriores al montarse otra vez sobre el mismo nodo (`montar()` en `common.js`). Si creas un componente nuevo con `addEventListener` sobre `destino`, usa `montar(destino).control.signal`.

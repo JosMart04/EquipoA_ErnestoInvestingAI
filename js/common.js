@@ -408,6 +408,27 @@
       }
       return n;
     },
+    /** Pesos sin los activos excluidos, reescalados para que vuelvan a sumar 1 (G10). Devuelve {} si no queda ninguno. */
+    renormalizar(pesos, excluidos) {
+      const ex = excluidos || [], quedan = Object.entries(pesos).filter(([tk, w]) => w > 0 && !ex.includes(tk));
+      const suma = quedan.reduce((a, [, w]) => a + w, 0), salida = {};
+      if (suma > 0) for (const [tk, w] of quedan) salida[tk] = w / suma;
+      return salida;
+    },
+    /** Plan de compras de «Llevar a Trading» (PLAN_MAESTRO §4.5): cantidad = floor(monto × peso / precio).
+        Devuelve {ordenes: [{ticker, peso, precio, cantidad, total}], sinComprar: [...], total, sobrante}. */
+    plan(pesos, monto, precio) {
+      const ordenes = [], sinComprar = [];
+      for (const [ticker, peso] of Object.entries(pesos)) {
+        const p = precio(ticker);
+        if (!(p > 0) || !(peso > 0)) continue;
+        const cantidad = Math.floor((monto * peso) / p + 1e-9), fila = { ticker, peso, precio: p, cantidad, total: cantidad * p };
+        (cantidad > 0 ? ordenes : sinComprar).push(fila);
+      }
+      ordenes.sort((a, b) => b.peso - a.peso);
+      const total = ordenes.reduce((a, o) => a + o.total, 0);
+      return { ordenes, sinComprar, total, sobrante: monto - total };
+    },
     /** Filas de posiciones con valor y ganancia o pérdida. */
     filas: (c, precio) => c.posiciones.map(p => {
       const ultimo = precio(p.ticker), valor = p.cantidad * ultimo, pnl = (ultimo - p.costo) * p.cantidad;
@@ -894,6 +915,86 @@
       abrir() { previo = document.activeElement; document.body.appendChild(d); d.showModal(); },
       cerrar(valor) { if (d.open) d.close(valor || ""); finalizar(); }
     };
+  };
+
+  /** Diálogo «Llevar a Trading» (R-POR-04, G10, PLAN_MAESTRO §4.5), compartido por Portafolios y el Optimizador.
+      Muestra cuánto efectivo invertir (por defecto todo el disponible), deja desmarcar activos (los pesos se
+      renormalizan), calcula las cantidades y, al confirmar, compra a mercado con la misma validación de Trading.
+      cfg = {pesos, excluidos, nivel, origen, fuente: "portafolios" | "optimizador", alTerminar()} */
+  EIA.ui.llevarATrading = async function (cfg) {
+    const t = EIA.t, usd = x => EIA.fmt.usd(x);
+    const [c10, c11] = await Promise.all([EIA.universo(), EIA.datos("11_watchlist_alertas_portafolio_demo.json")]);
+    const precio = tk => { const a = c10.find(x => x.ticker === tk); return a ? a.ultimo : NaN; };
+    const cartera = () => EIA.estado.get(EIA.cartera.clave()) || EIA.cartera.copia(c11.portafolio_demo);
+    const efectivo = Math.floor(cartera().efectivo * 100) / 100;
+    const marcados = new Set(Object.keys(cfg.pesos).filter(tk => cfg.pesos[tk] > 0 && !(cfg.excluidos || []).includes(tk)));
+    let plan = null;
+
+    const caja = document.createElement("div");
+    caja.className = "llevar";
+    caja.innerHTML = `<p>${esc(t("llevar.intro", { origen: cfg.origen }))}</p>
+<label for="llevar-monto">${esc(t("llevar.monto"))}</label>
+<input id="llevar-monto" type="number" min="0" step="0.01" inputmode="decimal" value="${efectivo}" aria-describedby="llevar-monto-ayuda llevar-monto-error">
+<p id="llevar-monto-ayuda" class="mut">${esc(t("llevar.monto_ayuda", { efectivo: usd(efectivo) }))}</p>
+<p id="llevar-monto-error" class="err" aria-live="polite"></p>
+<fieldset class="llevar-activos"><legend>${esc(t("llevar.activos"))}</legend>${Object.keys(cfg.pesos).filter(tk => cfg.pesos[tk] > 0).sort((a, b) => cfg.pesos[b] - cfg.pesos[a]).map(tk =>
+      `<label class="casilla"><input type="checkbox" data-llevar="${esc(tk)}"${marcados.has(tk) ? " checked" : ""}> ${esc(tk)}</label>`).join("")}</fieldset>
+<div class="llevar-plan" aria-live="polite"></div>`;
+
+    function calcular() {
+      const monto = Number(caja.querySelector("#llevar-monto").value), err = caja.querySelector("#llevar-monto-error"), input = caja.querySelector("#llevar-monto");
+      const malo = !(monto > 0) ? "llevar.error_monto" : monto > efectivo + 1e-9 ? "llevar.error_efectivo" : null;
+      err.textContent = malo ? t(malo, { efectivo: usd(efectivo) }) : "";
+      if (malo) input.setAttribute("aria-invalid", "true"); else input.removeAttribute("aria-invalid");
+      const pesos = EIA.cartera.renormalizar(cfg.pesos, Object.keys(cfg.pesos).filter(tk => !marcados.has(tk)));
+      plan = malo ? null : EIA.cartera.plan(pesos, monto, precio);
+      const destino = caja.querySelector(".llevar-plan");
+      if (!plan) { destino.innerHTML = ""; return; }
+      destino.innerHTML = !plan.ordenes.length ? `<p class="err">${esc(t("llevar.sin_ordenes"))}</p>` : `<div class="tw" role="region" tabindex="0" aria-label="${esc(t("llevar.plan_caption"))}"><table><caption>${esc(t("llevar.plan_caption"))}</caption>
+<thead><tr><th scope="col" class="l">${esc(t("comun.activo"))}</th><th scope="col">${esc(t("llevar.col_peso"))}</th><th scope="col">${esc(t("llevar.col_precio"))}</th><th scope="col">${esc(t("llevar.col_cantidad"))}</th><th scope="col">${esc(t("llevar.col_total"))}</th></tr></thead>
+<tbody>${plan.ordenes.map(o => `<tr><th scope="row" class="l">${esc(o.ticker)}</th><td>${esc(EIA.fmt.pct(o.peso * 100, 1, { signo: false }))}</td><td>${esc(usd(o.precio))}</td><td>${esc(EIA.fmt.ent(o.cantidad))}</td><td>${esc(usd(o.total))}</td></tr>`).join("")}</tbody></table></div>
+<p class="vista-previa">${esc(t("llevar.resumen", { total: usd(plan.total), sobrante: usd(efectivo - plan.total) }))}</p>${
+      plan.sinComprar.length ? `<p class="mut">${esc(t("llevar.sin_comprar", { lista: plan.sinComprar.map(o => o.ticker).join(", ") }))}</p>` : ""}`;
+    }
+    caja.addEventListener("input", calcular);
+    caja.addEventListener("change", e => {
+      const tk = e.target.dataset && e.target.dataset.llevar;
+      if (tk) { if (e.target.checked) marcados.add(tk); else marcados.delete(tk); calcular(); }
+    });
+
+    function ejecutar() {
+      let c = cartera(), compradas = 0, gastado = 0;
+      const ordenes = EIA.estado.get(EIA.cartera.claveOrdenes()) || [], ahora = new Date().toISOString();
+      for (const o of plan.ordenes) {
+        const orden = { ticker: o.ticker, lado: "C", cantidad: o.cantidad };
+        if (Object.keys(EIA.cartera.validar(c, orden, o.precio)).length) continue; // misma validación que Trading
+        c = EIA.cartera.ejecutar(c, orden, o.precio);
+        ordenes.push({ fecha: ahora, ticker: o.ticker, lado: "C", cantidad: o.cantidad, precio: o.precio });
+        compradas++; gastado += o.total;
+      }
+      EIA.estado.set(EIA.cartera.clave(), c);
+      EIA.estado.set(EIA.cartera.claveOrdenes(), ordenes);
+      const excluidos = Object.keys(cfg.pesos).filter(tk => !marcados.has(tk));
+      // «aplicado» recuerda la última cartera llevada a Trading aunque después se elija otro nivel
+      EIA.estado.set("eia_elegido", { modo: EIA.modo(), nivel: cfg.nivel || null, origen: cfg.origen, fuente: cfg.fuente, pesos: cfg.pesos, excluidos, llevado_a_trading: true,
+        aplicado: { nivel: cfg.nivel || null, origen: cfg.origen, fuente: cfg.fuente, excluidos } });
+      const texto = t("llevar.hecho", { n: compradas, total: usd(gastado) });
+      EIA.ui.notificar(texto, "ok"); EIA.ui.anunciar(texto);
+      if (cfg.alTerminar) cfg.alTerminar();
+    }
+
+    const dlg = EIA.ui.dialogo({
+      titulo: t("llevar.titulo", { origen: cfg.origen }), contenido: caja,
+      acciones: [{ texto: t("llevar.cancelar"), valor: "no" }, { texto: t("llevar.confirmar"), valor: "si", primario: true }],
+      alCerrar(v) { if (v === "si" && plan && plan.ordenes.length) ejecutar(); }
+    });
+    // Con datos no válidos «Confirmar» no cierra el diálogo: se queda abierto mostrando el error
+    $("form", dlg.el).addEventListener("submit", e => {
+      if (e.submitter && e.submitter.value === "si" && !(plan && plan.ordenes.length)) { e.preventDefault(); caja.querySelector("#llevar-monto").focus(); }
+    });
+    calcular();
+    dlg.abrir();
+    return dlg;
   };
 
   /** Barra de progreso accesible. */

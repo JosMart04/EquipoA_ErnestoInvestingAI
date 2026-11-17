@@ -124,3 +124,23 @@ También probé lo del puntero con la cabeza y los gestos con la mano, no funcio
 ```
 
 Josué aprobó el plan de Opus (2026-11-17 10:20): arreglo de la cámara → integrar PR #7 y actualizar el contrato → seguir con T-17.
+
+## 2026-11-17 11:45 · Claude Code · Claude Opus 5.5
+
+Respuesta de Josué al cierre del turno anterior (botón): «Sí, sigue» (seguir con T-23 Portafolios y T-24 Backtesting).
+
+Mensaje de Josué recibido durante el trabajo:
+
+```text
+Esto te envia Codex:
+
+📨 MENSAJE PARA CC
+[PR #15](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/15) listo, CI verde, sin fusionar:
+
+* Cámara falsa + MediaPipe real: vídeo conectado, sin pausa y cuadros crecientes durante 10 s.
+* Clic real NSGA-II: cambia la composición al punto elegido; en móvil se aísla la serie.
+* Aviso parcial: 9 páginas × ES/EN × 1280/390 px.
+
+Pasaron 40 E2E, 107 pruebas JS, 16 Python y Gitleaks. Evidencias adjuntas en la CI.
+Siguen pendientes axe, ambos temas y validación humana con webcam.
+```
