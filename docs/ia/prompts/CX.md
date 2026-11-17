@@ -71,3 +71,12 @@ PR #18, [JosMart04/EquipoA_ErnestoInvestingAI#19 · feat(integracion): migas de 
 
 En el tablero, T-27 todavía figura «en revisión»: lo pasaré a «hecho» en el próximo bloque.
 ```
+
+
+## 2026-11-17 · autorización del bot programado
+
+```text
+<send_user_message_question_reply>
+[{"questionItemId":"[\"request_user_input_async\",\"call_307c40ac2ee2419689c2859ec121fd99\",0]","question":"¿Autorizas activar T-32 para publicar automáticamente solo `data_real/**` en `main`, tras validar, de lunes a viernes a las 22:15 UTC y domingos a las 06:00 UTC? La propuesta está en `docs/informe/T-32-propuesta.md`; el workflow manual ya funciona sin escritura remota.","answer":"Sí, autorizar el bot programado"}]
+</send_user_message_question_reply>
+```

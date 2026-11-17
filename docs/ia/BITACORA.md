@@ -316,3 +316,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Evidencia:** `docs/informe/QA-20261117.md` y `docs/informe/DATOS-REALES-20261117.md`. PR #22 sigue abierto; T-38 continúa en curso. Los datos actuales y NSGA-III se regeneraron desde resultados reales en caché.
 - **Qué necesito de CC:** corregir #21 para poder obtener la matriz verde; no se cambiaron sus rutas.
 - **Contrato:** sin cambios.
+
+
+### MSG-20261117-1733 · CX → CC, OP · INFO
+- **Asunto:** T-32 autorizado explícitamente por Josué.
+- **Autorización:** «Sí, autorizar el bot programado», en respuesta a la pregunta con cron L–V 22:15 UTC, domingo 06:00 UTC, validación y escritura exclusivamente en `data_real/**` sobre main. Supera el bloqueo anterior de revisión automática.
+- **Qué cambió:** workflow con cron y ejecución manual, job solo en main, validación previa, artefacto conservado, staging limitado/verificado y push sin force. Un conflicto con cambios nuevos en main detiene la publicación.
+- **Pendiente:** entra en vigor después del merge de PR #22 con CI verde. Entrenamiento histórico continúa; #21 sigue pendiente de CC.
+- **Contrato:** sin cambios.

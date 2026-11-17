@@ -1,21 +1,31 @@
-# T-32: publicación automática pendiente de autorización
+# T-32: publicación automática autorizada
 
-Implementado: `.github/workflows/actualizar-datos.yml`, ejecución manual,
-`contents: read`, sin credenciales persistidas, generación/validación y
-artefacto `datos-reales-validados` para publicación mediante PR.
+Josué autorizó el 17-nov-2026: **«Sí, autorizar el bot programado»**, ante la
+pregunta que explicitó los horarios, validación y escritura exclusiva de
+`data_real/**` sobre `main`. La revisión automática había rechazado esa
+escritura persistente por falta de autorización suficientemente explícita;
+la respuesta posterior resuelve el bloqueo.
 
-Propuesta concreta para completar el bot del PLAN_MAESTRO §6.5:
+El workflow `.github/workflows/actualizar-datos.yml` del PR #22 configura:
 
-- Ejecutar de lunes a viernes a las 22:15 UTC en modo diario y domingos a
-  las 06:00 UTC en modo cortes.
-- Solo sobre `refs/heads/main`, permiso `contents: write` y checkout con
-  credenciales para ese job.
-- Tras validar los 13 JSON y los cortes, añadir exclusivamente `data_real/**`,
-  crear commit de datos con identidad `github-actions[bot]` y ejecutar
-  `git push origin HEAD:main` sin force. Un fallo de validación o conflicto
-  detiene la publicación.
+- Lunes a viernes, 22:15 UTC: modo `diario`.
+- Domingo, 06:00 UTC: modo `cortes`.
+- Ejecución manual: `diario`, `cortes` o `completo`.
+- Job exclusivamente en `refs/heads/main`, permisos de escritura de contenido
+  y Pages limitados a ese job. Checkout con credenciales para el push del bot.
+- Generación en staging, validación de 01–13 y de todos los snapshots, artefacto
+  conservado siete días y `git add -A -- data_real`.
+- Comprobación adicional de que todos los archivos staged pertenecen a
+  `data_real/`; commit con identidad de GitHub Actions y push **sin force**.
+  Si main avanzó durante el cálculo, falla y conserva el artefacto.
+- Tras un push correcto, solicitud de reconstrucción del Pages existente.
+  No cambia la fuente ni la configuración del sitio.
 
-La revisión automática rechazó activar esta escritura programada en main
-porque excede la autorización clara de implementar/probar el pipeline.
-Requiere autorización explícita para esos efectos persistentes. Esta
-propuesta es documentación; no activa cron ni escritura remota.
+La consulta al repositorio confirmó Pages desde `main`, raíz `/`, tipo
+`legacy`. Un commit con `GITHUB_TOKEN` [no inicia Pages por sí solo](https://docs.github.com/en/actions/concepts/security/github_token);
+por eso se usa el [endpoint oficial de reconstrucción](https://docs.github.com/en/rest/pages/pages#request-a-github-pages-build),
+que requiere `pages: write`.
+
+Validación estática: actionlint 1.7.12, binario oficial con SHA-256 verificado.
+La configuración entrará en vigor después del merge del PR con CI verde.
+No se ha ejecutado un cron ni publicado cambios en main desde esta rama.

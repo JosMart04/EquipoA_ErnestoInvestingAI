@@ -93,9 +93,15 @@ restaura el respaldo. Se conservan respaldos locales ignorados por Git.
 `data/` y `figma-src/` permanecen intactos. La publicación remota de esta
 entrega se revisa mediante PR.
 
-El workflow `actualizar-datos.yml` es **manual y de solo lectura**: entrega
-un artefacto validado. Cron y push del bot a main quedan sujetos a autorización
-explícita tras el rechazo de revisión automática; propuesta en
+El workflow `actualizar-datos.yml`, autorizado explícitamente el 17-nov-2026,
+se ejecuta de lunes a viernes a las 22:15 UTC (`diario`), domingos a las
+06:00 UTC (`cortes`) y manualmente. Solo corre en main. Valida y conserva el
+artefacto antes de publicar exclusivamente `data_real/**`; nunca fuerza un
+push ni incorpora cambios de otras rutas. Después solicita reconstruir el
+Pages existente para que reciba los datos (GITHUB_TOKEN no inicia el build
+implícito). Si main avanzó durante el cálculo,
+la publicación falla y queda el artefacto para revisión. La configuración
+entrará en vigor al integrar el PR con CI verde. Autorización y límites en
 `docs/informe/T-32-propuesta.md`.
 
 ```powershell

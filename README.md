@@ -57,9 +57,11 @@ entrega encontró contraste insuficiente en Backtesting claro:
 No se desactivan reglas para ocultar el hallazgo. Las verificaciones automáticas
 no sustituyen pruebas humanas con webcam, lectores de pantalla o audio.
 
-`actualizar-datos.yml` permite generación **manual** con artefacto validado;
-no tiene cron ni permiso de escritura a main. Propuesta del bot pendiente de
-autorización: [T-32](docs/informe/T-32-propuesta.md).
+`actualizar-datos.yml` configura el bot autorizado: diario L–V 22:15 UTC,
+cortes domingo 06:00 UTC y ejecución manual. Valida, conserva un artefacto,
+publica solo `data_real/**` en main sin force y solicita reconstruir Pages.
+Entrará en vigor al integrar el PR con CI verde; [límites y autorización
+T-32](docs/informe/T-32-propuesta.md).
 
 ## Accesibilidad
 
