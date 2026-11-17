@@ -500,6 +500,17 @@
 
   /* ───────────── Componentes comunes ───────────── */
 
+  /* Un componente se puede volver a montar sobre el mismo nodo (cambio de idioma, de modo o de filtro).
+     Cada montaje cancela los oyentes del anterior para que no se acumulen. */
+  const montajes = new WeakMap();
+  function montar(destino) {
+    const previo = montajes.get(destino);
+    if (previo) { previo.control.abort(); if (previo.alDesmontar) previo.alDesmontar(); }
+    const m = { control: new AbortController(), alDesmontar: null };
+    montajes.set(destino, m);
+    return m;
+  }
+
   /** Anuncia un texto a los lectores de pantalla (región viva). */
   EIA.ui.anunciar = function (texto, op) {
     const el = $(op && op.urgente ? "#eia-alerta" : "#eia-vivo");
@@ -583,7 +594,7 @@
       valor = b.dataset.valor;
       $$("button[data-valor]", destino).forEach(x => x.setAttribute("aria-pressed", String(x.dataset.valor === valor)));
       if (cfg.alCambiar) cfg.alCambiar(valor);
-    });
+    }, { signal: montar(destino).control.signal });
     return { valor: () => valor, set(v) { valor = v; pintar(); } };
   };
 
@@ -649,10 +660,10 @@
         elegida = be.dataset.elegir;
         const fila = filas.find(f => clave(f) === elegida);
         pintarCuerpo();
-        const b = $(`button[data-elegir="${global.CSS && CSS.escape ? CSS.escape(elegida) : elegida}"]`, cuerpo); if (b) b.focus();
+        const b = $$("button[data-elegir]", cuerpo).find(x => x.dataset.elegir === elegida); if (b) b.focus();
         if (cfg.alElegir && fila) cfg.alElegir(fila);
       }
-    });
+    }, { signal: montar(destino).control.signal });
     pintarCuerpo();
     return {
       el: tabla,
@@ -669,6 +680,7 @@
     const t = EIA.t, id = cfg.id || "graf-" + (++_uid);
     const pest = [["g", "grafico.pestana_grafico"], ["t", "grafico.pestana_tabla"], ["r", "grafico.pestana_resumen"]];
     let activa = "g", inst = null, sonando = null;
+    const montaje = montar(destino), senal = { signal: montaje.control.signal };
     destino.innerHTML = `<section class="card grafico" id="${esc(id)}" aria-labelledby="${esc(id)}-h">
   <div class="graf-cab"><h2 id="${esc(id)}-h">${esc(cfg.titulo)}</h2>
     <div class="graf-ctl"><div class="seg" role="tablist" aria-label="${esc(t("grafico.vistas"))}">${
@@ -714,23 +726,26 @@
           sonando = EIA.sonar(cfg.sonido().valores, { alTerminar() { sonando = null; s.setAttribute("aria-pressed", "false"); } });
         }).catch(err => { s.setAttribute("aria-pressed", "false"); EIA.ui.notificar(String(err.message || err), "error"); });
       }
-    });
+    }, senal);
     destino.addEventListener("keydown", e => {
       const b = e.target.closest("[data-pest]"); if (!b) return;
       const i = pest.findIndex(p => p[0] === b.dataset.pest);
       const j = e.key === "ArrowRight" ? (i + 1) % pest.length : e.key === "ArrowLeft" ? (i + pest.length - 1) % pest.length
         : e.key === "Home" ? 0 : e.key === "End" ? pest.length - 1 : -1;
       if (j >= 0) { e.preventDefault(); elegir(pest[j][0], true); }
-    });
+    }, senal);
     const cancelarTema = EIA.on("eia:tema", () => { if (activa === "g") dibujar(); });
     let observador = null;
     if (global.ResizeObserver) { observador = new ResizeObserver(() => { if (inst && activa === "g") inst.resize(); }); observador.observe(lienzo); }
+    function destruir() {
+      cancelarTema();
+      if (sonando) { sonando.detener(); sonando = null; }
+      if (observador) { observador.disconnect(); observador = null; }
+      if (inst) { inst.dispose(); inst = null; }
+    }
+    montaje.alDesmontar = destruir; // si se vuelve a montar sobre el mismo nodo, se libera el gráfico anterior
     dibujar();
-    return {
-      redibujar() { pintarPanel(); },
-      instancia: () => inst,
-      destruir() { cancelarTema(); if (observador) observador.disconnect(); if (inst) inst.dispose(); inst = null; }
-    };
+    return { redibujar() { pintarPanel(); }, instancia: () => inst, destruir };
   };
 
   /** Diálogo modal accesible sobre <dialog>: foco atrapado, Esc cierra y el foco vuelve a quien lo abrió.

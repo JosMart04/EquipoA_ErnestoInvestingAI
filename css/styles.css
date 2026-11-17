@@ -239,6 +239,51 @@ th[aria-sort="ascending"] button.orden, th[aria-sort="descending"] button.orden 
 .c-dn-2 { background: var(--dn-2); color: var(--dn-t); }
 .c-dn-3 { background: var(--dn-3); color: var(--dn-t); }
 
+/* ───────────── Módulos de predicción: disposición común ───────────── */
+main > .card, main > .dos-col { margin: 1rem 0; }
+.dos-col { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); align-items: start; }
+@media (min-width: 1024px) { .dos-col { grid-template-columns: minmax(0, 1fr) 22rem; } }
+.rotulo { display: block; font-weight: 600; margin: .5rem 0 .2rem; }
+a.btn { display: inline-flex; align-items: center; gap: .35rem; text-decoration: none; }
+a.btn:hover { background: var(--hl); }
+a.btn.primary { background: var(--ac); color: var(--on-ac); border-color: var(--ac); }
+.acciones { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.fila-chips { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+details > summary { cursor: pointer; }
+.lista-casillas { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0 1rem; padding: .5rem 0; }
+#modelos-visibles { margin-top: .75rem; }
+#modelos-visibles > summary { font-weight: 600; min-height: 2.25rem; }
+button.estrella { border: 0; background: none; padding: 0 .35rem; min-height: 1.75rem; min-width: 1.75rem; color: var(--warn); font-size: 1.05rem; line-height: 1; }
+button.estrella[aria-pressed="true"] { background: none; color: var(--warn); }
+
+/* ───────────── Clasificación: mapa de calor, consenso y matriz de confusión ───────────── */
+.mapa-region { max-height: 36rem; }
+.mapa { font-size: .78rem; width: auto; min-width: 100%; }
+.mapa th, .mapa td { padding: .3rem .45rem; white-space: nowrap; text-align: center; border-right: 1px solid var(--bd); }
+.mapa thead th { vertical-align: bottom; }
+.mapa .fam { display: block; font-weight: 400; color: var(--mut); font-size: .7rem; }
+.mapa td[data-celda] { font-weight: 600; }
+.mapa td .p { display: block; font-weight: 400; }
+.mapa .fija { position: sticky; left: 0; z-index: 2; text-align: left; }
+.mapa thead .fija { z-index: 3; }
+.mapa tbody .fija { background: var(--panel); }
+.mapa tr.elegida .fija { background: var(--hl); box-shadow: inset 4px 0 0 var(--ac); }
+.mapa tr.elegida td { box-shadow: inset 0 2px 0 var(--ac), inset 0 -2px 0 var(--ac); }
+.votos-barra { display: flex; height: 2rem; border: 1px solid var(--bd-ctl); border-radius: 8px; overflow: hidden; font-size: .85rem; font-weight: 600; }
+.votos-barra > span { display: flex; align-items: center; justify-content: center; min-width: 2.5rem; white-space: nowrap; }
+.lista-activos { list-style: none; margin: 0; padding: 0; display: grid; gap: .5rem; }
+.lista-activos > li { border: 1px solid var(--bd); border-radius: 8px; }
+.lista-activos > li.elegida { border-color: var(--ac); box-shadow: inset 4px 0 0 var(--ac); }
+.lista-activos summary { padding: .5rem .75rem; display: flex; flex-wrap: wrap; gap: .35rem .6rem; align-items: center; min-height: 2.75rem; }
+.lista-activos .la-cab { flex: 1 1 9rem; }
+.chips-modelos { list-style: none; margin: 0; padding: 0 .75rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: .35rem; }
+.chips-modelos > li { display: flex; justify-content: space-between; gap: .5rem; border-radius: 6px; padding: .25rem .5rem; font-size: .85rem; font-weight: 600; }
+.chips-modelos .m { font-weight: 400; overflow-wrap: anywhere; }
+.lista-activos .acciones { padding: .5rem .75rem; margin: 0; }
+.confusion { text-align: center; }
+.confusion th, .confusion td { text-align: center; position: static; }
+.confusion td.acierto { background: var(--up-2); color: var(--up-t); font-weight: 700; }
+
 /* ───────────── Pantallas pequeñas ───────────── */
 @media (max-width: 900px) {
   button, .btn, input, select, .casilla, nav a { min-height: 2.75rem; } /* objetivos táctiles ≥ 44 px */
@@ -246,7 +291,11 @@ th[aria-sort="ascending"] button.orden, th[aria-sort="descending"] button.orden 
   th button.orden, button.enlace { min-height: 2.25rem; }
   nav a { display: flex; align-items: center; }
 }
+button.enlace, th button.orden { min-width: 1.5rem; } /* objetivo mínimo de 24 px (WCAG 2.5.8) */
+.mapa button.enlace { min-width: 2.75rem; }
 @media (max-width: 640px) {
+  header.top { position: static; } /* en el celular la cabecera ocupa varias filas: no se fija para no tapar el contenido */
+  html { scroll-padding-top: 1rem; }
   main { padding: .75rem; }
   .chart { height: 18rem; }
   .bar { padding: .5rem .75rem; }
