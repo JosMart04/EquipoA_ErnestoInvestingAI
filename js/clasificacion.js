@@ -233,6 +233,19 @@
   }
 
   /** Oyentes del módulo: se enlazan una sola vez (el contenido se repinta, los contenedores no). */
+  /** T-27 (PLAN_MAESTRO §9.2): el consenso de cada fila visible suena como un tono ascendente (SUBE) o descendente (BAJA). */
+  let sonandoMapa = null;
+  function escucharMapa(boton) {
+    if (sonandoMapa) { sonandoMapa.detener(); return; }
+    const filas = modeloVista(D.c05, D.universo, filtrosActivos()).filas;
+    if (!filas.length) return;
+    const dirs = filas.map(f => f.consenso === "SUBE"), sube = dirs.filter(Boolean).length;
+    boton.setAttribute("aria-pressed", "true");
+    EIA.ui.anunciar(t("clasificacion.escuchando_mapa", { n: filas.length, sube, baja: filas.length - sube }));
+    EIA.cargar("js/a11y/sonificacion.js").then(() => {
+      sonandoMapa = EIA.sonarDirecciones(dirs, { alTerminar() { sonandoMapa = null; boton.setAttribute("aria-pressed", "false"); } });
+    }).catch(() => boton.setAttribute("aria-pressed", "false"));
+  }
   function enlazar() {
     if (enlazado) return;
     enlazado = true;
@@ -245,6 +258,7 @@
         pintarDatos();
         const otra = $$("button[data-watch]").find(b => b.dataset.watch === tk); if (otra) otra.focus();
       } else if (bt) elegir(bt.dataset.ticker, true);
+      else if (e.target.closest("#escuchar-mapa")) escucharMapa(e.target.closest("#escuchar-mapa"));
       else if (e.target.id === "mostrar-todos") { EIA.estado.set("eia_modelos_ocultos", []); pintarFiltros(); pintarDatos(); $("#mostrar-todos").focus(); }
     });
     main.addEventListener("change", e => {

@@ -210,7 +210,15 @@
         claveFila: x => x.fecha
       }),
       resumen: textoResumen,
-      sonido: () => ({ valores: V.historia.concat(V.mediana) })
+      // T-27: se exploran la historia y la mediana por separado (↑/↓). Son las dos últimas series de ECharts y
+      // comparten el eje: la mediana i está en la posición nH + i (pron() la une con el último cierre)
+      sonido: () => {
+        const nH = V.historia.length, fecha = f => EIA.fmt.fecha(f);
+        return { inicial: 1, series: [
+          { nombre: t("regresion.serie_historia"), valores: V.historia, etiquetas: V.fechasHistoria.map(fecha), formato: usd, tip: (i, g) => ({ seriesIndex: g.getOption().series.length - 2, dataIndex: i }) },
+          { nombre: t("regresion.serie_mediana"), valores: V.mediana, etiquetas: V.fechasPronostico.map(fecha), formato: usd, tip: (i, g) => ({ seriesIndex: g.getOption().series.length - 1, dataIndex: nH + i }) }
+        ] };
+      }
     });
   }
 

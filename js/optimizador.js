@@ -191,7 +191,8 @@
         alElegir: f => seleccionar({ s: f.s, i: f.i }, true)
       }),
       resumen: () => t("optimizador.resumen", { sel: describir(VIS[pos.s], pos.i), n2: D.c07.nsga2_elegibles.length, n3: D.c07.nsga3_elegibles.length, nm: D.c07.markowitz_elegibles.length }),
-      sonido: () => ({ valores: (VIS[pos.s] || { puntos: [] }).puntos.map(p => p.retorno_esperado_anual_pct) })
+      sonido: () => ({ valores: (VIS[pos.s] || { puntos: [] }).puntos.map(p => p.retorno_esperado_anual_pct) }),
+      explorar: false // el lienzo ya se recorre con las flechas y Enter elige el punto (R-OPT-03)
     });
     const lienzo = $("#frontera .chart");
     // R-OPT-03 y R-OPT-07: el gráfico es enfocable y se recorre con las flechas; Enter muestra la composición

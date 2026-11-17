@@ -117,7 +117,8 @@
       }),
       resumen: () => t("dashboard.velas_resumen", { ticker: elegido, ultimo: EIA.fmt.usd(est.ultimo), fecha: EIA.fmt.fecha(S.fechas[est.n - 1], "larga"), n: EIA.fmt.ent(est.n),
         variacion: EIA.fmt.pct(est.variacion), min: EIA.fmt.usd(est.min), max: EIA.fmt.usd(est.max) }),
-      sonido: () => ({ valores: S.c })
+      // T-27: exploración punto a punto (fecha y cierre) y sonido de los cierres
+      sonido: () => ({ series: [{ nombre: t("dashboard.serie_cierre", { ticker: elegido }), valores: S.c, etiquetas: S.fechas.map(f => EIA.fmt.fecha(f)), formato: v => EIA.fmt.usd(v), indice: 0 }] })
     });
   }
 

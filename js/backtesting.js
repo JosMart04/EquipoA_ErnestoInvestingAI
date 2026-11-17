@@ -129,6 +129,11 @@
       claveFila: x => String(x.k)
     });
   }
+  /** T-27: las 7 series se exploran con ↑/↓; se empieza por la cartera de la línea de tiempo. */
+  function sonidoSeries(campo, formato) {
+    const etiquetas = D.c09.fechas.map(f => EIA.fmt.fecha(f));
+    return { inicial: Math.max(0, S.findIndex(s => s.clave === carteraTL)), series: S.map((s, k) => ({ nombre: nombre(s.clave), valores: s[campo], etiquetas, formato, indice: k })) };
+  }
   function conectar() {
     const a = gCurvas && gCurvas.instancia(), b = gDD && gDD.instancia();
     if (a && b && global.echarts) { a.group = GRUPO_GRAFICOS; b.group = GRUPO_GRAFICOS; global.echarts.connect(GRUPO_GRAFICOS); }
@@ -140,14 +145,14 @@
       opciones: c => opcionesLineas(c, "curva", t("backtesting.eje_capital")),
       tabla: tablaSerie("curva", t("backtesting.curvas_tabla"), v => EIA.fmt.num(v)),
       resumen: () => t("backtesting.curvas_resumen", { base: EIA.fmt.ent(D.c09.base), lista: S.map(s => t("backtesting.serie_final", { nombre: nombre(s.clave), valor: EIA.fmt.num(fin(s)) })).join("; ") }),
-      sonido: () => ({ valores: (S.find(s => s.clave === carteraTL) || S[0]).curva })
+      sonido: () => sonidoSeries("curva", v => EIA.fmt.num(v))
     });
     gDD = EIA.ui.grafico($("#caidas"), {
       id: "drawdown", alto: 288, titulo: t("backtesting.dd_titulo"),
       opciones: c => opcionesLineas(c, "drawdown", t("backtesting.eje_dd")),
       tabla: tablaSerie("drawdown", t("backtesting.dd_tabla"), v => pctS(v)),
       resumen: () => t("backtesting.dd_resumen", { lista: S.map(s => t("backtesting.serie_mdd", { nombre: nombre(s.clave), mdd: pct(s.metricas.max_drawdown_pct) })).join("; ") }),
-      sonido: () => ({ valores: (S.find(s => s.clave === carteraTL) || S[0]).drawdown })
+      sonido: () => sonidoSeries("drawdown", v => pctS(v))
     });
     conectar();
   }

@@ -486,21 +486,26 @@
     poner("data-movimiento", p.movimiento ? "reducido" : "");
     poner("data-espaciado", p.espaciado ? "amplio" : "");
     poner("data-enlaces", p.enlaces ? "subrayados" : "");
+    poner("data-fuente", p.fuente ? "legible" : "");
+    poner("data-cursor", p.cursor ? "grande" : "");
   };
 
   /** Abre el Centro de accesibilidad (js/a11y/panel.js se carga la primera vez). */
   EIA.abrirAccesibilidad = function () {
     return EIA.cargar("js/a11y/panel.js").then(() => EIA.a11y.abrir()).catch(e => EIA.ui.notificar(String(e.message || e), "error"));
   };
-  /** Reanuda las modalidades de control al cargar la página: el sitio es multipágina y la cámara no sobrevive a la navegación.
-      También atiende los modos de prueba ?puntero=raton y ?camara=simulada&mod=cabeza|manos&objetivo=<selector>. */
+  /** Reanuda las modalidades de control al cargar la página: el sitio es multipágina y la cámara y el barrido no sobreviven
+      a la navegación. También atiende ?barrido=1 y los modos de prueba ?puntero=raton y ?camara=simulada&mod=cabeza|manos&objetivo=<selector>. */
   function reanudarAccesibilidad() {
     const q = parametros();
     let enSesion = null; try { enSesion = global.sessionStorage.getItem("eia_cam"); } catch (e) { enSesion = null; }
     const simulada = q.get("camara") === "simulada", modalidad = simulada ? (q.get("mod") || "cabeza") : enSesion;
     if (modalidad) {
       EIA.cargar("js/a11y/camara.js").then(() => EIA.camara.iniciar(modalidad, { reanudar: true, simulada, objetivo: q.get("objetivo") })).catch(() => {});
-    } else if (q.get("puntero") === "raton") {
+    }
+    let barrido = null; try { barrido = global.sessionStorage.getItem("eia_barrido"); } catch (e) { barrido = null; }
+    if (barrido || q.get("barrido") === "1") EIA.cargar("js/a11y/barrido.js").then(() => EIA.barrido.iniciar()).catch(() => {});
+    if (!modalidad && q.get("puntero") === "raton") {
       EIA.cargar("js/a11y/bus-entrada.js").then(() => EIA.cargar("js/a11y/puntero.js"))
         .then(() => EIA.puntero.activar({ raton: true, permanencia: true, ms: (EIA.estado.get("eia_a11y") || {}).ms || 900 })).catch(() => {});
     }
@@ -893,36 +898,135 @@
     };
   };
 
-  /** Contenedor de gráfico con pestañas Gráfico | Tabla | Resumen y botón Escuchar.
-      cfg = {id, titulo, alto, opciones(colores) → option de ECharts, tabla() → cfg de EIA.ui.tabla, resumen() → texto, sonido() → {valores}} */
+  /* ───────────── Accesibilidad de los gráficos (PLAN_MAESTRO §9.2; T-27) ───────────── */
+
+  /** Pura: nueva posición del cursor de exploración tras una tecla; null si la tecla no mueve. */
+  EIA.moverCursor = function (i, tecla, n) {
+    if (!(n > 0)) return null;
+    const salto = Math.max(1, Math.round(n / 10)), base = i == null ? -1 : i;
+    const destino = tecla === "ArrowRight" ? (i == null ? 0 : base + 1) : tecla === "ArrowLeft" ? (i == null ? n - 1 : base - 1)
+      : tecla === "Home" ? 0 : tecla === "End" ? n - 1
+      : tecla === "PageDown" ? (i == null ? 0 : base + salto) : tecla === "PageUp" ? (i == null ? 0 : base - salto) : null;
+    return destino == null ? null : Math.max(0, Math.min(n - 1, destino));
+  };
+  /** Pura: cifras de una serie para su resumen automático (tendencia, extremos, último valor y variación). */
+  EIA.describirSerie = function (valores) {
+    const v = (valores || []).map((x, i) => [x, i]).filter(p => Number.isFinite(p[0]));
+    if (!v.length) return null;
+    let max = v[0], min = v[0];
+    v.forEach(p => { if (p[0] > max[0]) max = p; if (p[0] < min[0]) min = p; });
+    const ini = v[0], fin = v[v.length - 1], dif = fin[0] - ini[0];
+    const escala = Math.max(Math.abs(max[0]), Math.abs(min[0]), 1e-12);
+    return {
+      inicio: ini[0], iInicio: ini[1], fin: fin[0], iFin: fin[1], max: max[0], iMax: max[1], min: min[0], iMin: min[1],
+      diferencia: dif, variacionPct: ini[0] !== 0 ? 100 * (fin[0] / ini[0] - 1) : null,
+      tendencia: Math.abs(dif) <= 0.001 * escala ? "plana" : dif > 0 ? "sube" : "baja"
+    };
+  };
+  /** Series que se pueden explorar y escuchar, normalizadas desde cfg.sonido():
+      {series:[{nombre, valores, etiquetas, formato, tipo, tip(i)}], inicial} o, por compatibilidad, {valores, …} de una sola. */
+  function seriesSonido(cfg) {
+    const s = cfg.sonido ? cfg.sonido() : null;
+    if (!s) return { series: [], inicial: 0 };
+    const lista = s.series || [Object.assign({ nombre: cfg.titulo }, s)];
+    return {
+      inicial: Math.max(0, Math.min(lista.length - 1, s.inicial || 0)),
+      series: lista.map((x, k) => ({
+        nombre: x.nombre || cfg.titulo, valores: x.valores || [], tipo: x.tipo || "tiempo",
+        etiquetas: x.etiquetas || (x.valores || []).map((_, i) => EIA.fmt.ent(i + 1)),
+        formato: x.formato || (v => EIA.fmt.num(v)),
+        tip: x.tip || (i => ({ seriesIndex: x.indice != null ? x.indice : k, dataIndex: i }))
+      }))
+    };
+  }
+  /** Texto del resumen automático de una serie (plantillas grafico.resumen_*). */
+  function textoSerie(s) {
+    const d = EIA.describirSerie(s.valores); if (!d) return "";
+    const p = { nombre: s.nombre, max: s.formato(d.max), fmax: s.etiquetas[d.iMax], min: s.formato(d.min), fmin: s.etiquetas[d.iMin] };
+    if (s.tipo === "categorias") return EIA.t("grafico.resumen_categorias", Object.assign(p, { n: EIA.fmt.ent(s.valores.length) }));
+    return EIA.t("grafico.resumen_serie", Object.assign(p, {
+      tendencia: EIA.t("grafico.tendencia_" + d.tendencia), inicio: s.formato(d.inicio), desde: s.etiquetas[d.iInicio],
+      fin: s.formato(d.fin), hasta: s.etiquetas[d.iFin],
+      cambio: d.variacionPct != null ? EIA.fmt.pct(d.variacionPct) : EIA.t("grafico.cambio_puntos", { dif: s.formato(d.diferencia) })
+    }));
+  }
+  EIA.textoSerie = textoSerie;
+
+  /** Lee un texto con la síntesis de voz del navegador, en el idioma activo. Devuelve {detener()} o null si no hay voz. */
+  let _voz = null;
+  EIA.leerEnVozAlta = function (texto, op) {
+    const o = op || {};
+    if (!hayDOM || !global.speechSynthesis || !global.SpeechSynthesisUtterance) return null;
+    // Una sola lectura a la vez: la anterior se da por terminada (su botón vuelve a «Leer»)
+    if (_voz) _voz.cerrar();
+    global.speechSynthesis.cancel();
+    const u = new global.SpeechSynthesisUtterance(texto);
+    u.lang = EIA.idioma();
+    u.rate = Number((EIA.estado.get("eia_a11y") || {}).voz) || 1;
+    const actual = {
+      hecho: false,
+      cerrar() { if (actual.hecho) return; actual.hecho = true; if (_voz === actual) _voz = null; if (o.alTerminar) o.alTerminar(); }
+    };
+    _voz = actual;
+    u.onend = actual.cerrar; u.onerror = actual.cerrar;
+    global.speechSynthesis.speak(u);
+    return { detener() { actual.cerrar(); global.speechSynthesis.cancel(); } };
+  };
+  EIA.hayVoz = () => hayDOM && !!global.speechSynthesis && !!global.SpeechSynthesisUtterance;
+  /** ¿La sonificación está activada en el Centro de accesibilidad? (por defecto sí) */
+  const sonidoActivo = () => (EIA.estado.get("eia_a11y") || {}).sonido !== false;
+
+  /** Gráfico ECharts con pestañas Gráfico / Tabla / Resumen, exploración con teclado, sonido y lectura en voz alta.
+      cfg = {id, titulo, alto, opciones(colores), tabla(), resumen(), sonido(), explorar}
+      sonido() → {series:[{nombre, valores, etiquetas, formato(v), tipo:"tiempo"|"categorias", indice, tip(i, instancia)}], inicial}
+      explorar: false cuando el módulo ya trae su propia navegación con teclado sobre el lienzo (Optimizador). */
   EIA.ui.grafico = function (destino, cfg) {
     const t = EIA.t, id = cfg.id || "graf-" + (++_uid);
     const pest = [["g", "grafico.pestana_grafico"], ["t", "grafico.pestana_tabla"], ["r", "grafico.pestana_resumen"]];
-    let activa = "g", inst = null, sonando = null;
+    const explorable = !!cfg.sonido && cfg.explorar !== false;
+    let activa = "g", inst = null, sonando = null, leyendo = null, cur = { s: null, i: null };
     const montaje = montar(destino), senal = { signal: montaje.control.signal };
     destino.innerHTML = `<section class="card grafico" id="${esc(id)}" aria-labelledby="${esc(id)}-h">
   <div class="graf-cab"><h2 id="${esc(id)}-h">${esc(cfg.titulo)}</h2>
     <div class="graf-ctl"><div class="seg" role="tablist" aria-label="${esc(t("grafico.vistas"))}">${
       pest.map(([k, clave]) => `<button type="button" role="tab" id="${esc(id)}-tab-${k}" data-pest="${k}" aria-selected="${k === activa}" aria-controls="${esc(id)}-p-${k}" tabindex="${k === activa ? 0 : -1}">${esc(t(clave))}</button>`).join("")}</div>
       ${cfg.sonido ? `<button type="button" class="escuchar" aria-pressed="false"><span aria-hidden="true">♪</span> ${esc(t("grafico.escuchar"))}</button>` : ""}</div></div>
-  <div role="tabpanel" id="${esc(id)}-p-g" aria-labelledby="${esc(id)}-tab-g"><div class="chart" role="img" style="height:${Number(cfg.alto) || 352}px"></div></div>
+  <div role="tabpanel" id="${esc(id)}-p-g" aria-labelledby="${esc(id)}-tab-g"><div class="chart" role="img" style="height:${Number(cfg.alto) || 352}px"></div>${
+    explorable ? `<p class="mut graf-ayuda" id="${esc(id)}-ayuda">${esc(t("grafico.explorar_ayuda"))}</p>` : ""}</div>
   <div role="tabpanel" id="${esc(id)}-p-t" aria-labelledby="${esc(id)}-tab-t" hidden></div>
-  <div role="tabpanel" id="${esc(id)}-p-r" aria-labelledby="${esc(id)}-tab-r" tabindex="0" hidden><p class="resumen"></p></div>
+  <div role="tabpanel" id="${esc(id)}-p-r" aria-labelledby="${esc(id)}-tab-r" tabindex="0" hidden><p class="resumen"></p><ul class="resumen-series"></ul>${
+    EIA.hayVoz() ? `<p class="acciones"><button type="button" class="leer" aria-pressed="false"><span aria-hidden="true">🔊</span> ${esc(t("grafico.leer"))}</button></p>` : ""}</div>
 </section>`;
     const lienzo = $(".chart", destino);
+    if (explorable) {
+      // El lienzo es un control: role="application" deja pasar las flechas aunque haya un lector de pantalla
+      lienzo.tabIndex = 0;
+      lienzo.setAttribute("role", "application");
+      lienzo.setAttribute("aria-roledescription", t("grafico.rol"));
+      lienzo.setAttribute("aria-describedby", id + "-ayuda");
+    }
     function dibujar() {
       const resumen = cfg.resumen ? cfg.resumen() : cfg.titulo;
       lienzo.setAttribute("aria-label", resumen);
       if (!global.echarts) { lienzo.textContent = t("grafico.sin_echarts"); return; }
       if (!inst) inst = global.echarts.init(lienzo);
       const a11y = EIA.estado.get("eia_a11y") || {};
-      const base = { animation: !EIA.movimientoReducido(), aria: { enabled: true, decal: { show: !!a11y.decal } } };
+      // aria.label.description: sin ella, ECharts reescribe el aria-label del lienzo con su descripción automática en inglés
+      const base = { animation: !EIA.movimientoReducido(), aria: { enabled: true, label: { description: resumen }, decal: { show: !!a11y.decal } } };
       inst.setOption(Object.assign(base, cfg.opciones(EIA.coloresGrafico())), true);
+    }
+    function textoResumen() {
+      const lista = seriesSonido(cfg).series.map(textoSerie).filter(Boolean);
+      return { general: cfg.resumen ? cfg.resumen() : "", lista };
     }
     function pintarPanel() {
       if (activa === "g") { dibujar(); if (inst) inst.resize(); }
       else if (activa === "t" && cfg.tabla) EIA.ui.tabla($("#" + id + "-p-t", destino), cfg.tabla());
-      else if (activa === "r") $(".resumen", destino).textContent = cfg.resumen ? cfg.resumen() : "";
+      else if (activa === "r") {
+        const r = textoResumen();
+        $(".resumen", destino).textContent = r.general;
+        $(".resumen-series", destino).innerHTML = r.lista.map(x => `<li>${esc(x)}</li>`).join("");
+      }
     }
     function elegir(k, conFoco) {
       activa = k;
@@ -934,37 +1038,98 @@
       });
       pintarPanel();
     }
+    function escuchar(boton) {
+      if (sonando) { sonando.detener(); sonando = null; boton.setAttribute("aria-pressed", "false"); return; }
+      const ss = seriesSonido(cfg), s = ss.series[cur.s != null ? cur.s : ss.inicial];
+      if (!s) return;
+      boton.setAttribute("aria-pressed", "true");
+      EIA.ui.anunciar(t("grafico.escuchando", { serie: s.nombre }));
+      EIA.cargar("js/a11y/sonificacion.js").then(() => {
+        sonando = EIA.sonar(s.valores, { alTerminar() { sonando = null; boton.setAttribute("aria-pressed", "false"); } });
+      }).catch(err => { boton.setAttribute("aria-pressed", "false"); EIA.ui.notificar(String(err.message || err), "error"); });
+    }
+    /** Mueve el cursor de exploración: tono, anuncio y tooltip del punto. */
+    function explorar(tecla) {
+      const ss = seriesSonido(cfg); if (!ss.series.length) return false;
+      if (cur.s == null || cur.s >= ss.series.length) cur.s = ss.inicial;
+      if (tecla === "ArrowUp" || tecla === "ArrowDown") {
+        if (ss.series.length < 2) return true;
+        cur.s = (cur.s + (tecla === "ArrowDown" ? 1 : -1) + ss.series.length) % ss.series.length;
+        const s = ss.series[cur.s];
+        if (cur.i != null) cur.i = Math.min(cur.i, s.valores.length - 1);
+        EIA.ui.anunciar(t("grafico.serie_elegida", { serie: s.nombre, n: EIA.fmt.ent(cur.s + 1), total: EIA.fmt.ent(ss.series.length) }));
+        return true;
+      }
+      const s = ss.series[cur.s], i = EIA.moverCursor(cur.i, tecla, s.valores.length);
+      if (i == null) return false;
+      cur.i = i;
+      const v = s.valores[i];
+      EIA.ui.anunciar(t("grafico.punto", { serie: s.nombre, etiqueta: s.etiquetas[i], valor: Number.isFinite(v) ? s.formato(v) : t("grafico.sin_valor"),
+        n: EIA.fmt.ent(i + 1), total: EIA.fmt.ent(s.valores.length) }));
+      if (inst) { try { inst.dispatchAction(Object.assign({ type: "showTip" }, s.tip(i, inst))); } catch (e) { /* serie oculta en la leyenda */ } }
+      if (sonidoActivo() && Number.isFinite(v)) {
+        const fin = s.valores.filter(Number.isFinite), min = Math.min.apply(null, fin), max = Math.max.apply(null, fin);
+        EIA.cargar("js/a11y/sonificacion.js").then(() => EIA.tono(v, min, max, { pan: s.valores.length > 1 ? -1 + 2 * i / (s.valores.length - 1) : 0 })).catch(() => {});
+      }
+      return true;
+    }
+    function leer(boton) {
+      if (leyendo) { leyendo.detener(); leyendo = null; return; }
+      const r = textoResumen();
+      boton.setAttribute("aria-pressed", "true");
+      leyendo = EIA.leerEnVozAlta([cfg.titulo, r.general].concat(r.lista).join(". "), { alTerminar() { leyendo = null; boton.setAttribute("aria-pressed", "false"); } });
+      if (!leyendo) boton.setAttribute("aria-pressed", "false");
+    }
     destino.addEventListener("click", e => {
       const b = e.target.closest("[data-pest]");
       if (b && destino.contains(b)) elegir(b.dataset.pest);
       const s = e.target.closest(".escuchar");
-      if (s && destino.contains(s)) {
-        if (sonando) { sonando.detener(); sonando = null; s.setAttribute("aria-pressed", "false"); return; }
-        s.setAttribute("aria-pressed", "true");
-        EIA.cargar("js/a11y/sonificacion.js").then(() => {
-          sonando = EIA.sonar(cfg.sonido().valores, { alTerminar() { sonando = null; s.setAttribute("aria-pressed", "false"); } });
-        }).catch(err => { s.setAttribute("aria-pressed", "false"); EIA.ui.notificar(String(err.message || err), "error"); });
-      }
+      if (s && destino.contains(s)) escuchar(s);
+      const l = e.target.closest(".leer");
+      if (l && destino.contains(l)) leer(l);
     }, senal);
     destino.addEventListener("keydown", e => {
+      if (explorable && e.target === lienzo && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        if (e.key === "s" || e.key === "S") { e.preventDefault(); const b = $(".escuchar", destino); if (b) escuchar(b); return; }
+        if (explorar(e.key)) e.preventDefault();
+        return;
+      }
       const b = e.target.closest("[data-pest]"); if (!b) return;
       const i = pest.findIndex(p => p[0] === b.dataset.pest);
       const j = e.key === "ArrowRight" ? (i + 1) % pest.length : e.key === "ArrowLeft" ? (i + pest.length - 1) % pest.length
         : e.key === "Home" ? 0 : e.key === "End" ? pest.length - 1 : -1;
       if (j >= 0) { e.preventDefault(); elegir(pest[j][0], true); }
     }, senal);
+    if (explorable) lienzo.addEventListener("blur", () => { if (inst) inst.dispatchAction({ type: "hideTip" }); }, senal);
     const cancelarTema = EIA.on("eia:tema", () => { if (activa === "g") dibujar(); });
     let observador = null;
     if (global.ResizeObserver) { observador = new ResizeObserver(() => { if (inst && activa === "g") inst.resize(); }); observador.observe(lienzo); }
     function destruir() {
       cancelarTema();
       if (sonando) { sonando.detener(); sonando = null; }
+      if (leyendo) { leyendo.detener(); leyendo = null; }
       if (observador) { observador.disconnect(); observador = null; }
       if (inst) { inst.dispose(); inst = null; }
     }
     montaje.alDesmontar = destruir; // si se vuelve a montar sobre el mismo nodo, se libera el gráfico anterior
     dibujar();
     return { redibujar() { pintarPanel(); }, instancia: () => inst, destruir };
+  };
+
+  /** Diálogo con las opciones de un <select>: un <select> nativo no se abre con un clic sintético (puntero y barrido). */
+  EIA.ui.opcionesSelect = function (sel) {
+    const lista = document.createElement("div"); lista.className = "opciones-select";
+    const etiqueta = (sel.labels && sel.labels[0] && sel.labels[0].textContent) || sel.getAttribute("aria-label") || "";
+    let dlg = null;
+    Array.from(sel.options).forEach(o => {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = o.textContent; b.setAttribute("aria-pressed", String(o.selected));
+      b.addEventListener("click", () => { sel.value = o.value; sel.dispatchEvent(new Event("change", { bubbles: true })); dlg.cerrar(); });
+      lista.appendChild(b);
+    });
+    dlg = EIA.ui.dialogo({ titulo: etiqueta.trim() || EIA.t("a11y.elige_opcion"), contenido: lista });
+    dlg.abrir();
+    return dlg;
   };
 
   /** Diálogo modal accesible sobre <dialog>: foco atrapado, Esc cierra y el foco vuelve a quien lo abrió.

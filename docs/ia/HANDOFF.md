@@ -4,13 +4,13 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 12:44 (Lima)
+- Fecha y hora: 2026-11-17 15:33 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-25-migas` → PR #19 (migas de pan)
+- Rama / último commit: `cc/T-27-a11y-graficos` → PR #20 (accesibilidad de gráficos y barrido)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **120/120, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **126/126, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -31,13 +31,16 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **120/120
 | #16 | T-23, T-25 (parte) | **Portafolios** (tarjetas, elegir nivel, composición, razones con «Excluir») y **«Llevar a Trading»** compartido (`EIA.ui.llevarATrading`) desde Portafolios y el Optimizador; Trading muestra la cartera aplicada | 113/113; flujo Portafolios → Trading → Leaderboard en el navegador; 390 px; 27 cargas de humo |
 | #17 | T-24 | **Backtesting** (P06): capital y caída conectados, métricas con las carteras marcadas, R-BT-06 visible, nota del tope 0,35, línea de tiempo de 12 rebalanceos con pesos y cambio frente al anterior, interpretación generada con reglas. Se retira `js/stub.js` | 119/119; navegador: 1280 y 390 px, EN sin recargar, `?nivel=`, contraste de 12 elementos en claro y oscuro; 27 cargas de humo |
 | #18 (CX) | T-50 | E2E de Backtesting (curvas, métricas, nota del tope, Agresivo → 12 rebalanceos) y ausencia aislada de `09` | 48 E2E en la CI |
-| #19 | T-25 | **Migas de pan** en el núcleo al llegar por un enlace cruzado (Clasificación › NVDA › Regresión › Optimizador; Portafolios › Agresivo › Backtesting) | 120/120; navegador: cadena, recarga, vuelta atrás, cambio de activo, EN, barra de módulos sin migas, 390 px; 27 cargas de humo |
+| #19 | T-25 | **Migas de pan** en el núcleo al llegar por un enlace cruzado (Clasificación › NVDA › Regresión › Optimizador; Portafolios › Agresivo › Backtesting) | 120/120; navegador: cadena, recarga, vuelta atrás, cambio de activo, EN, barra de módulos sin migas, 390 px; 27 cargas de humo. Además `EIA.todos`: el diagnóstico de datos ausentes nombra el primer archivo en orden |
+| #20 | T-27 | **Accesibilidad de gráficos (a) y barrido (e):** exploración punto a punto con tono y anuncio, resumen automático por serie, «Leer en voz alta», consenso sonoro, barrido de 6 grupos, fuente legible y cursor grande; corrige el aria-label en inglés de ECharts | 126/126; navegador: 5 módulos con gráfico, barrido completo (grupo → bloque → `<select>` → diálogo → opción → Esc), reanudación al navegar, 390 px, contraste ≥ 5,5:1; 27 cargas de humo |
 
 ### Accesibilidad: qué está probado y qué no
 
 **Probado en el navegador sin webcam (Fable el 16, Opus el 17):**
 - **Bucle real de la cámara** (PR #8): MediaPipe 1.2.3 cargado de verdad con un video falso (`canvas.captureStream`): 369 cuadros en 10 s (46 por segundo), el `<video>` sigue en la página y sin pausa. Con un detector sustituto en movimiento: el puntero sigue moviéndose a los 10 s con la cabeza; con la mano abierta no se pausa; el puño 1,5 s pausa y reanuda; si algo saca el `<video>`, el vigilante lo devuelve.
 - Centro de accesibilidad (`#btn-a11y` o `Alt+Shift+A`): tamaño de texto, alto contraste, reducir movimiento, espaciado, subrayar enlaces y tramas; se guardan en `eia_a11y` y se aplican en todas las páginas.
+- **Barrido** con `?barrido=1` (o el botón del Centro): grupos, bloques, «Salir del grupo», `<select>` → diálogo → opción, Esc, reanudación al cambiar de página. Interruptor probado con eventos de teclado sintéticos; **falta probarlo con un interruptor físico o con parpadeo real**.
+- **Exploración de gráficos:** flechas, Inicio/Fin, Re Pág/Av Pág, ↑/↓ y S en Dashboard, Regresión, Backtesting y Portafolios; anuncios en `#eia-vivo` y tooltip. **El sonido y la voz no se oyeron** (el panel del navegador no tiene salida de audio que pueda comprobar): falta escucharlo una vez.
 - Puntero virtual con `?puntero=raton`: permanencia sobre un botón (un solo clic, sin repetir), `<select>` → diálogo de opciones → elige una, abrir y cerrar el Centro, enlace de otro módulo.
 - Guion simulado (`EIA.camara.iniciar("cabeza" | "manos", {simulada: true, objetivo: "#tema"})` o `?camara=simulada&mod=cabeza&objetivo=%23tema`): **cabeza + permanencia**, **cabeza + parpadeo largo** y **mano + pellizco** llevan el puntero al botón y hacen clic; Esc detiene; al detener se quitan HUD, puntero y `modo-puntero`.
 - Sin cámara no se descarga MediaPipe (comprobado en los recursos de la página).
@@ -55,7 +58,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **120/120
 
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
-2. **T-27** (accesibilidad a y e): resumen y lectura punto a punto de cada gráfico, barrido; **T-26** (Modo real) cuando CX publique 01–13 en `data_real/`.
+2. **T-26** (Modo real) cuando CX publique 01–13 en `data_real/`; mientras tanto, **T-28** (calibración de 5 puntos con interfaz, tarjeta de ayuda de gestos) y **T-29** (conformidad con Figma y P08).
 3. Mejora pendiente del Optimizador: a 390 px los puntos de NSGA-II y NSGA-III se superponen.
 4. Cuando Josué vuelva a probar la webcam, ajusta signos y umbrales con lo que reporte.
 
@@ -71,7 +74,9 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **120/120
 - **Markowitz** usa un algoritmo de pares exacto (KKT), no gradiente proyectado: el gradiente tardaba 28 s; este, 16 ms.
 - **`js/a11y/preferencias.js` y `anunciador.js` no existen:** las preferencias las aplica `EIA.aplicarPreferencias()` de `common.js` (para no cargar nada más en cada página) y los anuncios son `EIA.ui.anunciar()`. El panel está en `js/a11y/panel.js`.
 - **Calibración de 5 puntos:** está la matemática (`senales.ajusteAfin`, probada) pero no la interfaz; hoy se usa «Recentrar» y ganancias fijas (±18° de giro y ±12° de inclinación recorren la pantalla).
-- **Sonificación:** solo el barrido básico de «Escuchar» (`js/a11y/sonificacion.js`).
+- **`resumen.js` y `lectura.js` no existen:** el resumen automático y la exploración punto a punto viven en `EIA.ui.grafico` (núcleo), para que todos los gráficos los tengan sin cargar nada más. `js/a11y/sonificacion.js` (tonos) y `js/a11y/barrido.js` sí son archivos aparte, cargados bajo demanda.
+- **Sonificación de la regresión:** la mediana y la historia suenan como series (↑/↓ para cambiar); la banda como ruido suave no se hizo.
+- **Fuente legible:** usa Atkinson Hyperlegible o Verdana **si están instaladas**; no se descarga ninguna fuente (el sitio no carga recursos externos aparte de ECharts y MediaPipe).
 - **`EIA.historia`** existe pero ningún módulo la usa todavía.
 - **T-00** (fila de Josué en el tablero) sigue en «pendiente» aunque el repo y Pages ya existen: no es una fila de CC.
 
@@ -79,6 +84,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **120/120
 - **Comando de pruebas:** `node --test "tests/unit/*.test.mjs"` (con la carpeta sola, Node ≥ 21 falla).
 - **El panel de navegador integrado de Claude, cuando está oculto, no ejecuta `requestAnimationFrame` ni entrega el evento `close` de `<dialog>`.** Por eso `EIA.ui.dialogo` finaliza también tras `submit`, `cancel` y `cerrar()`, y para probar el puntero sin ver el panel sustituí `requestAnimationFrame` por un temporizador dentro de la prueba. En un navegador normal no pasa.
 - **Nunca reescribas con `innerHTML` un nodo que contenga el `<video>` de la cámara:** al salir del documento el navegador lo pausa y el seguimiento se congela (fue el fallo del 17-nov; hay una prueba que vigila `camara.js`).
+- **ECharts y `aria-label`:** con `aria.enabled`, ECharts reescribe el `aria-label` del lienzo con una descripción automática en inglés. `EIA.ui.grafico` le pasa el resumen i18n en `aria.label.description`; si haces un gráfico fuera del núcleo, haz lo mismo.
+- **Exploración con teclado:** `cfg.sonido()` devuelve `{series:[{nombre, valores, etiquetas, formato, tipo, indice | tip(i, instancia)}], inicial}`. Si el módulo ya maneja las flechas sobre su lienzo, pasa `explorar: false` (Optimizador).
 - **Migas de pan** (`js/common.js`, `prepararMigas`/`pintarMigas`): salen de `document.referrer` + `?t=`/`?nivel=` y de `sessionStorage.eia_migas`; **no** agregues parámetros a la URL de los enlaces cruzados (CX compara URLs exactas).
 - **«Llevar a Trading»** vive en el núcleo (`EIA.ui.llevarATrading`): úsalo desde cualquier módulo con `{pesos, excluidos, nivel, origen, fuente}`; guarda `eia_elegido.aplicado`, que Trading muestra.
 - **A 390 px los puntos de NSGA-II y NSGA-III se superponen** (lo detectó CX en E2E): para elegir con el dedo hay que apagar series; con teclado o desde la tabla funciona. Mejora pendiente.
