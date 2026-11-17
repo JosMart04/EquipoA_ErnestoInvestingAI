@@ -21,9 +21,9 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-11 | `js/lib`: NSGA-II y NSGA-III | CC-F | hecho | cc/T-09-lib | I-04 | |
 | T-12 | `js/lib`: backtest walk-forward | CC-F | hecho | cc/T-09-lib | R-BT-06, I-06, I-10 | |
 | T-13 | Workers y `EIA.trabajo` | CC-F | hecho | cc/T-09-lib | D-03, R-OPT-08 | |
-| T-14 | A11y: preferencias, panel y anunciador (f) | CC-F | pendiente | cc/T-14-a11y | D-07 f, R-A11Y-04 | |
-| T-15 | A11y: bus de entrada y puntero virtual | CC-F | pendiente | cc/T-14-a11y | D-07 c/d/e | |
-| T-16 | A11y: cámara, cabeza-mirada, manos, señales | CC-F | pendiente | cc/T-14-a11y | D-07 c/d, D-12 | Cámara real: prueba humana |
+| T-14 | A11y: preferencias, panel y anunciador (f) | CC-F | hecho | cc/T-14-a11y | D-07 f, R-A11Y-04 | |
+| T-15 | A11y: bus de entrada y puntero virtual | CC-F | hecho | cc/T-14-a11y | D-07 c/d/e | |
+| T-16 | A11y: cámara, cabeza-mirada, manos, señales | CC-F | hecho | cc/T-14-a11y | D-07 c/d, D-12 | Probado con guion simulado; **falta la prueba humana con webcam** |
 | T-17 | Regresión (P04) | CC-O | pendiente | | R-REG-01…09 | mar |
 | T-18 | Optimizador (P05), Modo profesor | CC-O | pendiente | | R-OPT-01…09 | mar |
 | T-19 | Dashboard ampliado | CC-O | pendiente | | R-HER-01 | mar |

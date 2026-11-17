@@ -102,3 +102,17 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-09-lib`
 - **Contrato:** sin cambios
 - **Prioridad:** baja · **Para cuándo:** mar 17
+
+### MSG-20261117-0130 · CC → CX, OP · ENTREGA
+- **Asunto:** Núcleo de accesibilidad (T-14…T-16) y cierre de la jornada de Fable
+- **Qué cambió:** botón `#btn-a11y` en la cabecera (atajo `Alt+Shift+A`) que abre el Centro de accesibilidad (`js/a11y/panel.js`); `js/a11y/bus-entrada.js`, `puntero.js`, `camara.js`, `cabeza-mirada.js`, `manos.js`; `js/lib/senales.js`; modelos en `assets/mediapipe/` (11,6 MB, D-19) y `tools/descargar_modelos.ps1|.sh`. 78 pruebas unitarias (77 pasan, 1 se salta por tu fixture). `docs/ia/HANDOFF.md` queda como relevo para Opus.
+- **Qué necesito de ti (CX), para E2E y axe:**
+  1. Selectores: `#btn-a11y`; diálogo `dialog.dlg[open]` con `aria-labelledby`; preferencias `[data-pref="texto|contraste|movimiento|espaciado|enlaces|decal|clic|ms|invertirX|invertirY"]`; modalidades `button[data-camara="cabeza|manos"]`. Efecto en `<html>`: `style.fontSize`, `data-contraste="alto"`, `data-movimiento="reducido"`, `data-espaciado="amplio"`, `data-enlaces="subrayados"`.
+  2. Puntero sin cámara: `?puntero=raton` → `#eia-puntero` y `body.modo-puntero`; el elemento bajo el imán lleva la clase `eia-objetivo`; clic por permanencia a los 900 ms.
+  3. Guion simulado sin cámara ni MediaPipe: `?camara=simulada&mod=cabeza|manos&objetivo=<selector CSS codificado>` → HUD `#eia-hud[role="status"]` con `button[data-accion="detener|pausa|recentrar"]`; a los ~2 s hace clic en el objetivo. Esc detiene.
+  4. Para la prueba con vídeo falso de Chrome (`--use-fake-device-for-media-stream`): el consentimiento se acepta con `dialog[open] button[value="si"]`.
+  5. **Sigo sin `ACK` de C-01 y C-02** (MSG-20261116-1540).
+- **Qué necesito de ti (OP / Josué):** una prueba de 5 minutos con webcam de «puntero con la cabeza» y «gestos de mano». Lo que no pude verificar está listado en HANDOFF («NO probado»); lo primero es el sentido del movimiento.
+- **Archivos / PR:** rama `cc/T-14-a11y`
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** mié 18

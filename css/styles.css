@@ -302,6 +302,41 @@ button.enlace, th button.orden { min-width: 1.5rem; } /* objetivo mínimo de 24 
   .seg-rot { display: none; }
 }
 
+/* ───────────── Centro de accesibilidad, puntero virtual y HUD de cámara (js/a11y/) ───────────── */
+.panel-a11y h3 { margin-top: 1.25rem; border-bottom: 1px solid var(--bd); padding-bottom: .25rem; }
+.panel-a11y .fila-pref { display: flex; align-items: flex-start; gap: .6rem; margin: .5rem 0; flex-wrap: wrap; }
+.panel-a11y .fila-pref > label { margin: 0; flex: 1 1 12rem; }
+.panel-a11y input[type="range"] { max-width: 16rem; padding: 0; }
+.opciones-select { display: grid; gap: .5rem; }
+.opciones-select button { text-align: left; min-height: 3rem; }
+#eia-puntero { position: fixed; left: 0; top: 0; z-index: 90; pointer-events: none; width: 56px; height: 56px; }
+#eia-puntero .fondo { fill: none; stroke: var(--ac); stroke-width: 3; opacity: .35; }
+#eia-puntero .prog { fill: none; stroke: var(--ac); stroke-width: 4; stroke-dasharray: 113; stroke-dashoffset: 113; }
+#eia-puntero .centro { fill: var(--ac); stroke: var(--panel); stroke-width: 1.5; }
+#eia-puntero.clic svg { animation: eia-clic .25s ease-out; }
+@keyframes eia-clic { from { transform: scale(1.5); } to { transform: scale(1); } }
+.eia-objetivo { outline: 4px solid var(--warn) !important; outline-offset: 3px !important; }
+body.modo-puntero button, body.modo-puntero a.btn, body.modo-puntero select, body.modo-puntero nav a, body.modo-puntero summary, body.modo-puntero .casilla { min-height: 3rem; } /* objetivos ≥ 48 px */
+body.modo-puntero button.enlace, body.modo-puntero th button.orden, body.modo-puntero button.estrella { min-height: 2.5rem; min-width: 2.5rem; }
+#eia-hud { position: fixed; right: .75rem; bottom: .75rem; z-index: 80; width: min(19rem, calc(100vw - 1.5rem)); background: var(--panel); color: var(--fg); border: 2px solid var(--ac); border-radius: 12px; padding: .75rem; font-size: .9rem; box-shadow: 0 6px 20px rgb(0 0 0 / .35); }
+#eia-hud p { margin: 0 0 .4rem; }
+.hud-titulo { font-weight: 700; }
+.hud-punto { color: var(--dn); }
+.hud-botones { display: flex; flex-wrap: wrap; gap: .4rem; }
+.hud-botones button { flex: 1 1 auto; }
+.hud-detener { background: var(--dn); color: var(--panel); border-color: var(--dn); font-weight: 700; }
+.hud-video { display: block; width: 100%; max-height: 7rem; object-fit: cover; border-radius: 8px; margin-top: .5rem; transform: scaleX(-1); /* espejo */ }
+
+/* ───────────── Alto contraste (≥ 7:1): se activa en el Centro de accesibilidad ───────────── */
+:root[data-contraste="alto"] {
+  --bg: #ffffff; --panel: #ffffff; --fg: #000000; --mut: #1f1f1f; --bd: #000000; --bd-ctl: #000000;
+  --ac: #003a8c; --on-ac: #ffffff; --up: #005a26; --dn: #8c0f0a; --warn: #5c3b00; --hl: #e6efff; --aviso: #fff3cc;
+}
+:root[data-contraste="alto"][data-theme="dark"] {
+  --bg: #000000; --panel: #000000; --fg: #ffffff; --mut: #e6e6e6; --bd: #ffffff; --bd-ctl: #ffffff;
+  --ac: #9ccaff; --on-ac: #000000; --up: #7dffb0; --dn: #ffb3ad; --warn: #ffd97a; --hl: #1a2a40; --aviso: #2a2412;
+}
+
 /* ───────────── Preferencias de accesibilidad (las aplica EIA.aplicarPreferencias) ───────────── */
 [data-espaciado="amplio"] body { line-height: 1.8; letter-spacing: .12em; word-spacing: .16em; }
 [data-espaciado="amplio"] p { margin-bottom: 2em; }

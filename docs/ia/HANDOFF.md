@@ -1,62 +1,94 @@
 # HANDOFF — estado para quien retome
 
-> Lo actualiza **Claude Code al terminar cada bloque** (hoy Fable, que solo está disponible el lunes 16-nov; desde el martes, Opus 5.5).
+> Lo actualiza **Claude Code al terminar cada bloque**. Fable 5.2 cerró aquí su jornada; sigue Opus 5.5.
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-16 20:25 (Lima)
+- Fecha y hora: 2026-11-17 01:30 (Lima)
 - Modelo: Claude Fable 5.2 (Claude Code)
-- Rama / último commit: `cc/T-09-lib` → PR-4 (js/lib + Workers)
+- Rama / último commit: `cc/T-14-a11y` → PR #6 (núcleo de accesibilidad), el último bloque de Fable
 
 ## Hecho (con evidencia)
-- **CC-F-00:** repo creado desde la base del profesor (`e9d711e`), `figma-src/` sin editar, Pages activo. SHA-256 de `data/`: 13/13.
-- **T-01, T-02 (PR #2):** plan aprobado, contrato v1.0.0, tablero, D-17…D-21, `.nojekyll`. C-01 y C-02 esperan `ACK` de CX.
-- **T-03…T-07 (PR-2), núcleo:**
-  - `js/common.js`: espacio `EIA` con modo, capa de datos con caché, estado, eventos, i18n, formatos `Intl`, tema y componentes (`aviso`, `fichaIA`, `tabla`, `grafico`, `segmentado`, chips, `dialogo`, `notificar`, `progreso`, `error`) y el ciclo de vida `EIA.modulo({id, cargar, pintar})`. Conserva `$`, `fmt`, `loadJSON`, `store`, `buildShell`, `showError`, `window.init` y `window.onTheme` de la base.
-  - `css/styles.css`: tokens claro/oscuro (incluye `--on-ac`, `--bd-ctl`, `--serie-1…6`, mapa de calor), shell con menú colapsado bajo 1180 px, componentes.
-  - `i18n/es-PE.json` y `i18n/en-US.json` (mismas claves).
-  - `index.html`: el gráfico de velas ya usa `EIA.ui.grafico` (Gráfico | Tabla | Resumen + Escuchar).
-  - **Evidencia:** `node --test "tests/unit/*.test.mjs"` → 41/41. Humo en navegador: 9 páginas a 390 px y 1280 px, profesor y real, ES y EN: sin desborde, 9 enlaces, `aria-current`, aviso por módulo, sin claves i18n faltantes; consola sin errores en Modo profesor. Comprobado a mano por script: el gráfico cambia de color con el tema, orden con `aria-sort` y anuncio, flechas en las pestañas, cambio de activo sin recargar, menú con `aria-expanded` y Esc.
 
-- **T-08 (PR-3), Clasificación, MÓDULO DE REFERENCIA:** `clasificacion.html` + `js/clasificacion.js` (modelo de vista puro + pintado + `EIA.modulo`). Mapa de calor 26 × 18 = 468 celdas con color + símbolo + palabra; vistas «Matriz» y «Por activo» (por defecto bajo 640 px); filtros por grupo, familia, watchlist y modelos visibles; consenso con enlaces `?t=`; métricas ordenables; matriz de confusión; bloque de honestidad calculado; ficha IA. **Evidencia:** 51/51 pruebas; en navegador a 1280 y 390 px, ES y EN (cambio de idioma sin recargar), profesor y real: sin desborde, solo SUBE/BAJA (UP/DOWN), consola sin errores en Modo profesor.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **78 pruebas: 77 pasan, 1 se salta** (espera el fixture de CX).
 
-- **T-09…T-13 (PR-4), algoritmos y Workers:** `js/lib/` (`prng`, `estadistica`, `simplex`, `markowitz`, `nsga2`, `nsga3`, `backtest`) y `js/workers/` (`optimizador`, `backtest`) + `EIA.trabajo(nombre, params, {alProgresar})`. **Evidencia:** 69/70 pruebas (1 se salta: fixture de CX). Markowitz coincide con `07` del profesor (≤ 0,02 pp); mediana y bandas reproducen `06`; métricas y drawdown reproducen `09`; SPY/QQQ/EPU/1-N exactos. En el navegador: optimizador completo en 1,4 s, backtest en 0,16 s, cancelación y errores correctos. **Aún no los usa ninguna página** (T-18, T-24 y T-26).
+| PR | Tareas | Qué hay | Evidencia |
+|---|---|---|---|
+| inicial | CC-F-00 | Repo desde la base del profesor (`e9d711e`), `figma-src/` sin editar, Pages activo | SHA-256 de `data/`: 13/13 (ahora también es una prueba unitaria) |
+| #2 | T-01, T-02 | `docs/plan/PLAN_IMPLEMENTACION.md`, `docs/CONTRATO_DATOS.md` v1.0.0, tablero, D-17…D-21, `.nojekyll` | C-01 y C-02 enviados a CX: **siguen sin `ACK`** |
+| #3 | T-03…T-07 | `js/common.js` (espacio `EIA`), `css/styles.css`, `i18n/*.json`, Dashboard con `EIA.ui.grafico` | Humo en navegador: 9 páginas, 390 y 1280 px, profesor y real, ES y EN |
+| #4 | T-08 | **Clasificación completa, módulo de referencia** | 468 celdas, solo SUBE/BAJA, filtros, orden con teclado, sin desborde a 390 px, EN sin recargar |
+| #5 | T-09…T-13 | `js/lib/*` (Markowitz, NSGA-II, NSGA-III, backtest…), `js/workers/*`, `EIA.trabajo()` | Markowitz = `07` del profesor (≤ 0,02 pp); referencias de `09` exactas; en navegador: optimizador 1,4 s, backtest 0,16 s |
+| #6 | T-14…T-16 | Centro de accesibilidad, bus de entrada, puntero virtual, cámara, cabeza-mirada, manos, `js/lib/senales.js`, modelos en `assets/mediapipe/` | Ver la sección siguiente |
+
+### Accesibilidad: qué está probado y qué no
+
+**Probado por mí en el navegador (con resultados sintéticos, sin cámara):**
+- Centro de accesibilidad (`#btn-a11y` o `Alt+Shift+A`): tamaño de texto, alto contraste, reducir movimiento, espaciado, subrayar enlaces y tramas; se guardan en `eia_a11y` y se aplican en todas las páginas.
+- Puntero virtual con `?puntero=raton`: permanencia sobre un botón (un solo clic, sin repetir), `<select>` → diálogo de opciones → elige una, abrir y cerrar el Centro, enlace de otro módulo.
+- Guion simulado (`EIA.camara.iniciar("cabeza" | "manos", {simulada: true, objetivo: "#tema"})` o `?camara=simulada&mod=cabeza&objetivo=%23tema`): **cabeza + permanencia**, **cabeza + parpadeo largo** y **mano + pellizco** llevan el puntero al botón y hacen clic; Esc detiene; al detener se quitan HUD, puntero y `modo-puntero`.
+- Sin cámara no se descarga MediaPipe (comprobado en los recursos de la página).
+
+**NO probado (necesita una persona con webcam; Anexo A: Adrian y Augusto):**
+- Que `getUserMedia` + MediaPipe 1.2.3 arranquen (GPU y respaldo en CPU) y a cuántos cuadros por segundo. La API se escribió leyendo `vision.d.ts` de la 1.2.3, pero nunca se ejecutó.
+- **El signo de los ejes de la cabeza.** `senales.anguloCabeza` supone la matriz de MediaPipe en orden por columnas. Si el puntero va al revés, hay dos casillas «Invertir» en el Centro; si hace falta, cambia el valor por defecto de `sx`/`sy` en `js/a11y/cabeza-mirada.js`.
+- Umbrales reales de parpadeo (0,5 durante 400 ms), boca (0,5 durante 300 ms), pellizco (0,35 / 0,5) y palma (1 s).
+- La reanudación de la cámara al cambiar de página (`sessionStorage.eia_cam`).
+- Lectores de pantalla reales (NVDA, Narrador, TalkBack).
+- El atajo `Alt+Shift+A` con una pulsación real (el evento sintético llega y abre el panel).
 
 ## En curso (estado exacto)
-- Nada a medias. Lo siguiente es el PR-5 (núcleo de accesibilidad).
+- Nada a medias. Fable no deja ramas abiertas.
 
-## Siguiente paso exacto
-1. Rama `cc/T-14-a11y`: T-14 a T-16 del plan §9 y §11 (`js/a11y/*`, `js/lib/senales.js`, modelos en `assets/mediapipe/`, botón `#btn-a11y`).
-2. Martes (Opus): T-17 Regresión y T-18 Optimizador **copiando la estructura de `js/clasificacion.js`**.
+## Siguiente paso exacto (Opus, martes 17)
+1. `git pull`; `node --test "tests/unit/*.test.mjs"`; abre `clasificacion.html` y lee `js/clasificacion.js` entero: es el patrón.
+2. **T-17 Regresión** (P04 + extensiones de `docs/contexto/PROMPTS_INICIALES.md`) y **T-18 Optimizador** (P05). Copia la estructura: modelo de vista puro + `tests/unit/<modulo>.test.mjs` + `EIA.modulo({id, cargar, pintar})` + claves `"<modulo>": {…}` en los dos diccionarios.
+   - Regresión: el gráfico va con `EIA.ui.grafico` (ya da Tabla, Resumen y Escuchar). La verificación R-REG-09 se muestra con **I-03b**, no con «1 centavo».
+   - Optimizador: en el Modo profesor **no** llames a `EIA.trabajo` (hay una prueba que cuenta los `new Worker`). El recálculo va en T-26.
+3. T-19…T-22: pasar los heredados de `window.init` a `EIA.modulo` con su `js/<modulo>.js` y sus textos a i18n.
+4. Pide a Josué una prueba de 5 minutos con webcam (cabeza y manos) y ajusta signos y umbrales.
+5. Revisa si CX respondió `ACK` a C-01 y C-02 y si ya existe `qa.yml`.
 
 ## Cómo se hace un módulo (el ejemplo vivo es `js/clasificacion.js` + `tests/unit/clasificacion.test.mjs`)
-1. HTML mínimo: `<body data-page="<id>">`, un `<h1>`, contenedores vacíos con `id`, `js/common.js` y luego `js/<id>.js`. Texto estático con `data-i18n="clave"`.
-2. `js/<id>.js` en formato dual: funciones **puras** de «modelo de vista» (probadas en Node) + `EIA.modulo({id, cargar, pintar})`.
-3. `cargar()` pide los JSON con `EIA.datos(...)`; `pintar(datos)` reconstruye la vista (se llama otra vez al cambiar idioma, modo o corte).
+1. HTML mínimo: `<body data-page="<id>">`, un `<h1>`, un `<p class="sub">`, contenedores vacíos con `id`, `js/common.js` y luego `js/<id>.js`. Texto estático con `data-i18n="clave"`. Sin cifras en el HTML.
+2. `js/<id>.js` en formato dual: funciones **puras** de «modelo de vista» (probadas en Node) + pintado + `EIA.modulo({id, cargar, pintar})`.
+3. `cargar()` pide los JSON con `EIA.datos(...)`; `pintar(datos)` reconstruye la vista. Se llama otra vez al cambiar idioma, modo o corte: debe ser idempotente. Los oyentes del módulo se enlazan **una sola vez** (bandera `enlazado`).
 4. Todo texto visible sale de `EIA.t(clave, {params})`; todo número, de `EIA.fmt.*`; todo dato del JSON pasa por `EIA.esc`.
 5. Señales solo con `EIA.ui.chipSenal` (rechaza lo que no sea SUBE/BAJA).
+6. El aviso del módulo lo inserta el núcleo (`aviso.<modo>.<id>` en i18n). No lo escribas en el HTML.
+
+## Desviaciones respecto del plan (decididas al ejecutar)
+- **Markowitz** usa un algoritmo de pares exacto (KKT), no gradiente proyectado: el gradiente tardaba 28 s; este, 16 ms.
+- **`js/a11y/preferencias.js` y `anunciador.js` no existen:** las preferencias las aplica `EIA.aplicarPreferencias()` de `common.js` (para no cargar nada más en cada página) y los anuncios son `EIA.ui.anunciar()`. El panel está en `js/a11y/panel.js`.
+- **Calibración de 5 puntos:** está la matemática (`senales.ajusteAfin`, probada) pero no la interfaz; hoy se usa «Recentrar» y ganancias fijas (±18° de giro y ±12° de inclinación recorren la pantalla).
+- **Sonificación:** solo el barrido básico de «Escuchar» (`js/a11y/sonificacion.js`).
+- **`EIA.historia`** existe pero ningún módulo la usa todavía.
+- **T-00** (fila de Josué en el tablero) sigue en «pendiente» aunque el repo y Pages ya existen: no es una fila de CC.
 
 ## Trampas conocidas
 - **Comando de pruebas:** `node --test "tests/unit/*.test.mjs"` (con la carpeta sola, Node ≥ 21 falla).
+- **El panel de navegador integrado de Claude, cuando está oculto, no ejecuta `requestAnimationFrame` ni entrega el evento `close` de `<dialog>`.** Por eso `EIA.ui.dialogo` finaliza también tras `submit`, `cancel` y `cerrar()`, y para probar el puntero sin ver el panel sustituí `requestAnimationFrame` por un temporizador dentro de la prueba. En un navegador normal no pasa.
+- **El navegador cachea `js/common.js` y los `i18n/*.json`** con `python -m http.server`: tras editarlos, recarga forzada (Ctrl+F5).
+- **Remontar componentes:** `EIA.ui.tabla`, `segmentado` y `grafico` cancelan sus oyentes anteriores al montarse otra vez sobre el mismo nodo (`montar()` en `common.js`). Si creas un componente nuevo con `addEventListener` sobre `destino`, usa `montar(destino).control.signal`.
 - **Formato de `js/lib`:** cada archivo publica `EIALib.<nombre>` y `module.exports`; las dependencias se piden con `dep("nombre")`. En un Worker se cargan con `importScripts` **en orden de dependencia** (estadistica y simplex antes de markowitz; markowitz antes de nsga2, nsga3 y backtest).
 - **Las carteras de `09` del profesor no se reproducen** con `backtest.js` (su optimizador no está documentado); las referencias sí. No es un fallo: el recálculo solo existe en el Modo real.
-- **Markowitz usa un algoritmo de pares exacto** (KKT). El gradiente proyectado que proponía el PLAN_MAESTRO tardaba 28 s; este tarda 16 ms.
-- **El navegador cachea `js/common.js`** con `python -m http.server`: tras editarlo, recarga forzada (Ctrl+F5).
 - **R-REG-09 literal falla en 5 activos** de `data/` por redondeo: se verifica con I-03b (contrato §4 y nota N-1).
-- **El 1/N del profesor es de rebalanceo diario** (contrato I-10, nota N-2).
+- **El 1/N del profesor es de rebalanceo diario** (contrato I-10, nota N-2). La volatilidad de `09` usa desviación poblacional.
 - **El «Agresivo» de `08` rinde menos que el «Moderado»** (nota N-4): no escribir textos que afirmen un orden entre niveles.
 - **Texto sobre `--ac`:** usar siempre `--on-ac` (blanco fijo da 2,08:1 en oscuro; hay una prueba que lo vigila).
-- **Los diccionarios i18n no llevan cifras** (prueba «sin cifras de datos»): los números entran como parámetros.
+- **Los diccionarios i18n no llevan cifras** (prueba «sin cifras de datos»): los números entran como parámetros. Las claves que terminan en `_` son prefijos (`"a11y.mod_" + modalidad`).
 - **Modo real sin `data_real/`:** cada página registra un 404 de `data_real/meta.json` en la consola; es lo esperado.
-- **Páginas con `window.init`** (heredadas y stubs): su texto estático sigue solo en español hasta T-17…T-24.
-- El botón «Accesibilidad» de la cabecera todavía no existe: llega con el PR-5 (`#btn-a11y`).
+- **Páginas con `window.init`** (Dashboard, Watchlist, Trading, Leaderboard y las 4 stub): su texto estático sigue solo en español y recargan al cambiar de modo o idioma.
 - `09.fechas[0]` es `"inicio"`, no una fecha (I-06). `EIA.fmt.fecha("inicio")` ya lo traduce.
 - El Agresivo del backtesting del profesor usa tope 0,35 aunque `08` diga 25 % (nota N-3): se documenta, no se corrige.
 - `es-PE` en `Intl` usa punto decimal: `+2.93%`, `USD 355.63`. Las fechas ISO se formatean en **UTC**.
-- Un `<select>` nativo no se abre con el puntero virtual (§9.3).
+- En el celular (≤ 640 px) la cabecera no es fija, a propósito: ocupa varias filas.
 - `figma-src/` trae sus propios `.gitignore` y `.gitattributes`: son parte del export y no se tocan.
 - Aún no hay CI: se fusiona con puerta local (plan §13).
 
 ## Cómo probar
-- `python -m http.server 8000` → http://127.0.0.1:8000 (o `?modo=real`, `?lang=en-US`)
+- `python -m http.server 8000` → http://127.0.0.1:8000 (o `?modo=real`, `?lang=en-US`, `?t=NVDA`)
 - `node --test "tests/unit/*.test.mjs"`
+- Puntero sin cámara: `clasificacion.html?puntero=raton` (quédate quieto 0,9 s sobre un botón).
+- Guion simulado: `clasificacion.html?camara=simulada&mod=cabeza&objetivo=%23tema` (el tema cambia solo a los ~2 s).
+- Cámara real: botón «Accesibilidad» → «Activar: puntero con la cabeza». Requiere `http://localhost` o HTTPS.
