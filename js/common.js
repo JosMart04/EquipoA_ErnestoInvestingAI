@@ -367,6 +367,54 @@
     }).map(p => p[0]);
   };
 
+  /* ───────────── Cartera de Trading (la usan Trading, Leaderboard y «Llevar a Trading») ─────────────
+     Cartera = {efectivo, posiciones: [{ticker, cantidad, costo}]}; costo = precio medio de compra.
+     Se guarda en eia_port (Modo profesor, clave de la base) o eia_port_real; las órdenes, en eia_ordenes(_real).
+     Las funciones de cálculo son puras (se prueban en Node); leer y guardar usan el estado del navegador. */
+  EIA.cartera = {
+    clave: modo => ((modo || EIA.modo()) === "real" ? "eia_port_real" : "eia_port"),
+    claveOrdenes: modo => ((modo || EIA.modo()) === "real" ? "eia_ordenes_real" : "eia_ordenes"),
+    /** Copia profunda de una cartera (p. ej. 11.portafolio_demo). */
+    copia: c => ({ efectivo: Number(c.efectivo), posiciones: (c.posiciones || []).map(p => ({ ticker: p.ticker, cantidad: Number(p.cantidad), costo: Number(p.costo) })) }),
+    /** Valor de mercado: efectivo + Σ cantidad × precio. precio(ticker) → número. */
+    valor: (c, precio) => c.posiciones.reduce((a, p) => a + p.cantidad * precio(p.ticker), c.efectivo),
+    /** Valor inicial de la demo a precio de costo: la base del retorno del usuario (como en la base del profesor). */
+    valorInicial: demo => demo.posiciones.reduce((a, p) => a + p.cantidad * p.costo, demo.efectivo),
+    /** Errores de una orden {ticker, lado: "C" | "V", cantidad}: {campo: código}. Vacío si es válida. */
+    validar(c, orden, precio) {
+      const e = {}, q = Number(orden.cantidad);
+      if (!(precio > 0)) e.ticker = "ticker";
+      if (orden.lado !== "C" && orden.lado !== "V") e.lado = "lado";
+      if (!Number.isInteger(q) || q < 1) e.cantidad = "entero";
+      else if (orden.lado === "C" && precio > 0 && q * precio > c.efectivo + 1e-9) e.cantidad = "efectivo";
+      else if (orden.lado === "V") {
+        const pos = c.posiciones.find(p => p.ticker === orden.ticker);
+        if (!pos) e.cantidad = "sin_posicion"; else if (q > pos.cantidad) e.cantidad = "insuficiente";
+      }
+      return e;
+    },
+    /** Ejecuta una orden válida y devuelve una cartera NUEVA (no modifica la recibida). */
+    ejecutar(c, orden, precio) {
+      const err = EIA.cartera.validar(c, orden, precio);
+      if (Object.keys(err).length) throw new Error("Orden no válida: " + JSON.stringify(err));
+      const n = EIA.cartera.copia(c), q = Number(orden.cantidad), pos = n.posiciones.find(p => p.ticker === orden.ticker);
+      if (orden.lado === "C") {
+        n.efectivo -= q * precio;
+        if (pos) { pos.costo = (pos.costo * pos.cantidad + q * precio) / (pos.cantidad + q); pos.cantidad += q; }
+        else n.posiciones.push({ ticker: orden.ticker, cantidad: q, costo: precio });
+      } else {
+        pos.cantidad -= q; n.efectivo += q * precio;
+        n.posiciones = n.posiciones.filter(p => p.cantidad > 0);
+      }
+      return n;
+    },
+    /** Filas de posiciones con valor y ganancia o pérdida. */
+    filas: (c, precio) => c.posiciones.map(p => {
+      const ultimo = precio(p.ticker), valor = p.cantidad * ultimo, pnl = (ultimo - p.costo) * p.cantidad;
+      return { ticker: p.ticker, cantidad: p.cantidad, costo: p.costo, ultimo, valor, pnl, pnl_pct: p.costo > 0 ? (ultimo / p.costo - 1) * 100 : 0 };
+    })
+  };
+
   /* ═════════════ A partir de aquí todo necesita DOM ═════════════ */
 
   /* ───────────── Tema claro / oscuro ───────────── */

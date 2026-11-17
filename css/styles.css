@@ -275,6 +275,15 @@ svg.mini { color: var(--ac); display: block; max-width: 100%; }
 input.umbral { width: 8rem; }
 button.quitar { min-height: 1.75rem; padding: .1rem .5rem; }
 
+/* ───────────── Trading y Leaderboard ───────────── */
+fieldset.lado { border: 1px solid var(--bd-ctl); border-radius: 8px; padding: .25rem .75rem .5rem; margin: .5rem 0 0; }
+fieldset.lado legend { font-weight: 600; padding: 0 .25rem; }
+.vista-previa { font-weight: 600; }
+[aria-invalid="true"] { border-color: var(--dn); box-shadow: 0 0 0 1px var(--dn); }
+#tabla-liga tr.elegida > * { font-weight: 700; }
+#tabla-liga tr.elegida > th { box-shadow: inset 4px 0 0 var(--ac); }
+.mi-posicion { font-size: 1.2rem; font-weight: 700; margin: 0 0 .25rem; }
+
 /* ───────────── Optimizador: composición del punto y elegibles ───────────── */
 #frontera .chart:focus-visible { outline-offset: 4px; }
 .metricas-punto { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem 1rem; margin: .5rem 0; }

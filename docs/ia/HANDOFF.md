@@ -4,13 +4,13 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 16:00 (Lima)
+- Fecha y hora: 2026-11-17 17:00 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-19-heredados` → PR #12 (Dashboard y Watchlist)
+- Rama / último commit: `cc/T-21-trading-leaderboard` → PR #13 (Trading y Leaderboard)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **101/101, ninguna omitida**. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **107/107, ninguna omitida**. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -26,6 +26,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **101/101
 | #10 | T-17 | **Regresión** (P04): historia + 30 sesiones, mediana, banda p10–p90, cono, tabla de 30 precios, métricas ordenables, verificación R-REG-09 de las dos formas. Selector de corte movido al núcleo | 1280 y 390 px, ES y EN sin recargar, tema del gráfico; 27 cargas de humo |
 | #11 | T-18 | **Optimizador** (P05): dispersión riesgo–retorno con Markowitz (línea; elegibles, universo o ambas), NSGA-II (círculos) y NSGA-III (triángulos coloreados por CVaR, con escala); interruptores; selección con clic, con el teclado (flechas + Enter) o desde la tabla; composición con barras, métricas y comprobación R-OPT-09; explicación de por qué NSGA queda debajo, medida en los datos; elegibles con su razón y mensaje para `?t=`; recálculo deshabilitado en Modo profesor | 95/95; navegador: teclado, Enter, tabla de 135 puntos, interruptores, EN sin recargar, 390 px; 27 cargas de humo. **El clic con ratón real no se pudo simular** (panel oculto): el manejador sí funciona |
 | #12 | T-19, T-20 | **Dashboard** (velas por defecto, periodos, fechas, tabla ordenable con estrella y enlace) y **Watchlist y alertas** (agregar, minigráficos, gestor de alertas, «⚠ DISPARADA» con fila resaltada y anuncio), ambos con `EIA.modulo` e i18n | 101/101; navegador: periodos, fechas, filtros, estrella, alta y baja de alertas, errores con `aria-invalid`; 27 cargas de humo |
+| #13 | T-21, T-22 | **Trading** (vista previa, errores en el campo con `aria-invalid` y foco, posiciones, historial, reinicio con diálogo, tarjeta «Portafolio aplicado») y **Leaderboard** (ranking con tu fila marcada; el retorno sale de tu cartera de Trading). La cartera vive en el núcleo: `EIA.cartera` | 107/107; navegador: errores de cantidad, efectivo y venta; compra; reinicio; Trading → Leaderboard; 27 cargas de humo |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -45,11 +46,11 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **101/101
 - El atajo `Alt+Shift+A` con una pulsación real (el evento sintético llega y abre el panel).
 
 ## En curso (estado exacto)
-- Nada a medias tras el PR #12. Lo siguiente es T-21 Trading y T-22 Leaderboard.
+- Nada a medias tras el PR #13. Los 4 heredados y los 3 primeros módulos nuevos están terminados. Lo siguiente es T-23 Portafolios y T-24 Backtesting.
 
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
-2. **T-21 Trading y T-22 Leaderboard**: pasar ambos a `EIA.modulo` + i18n. El cálculo de la cartera (efectivo, posiciones, órdenes, valor y retorno) va en el núcleo (`EIA.cartera`) porque lo usan Trading, Leaderboard y, en T-25, «Llevar a Trading». Después T-23 Portafolios, T-24 Backtesting y T-25 integración.
+2. **T-23 Portafolios y T-24 Backtesting** (P06 + extensiones). Para «Llevar a Trading» (T-25) usa `EIA.cartera.validar` y `EIA.cartera.ejecutar` con `cantidad = floor(monto × peso / precio)` y guarda `eia_elegido = {modo, nivel, origen, pesos, excluidos, llevado_a_trading: true}`: Trading ya muestra la tarjeta «Portafolio aplicado» cuando existe. No afirmes ningún orden entre niveles (contrato N-4).
 3. T-19…T-22: pasar los heredados de `window.init` a `EIA.modulo` con su `js/<modulo>.js` y sus textos a i18n.
 4. Cuando Josué vuelva a probar la webcam, ajusta signos y umbrales con lo que reporte.
 

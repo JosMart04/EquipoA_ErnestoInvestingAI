@@ -26,10 +26,10 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-16 | A11y: cámara, cabeza-mirada, manos, señales | CC-F | hecho | cc/T-14-a11y | D-07 c/d, D-12 | Se congelaba tras el primer segundo: corregido en T-28a |
 | T-17 | Regresión (P04) | CC-O | hecho | PR #10 | R-REG-01…09 | mar |
 | T-18 | Optimizador (P05), Modo profesor | CC-O | hecho | PR #11 | R-OPT-01…09 | mar |
-| T-19 | Dashboard ampliado | CC-O | en revisión | cc/T-19-heredados | R-HER-01 | mar |
-| T-20 | Watchlist y gestor de alertas | CC-O | en revisión | cc/T-19-heredados | R-HER-02 | mar |
-| T-21 | Trading con validación asociada al campo | CC-O | pendiente | | R-HER-03 | mar |
-| T-22 | Leaderboard | CC-O | pendiente | | R-HER-04 | mar |
+| T-19 | Dashboard ampliado | CC-O | hecho | PR #12 | R-HER-01 | mar |
+| T-20 | Watchlist y gestor de alertas | CC-O | hecho | PR #12 | R-HER-02 | mar |
+| T-21 | Trading con validación asociada al campo | CC-O | en revisión | cc/T-21-trading-leaderboard | R-HER-03 | mar |
+| T-22 | Leaderboard | CC-O | en revisión | cc/T-21-trading-leaderboard | R-HER-04 | mar |
 | T-23 | Portafolios (P06) | CC-O | pendiente | | R-POR-01…04 | mié |
 | T-24 | Backtesting (P06) | CC-O | pendiente | | R-BT-01…07 | mié |
 | T-25 | Integración P07: estado compartido, enlaces, «Llevar a Trading» | CC-O | pendiente | | R-INT-03/05, R-POR-04 | mié |
