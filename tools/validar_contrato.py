@@ -1,6 +1,8 @@
 """Validador independiente del contrato 1.0.0; falla antes de publicar."""
 import argparse
 from decimal import Decimal
+from datetime import date, timedelta
+import exchange_calendars as xcals
 import hashlib
 import json
 import re
@@ -36,6 +38,11 @@ def validar_predicciones(d,ts,corte,modo):
                 exigir(sum(m['matriz_confusion'].values())==m['n_prueba']>0,'I-02 matriz')
             else: exigir(all(m[k]>=0 for k in ['mape_30d_pct','mae_relativo_pct','rmse_relativo_pct']),'Errores regresión')
     exigir(len(d[6]['fechas_pronostico'])==30 and d[6]['fechas_pronostico']==sorted(set(d[6]['fechas_pronostico'])) and min(d[6]['fechas_pronostico'])>corte,'Fechas pronóstico')
+    if modo=='real':
+        limite=(date.fromisoformat(corte)+timedelta(days=100)).isoformat()
+        calendario=xcals.get_calendar('XNYS',start=corte,end=limite)
+        esperado=calendario.sessions_window(calendario.next_session(corte),30).strftime('%Y-%m-%d').tolist()
+        exigir(d[6]['fechas_pronostico']==esperado,'Pronóstico debe tener 30 sesiones NYSE')
     literal=[]
     for i,t in enumerate(ts):
         c=np.array(d[2]['cierres'][t]);ohlc=d[3]['series'][t]

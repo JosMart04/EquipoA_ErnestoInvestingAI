@@ -1,10 +1,11 @@
 import json
 from copy import deepcopy
+from datetime import date, timedelta
 from pathlib import Path
 import shutil
 import tempfile
 import unittest
-from tools.validar_contrato import validar,validar_auditoria,validar_carteras,cargar,ROOT
+from tools.validar_contrato import validar,validar_auditoria,validar_carteras,validar_predicciones,cargar,ROOT
 
 class Contrato(unittest.TestCase):
     def test_profesor_y_discrepancia_literal(self):
@@ -21,6 +22,15 @@ class Contrato(unittest.TestCase):
                 corrupto=deepcopy(audit)
                 corrupto[campo]=fechas[fechas.index(audit[campo])-1]
                 with self.assertRaises(ValueError):validar_auditoria(corrupto,fechas,meta['fecha_corte'])
+    def test_rechaza_sabado_en_pronostico_aunque_las_fechas_esten_ordenadas(self):
+        d={n:cargar(ROOT/'data_real',n) for n in [1,2,3,5,6,10,13]}
+        ts=[a['ticker'] for a in d[1]];corte=d[13]['fecha_ancla_precios']
+        validar_predicciones(d,ts,corte,'real')
+        fechas=d[6]['fechas_pronostico']
+        viernes=next(i for i,f in enumerate(fechas) if date.fromisoformat(f).weekday()==4)
+        fechas[viernes]=(date.fromisoformat(fechas[viernes])+timedelta(days=1)).isoformat()
+        self.assertEqual(fechas,sorted(set(fechas)))
+        with self.assertRaisesRegex(ValueError,'NYSE'):validar_predicciones(d,ts,corte,'real')
     def test_fronteras_reales_se_recalculan_desde_pesos_y_datos(self):
         d={n:cargar(ROOT/'data_real',n) for n in [1,2,4,5,6,7,8]}
         ts=[a['ticker'] for a in d[1]]
