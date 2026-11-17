@@ -111,3 +111,34 @@ test("solo dos clases: el chip de señal rechaza cualquier otro valor (R-CLA-06)
 test("EIA.esc escapa el HTML de los datos", () => {
   assert.equal(EIA.esc('<b a="1">&\'</b>'), "&lt;b a=&quot;1&quot;&gt;&amp;&#39;&lt;/b&gt;");
 });
+
+test("R-INT-05: migas de pan solo al llegar por un enlace cruzado, encadenadas y sin ciclos (PLAN_MAESTRO §4)", () => {
+  assert.equal(EIA.paginaDeRuta("/EquipoA/regresion.html"), "regresion");
+  assert.equal(EIA.paginaDeRuta("/EquipoA/"), "dashboard", "la raíz de Pages es el Dashboard");
+  assert.equal(EIA.paginaDeRuta("/EquipoA/otra.html"), null);
+  const clas = { pagina: "clasificacion", href: "clasificacion.html?t=NVDA" };
+  // Clasificación → Regresión: «Clasificación › NVDA › Regresión»
+  const r1 = EIA.calcularMigas({ pagina: "regresion", contexto: "t", anterior: clas, guardado: { pagina: "clasificacion", contexto: "t", ruta: [] } });
+  assert.deepEqual(r1, [clas]);
+  // … → Optimizador: se encadena
+  const reg = { pagina: "regresion", href: "regresion.html?t=NVDA" };
+  const r2 = EIA.calcularMigas({ pagina: "optimizador", contexto: "t", anterior: reg, guardado: { pagina: "regresion", contexto: "t", ruta: r1 } });
+  assert.deepEqual(r2.map(x => x.pagina), ["clasificacion", "regresion"]);
+  // Recargar conserva el recorrido; volver a una página del recorrido lo recorta
+  assert.deepEqual(EIA.calcularMigas({ pagina: "optimizador", contexto: "t", anterior: reg, guardado: { pagina: "optimizador", contexto: "t", ruta: r2 } }), r2);
+  const opt = { pagina: "optimizador", href: "optimizador.html?t=NVDA" };
+  assert.deepEqual(EIA.calcularMigas({ pagina: "regresion", contexto: "t", anterior: opt, guardado: { pagina: "optimizador", contexto: "t", ruta: r2 } }), [clas]);
+  // Sin contexto en la URL (llegada por la barra de módulos) o sin página anterior: no hay migas
+  assert.deepEqual(EIA.calcularMigas({ pagina: "regresion", contexto: null, anterior: clas, guardado: null }), []);
+  assert.deepEqual(EIA.calcularMigas({ pagina: "regresion", contexto: "t", anterior: null, guardado: null }), []);
+  // Un recorrido guardado de otra rama no se mezcla, ni uno de otro tipo de contexto (nivel frente a activo)
+  assert.deepEqual(EIA.calcularMigas({ pagina: "clasificacion", contexto: "t", anterior: { pagina: "backtesting", href: "backtesting.html?nivel=Agresivo" }, guardado: { pagina: "backtesting", contexto: "nivel", ruta: [{ pagina: "portafolios", href: "portafolios.html" }] } }).map(x => x.pagina), ["backtesting"]);
+  assert.deepEqual(EIA.calcularMigas({ pagina: "backtesting", contexto: "nivel", anterior: { pagina: "portafolios", href: "portafolios.html" }, guardado: { pagina: "optimizador", contexto: "t", ruta: r2 } }).map(x => x.pagina), ["portafolios"]);
+});
+
+test("EIA.todos: en paralelo, pero el error es el primero en el orden pedido (el diagnóstico no depende de qué 404 llega antes)", async () => {
+  const espera = (ms, v, falla) => new Promise((ok, mal) => setTimeout(() => (falla ? mal(new Error(v)) : ok(v)), ms));
+  assert.deepEqual(await EIA.todos([espera(5, "a"), espera(1, "b")]), ["a", "b"]);
+  // 13 falla antes que 09, pero se informa 09 (el archivo principal del módulo va primero)
+  await assert.rejects(EIA.todos([espera(20, "09", true), espera(1, "13", true)]), /09/);
+});

@@ -4,13 +4,13 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 12:03 (Lima)
+- Fecha y hora: 2026-11-17 12:44 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-24-backtesting` → PR #17 (Backtesting)
+- Rama / último commit: `cc/T-25-migas` → PR #19 (migas de pan)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **119/119, ninguna omitida**. Además, CX tiene 40 E2E con Playwright (PR #15) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **120/120, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -30,6 +30,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **119/119
 | #15 (CX) | T-50 | E2E: cámara falsa + MediaPipe real (cuadros crecientes 10 s), clic real en NSGA-II, aviso parcial en 9 páginas | 40 E2E en la CI |
 | #16 | T-23, T-25 (parte) | **Portafolios** (tarjetas, elegir nivel, composición, razones con «Excluir») y **«Llevar a Trading»** compartido (`EIA.ui.llevarATrading`) desde Portafolios y el Optimizador; Trading muestra la cartera aplicada | 113/113; flujo Portafolios → Trading → Leaderboard en el navegador; 390 px; 27 cargas de humo |
 | #17 | T-24 | **Backtesting** (P06): capital y caída conectados, métricas con las carteras marcadas, R-BT-06 visible, nota del tope 0,35, línea de tiempo de 12 rebalanceos con pesos y cambio frente al anterior, interpretación generada con reglas. Se retira `js/stub.js` | 119/119; navegador: 1280 y 390 px, EN sin recargar, `?nivel=`, contraste de 12 elementos en claro y oscuro; 27 cargas de humo |
+| #18 (CX) | T-50 | E2E de Backtesting (curvas, métricas, nota del tope, Agresivo → 12 rebalanceos) y ausencia aislada de `09` | 48 E2E en la CI |
+| #19 | T-25 | **Migas de pan** en el núcleo al llegar por un enlace cruzado (Clasificación › NVDA › Regresión › Optimizador; Portafolios › Agresivo › Backtesting) | 120/120; navegador: cadena, recarga, vuelta atrás, cambio de activo, EN, barra de módulos sin migas, 390 px; 27 cargas de humo |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -53,10 +55,9 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **119/119
 
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
-2. **T-25** (lo que falta): migas de pan y enlaces cruzados entre módulos (R-INT-05).
-3. **T-27** (accesibilidad a y e): resumen y lectura punto a punto de cada gráfico, barrido; **T-26** (Modo real) cuando CX publique 01–13 en `data_real/`.
-4. Mejora pendiente del Optimizador: a 390 px los puntos de NSGA-II y NSGA-III se superponen.
-5. Cuando Josué vuelva a probar la webcam, ajusta signos y umbrales con lo que reporte.
+2. **T-27** (accesibilidad a y e): resumen y lectura punto a punto de cada gráfico, barrido; **T-26** (Modo real) cuando CX publique 01–13 en `data_real/`.
+3. Mejora pendiente del Optimizador: a 390 px los puntos de NSGA-II y NSGA-III se superponen.
+4. Cuando Josué vuelva a probar la webcam, ajusta signos y umbrales con lo que reporte.
 
 ## Cómo se hace un módulo (el ejemplo vivo es `js/clasificacion.js` + `tests/unit/clasificacion.test.mjs`)
 1. HTML mínimo: `<body data-page="<id>">`, un `<h1>`, un `<p class="sub">`, contenedores vacíos con `id`, `js/common.js` y luego `js/<id>.js`. Texto estático con `data-i18n="clave"`. Sin cifras en el HTML.
@@ -78,6 +79,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **119/119
 - **Comando de pruebas:** `node --test "tests/unit/*.test.mjs"` (con la carpeta sola, Node ≥ 21 falla).
 - **El panel de navegador integrado de Claude, cuando está oculto, no ejecuta `requestAnimationFrame` ni entrega el evento `close` de `<dialog>`.** Por eso `EIA.ui.dialogo` finaliza también tras `submit`, `cancel` y `cerrar()`, y para probar el puntero sin ver el panel sustituí `requestAnimationFrame` por un temporizador dentro de la prueba. En un navegador normal no pasa.
 - **Nunca reescribas con `innerHTML` un nodo que contenga el `<video>` de la cámara:** al salir del documento el navegador lo pausa y el seguimiento se congela (fue el fallo del 17-nov; hay una prueba que vigila `camara.js`).
+- **Migas de pan** (`js/common.js`, `prepararMigas`/`pintarMigas`): salen de `document.referrer` + `?t=`/`?nivel=` y de `sessionStorage.eia_migas`; **no** agregues parámetros a la URL de los enlaces cruzados (CX compara URLs exactas).
 - **«Llevar a Trading»** vive en el núcleo (`EIA.ui.llevarATrading`): úsalo desde cualquier módulo con `{pesos, excluidos, nivel, origen, fuente}`; guarda `eia_elegido.aplicado`, que Trading muestra.
 - **A 390 px los puntos de NSGA-II y NSGA-III se superponen** (lo detectó CX en E2E): para elegir con el dedo hay que apagar series; con teclado o desde la tabla funciona. Mejora pendiente.
 - **Modo real hoy:** `data_real/` solo tiene `meta.json` y `cierres_historicos.json`. Cada módulo muestra «publicación parcial» y nombra el archivo que falta; es lo esperado hasta que CX publique 01–13.

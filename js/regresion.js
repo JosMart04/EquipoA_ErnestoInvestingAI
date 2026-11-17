@@ -324,7 +324,7 @@
   EIA.modulo({
     id: "regresion",
     async cargar() {
-      const [c06, c02, universo, parametros] = await Promise.all([EIA.datos(ARCHIVO), EIA.datos(ARCHIVO_HISTORIA), EIA.universo(), EIA.datos(ARCHIVO_PARAMETROS)]);
+      const [c06, c02, universo, parametros] = await EIA.todos([EIA.datos(ARCHIVO), EIA.datos(ARCHIVO_HISTORIA), EIA.universo(), EIA.datos(ARCHIVO_PARAMETROS)]);
       return { c06, c02, universo, horizonte: parametros.parametros.N_FC };
     },
     pintar

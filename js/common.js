@@ -200,6 +200,14 @@
     promesa.catch(() => cache.delete(clave)); // un fallo no se queda en caché
     return promesa;
   };
+  /** Como Promise.all (las peticiones van en paralelo), pero si fallan varias se informa la PRIMERA en el orden dado,
+      no la que respondió antes: el mensaje «falta 09_…» es siempre el mismo aunque también falte 13_… */
+  EIA.todos = async function (promesas) {
+    const r = await Promise.allSettled(promesas);
+    const fallo = r.find(x => x.status === "rejected");
+    if (fallo) throw fallo.reason;
+    return r.map(x => x.value);
+  };
   /** Compatibilidad con la base. */
   const loadJSON = nombre => EIA.datos(nombre);
 
@@ -254,11 +262,12 @@
   };
   EIA.activo = () => parametros().get("t") || EIA.estado.get("eia_activo");
   EIA.setActivo = function (t) {
-    EIA.estado.set("eia_activo", t);
+    // Primero la URL y después el aviso: quien escuche "eia:estado" ya lee el activo nuevo con EIA.activo()
     if (hayDOM && global.history && global.history.replaceState && parametros().has("t")) {
       const u = new URL(global.location.href); u.searchParams.set("t", t);
       global.history.replaceState(null, "", u.pathname + u.search + u.hash);
     }
+    EIA.estado.set("eia_activo", t);
   };
 
   /* ───────────── Internacionalización (ES-PE / EN-US) ───────────── */
@@ -571,7 +580,77 @@
     cab.innerHTML = plantillaCabecera();
     pie.innerHTML = plantillaPie();
     const salto = $("a.skip"); if (salto) salto.textContent = EIA.t("comun.saltar");
+    pintarMigas();
     if (selectorFoco) { const n = $(selectorFoco, cab); if (n) n.focus(); }
+  }
+  /* ───────────── Migas de pan (R-INT-05; PLAN_MAESTRO §4: «Clasificación › NVDA › Regresión») ─────────────
+     Solo aparecen al llegar por un enlace cruzado: la URL trae contexto (?t= o ?nivel=) y la página anterior es otro
+     módulo. No se agregan parámetros a la URL: el recorrido se deduce de document.referrer y se guarda en
+     sessionStorage para encadenar (Clasificación › Regresión › Optimizador) y para conservarlo al recargar. */
+  const CLAVE_MIGAS = "eia_migas";
+  let _migas = { ruta: [], contexto: null };
+  /** Pura: id del módulo de una ruta («/x/regresion.html» → «regresion»; «/x/» → «dashboard»). null si no es un módulo. */
+  EIA.paginaDeRuta = function (ruta) {
+    const archivo = String(ruta || "").split(/[?#]/)[0].split("/").pop() || "index.html";
+    const p = PAGES.find(x => x[0] === archivo);
+    return p ? p[2] : null;
+  };
+  /** Pura: recorrido de migas [{pagina, href}] hasta la página actual (sin incluirla); [] si no corresponde mostrarlas.
+      e = {pagina, contexto: "t" | "nivel" | null, anterior: {pagina, href} | null, guardado: {pagina, contexto, ruta} | null}
+      Solo se encadena con un recorrido del mismo tipo de contexto: «Portafolios › Agresivo» no sigue en una página de un activo. */
+  EIA.calcularMigas = function (e) {
+    if (!e.contexto) return [];
+    const mismo = !!e.guardado && e.guardado.contexto === e.contexto;
+    // Recarga (o vuelta a la misma página): se conserva el recorrido guardado
+    if (mismo && e.guardado.pagina === e.pagina) return e.guardado.ruta.slice();
+    if (!e.anterior || !e.anterior.pagina || e.anterior.pagina === e.pagina) return [];
+    const base = mismo && e.guardado.pagina === e.anterior.pagina ? e.guardado.ruta : [];
+    let ruta = base.concat([{ pagina: e.anterior.pagina, href: e.anterior.href }]);
+    // Volver a una página que ya estaba en el recorrido lo recorta (sin ciclos)
+    const i = ruta.findIndex(x => x.pagina === e.pagina);
+    if (i >= 0) ruta = ruta.slice(0, i);
+    return ruta;
+  };
+  function leerSesion(k) { try { return JSON.parse(global.sessionStorage.getItem(k)); } catch (x) { return null; } }
+  function guardarSesion(k, v) { try { global.sessionStorage.setItem(k, JSON.stringify(v)); } catch (x) { /* sin almacenamiento: no hay migas al recargar */ } }
+  /** Calcula el recorrido una sola vez al cargar la página. */
+  function prepararMigas() {
+    const pagina = document.body.dataset.page, p = parametros();
+    const contexto = p.get("t") ? { t: p.get("t") } : p.get("nivel") ? { nivel: p.get("nivel") } : null;
+    let anterior = null;
+    try {
+      const r = document.referrer ? new URL(document.referrer) : null;
+      if (r && r.origin === global.location.origin) {
+        const id = EIA.paginaDeRuta(r.pathname);
+        if (id) anterior = { pagina: id, href: PAGES.find(x => x[2] === id)[0] + r.search };
+      }
+    } catch (x) { anterior = null; }
+    const tipo = contexto ? Object.keys(contexto)[0] : null;
+    const ruta = EIA.calcularMigas({ pagina, contexto: tipo, anterior, guardado: leerSesion(CLAVE_MIGAS) });
+    _migas = { ruta, contexto };
+    guardarSesion(CLAVE_MIGAS, { pagina, contexto: tipo, ruta });
+  }
+  /** Pinta (o repinta al cambiar de idioma o de activo) las migas al inicio de <main>. */
+  function pintarMigas() {
+    const main = $("main"); if (!main) return;
+    let nav = $("nav.migas", main);
+    if (!_migas.ruta.length) { if (nav) nav.remove(); return; }
+    const t = EIA.t, nombre = id => t(PAGES.find(x => x[2] === id)[1]);
+    const ticker = _migas.contexto.t ? EIA.activo() || _migas.contexto.t : null;
+    // Los enlaces de vuelta llevan el activo que se mira ahora (si se cambió en esta página)
+    const href = h => {
+      if (!ticker) return h;
+      const u = new URL(h, global.location.href);
+      if (u.searchParams.has("t")) u.searchParams.set("t", ticker);
+      return u.pathname.split("/").pop() + u.search;
+    };
+    const ctx = ticker || EIA.nombre("nivel", _migas.contexto.nivel);
+    const items = _migas.ruta.map((x, i) => `<li><a href="${esc(href(x.href))}">${esc(nombre(x.pagina))}</a></li>` +
+      (i === 0 ? `<li class="migas-contexto">${esc(ctx)}</li>` : ""));
+    items.push(`<li><span aria-current="page">${esc(nombre(document.body.dataset.page))}</span></li>`);
+    if (!nav) { nav = document.createElement("nav"); nav.className = "migas"; main.insertBefore(nav, main.firstChild); }
+    nav.setAttribute("aria-label", t("nav.migas"));
+    nav.innerHTML = "<ol>" + items.join("") + "</ol>";
   }
   function alternarMenu(abrir, devolverFoco) {
     menuAbierto = abrir === undefined ? !menuAbierto : abrir;
@@ -588,6 +667,8 @@
     document.body.insertAdjacentHTML("afterbegin", '<a class="skip" href="#contenido"></a><header class="top"></header>');
     const main = $("main");
     if (main) { main.id = "contenido"; main.setAttribute("tabindex", "-1"); }
+    prepararMigas();
+    EIA.on("eia:estado", d => { if (d.clave === "eia_activo" && _listo) pintarMigas(); });
     document.body.insertAdjacentHTML("beforeend",
       '<footer class="pie"></footer><div id="eia-vivo" class="sr" aria-live="polite" aria-atomic="true"></div>' +
       '<div id="eia-alerta" class="sr" role="alert"></div><div id="eia-notas" aria-live="polite"></div>');
@@ -923,7 +1004,7 @@
       cfg = {pesos, excluidos, nivel, origen, fuente: "portafolios" | "optimizador", alTerminar()} */
   EIA.ui.llevarATrading = async function (cfg) {
     const t = EIA.t, usd = x => EIA.fmt.usd(x);
-    const [c10, c11] = await Promise.all([EIA.universo(), EIA.datos("11_watchlist_alertas_portafolio_demo.json")]);
+    const [c10, c11] = await EIA.todos([EIA.universo(), EIA.datos("11_watchlist_alertas_portafolio_demo.json")]);
     const precio = tk => { const a = c10.find(x => x.ticker === tk); return a ? a.ultimo : NaN; };
     const cartera = () => EIA.estado.get(EIA.cartera.clave()) || EIA.cartera.copia(c11.portafolio_demo);
     const efectivo = Math.floor(cartera().efectivo * 100) / 100;

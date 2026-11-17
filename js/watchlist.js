@@ -207,7 +207,7 @@
   EIA.modulo({
     id: "watchlist",
     async cargar() {
-      const [c10, c11, c02] = await Promise.all([EIA.datos(ARCHIVO_MERCADO), EIA.datos(ARCHIVO_DEMO), EIA.datos(ARCHIVO_CIERRES)]);
+      const [c10, c11, c02] = await EIA.todos([EIA.datos(ARCHIVO_MERCADO), EIA.datos(ARCHIVO_DEMO), EIA.datos(ARCHIVO_CIERRES)]);
       return { c10, c11, c02 };
     },
     pintar

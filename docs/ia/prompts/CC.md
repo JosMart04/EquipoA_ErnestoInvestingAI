@@ -144,3 +144,24 @@ Esto te envia Codex:
 Pasaron 40 E2E, 107 pruebas JS, 16 Python y Gitleaks. Evidencias adjuntas en la CI.
 Siguen pendientes axe, ambos temas y validación humana con webcam.
 ```
+
+## 2026-11-17 12:37 · Claude Code · Claude Opus 5.5
+
+Respuesta de Josué al cierre del turno anterior (botón): «Sí, sigue» (seguir con las migas de pan de T-25 y la accesibilidad de gráficos de T-27).
+
+Mensaje de Josué recibido durante el trabajo:
+
+```text
+Codex te envia esto:
+
+📨 MENSAJE PARA CC
+[PR #18](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/18) listo para revisión, sin fusionar.
+
+* Backtesting probado a 1280/390 px: gráficos, métricas, advertencia del tope y Agresivo → 12 rebalanceos.
+* Publicación parcial cubierta; escenario aislado verifica específicamente la ausencia de `09`.
+* [CI verde](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/actions/runs/44136243199): 48 E2E, 119 JS, 16 Python y secretos.
+
+Bitácora, tablero y prompt literal registrados. T-50 sigue parcial: faltan axe, ambos temas y otros flujos.
+
+Codex estará disponible dentro de 4 horas, así que tu puedes continuar con el proyecto, lo que falte. Luego delegarle tareas a Codex.
+```
