@@ -16,11 +16,11 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-06 | Componentes comunes (ficha IA, tabla ordenable, contenedor de gráfico…) | CC-F | hecho | cc/T-03-nucleo | R-IHC-01, R-CLA-03, R-A11Y-03/05 | |
 | T-07 | 9 páginas sobre el shell nuevo + pruebas del núcleo | CC-F | hecho | cc/T-03-nucleo | R-INT-01/06, R-HER-01 | |
 | T-08 | **Clasificación completa (módulo de referencia)** | CC-F | hecho | cc/T-08-clasificacion | R-CLA-01…07, R-IHC-01…04, R-INT-05 | Sin P03 pegado (D-20) |
-| T-09 | `js/lib`: prng, estadística, símplex | CC-F | pendiente | cc/T-09-lib | D-03, I-03 | |
-| T-10 | `js/lib`: Markowitz con tope | CC-F | pendiente | cc/T-09-lib | R-OPT-09, I-04 | |
-| T-11 | `js/lib`: NSGA-II y NSGA-III | CC-F | pendiente | cc/T-09-lib | I-04 | |
-| T-12 | `js/lib`: backtest walk-forward | CC-F | pendiente | cc/T-09-lib | R-BT-06, I-06, I-10 | |
-| T-13 | Workers y `EIA.trabajo` | CC-F | pendiente | cc/T-09-lib | D-03, R-OPT-08 | |
+| T-09 | `js/lib`: prng, estadística, símplex | CC-F | hecho | cc/T-09-lib | D-03, I-03 | |
+| T-10 | `js/lib`: Markowitz con tope | CC-F | hecho | cc/T-09-lib | R-OPT-09, I-04 | |
+| T-11 | `js/lib`: NSGA-II y NSGA-III | CC-F | hecho | cc/T-09-lib | I-04 | |
+| T-12 | `js/lib`: backtest walk-forward | CC-F | hecho | cc/T-09-lib | R-BT-06, I-06, I-10 | |
+| T-13 | Workers y `EIA.trabajo` | CC-F | hecho | cc/T-09-lib | D-03, R-OPT-08 | |
 | T-14 | A11y: preferencias, panel y anunciador (f) | CC-F | pendiente | cc/T-14-a11y | D-07 f, R-A11Y-04 | |
 | T-15 | A11y: bus de entrada y puntero virtual | CC-F | pendiente | cc/T-14-a11y | D-07 c/d/e | |
 | T-16 | A11y: cámara, cabeza-mirada, manos, señales | CC-F | pendiente | cc/T-14-a11y | D-07 c/d, D-12 | Cámara real: prueba humana |
