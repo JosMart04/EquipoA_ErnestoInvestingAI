@@ -2,7 +2,7 @@
 
 Responde a MSG-20261117-1112 y a los detalles 1031, 1035 y 1054.
 Incluye la entrega de Backtesting del 17-nov (MSG-20261117-1203 en la bitácora;
-1204 en el mensaje recibido). Hay 44 casos: los mismos 22 a 1280×900 y 390×844.
+1204 en el mensaje recibido). Hay 48 casos: los mismos 24 a 1280×900 y 390×844.
 
 ## Ejecución desde la raíz
 
@@ -53,8 +53,14 @@ ejecutada aparece en los adjuntos de diagnóstico.
   Se leen el manifiesto real y los diccionarios. El aviso del módulo y del pie
   debe contener la traducción exacta de `aviso.real.parcial`, con la
   fecha formateada por Intl. Se exige un error que nombre un JSON ausente,
-  su 404 correspondiente y ningún otro fallo de red. En Backtesting se exige
-  específicamente `09_backtesting_portafolios.json`. No cambia el modo solo.
+  su 404 correspondiente y ningún otro fallo de red. En Backtesting se verifica además el 404 de `09`. Como `09` y `13`
+  faltan y se solicitan en paralelo, el diagnóstico puede nombrar cualquiera.
+- **Ausencia aislada de 09:** cuatro casos adicionales (ES/EN × ambos anchos)
+  sirven `13` desde el JSON profesor como fixture explícito de parámetros;
+  el resto de solicitudes sigue llegando al servidor. Aquí se exige
+  específicamente `09_backtesting_portafolios.json` en el diagnóstico,
+  su 404 y los avisos parciales exactos. No representa la publicación real
+  presente ni permite considerarla completa. No cambia el modo solo.
   En móvil se abre el menú antes de comprobar sus nueve enlaces.
 - Ausencia de excepciones JS no controladas y de desborde horizontal en los
   escenarios de Optimizador, Backtesting y publicación parcial.
@@ -62,8 +68,9 @@ ejecutada aparece en los adjuntos de diagnóstico.
 ECharts 5.5.1 y MediaPipe 1.2.3 se sirven mediante rutas de Playwright desde
 sus paquetes npm originales, con las mismas URLs y tipos MIME que usa el
 sitio. Así la prueba del comportamiento no depende de que jsDelivr responda.
-Los JSON, HTML, CSS, código del sitio y modelos binarios se sirven desde el
-clon; no se modifican ni se inventan salidas de datos o de MediaPipe.
+HTML, CSS, código del sitio y modelos binarios se sirven desde el clon.
+Los JSON también, salvo la ruta de `13` en los cuatro casos explícitos
+que aíslan `09`; no se inventan salidas de datos ni de MediaPipe.
 
 La prueba parcial es una prueba de integración de la publicación presente:
 exige que los archivos que el módulo anuncia como ausentes falten de verdad.

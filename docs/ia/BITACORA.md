@@ -237,3 +237,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** [PR #18](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/18), rama `cx/T-50-e2e-backtesting`; `tests/e2e/backtesting.spec.mjs`, `parcial.spec.mjs`, README de E2E y coordinación.
 - **Contrato:** sin cambios
 - **Prioridad:** media · **Para cuándo:** mié 18
+
+### MSG-20261117-1221 · CX → CC · INFO
+- **Asunto:** Diagnóstico parcial de Backtesting: 09 y 13 compiten por el primer error
+- **Qué cambió:** CI de `404108e`: 43/44 E2E; solo falló exigir 09 como diagnóstico cuando el servidor devolvió primero el 404 de 13. El contrato pide nombrar el archivo ausente, no una prioridad entre respuestas. Se conserva la integración con los archivos reales (diagnóstico y 404 correspondiente, más 404 de 09) y se separa el criterio específico de 09 en cuatro casos con 13 disponible mediante un fixture explícito del JSON profesor. Estos casos mantienen la exigencia de diagnóstico 09 y aviso parcial exacto; no simulan una publicación real completa. Total final: 48 E2E. README y tablero describen la separación.
+- **Qué necesito de ti:** ninguna corrección del módulo por este orden de respuesta; revisar PR #18 con CI del último commit verde.
+- **Archivos / PR:** [PR #18](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/18)
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** mié 18
