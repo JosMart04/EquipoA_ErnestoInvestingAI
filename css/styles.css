@@ -275,6 +275,17 @@ svg.mini { color: var(--ac); display: block; max-width: 100%; }
 input.umbral { width: 8rem; }
 button.quitar { min-height: 1.75rem; padding: .1rem .5rem; }
 
+/* ───────────── Backtesting ───────────── */
+#tabla-metricas tr.fila-cartera > th { box-shadow: inset 4px 0 0 var(--ac); }
+.linea-tiempo { list-style: none; margin: .75rem 0; padding: 0; display: flex; flex-wrap: wrap; gap: .35rem; }
+.barra-apilada { display: flex; height: 2rem; border: 1px solid var(--bd-ctl); border-radius: 8px; overflow: hidden; margin: .5rem 0; }
+.barra-apilada .seg { display: flex; align-items: center; justify-content: center; color: var(--panel); font-size: .8rem; font-weight: 700; border-right: 1px solid var(--panel); overflow: hidden; white-space: nowrap; }
+.seg-0 { background: var(--serie-1); } .seg-1 { background: var(--serie-2); } .seg-2 { background: var(--serie-3); }
+.seg-3 { background: var(--serie-4); } .seg-4 { background: var(--serie-5); } .seg-5 { background: var(--serie-6); }
+.interp { border-top: 1px solid var(--bd); padding-top: .5rem; }
+.interp h3 { display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
+.cierre { margin-top: 1rem; }
+
 /* ───────────── Portafolios y «Llevar a Trading» ───────────── */
 .niveles { margin: 1rem 0; }
 .nivel h2 { margin-top: 0; }
