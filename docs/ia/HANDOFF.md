@@ -4,13 +4,13 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 11:45 (Lima)
+- Fecha y hora: 2026-11-17 13:30 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-02b-contrato-ack` → PR #9 (contrato con los ACK y aviso de publicación parcial)
+- Rama / último commit: `cc/T-17-regresion` → PR #10 (Regresión)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **82/82, ninguna omitida**. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **88/88, ninguna omitida**. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -23,6 +23,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **82/82, 
 | #7 (CX) | T-31, T-39, T-51 | `qa.yml`, fixture cvxpy (35 puntos), `data_real/meta.json` y `cierres_historicos.json` | Fusionado por CC-O con CI verde; la prueba Markowitz vs cvxpy ya corre y pasa |
 | #8 | T-28a | **La cámara se congelaba al primer segundo**: el HUD se reescribía con `innerHTML` y sacaba el `<video>` del documento. HUD fijo + vigilante del video; manos y puntero más estables (D-22) | MediaPipe real + video falso: 369 cuadros en 10 s; la versión anterior perdía el `<video>` a 1,5 s |
 | #9 | T-02b | Contrato: ACK de C-01 (solo igualdad inversa) y C-02; la cota ampliada ya no se llama «equivalente»; R-REG-09 literal sigue incumpliéndose. Aviso «publicación parcial» en Modo real | 27 cargas: 9 páginas × (real ES 390, real EN 1280, profesor 390) |
+| #10 | T-17 | **Regresión** (P04): historia + 30 sesiones, mediana, banda p10–p90, cono, tabla de 30 precios, métricas ordenables, verificación R-REG-09 de las dos formas. Selector de corte movido al núcleo | 1280 y 390 px, ES y EN sin recargar, tema del gráfico; 27 cargas de humo |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -42,13 +43,11 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **82/82, 
 - El atajo `Alt+Shift+A` con una pulsación real (el evento sintético llega y abre el panel).
 
 ## En curso (estado exacto)
-- Nada a medias tras el PR #9. Lo siguiente es T-17 Regresión.
+- Nada a medias tras el PR #10. Lo siguiente es T-18 Optimizador.
 
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
-2. **T-17 Regresión** (P04 + extensiones de `docs/contexto/PROMPTS_INICIALES.md`) y **T-18 Optimizador** (P05). Copia la estructura: modelo de vista puro + `tests/unit/<modulo>.test.mjs` + `EIA.modulo({id, cargar, pintar})` + claves `"<modulo>": {…}` en los dos diccionarios.
-   - Regresión: el gráfico va con `EIA.ui.grafico` (ya da Tabla, Resumen y Escuchar). Muestra **las dos comprobaciones** de R-REG-09: la literal de la guía (1 centavo; falla en MSFT, AMZN, META, TSLA y SPY) y la igualdad inversa I-03b (pasa en los 26). No digas que R-REG-09 «se cumple» (contrato N-1, ACK de CX).
-   - Optimizador: en el Modo profesor **no** llames a `EIA.trabajo` (hay una prueba que cuenta los `new Worker`). El recálculo va en T-26.
+2. **T-18 Optimizador** (P05 + extensiones de `docs/contexto/PROMPTS_INICIALES.md`). Copia la estructura de `js/regresion.js` (gráfico con `EIA.ui.grafico`, selector de corte con `EIA.ui.selectorCorte`) y de `js/clasificacion.js`. En el Modo profesor **no** llames a `EIA.trabajo` (hay una prueba que cuenta los `new Worker`); el recálculo va en T-26.
 3. T-19…T-22: pasar los heredados de `window.init` a `EIA.modulo` con su `js/<modulo>.js` y sus textos a i18n.
 4. Cuando Josué vuelva a probar la webcam, ajusta signos y umbrales con lo que reporte.
 

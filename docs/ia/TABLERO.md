@@ -24,7 +24,7 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-14 | A11y: preferencias, panel y anunciador (f) | CC-F | hecho | cc/T-14-a11y | D-07 f, R-A11Y-04 | |
 | T-15 | A11y: bus de entrada y puntero virtual | CC-F | hecho | cc/T-14-a11y | D-07 c/d/e | |
 | T-16 | A11y: cámara, cabeza-mirada, manos, señales | CC-F | hecho | cc/T-14-a11y | D-07 c/d, D-12 | Se congelaba tras el primer segundo: corregido en T-28a |
-| T-17 | Regresión (P04) | CC-O | pendiente | | R-REG-01…09 | mar |
+| T-17 | Regresión (P04) | CC-O | en revisión | cc/T-17-regresion | R-REG-01…09 | mar |
 | T-18 | Optimizador (P05), Modo profesor | CC-O | pendiente | | R-OPT-01…09 | mar |
 | T-19 | Dashboard ampliado | CC-O | pendiente | | R-HER-01 | mar |
 | T-20 | Watchlist y gestor de alertas | CC-O | pendiente | | R-HER-02 | mar |

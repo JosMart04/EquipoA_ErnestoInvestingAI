@@ -180,6 +180,8 @@ Tienen nombre en el código (`EIA.K.*` o constantes del módulo) y nunca aparece
 | Ventana, momentum, comisión | 126, 63, 5 pb | `09.metodo` |
 | Tope del Agresivo en el backtesting | 0,35 | Medido en `09` (nota N-3) |
 | Nivel del CVaR | 95 % | Nombre del campo `cvar95_diario_pct` |
+| Tolerancia de la verificación literal de P04 (R-REG-09) | 0,01 US$ | Guía, P04 (verificación); se muestra junto a I-03b |
+| Historia visible en Regresión | 60, 120 (por defecto) y 252 sesiones | Guía, P04 («últimas 120 sesiones»); 60 y 252 son opciones del equipo |
 
 ## 7. Extensiones del Modo real (`data_real/`)
 
