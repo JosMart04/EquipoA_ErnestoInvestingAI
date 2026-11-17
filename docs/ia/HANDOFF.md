@@ -4,7 +4,7 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 17:00 (Lima)
+- Fecha y hora: 2026-11-17 11:12 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
 - Rama / último commit: `cc/T-21-trading-leaderboard` → PR #13 (Trading y Leaderboard)
 
