@@ -48,8 +48,8 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-37 | 09 backtesting real | CX | pendiente | cx/T-51-ci-referencias-datos · PR #7 | R-BT-* | ACK C-02: referencia 1/N diaria sin comisión; volatilidad poblacional y fecha publicada en sesión siguiente verificadas. |
 | T-38 | Cortes históricos (12 fines de mes) | CX | pendiente | | D-03 | |
 | T-39 | Fixtures de referencia para las pruebas JS | CX | en revisión | cx/T-51-ci-referencias-datos · PR #7 | §7.3 | opt_referencia.json: 35 puntos independientes con cvxpy; activa la prueba JS pendiente. Fixture de backtest queda pendiente. |
-| T-50 | Suite E2E + axe + datos | CX | pendiente | | §11 | |
-| T-51 | qa.yml (CI) + escaneo de secretos | CX | en revisión | cx/T-51-ci-referencias-datos · PR #7 | R-ETI-03 | QA mínima: patrón Node entre comillas, 16 pruebas Python y Gitleaks. E2E/axe se incorporarán con T-50. |
+| T-50 | Suite E2E + axe + datos | CX | en revisión | cx/T-50-e2e-camara-optimizador · PR #15 | §11 | 40 E2E: cámara 10 s, clic NSGA-II, parcial en 9 páginas × ES/EN × 1280/390. Resta axe, temas y flujos completos. |
+| T-51 | qa.yml (CI) + escaneo de secretos | CX | en revisión | cx/T-50-e2e-camara-optimizador · PR #15 | R-ETI-03 | CI mínima de PR #7 integrada; nuevo job e2e con evidencias. Resta axe al completar T-50. |
 | T-60 | Auditoría P08 | CX | pendiente | | R-FLU-06 | |
 | T-61 | README + PROMPTS_USADOS.md | CX | en curso | cx/T-51-ci-referencias-datos · PR #7 | R-ENT-02, R-ENT-05 | README: atribución Yahoo/yfinance y alcance parcial; resto de documentación y PROMPTS_USADOS pendiente. |
 | T-62 | Informe PDF S13_EquipoA_Informe.pdf | CX | pendiente | | R-ENT-04 | |
