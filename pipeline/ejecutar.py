@@ -37,6 +37,13 @@ def generar(universo,datos,panel,corte,epocas):
     out.update({'07':c07,'08':c08,'09':backtesting(p)})
     return out,resultado['auditoria']|{'variables':nombres}
 
+def adjuntar_precios_validacion(auditoria,panel,corte):
+    # Congelar la versión de precios del snapshot: Yahoo puede revisar el pasado.
+    p=panel.loc[:corte].iloc[-253:]
+    base={'fecha_corte':corte,'corte_descarga':str(panel.index[-1].date()),'fuente':FUENTE,'fechas':fechas(p.index),'cierres':{t:numeros(p[t],8) for t in p}}
+    serializado=json.dumps(base,ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False).encode('utf-8')
+    return auditoria|{'precios_validacion':base,'precios_validacion_sha256':hashlib.sha256(serializado).hexdigest()}
+
 def publicar(staging,salida):
     salida=salida.resolve(); staging=staging.resolve()
     # Solo el árbol data_real del clon propio. Nunca data/ ni otro checkout.
@@ -71,7 +78,7 @@ def ejecutar(salida,corte=None,modo='completo',epocas=3):
             for trabajo in as_completed(trabajos):
                 fecha=trabajos[trabajo];hist,ha=trabajo.result()
                 for n in ['05','06','07','08']:escribir(staging/'cortes'/fecha/ARCHIVOS[n],hist[n])
-                escribir(staging/'cortes'/fecha/'auditoria.json',ha)
+                escribir(staging/'cortes'/fecha/'auditoria.json',adjuntar_precios_validacion(ha,panel,fecha))
                 print('CORTE HISTÓRICO LISTO '+fecha,flush=True)
     elif (staging/'cortes/index.json').exists():cortes=json.loads((staging/'cortes/index.json').read_text())['cortes']
     escribir(staging/'cortes/index.json',{'ultimo':corte,'cortes':cortes})

@@ -78,6 +78,11 @@ una hora del plan; `meta.duracion_s` registra la duración medida.
   **1/N diario sin comisión** (C-02). Volatilidad poblacional. No se utilizan
   predicciones posteriores para reconstruir el pasado.
 
+Cada snapshot conserva en `auditoria.json` los 253 cierres de su propia
+versión de descarga y su SHA-256 para verificar anclas, volatilidad y CVaR.
+Una revisión posterior de Yahoo no modifica ese snapshot ni impide la
+publicación diaria; el job semanal puede regenerarlo explícitamente.
+
 Cada corte histórico vuelve a truncar precios, construir variables, separar
 prueba/entrenamiento y entrenar. La descarga actual ajustada puede incorporar
 revisiones de splits/dividendos posteriores al corte: no es una base

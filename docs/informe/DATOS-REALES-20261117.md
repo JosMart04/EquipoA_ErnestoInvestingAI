@@ -60,3 +60,10 @@ optimizaron hiperparámetros para mejorar el resultado externo.
 reutiliza resultados por huella de datos/código; ese tiempo no representa el
 coste total del entrenamiento original. Las dependencias exactas y el commit
 se registran en `meta.json`; pesos y cachés no se versionan.
+
+Cada snapshot congela 253 cierres de la versión descargada para generarlo,
+con fuente y SHA-256 en su auditoría. Así sus precios pronosticados se
+verifican en la misma escala aunque Yahoo revise después el panel actual.
+El job diario conserva esa versión y el semanal la regenera explícitamente.
+Esto no recupera versiones históricas originales del proveedor: sigue
+siendo una descarga actual de precios ajustados, con la limitación declarada.

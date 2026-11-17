@@ -136,8 +136,15 @@ def validar_cortes(ruta,ts,historico,meta):
         d={n:cargar(destino,n) for n in [5,6,7,8]}
         for v in d.values():finitos(v)
         fechas=historico['fechas'];fin=fechas.index(fecha)+1
-        precios={t:historico['cierres'][t][:fin] for t in ts}
-        exigir(all(len(v)>=504 for v in precios.values()),'Historia del corte insuficiente')
+        auditoria=json.loads((destino/'auditoria.json').read_text(encoding='utf-8'))
+        base=auditoria['precios_validacion'];finitos(base)
+        serializado=json.dumps(base,ensure_ascii=False,sort_keys=True,separators=(',',':'),allow_nan=False).encode('utf-8')
+        exigir(hashlib.sha256(serializado).hexdigest()==auditoria['precios_validacion_sha256'],'Hash de precios del snapshot')
+        exigir(base['fecha_corte']==fecha and fecha<=base['corte_descarga']<=corte,'Fecha de versión de precios del snapshot')
+        exigir(base['fechas']==fechas[fin-253:fin] and len(base['fechas'])==253,'253 cierres propios del snapshot')
+        exigir('Yahoo Finance' in base['fuente'] and 'yfinance' in base['fuente'],'Atribución del snapshot')
+        precios=base['cierres'];exigir(list(precios)==ts,'Tickers de precios del snapshot')
+        exigir(all(len(v)==253 and (np.asarray(v)>0).all() for v in precios.values()),'Cierres del snapshot inválidos')
         ultimos={t:v[-1] for t,v in precios.items()}
         # Campos auxiliares reconstruidos exclusivamente de cierres anteriores al corte.
         d[1]=[{'precio_ancla_corte':ultimos[t],'volatilidad_anual':float(np.std(np.diff(precios[t][-253:])/precios[t][-253:-1],ddof=0)*np.sqrt(252))} for t in ts]
@@ -148,9 +155,8 @@ def validar_cortes(ruta,ts,historico,meta):
             exigir(list(d[n]['predicciones'])==ts,'Tickers del corte')
             validar_auditoria(d[n]['metodologia'],fechas[:fin],fecha)
             exigir(all(m['n_prueba']==252*26 for m in d[n]['modelos']),'n_prueba del corte')
-        auditoria=json.loads((destino/'auditoria.json').read_text(encoding='utf-8'))
         validar_auditoria(auditoria,fechas[:fin],fecha)
-        for n in [5,6]:exigir(all(d[n]['metodologia'].get(k)==v for k,v in auditoria.items() if k!='variables'),'Auditoría del corte incoherente')
+        for n in [5,6]:exigir(all(d[n]['metodologia'].get(k)==v for k,v in auditoria.items() if k not in ['variables','precios_validacion','precios_validacion_sha256']),'Auditoría del corte incoherente')
         validar_predicciones(d,ts,fecha,'real')
         validar_carteras(d,ts,'real')
     return len(cortes)

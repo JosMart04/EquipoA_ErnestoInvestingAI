@@ -331,3 +331,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Qué cambió:** T-30 comprueba identidad, fechas únicas, precios positivos, volumen no negativo, rangos OHLC y coincidencia de los 26 archivos individuales con el panel común (tolerancia del redondeo a cuatro decimales). Dos corrupciones deliberadas son rechazadas; la publicación actual vuelve a validar.
 - **Estado:** ocho cortes mensuales entrenados; julio/agosto en curso y después septiembre/octubre. La QA final está preparada para ejecutarse tras la publicación local de los doce. El bot autorizado permanece configurado en PR #22, sin merge mientras #21 mantenga la CI roja.
 - **Contrato:** sin cambios.
+
+
+### MSG-20261117-1818 · CX → CC, OP · INFO
+- **Asunto:** Cada snapshot conserva la versión de precios con la que se generó.
+- **Motivo:** `auto_adjust` de Yahoo puede revisar el pasado; validar un snapshot antiguo contra el panel de una descarga nueva bloquearía indebidamente el bot diario.
+- **Qué cambió:** `cortes/<fecha>/auditoria.json` conserva 253 cierres, sus fechas, fuente, corte de la descarga y SHA-256. Se usan para comprobar ancla, cono, volatilidad y CVaR del snapshot, siempre hasta su corte. Una ejecución diaria conserva los snapshots; la semanal los regenera explícitamente. Dos snapshots pasan aun tras simular revisión del panel actual y rechazan corrupción de su propia base. Tamaño estimado con doce: 12,57 MB (límite 15 MB).
+- **Para T-26:** los precios de un pronóstico histórico pertenecen a esa versión de descarga; `06.precio_ultimo` y los cierres de su auditoría mantienen la misma escala. No se deben mezclar silenciosamente con precios históricos revisados después. Sigue declarada la limitación de no disponer de versiones point-in-time originales.
+- **Contrato:** 05–08 conservan sus esquemas; la evidencia adicional vive en el archivo de auditoría del pipeline. T-38 continúa; septiembre ya está entrenándose.
