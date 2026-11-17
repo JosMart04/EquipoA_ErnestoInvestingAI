@@ -22,6 +22,17 @@ class Contrato(unittest.TestCase):
                 corrupto=deepcopy(audit)
                 corrupto[campo]=fechas[fechas.index(audit[campo])-1]
                 with self.assertRaises(ValueError):validar_auditoria(corrupto,fechas,meta['fecha_corte'])
+    def test_rechaza_precio_individual_invalido_y_desconectado_del_panel(self):
+        for campo,valor in [('v',-1),('c',1)]:
+            with self.subTest(campo=campo),tempfile.TemporaryDirectory() as tmp:
+                destino=Path(tmp)/'publicacion';shutil.copytree(ROOT/'data_real',destino)
+                archivo=destino/'precios/AAPL.json'
+                datos=json.loads(archivo.read_text(encoding='utf-8'))
+                datos[campo][-1]=valor
+                # Un OHLC coherente tampoco puede desconectarse del panel de cierres.
+                if campo=='c':datos['o'][-1]=datos['h'][-1]=datos['l'][-1]=valor
+                archivo.write_text(json.dumps(datos),encoding='utf-8')
+                with self.assertRaises(ValueError):validar(destino,'real')
     def test_rechaza_sabado_en_pronostico_aunque_las_fechas_esten_ordenadas(self):
         d={n:cargar(ROOT/'data_real',n) for n in [1,2,3,5,6,10,13]}
         ts=[a['ticker'] for a in d[1]];corte=d[13]['fecha_ancla_precios']

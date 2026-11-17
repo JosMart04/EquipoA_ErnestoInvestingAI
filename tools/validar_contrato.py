@@ -219,6 +219,16 @@ def validar(ruta,modo='real'):
             exigir(len(historico['cierres'][t])==len(historico['fechas']),'Longitud histórica')
             individual=json.loads((ruta/'precios'/f'{t}.json').read_text(encoding='utf-8'))
             exigir(individual['fechas'][-1]==corte and all(len(individual[k])==len(individual['fechas']) for k in ['o','h','l','c','v']),'Precios individuales')
+            finitos(individual)
+            exigir(individual['ticker']==t and individual['desde']==individual['fechas'][0],'Identidad de precios individuales')
+            exigir(individual['fechas']==sorted(set(individual['fechas'])),'Fechas individuales ordenadas y únicas')
+            o,h,l,c,v=[np.asarray(individual[k]) for k in ['o','h','l','c','v']]
+            exigir(all((a>0).all() for a in [o,h,l,c]) and (v>=0).all(),'OHLCV individual inválido')
+            exigir((h>=np.maximum(o,c)).all() and (l<=np.minimum(o,c)).all() and (h>=l).all(),'Rangos OHLC individuales')
+            posiciones={f:i for i,f in enumerate(individual['fechas'])}
+            exigir(set(historico['fechas'])<=set(posiciones),'Sesiones comunes ausentes en precios individuales')
+            comunes=c[[posiciones[f] for f in historico['fechas']]]
+            exigir(np.allclose(comunes,historico['cierres'][t],atol=0.000051,rtol=0),'Cierres individuales y comunes difieren')
         demo=cargar(ROOT/'data',11)
         exigir(d[11]['watchlist_inicial']==demo['watchlist_inicial'],'Watchlist inicial')
         for a in d[11]['alertas']:
