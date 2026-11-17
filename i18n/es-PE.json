@@ -60,6 +60,7 @@
       "trading": "Precios reales de Yahoo Finance al cierre del {fecha} · las órdenes son simuladas · No es asesoría de inversión",
       "leaderboard": "Liga ficticia de ejemplo · su posición usa precios reales al cierre del {fecha} · No es asesoría de inversión",
       "sin_datos": "Modo real: todavía no hay datos reales publicados.",
+      "parcial": "Modo real · publicación parcial de Yahoo Finance al cierre del {fecha}: este módulo todavía no tiene datos reales. No es asesoría de inversión.",
       "vencido": {
         "one": "Atención: estos datos tienen {n} día hábil de antigüedad.",
         "other": "Atención: estos datos tienen {n} días hábiles de antigüedad."

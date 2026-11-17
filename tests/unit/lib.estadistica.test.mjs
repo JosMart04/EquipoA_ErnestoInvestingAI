@@ -44,7 +44,7 @@ test("I-03b (R-REG-09): el retorno proyectado es el de la mediana, redondeado a 
   for (const [t, p] of Object.entries(c6.predicciones)) {
     assert.equal(E.redondear((p.ensamble_mediana[29] / p.precio_ultimo - 1) * 100, 2), p.retorno_proyectado_30d_pct, t);
     const dif = Math.abs(p.ensamble_mediana[29] - p.precio_ultimo * (1 + p.retorno_proyectado_30d_pct / 100));
-    assert.ok(dif <= 0.01 + p.precio_ultimo * 0.00005, t + " tolerancia I-03b");
+    assert.ok(dif <= 0.01 + p.precio_ultimo * 0.00005, t + " cota diagnóstica (más permisiva que I-03b; no la sustituye)");
     if (dif > 0.01) fuera++;
   }
   assert.equal(fuera, 5, "nota N-1 del contrato: 5 activos superan 1 centavo con la fórmula literal de P04");

@@ -95,7 +95,7 @@
   };
   EIA.setModo = function (m) {
     if ((m !== "real" && m !== "profesor") || m === EIA.modo()) return;
-    _modo = m;
+    _modo = m; _parcial = false;
     EIA.estado.set("eia_modo", m);
     quitarParametro("modo");
     if (hayDOM) pintarShell();
@@ -148,6 +148,7 @@
   const cache = new Map();     // modo|corte|nombre → Promise<JSON>
   const metaPromesa = {};      // modo → Promise<meta>
   const metaLista = {};        // modo → meta ya resuelta (para pintar el shell sin esperar)
+  let _parcial = false;        // Modo real con meta.json publicado pero sin el archivo que pide esta página
 
   /** Metadatos del modo activo: fecha de corte, antigüedad y si hay datos. Nunca rechaza. */
   EIA.meta = function (modoPedido) {
@@ -486,7 +487,8 @@
   function plantillaPie() {
     const t = EIA.t, modo = EIA.modo(), mt = metaLista[modo];
     const fecha = mt && mt.fecha_corte ? EIA.fmt.fecha(mt.fecha_corte, "larga") : "";
-    const claveAviso = modo === "real" && !(mt && mt.disponible) ? "aviso.real.sin_datos" : "aviso." + modo + ".global";
+    const claveAviso = modo === "real" && !(mt && mt.disponible) ? "aviso.real.sin_datos"
+      : modo === "real" && _parcial ? "aviso.real.parcial" : "aviso." + modo + ".global";
     return `<p class="aviso" data-aviso="global" role="note"><span class="aviso-ico" aria-hidden="true">⚠</span><span>${esc(t(claveAviso, { fecha }))}</span></p>
 <p class="pie-creditos">${esc(t("shell.pie_creditos"))}</p>`;
   }
@@ -586,6 +588,7 @@
     const fecha = mt.fecha_corte ? EIA.fmt.fecha(mt.fecha_corte, "larga") : "";
     let clave = "aviso." + modo + "." + modulo;
     if (modo === "real" && !mt.disponible) clave = "aviso.real.sin_datos";
+    else if (modo === "real" && _parcial) clave = "aviso.real.parcial"; // no se afirma que haya modelos reales
     else if (!EIA.hayTexto(clave)) clave = "aviso." + modo + ".generico";
     const vencido = modo === "real" && mt.vencido ? `<span class="aviso-extra">${esc(EIA.t("aviso.real.vencido", { n: mt.antiguedad_habiles }))}</span>` : "";
     el.innerHTML = `<span class="aviso-ico" aria-hidden="true">⚠</span><span>${esc(EIA.t(clave, { fecha }))} ${vencido}</span>`;
@@ -600,6 +603,12 @@
     const caja = document.createElement("div");
     caja.className = "estado-error card"; caja.setAttribute("role", "alert");
     if (sinReales) {
+      // Publicación parcial: hay meta.json pero no el archivo de este módulo. Los avisos dejan de hablar de modelos reales.
+      if (EIA.modo() === "real" && (metaLista.real || {}).disponible && !_parcial) {
+        _parcial = true;
+        const av = $(":scope > .aviso", main); if (av) EIA.ui.aviso(av.dataset.aviso);
+        const pie = $("footer.pie"); if (pie) pie.innerHTML = plantillaPie();
+      }
       caja.innerHTML = `<h2>${esc(t("error.sin_reales_titulo"))}</h2><p>${esc(t("error.sin_reales_texto", { archivo: e.archivo }))}</p><button type="button" class="primary" data-volver>${esc(t("error.volver_profesor"))}</button>`;
       $("[data-volver]", caja).addEventListener("click", () => EIA.setModo("profesor"));
     } else {
@@ -839,6 +848,7 @@
     const vuelta = ++_vuelta, main = $("main");
     if (main) main.setAttribute("aria-busy", "true");
     try {
+      _parcial = false;
       await EIA.meta();
       if (recargar || _datos === null) { await EIA.watch.cargar(); _datos = await _modulo.cargar(); }
       if (vuelta !== _vuelta) return;

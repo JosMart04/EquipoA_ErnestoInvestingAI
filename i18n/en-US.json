@@ -60,6 +60,7 @@
       "trading": "Real Yahoo Finance prices as of the {fecha} close · orders are simulated · Not investment advice",
       "leaderboard": "Fictional sample league · your rank uses real prices as of the {fecha} close · Not investment advice",
       "sin_datos": "Real mode: no real data has been published yet.",
+      "parcial": "Real mode · partial Yahoo Finance release as of the {fecha} close: this module has no real data yet. Not investment advice.",
       "vencido": {
         "one": "Note: this data is {n} business day old.",
         "other": "Note: this data is {n} business days old."
