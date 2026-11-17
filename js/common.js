@@ -402,10 +402,29 @@
     const poner = (attr, valor) => { if (valor) h.setAttribute(attr, valor); else h.removeAttribute(attr); };
     h.style.fontSize = p.texto && p.texto !== 100 ? p.texto + "%" : "";
     poner("data-contraste", p.contraste ? "alto" : "");
+    if (p.contraste) applyTheme(EIA.tema()); // el alto contraste necesita el tema explícito en <html>
     poner("data-movimiento", p.movimiento ? "reducido" : "");
     poner("data-espaciado", p.espaciado ? "amplio" : "");
     poner("data-enlaces", p.enlaces ? "subrayados" : "");
   };
+
+  /** Abre el Centro de accesibilidad (js/a11y/panel.js se carga la primera vez). */
+  EIA.abrirAccesibilidad = function () {
+    return EIA.cargar("js/a11y/panel.js").then(() => EIA.a11y.abrir()).catch(e => EIA.ui.notificar(String(e.message || e), "error"));
+  };
+  /** Reanuda las modalidades de control al cargar la página: el sitio es multipágina y la cámara no sobrevive a la navegación.
+      También atiende los modos de prueba ?puntero=raton y ?camara=simulada&mod=cabeza|manos&objetivo=<selector>. */
+  function reanudarAccesibilidad() {
+    const q = parametros();
+    let enSesion = null; try { enSesion = global.sessionStorage.getItem("eia_cam"); } catch (e) { enSesion = null; }
+    const simulada = q.get("camara") === "simulada", modalidad = simulada ? (q.get("mod") || "cabeza") : enSesion;
+    if (modalidad) {
+      EIA.cargar("js/a11y/camara.js").then(() => EIA.camara.iniciar(modalidad, { reanudar: true, simulada, objetivo: q.get("objetivo") })).catch(() => {});
+    } else if (q.get("puntero") === "raton") {
+      EIA.cargar("js/a11y/bus-entrada.js").then(() => EIA.cargar("js/a11y/puntero.js"))
+        .then(() => EIA.puntero.activar({ raton: true, permanencia: true, ms: (EIA.estado.get("eia_a11y") || {}).ms || 900 })).catch(() => {});
+    }
+  }
 
   /* ───────────── Carga de scripts bajo demanda (accesibilidad avanzada, algoritmos) ───────────── */
   const cargados = new Map();
@@ -460,6 +479,7 @@
     <label class="sr" for="ctl-idioma">${esc(t("shell.idioma"))}</label>
     <select id="ctl-idioma">${EIA.IDIOMAS.map(l => `<option value="${l}"${l === EIA.idioma() ? " selected" : ""}>${l.toUpperCase()}</option>`).join("")}</select>
     <button id="tema" type="button" aria-pressed="${EIA.tema() === "dark"}" title="${esc(t("shell.tema_titulo"))}"><span aria-hidden="true">◐</span> ${esc(t("shell.tema"))}</button>
+    <button id="btn-a11y" type="button" aria-haspopup="dialog" title="${esc(t("shell.accesibilidad_titulo"))}">${esc(t("shell.accesibilidad"))}</button>
   </div>
 </div>`;
   }
@@ -506,9 +526,14 @@
       if (b.dataset.modo) EIA.setModo(b.dataset.modo);
       else if (b.id === "tema") EIA.setTema(EIA.tema() === "dark" ? "light" : "dark");
       else if (b.id === "btn-modulos") alternarMenu();
+      else if (b.id === "btn-a11y") EIA.abrirAccesibilidad();
     });
     cab.addEventListener("change", e => { if (e.target.id === "ctl-idioma") EIA.setIdioma(e.target.value); });
-    document.addEventListener("keydown", e => { if (e.key === "Escape" && menuAbierto) alternarMenu(false, true); });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && menuAbierto) alternarMenu(false, true);
+      // Atajo con modificadores para no chocar con los lectores de pantalla (WCAG 2.1.4)
+      if (e.altKey && e.shiftKey && !e.ctrlKey && !e.metaKey && e.code === "KeyA") { e.preventDefault(); EIA.abrirAccesibilidad(); }
+    });
     // Otra pestaña cambió el estado: se reenvía como evento
     global.addEventListener("storage", e => {
       if (!e.key || e.key.indexOf("eia_") !== 0) return;
@@ -777,15 +802,24 @@
       (cfg.acciones || []).map(a => `<button type="submit" value="${esc(a.valor)}"${a.primario ? ' class="primary"' : ""}>${esc(a.texto)}</button>`).join("")}</div></form>`;
     const cuerpo = $(".dlg-cuerpo", d);
     if (typeof cfg.contenido === "string") cuerpo.innerHTML = cfg.contenido; else if (cfg.contenido) cuerpo.appendChild(cfg.contenido);
-    d.addEventListener("close", () => {
+    // La limpieza no depende solo del evento "close": en una pestaña que no se está dibujando el navegador puede
+    // retrasarlo. Se finaliza también tras enviar el formulario, tras Esc ("cancel") y al llamar a cerrar().
+    let finalizado = false;
+    const finalizar = () => {
+      if (finalizado) return;
+      finalizado = true;
       if (cfg.alCerrar) cfg.alCerrar(d.returnValue);
       d.remove();
       if (previo && previo.focus) previo.focus();
-    });
+    };
+    const trasCerrar = () => setTimeout(() => { if (!d.open) finalizar(); }, 0);
+    d.addEventListener("close", finalizar);
+    d.addEventListener("cancel", trasCerrar);
+    $("form", d).addEventListener("submit", trasCerrar);
     return {
       el: d,
       abrir() { previo = document.activeElement; document.body.appendChild(d); d.showModal(); },
-      cerrar(valor) { if (d.open) d.close(valor || ""); }
+      cerrar(valor) { if (d.open) d.close(valor || ""); finalizar(); }
     };
   };
 
@@ -848,6 +882,7 @@
       EIA.ui.aviso(document.body.dataset.page || "generico");
       if (global.init) { try { await global.init(); } catch (e) { EIA.ui.error(e); } }
     }
+    reanudarAccesibilidad();
   }
 
   /* ───────────── Publicación ───────────── */

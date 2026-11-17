@@ -253,3 +253,7 @@ Por bloque: rama `cc/T-xx-…` → commits `feat(...): … [R-…] [T-…]` → 
 - **Datos:** SHA-256 de `data/` contra el Anexo B.3 antes de cada merge.
 - **Publicación:** tras cada merge, las 9 URL de Pages responden 200.
 - **Sin verificar por una IA:** cámara real (prueba humana) y lectores de pantalla reales (Anexo A).
+
+## 14. Estado al cierre de Fable (17-nov, 01:30)
+
+T-01 a T-16 están hechas y fusionadas en `main` (PR #2 a #6). Lo que cambió respecto de este plan al ejecutarlo, lo que quedó sin verificar (cámara real) y el siguiente paso exacto están en `docs/ia/HANDOFF.md`. T-17 a T-29 y T-90 quedan para CC-O tal como se describen en §11.
