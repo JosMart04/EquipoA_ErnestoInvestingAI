@@ -347,7 +347,9 @@
     "reiniciar_texto": "Your positions and history are deleted, and you go back to the starting portfolio with {efectivo} in cash. This cannot be undone.",
     "cancelar": "Cancel",
     "reiniciar_confirmar": "Yes, reset",
-    "reiniciada": "Demo reset."
+    "reiniciada": "Demo reset.",
+    "aplicado_texto_opt": "You applied the {origen} portfolio from the Optimizer.",
+    "aplicado_excluidos": "You excluded: {lista}."
   },
   "leaderboard": {
     "titulo_pagina": "Leaderboard · Ernesto Investing AI",
@@ -590,7 +592,82 @@
     "pedido_ok": "{ticker} is eligible: {votos} of {n} classifiers say UP and its projection is {retorno}.",
     "pedido_consenso": "{ticker} is not eligible because the classifiers' consensus is {consenso} (even though its projection is {retorno}).",
     "pedido_retorno": "{ticker} is not eligible because its projection is {retorno} (even though the consensus is {consenso}).",
-    "pedido_ambos": "{ticker} is not eligible: the consensus is {consenso} and its projection is {retorno}."
+    "pedido_ambos": "{ticker} is not eligible: the consensus is {consenso} and its projection is {retorno}.",
+    "llevar": "Take this portfolio to trading"
+  },
+  "portafolios": {
+    "titulo_pagina": "Portfolios at three risk levels · Ernesto Investing AI",
+    "titulo": "Portfolios at three risk levels",
+    "sub": "Three portfolios from the NSGA-II front for different risk appetites. Compare them, pick one and, if you want, take it to Paper trading.",
+    "ficha_que_hace": "Suggests {n} portfolios taken from the NSGA-II front, each with a different balance between expected return and risk.",
+    "ficha_que_tan_bien": "The figures are estimates: expected return comes from projections with little predictive power. In Backtesting you can see how each profile would have done in the past. See them as examples, not promises.",
+    "ficha_por_que": "Each asset comes with its reason: how many classifiers say UP and how much the regressors' median projects.",
+    "ficha_controlas": "Which level you pick, which assets you exclude (the weights are spread again) and how much money you take to trading.",
+    "ficha_ignorar": "You can exclude assets or use none of the portfolios. None of this is investment advice.",
+    "origen": "Source:",
+    "restricciones": "Constraints:",
+    "retorno": "Expected annual return",
+    "volatilidad": "Annual volatility",
+    "sharpe": "Sharpe",
+    "cvar": "Daily CVaR 95 %",
+    "cvar_llano": "On the worst {cola} of days you would lose {cvar} on average.",
+    "principales": {
+      "one": "The heaviest asset",
+      "other": "The {n} heaviest assets"
+    },
+    "elegir": "Pick {nivel}",
+    "elegido": "{nivel} picked",
+    "ver_backtesting": "See its backtest",
+    "grafico_titulo": "Composition of the three levels",
+    "tabla_titulo": "Weight of each asset in each level",
+    "tt": "{ticker} in {nivel}: {peso}",
+    "no_incluido": "Not included",
+    "resumen": "Composition by level. {lista}",
+    "resumen_nivel": "{nivel}: {n} assets; the heaviest is {top} at {peso}.",
+    "razones_titulo": "Why each asset is in · {nivel}",
+    "razones_ayuda": "Pick a level on the cards to save it as your choice. You can exclude assets: the rest share the weight.",
+    "razones_elegido": "This is the level you picked. You can exclude assets: the rest share the weight.",
+    "razones_caption": "Assets in {nivel} with their weight, their weight after exclusions and the file's reason",
+    "col_excluir": "Exclude",
+    "col_peso": "Weight",
+    "col_renormalizado": "Weight after exclusions",
+    "col_razon": "Reason (from the file, in Spanish)",
+    "excluir_aria": "Exclude {ticker}",
+    "excluido": "Excluded",
+    "menores": "There are also weights below {umbral} that the file does not detail: {lista}.",
+    "menor": "{ticker} ({peso})",
+    "comprobacion": {
+      "one": "{n} asset left; the weights add up to {suma}.",
+      "other": "{n} assets left; the weights add up to {suma}."
+    },
+    "llevar": "Take {nivel} to trading",
+    "ir_trading": "Go to Paper trading",
+    "anuncio_elegido": "You picked the {nivel} level.",
+    "anuncio_excluido": "{ticker} excluded; the weights were spread again.",
+    "anuncio_incluido": "{ticker} included again."
+  },
+  "llevar": {
+    "titulo": "Take to trading: {origen}",
+    "intro": "The shares of {origen} will be bought at the last price, with the same checks as in Paper trading.",
+    "monto": "Amount to invest",
+    "monto_ayuda": "You have {efectivo} of cash available.",
+    "activos": "Assets to buy (untick the ones you do not want)",
+    "error_monto": "Type an amount greater than zero.",
+    "error_efectivo": "The amount cannot exceed your cash ({efectivo}).",
+    "sin_ordenes": "This amount is not enough to buy any share. Increase the amount or tick other assets.",
+    "plan_caption": "Purchases to be made",
+    "col_peso": "Weight",
+    "col_precio": "Price",
+    "col_cantidad": "Shares",
+    "col_total": "Total",
+    "resumen": "Total to buy: {total} · cash left: {sobrante}",
+    "sin_comprar": "Not enough for one share of: {lista}.",
+    "cancelar": "Cancel",
+    "confirmar": "Buy now",
+    "hecho": {
+      "one": "Done: {n} asset bought for {total}. See it in Paper trading.",
+      "other": "Done: {n} assets bought for {total}. See them in Paper trading."
+    }
   },
   "datos": {
     "senal": {

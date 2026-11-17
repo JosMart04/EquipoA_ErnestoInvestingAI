@@ -233,7 +233,8 @@
 <table class="pesos"><caption>${esc(t("optimizador.pesos_caption", { nombre: nombrePunto(s, pos.i) }))}</caption>
 <thead><tr><th scope="col" class="l">${esc(t("comun.activo"))}</th><th scope="col" class="l">${esc(t("optimizador.col_peso"))}</th></tr></thead>
 <tbody>${ws.map(w => `<tr><th scope="row" class="l">${esc(w.ticker)}</th><td class="l"><span class="barra-peso"><span style="width:${(100 * w.peso / tope).toFixed(1)}%"></span></span> ${esc(pct(w.peso * 100, 1))}</td></tr>`).join("")}</tbody></table>
-<p class="comprobacion">${esc(t("optimizador.verif_suma", { suma: pct(v.suma * 100, 1) }))} ${marca(v.cumpleSuma)} · ${esc(t("optimizador.verif_tope", { max: pct(v.max * 100, 1), tope: pct(tope * 100, 1) }))} ${marca(v.cumpleTope)}</p>`;
+<p class="comprobacion">${esc(t("optimizador.verif_suma", { suma: pct(v.suma * 100, 1) }))} ${marca(v.cumpleSuma)} · ${esc(t("optimizador.verif_tope", { max: pct(v.max * 100, 1), tope: pct(tope * 100, 1) }))} ${marca(v.cumpleTope)}</p>
+<p class="acciones"><button type="button" id="llevar-punto">${esc(t("optimizador.llevar"))}</button></p>`;
   }
 
   function pintarExplicacion() {
@@ -281,6 +282,11 @@
     main.addEventListener("change", e => {
       const k = e.target.id && e.target.id.replace("ver-", "");
       if (["markowitz", "nsga2", "nsga3"].includes(k)) { guardarFiltros({ [k]: e.target.checked }); recalcularVisibles(true); }
+    });
+    main.addEventListener("click", e => {
+      if (!e.target.closest("#llevar-punto") || !VIS[pos.s]) return;
+      const s = VIS[pos.s];
+      EIA.ui.llevarATrading({ pesos: s.puntos[pos.i].pesos, excluidos: [], nivel: null, origen: nombrePunto(s, pos.i), fuente: "optimizador" });
     });
     main.addEventListener("keydown", e => {
       if (!e.target.matches("#frontera .chart")) return;

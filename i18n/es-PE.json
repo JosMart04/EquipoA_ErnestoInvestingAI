@@ -347,7 +347,9 @@
     "reiniciar_texto": "Se borran tus posiciones y tu historial, y vuelves a la cartera inicial con {efectivo} de efectivo. No se puede deshacer.",
     "cancelar": "Cancelar",
     "reiniciar_confirmar": "Sí, reiniciar",
-    "reiniciada": "Demo reiniciada."
+    "reiniciada": "Demo reiniciada.",
+    "aplicado_texto_opt": "Aplicaste la cartera {origen} desde el Optimizador.",
+    "aplicado_excluidos": "Excluiste: {lista}."
   },
   "leaderboard": {
     "titulo_pagina": "Leaderboard · Ernesto Investing AI",
@@ -590,7 +592,82 @@
     "pedido_ok": "{ticker} es elegible: {votos} de {n} clasificadores dicen SUBE y su proyección es {retorno}.",
     "pedido_consenso": "{ticker} no es elegible porque el consenso de los clasificadores es {consenso} (aunque su proyección es {retorno}).",
     "pedido_retorno": "{ticker} no es elegible porque su proyección es {retorno} (aunque el consenso es {consenso}).",
-    "pedido_ambos": "{ticker} no es elegible: el consenso es {consenso} y su proyección es {retorno}."
+    "pedido_ambos": "{ticker} no es elegible: el consenso es {consenso} y su proyección es {retorno}.",
+    "llevar": "Llevar esta cartera a Trading"
+  },
+  "portafolios": {
+    "titulo_pagina": "Portafolios en tres niveles de riesgo · Ernesto Investing AI",
+    "titulo": "Portafolios en tres niveles de riesgo",
+    "sub": "Tres carteras del frente NSGA-II para distintos gustos de riesgo. Compáralas, elige una y, si quieres, llévala a Trading.",
+    "ficha_que_hace": "Propone {n} carteras tomadas del frente NSGA-II, cada una con un equilibrio distinto entre retorno esperado y riesgo.",
+    "ficha_que_tan_bien": "Las cifras son estimaciones: el retorno esperado sale de proyecciones con poco poder predictivo. En Backtesting puedes ver cómo le habría ido a cada perfil en el pasado. Míralas como ejemplos, no como promesas.",
+    "ficha_por_que": "Cada activo trae su razón: cuántos clasificadores dicen SUBE y cuánto proyecta la mediana de los regresores.",
+    "ficha_controlas": "Qué nivel eliges, qué activos excluyes (los pesos se reparten de nuevo) y cuánto dinero llevas a Trading.",
+    "ficha_ignorar": "Puedes excluir activos o no usar ninguna cartera. Nada de esto es asesoría de inversión.",
+    "origen": "Origen:",
+    "restricciones": "Restricciones:",
+    "retorno": "Retorno esperado anual",
+    "volatilidad": "Volatilidad anual",
+    "sharpe": "Sharpe",
+    "cvar": "CVaR 95 % diario",
+    "cvar_llano": "En el {cola} de los peores días perderías en promedio {cvar}.",
+    "principales": {
+      "one": "El activo con más peso",
+      "other": "Los {n} activos con más peso"
+    },
+    "elegir": "Elegir {nivel}",
+    "elegido": "{nivel} elegido",
+    "ver_backtesting": "Ver su backtesting",
+    "grafico_titulo": "Composición de los tres niveles",
+    "tabla_titulo": "Peso de cada activo en cada nivel",
+    "tt": "{ticker} en {nivel}: {peso}",
+    "no_incluido": "No incluido",
+    "resumen": "Composición por nivel. {lista}",
+    "resumen_nivel": "{nivel}: {n} activos; el de más peso es {top} con {peso}.",
+    "razones_titulo": "Por qué entra cada activo · {nivel}",
+    "razones_ayuda": "Elige un nivel en las tarjetas para guardarlo como tu elección. Puedes excluir activos: los demás se reparten el peso.",
+    "razones_elegido": "Este es el nivel que elegiste. Puedes excluir activos: los demás se reparten el peso.",
+    "razones_caption": "Activos de {nivel} con su peso, su peso al excluir y la razón del archivo",
+    "col_excluir": "Excluir",
+    "col_peso": "Peso",
+    "col_renormalizado": "Peso tras excluir",
+    "col_razon": "Razón (del archivo, en español)",
+    "excluir_aria": "Excluir {ticker}",
+    "excluido": "Excluido",
+    "menores": "Además hay pesos menores a {umbral} que el archivo no detalla: {lista}.",
+    "menor": "{ticker} ({peso})",
+    "comprobacion": {
+      "one": "Queda {n} activo; los pesos suman {suma}.",
+      "other": "Quedan {n} activos; los pesos suman {suma}."
+    },
+    "llevar": "Llevar {nivel} a Trading",
+    "ir_trading": "Ir a Trading",
+    "anuncio_elegido": "Elegiste el nivel {nivel}.",
+    "anuncio_excluido": "{ticker} excluido; los pesos se repartieron de nuevo.",
+    "anuncio_incluido": "{ticker} incluido de nuevo."
+  },
+  "llevar": {
+    "titulo": "Llevar a Trading: {origen}",
+    "intro": "Se comprarán las acciones de {origen} al último precio, con la misma validación que en Trading.",
+    "monto": "Monto a invertir",
+    "monto_ayuda": "Tienes {efectivo} de efectivo disponible.",
+    "activos": "Activos que se compran (desmarca los que no quieras)",
+    "error_monto": "Escribe un monto mayor que cero.",
+    "error_efectivo": "El monto no puede superar tu efectivo ({efectivo}).",
+    "sin_ordenes": "Con este monto no alcanza para comprar ninguna acción. Aumenta el monto o marca otros activos.",
+    "plan_caption": "Compras que se harán",
+    "col_peso": "Peso",
+    "col_precio": "Precio",
+    "col_cantidad": "Acciones",
+    "col_total": "Total",
+    "resumen": "Total a comprar: {total} · efectivo que te queda: {sobrante}",
+    "sin_comprar": "No alcanza para una acción de: {lista}.",
+    "cancelar": "Cancelar",
+    "confirmar": "Comprar ahora",
+    "hecho": {
+      "one": "Listo: se compró {n} activo por {total}. Míralo en Trading.",
+      "other": "Listo: se compraron {n} activos por {total}. Míralos en Trading."
+    }
   },
   "datos": {
     "senal": {

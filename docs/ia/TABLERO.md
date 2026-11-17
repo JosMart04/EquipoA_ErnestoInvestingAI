@@ -30,9 +30,9 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-20 | Watchlist y gestor de alertas | CC-O | hecho | PR #12 | R-HER-02 | mar |
 | T-21 | Trading con validación asociada al campo | CC-O | hecho | PR #13 | R-HER-03 | mar |
 | T-22 | Leaderboard | CC-O | hecho | PR #13 | R-HER-04 | mar |
-| T-23 | Portafolios (P06) | CC-O | pendiente | | R-POR-01…04 | mié |
+| T-23 | Portafolios (P06) | CC-O | en revisión | cc/T-23-portafolios | R-POR-01…04 | mié |
 | T-24 | Backtesting (P06) | CC-O | pendiente | | R-BT-01…07 | mié |
-| T-25 | Integración P07: estado compartido, enlaces, «Llevar a Trading» | CC-O | pendiente | | R-INT-03/05, R-POR-04 | mié |
+| T-25 | Integración P07: estado compartido, enlaces, «Llevar a Trading» | CC-O | en curso | cc/T-23-portafolios | R-INT-03/05, R-POR-04 | mié |
 | T-26 | Modo real en los 9 módulos, cortes y recálculo en Workers | CC-O | pendiente | | D-02, D-03 | mié; depende de T-31…T-38 |
 | T-27 | A11y (a) completa y (e) barrido | CC-O | pendiente | | D-07 a/e/f, R-A11Y-05 | mié |
 | T-28a | **Arreglo:** la cámara se congelaba al primer segundo (el HUD sacaba el `<video>` del documento); vigilante del video; gestos de mano (D-22); histéresis del puntero; recorrido de la cabeza | CC-O | hecho | PR #8 | D-07 c/d | Verificado con MediaPipe real y video falso; **falta la prueba de Josué con webcam** |

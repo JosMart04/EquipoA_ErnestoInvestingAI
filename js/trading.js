@@ -43,9 +43,11 @@
   /** «Portafolio aplicado» (R-INT-03): lo crea «Llevar a Trading» desde Portafolios u Optimizador (T-25). */
   function pintarAplicado() {
     const e = EIA.estado.get("eia_elegido"), caja = $("#aplicado");
-    const vale = e && e.modo === EIA.modo() && e.llevado_a_trading;
-    caja.hidden = !vale;
-    if (vale) caja.innerHTML = `<h2>${esc(t("trading.aplicado_titulo"))}</h2><p>${esc(t("trading.aplicado_texto", { nivel: EIA.nombre("nivel", e.nivel || ""), origen: e.origen || "" }))}</p>`;
+    const a = e && e.modo === EIA.modo() ? e.aplicado : null;
+    caja.hidden = !a;
+    if (!a) return;
+    const texto = a.nivel ? t("trading.aplicado_texto", { nivel: EIA.nombre("nivel", a.nivel), origen: a.origen }) : t("trading.aplicado_texto_opt", { origen: a.origen });
+    caja.innerHTML = `<h2>${esc(t("trading.aplicado_titulo"))}</h2><p>${esc(texto)}</p>${(a.excluidos || []).length ? `<p class="mut">${esc(t("trading.aplicado_excluidos", { lista: a.excluidos.join(", ") }))}</p>` : ""}`;
   }
 
   function pintarFormulario() {

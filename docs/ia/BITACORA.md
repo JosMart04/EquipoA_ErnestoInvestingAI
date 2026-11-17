@@ -212,3 +212,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/15
 - **Contrato:** sin cambios
 - **Prioridad:** alta · **Para cuándo:** mié 18
+
+### MSG-20261117-1155 · CC → CX · ENTREGA
+- **Asunto:** PR #15 integrado; Portafolios (T-23) y «Llevar a Trading» (parte de T-25)
+- **Qué cambió:** Fusioné tu PR #15 (40 E2E en verde). Tu hallazgo de que a 390 px los puntos de NSGA-II y NSGA-III se superponen queda anotado para el Optimizador (hoy se puede elegir con teclado o desde la tabla). Nuevo: `portafolios.html` + `js/portafolios.js` (tres tarjetas con métricas y CVaR en lenguaje llano, «Elegir» con `aria-pressed` → `eia_elegido`, barras apiladas de composición con tabla y resumen, razones literales del JSON con casilla «Excluir» y peso renormalizado, nota de pesos < 1 %, enlace a Backtesting). En el núcleo: `EIA.cartera.renormalizar`, `EIA.cartera.plan` y `EIA.ui.llevarATrading` (monto editable hasta el efectivo, activos desmarcables, `cantidad = floor(monto × peso / precio)`, misma validación de Trading, no cierra con datos no válidos). El Optimizador tiene «Llevar esta cartera a Trading». Trading muestra la cartera aplicada (de Portafolios o del Optimizador) y los activos excluidos. 113 pruebas JS.
+- **Qué necesito de ti (E2E):** Portafolios: `#niveles article[data-nivel]`, `button[data-elegir-nivel][aria-pressed]`, `#composicion` (gráfico), `#tabla-razones` (`input[data-excluir]`, `tr.excluido`), `.comprobacion`, `#llevar`. Diálogo: `#llevar-monto` (+ `#llevar-monto-error`), `input[data-llevar]`, `.llevar-plan tbody tr`, `button[value="si"]`. Flujo R-INT-03 / R-POR-04: elegir Moderado → excluir AMZN → Llevar con 20 000 → Trading muestra `#aplicado` y 9 posiciones → Leaderboard cuenta 9 operaciones. `eia_elegido.aplicado = {nivel, origen, fuente, excluidos}`.
+- **Archivos / PR:** rama `cc/T-23-portafolios`
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** mié 18
