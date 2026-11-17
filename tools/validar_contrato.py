@@ -1,5 +1,6 @@
 """Validador independiente del contrato 1.0.0; falla antes de publicar."""
 import argparse
+from decimal import Decimal
 import hashlib
 import json
 import re
@@ -25,24 +26,7 @@ def cargar(ruta,n):
     files=list(ruta.glob(f'{n:02d}_*.json'));exigir(len(files)==1,f'Archivo {n:02d} ausente o duplicado')
     return json.loads(files[0].read_text(encoding='utf-8'))
 
-def validar(ruta,modo='real'):
-    ruta=Path(ruta);d={n:cargar(ruta,n) for n in range(1,14)}
-    for n,v in d.items():
-        finitos(v)
-        profesor=cargar(ROOT/'data',n)
-        exigir(isinstance(v,type(profesor)),f'Tipo raíz {n}')
-        if isinstance(v,dict): exigir(set(profesor)<=set(v),f'Campos raíz {n}')
-    ts=[a['ticker'] for a in d[1]];exigir(len(ts)==26 and len(set(ts))==26,'I-01 universo')
-    exigir(ts==[a['ticker'] for a in cargar(ROOT/'data',1)],'Orden canónico')
-    for contenido in [d[2]['cierres'],d[3]['series'],d[5]['predicciones'],d[6]['predicciones']]:exigir(list(contenido)==ts,'I-01 tickers/orden')
-    exigir(d[4]['tickers']==ts and [a['ticker'] for a in d[10]]==ts and [a['ticker'] for a in d[13]['parametros_por_ticker']]==ts,'I-01 orden')
-    for n,longitud in [(2,504),(3,120)]:
-        f=d[n]['fechas'];exigir(len(f)==longitud and f==sorted(set(f)),'Fechas históricas')
-    corte=d[13]['fecha_ancla_precios'];exigir(d[2]['fechas'][-1]==d[3]['fechas'][-1]==corte,'I-08/I-11')
-    corr=np.array(d[4]['correlacion']);cov=np.array(d[4]['covarianza_anual'])
-    exigir(corr.shape==cov.shape==(26,26),'I-01 matrices')
-    exigir(np.allclose(cov,cov.T,atol=1e-8) and np.linalg.eigvalsh(cov).min()>-1e-7,'Covarianza no PSD')
-    exigir(np.allclose(np.diag(corr),1,atol=1e-6) and np.abs(corr).max()<=1.000001,'Correlación')
+def validar_predicciones(d,ts,corte,modo):
     for n,nombres in [(5,CLAS+DL),(6,REG+DL)]:
         exigir([m['modelo'] for m in d[n]['modelos']]==nombres,f'Nombres {n}')
         exigir([m['familia'] for m in d[n]['modelos']]==['ML']*11+['DL']*7,f'Familias {n}')
@@ -55,18 +39,13 @@ def validar(ruta,modo='real'):
     literal=[]
     for i,t in enumerate(ts):
         c=np.array(d[2]['cierres'][t]);ohlc=d[3]['series'][t]
-        exigir(c.shape==(504,) and (c>0).all(),'Cierres')
-        exigir(all(len(ohlc[k])==120 for k in ['o','h','l','c','v']),'OHLCV')
-        exigir(np.all(np.array(ohlc['h'])>=np.maximum(ohlc['o'],ohlc['c'])-1e-5),'High OHLCV')
-        exigir(np.all(np.array(ohlc['l'])<=np.minimum(ohlc['o'],ohlc['c'])+1e-5),'Low OHLCV')
-        exigir(np.all(np.array(ohlc['v'])>=0),'Volumen')
         p=d[5]['predicciones'][t];modelos=p['modelos'];exigir([m['modelo'] for m in modelos]==CLAS+DL,'I-02 nombres ticker')
         ps=[m['prob_sube'] for m in modelos];exigir(all(0<=v<=1 for v in ps),'Probabilidades')
         exigir(all(m['senal']==('SUBE' if m['prob_sube']>=0.5 else 'BAJA') for m in modelos),'I-02 señales')
         vs=sum(v>=0.5 for v in ps);exigir(p['votos_sube']==vs and p['votos_baja']==18-vs,'I-02 votos')
         exigir(abs(p['prob_media']-np.mean(ps))<=0.0015,'I-02 media');pm=p['prob_media']
         exigir(p['consenso']==('SUBE' if pm>=0.5 else 'BAJA'),'I-02 consenso')
-        distancia=abs(pm-0.5);exigir(p['confianza']==('alta' if distancia>=0.08 else 'media' if distancia>=0.04 else 'baja'),'I-02 confianza')
+        distancia=abs(Decimal(str(pm))-Decimal('0.5'));exigir(p['confianza']==('alta' if distancia>=Decimal('0.08') else 'media' if distancia>=Decimal('0.04') else 'baja'),'I-02 confianza')
         q=d[6]['predicciones'][t];exigir([m['modelo'] for m in q['modelos']]==REG+DL,'I-03 modelos')
         precios=np.array([m['precios'] for m in q['modelos']]);exigir(precios.shape==(18,30) and (precios>0).all(),'I-03 precios')
         med=np.array(q['ensamble_mediana']);exigir(np.allclose(med,np.median(precios,axis=0),atol=0.005+1e-9,rtol=0),'I-03 mediana')
@@ -78,6 +57,9 @@ def validar(ruta,modo='real'):
         for campo,signo in [('cono_volatilidad_inf',-1),('cono_volatilidad_sup',1)]:
             esperado=med*np.exp(signo*1.2816*d[1][i]['volatilidad_anual']/np.sqrt(252)*np.sqrt(np.arange(1,31)))
             exigir(np.allclose(q[campo],esperado,atol=0.03 if modo=='profesor' else 1e-4,rtol=0),'I-03 cono')
+    return literal
+
+def validar_carteras(d,ts,modo):
     esperados=[t for t in ts if d[5]['predicciones'][t]['consenso']=='SUBE' and d[6]['predicciones'][t]['retorno_proyectado_30d_pct']>0]
     if modo=='real' and len(esperados)<4:
         for t in sorted(ts,key=lambda t:-d[5]['predicciones'][t]['prob_media']):
@@ -100,6 +82,80 @@ def validar(ruta,modo='real'):
         for a in p['detalle_activos']:
             t=a['ticker'];razon=f"{d[5]['predicciones'][t]['votos_sube']}/18 clasificadores = SUBE; proyeccion mediana 30 sesiones {d[6]['predicciones'][t]['retorno_proyectado_30d_pct']:+.2f} %"
             exigir(a['razon']==razon,'I-05 razón')
+
+def validar_auditoria(a,fechas,corte):
+    exigir(a['embargo_sesiones']==30 and a['fechas_prueba']==252 and a['n_prueba']==252*26,'Prueba temporal')
+    ix={f:i for i,f in enumerate(fechas)}
+    for clave in ['entrenamiento_inicio','entrenamiento_fin','ultima_etiqueta_entrenamiento','prueba_inicio','prueba_fin','ultima_etiqueta_prueba','reentrenamiento_fin']:
+        exigir(a[clave] in ix and a[clave]<=corte,'Fecha de auditoría fuera del corte: '+clave)
+    exigir(ix[a['ultima_etiqueta_entrenamiento']]-ix[a['entrenamiento_fin']]==30,'Horizonte entrenamiento')
+    exigir(ix[a['prueba_inicio']]-ix[a['entrenamiento_fin']]-1==30,'Embargo de 30 sesiones efectivas')
+    exigir(ix[a['prueba_fin']]-ix[a['prueba_inicio']]+1==252,'252 sesiones de prueba efectivas')
+    exigir(ix[a['ultima_etiqueta_prueba']]-ix[a['prueba_fin']]==30,'Horizonte prueba')
+    exigir(a['ultima_etiqueta_prueba']==corte and a['reentrenamiento_fin']==a['prueba_fin'],'Etiquetas disponibles al corte')
+    exigir(a['entrenamiento_inicio']<=a['entrenamiento_fin']<a['ultima_etiqueta_entrenamiento']<a['prueba_inicio'],'Orden temporal')
+
+def validar_cortes(ruta,ts,historico,meta):
+    indice=json.loads((ruta/'cortes/index.json').read_text(encoding='utf-8'))
+    cortes=indice['cortes'];corte=meta['fecha_corte']
+    exigir(indice['ultimo']==corte and cortes==sorted(set(cortes)),'Índice de cortes')
+    mensuales={f[:7]:f for f in historico['fechas'] if f[:7]<corte[:7]}
+    esperados=list(mensuales.values())[-12:]
+    exigir(all(f in mensuales.values() for f in cortes),'Corte no es última sesión de mes')
+    if meta['metodologia']['modo'] in ['completo','cortes']:exigir(cortes==esperados,'Doce cierres mensuales previos')
+    exigir(len(cortes)==meta['metodologia']['cortes_publicados'],'Número de cortes meta')
+    for fecha in cortes:
+        exigir(fecha<corte,'Corte futuro')
+        destino=ruta/'cortes'/fecha
+        d={n:cargar(destino,n) for n in [5,6,7,8]}
+        for v in d.values():finitos(v)
+        fechas=historico['fechas'];fin=fechas.index(fecha)+1
+        precios={t:historico['cierres'][t][:fin] for t in ts}
+        exigir(all(len(v)>=504 for v in precios.values()),'Historia del corte insuficiente')
+        ultimos={t:v[-1] for t,v in precios.items()}
+        # Campos auxiliares reconstruidos exclusivamente de cierres anteriores al corte.
+        d[1]=[{'precio_ancla_corte':ultimos[t],'volatilidad_anual':float(np.std(np.diff(precios[t][-253:])/precios[t][-253:-1],ddof=0)*np.sqrt(252))} for t in ts]
+        d[2]={'cierres':{t:v[-504:] for t,v in precios.items()}}
+        d[3]={'series':{t:{'c':[ultimos[t]]} for t in ts}}
+        d[10]=[{'ultimo':ultimos[t]} for t in ts]
+        for n in [5,6]:
+            exigir(list(d[n]['predicciones'])==ts,'Tickers del corte')
+            validar_auditoria(d[n]['metodologia'],fechas[:fin],fecha)
+            exigir(all(m['n_prueba']==252*26 for m in d[n]['modelos']),'n_prueba del corte')
+        auditoria=json.loads((destino/'auditoria.json').read_text(encoding='utf-8'))
+        validar_auditoria(auditoria,fechas[:fin],fecha)
+        for n in [5,6]:exigir(all(d[n]['metodologia'].get(k)==v for k,v in auditoria.items() if k!='variables'),'Auditoría del corte incoherente')
+        validar_predicciones(d,ts,fecha,'real')
+        validar_carteras(d,ts,'real')
+    return len(cortes)
+
+def validar(ruta,modo='real'):
+    ruta=Path(ruta);d={n:cargar(ruta,n) for n in range(1,14)}
+    for n,v in d.items():
+        finitos(v)
+        profesor=cargar(ROOT/'data',n)
+        exigir(isinstance(v,type(profesor)),f'Tipo raíz {n}')
+        if isinstance(v,dict): exigir(set(profesor)<=set(v),f'Campos raíz {n}')
+    ts=[a['ticker'] for a in d[1]];exigir(len(ts)==26 and len(set(ts))==26,'I-01 universo')
+    exigir(ts==[a['ticker'] for a in cargar(ROOT/'data',1)],'Orden canónico')
+    for contenido in [d[2]['cierres'],d[3]['series'],d[5]['predicciones'],d[6]['predicciones']]:exigir(list(contenido)==ts,'I-01 tickers/orden')
+    exigir(d[4]['tickers']==ts and [a['ticker'] for a in d[10]]==ts and [a['ticker'] for a in d[13]['parametros_por_ticker']]==ts,'I-01 orden')
+    for n,longitud in [(2,504),(3,120)]:
+        f=d[n]['fechas'];exigir(len(f)==longitud and f==sorted(set(f)),'Fechas históricas')
+    corte=d[13]['fecha_ancla_precios'];exigir(d[2]['fechas'][-1]==d[3]['fechas'][-1]==corte,'I-08/I-11')
+    corr=np.array(d[4]['correlacion']);cov=np.array(d[4]['covarianza_anual'])
+    exigir(corr.shape==cov.shape==(26,26),'I-01 matrices')
+    exigir(np.allclose(cov,cov.T,atol=1e-8) and np.linalg.eigvalsh(cov).min()>-1e-7,'Covarianza no PSD')
+    exigir(np.allclose(np.diag(corr),1,atol=1e-6) and np.abs(corr).max()<=1.000001,'Correlación')
+    for i,t in enumerate(ts):
+        c=np.array(d[2]['cierres'][t]);ohlc=d[3]['series'][t]
+        exigir(c.shape==(504,) and (c>0).all(),'Cierres')
+        exigir(all(len(ohlc[k])==120 for k in ['o','h','l','c','v']),'OHLCV')
+        exigir(np.all(np.array(ohlc['h'])>=np.maximum(ohlc['o'],ohlc['c'])-1e-5),'High OHLCV')
+        exigir(np.all(np.array(ohlc['l'])<=np.minimum(ohlc['o'],ohlc['c'])+1e-5),'Low OHLCV')
+        exigir(np.all(np.array(ohlc['v'])>=0),'Volumen')
+    literal=validar_predicciones(d,ts,corte,modo)
+    validar_carteras(d,ts,modo)
     b=d[9];exigir(b['fechas'][0]=='inicio' and len(b['fechas'])==253 and b['base']==100,'I-06 fechas/base')
     exigir(b['fechas'][1:]==d[2]['fechas'][-252:],'I-06 fechas sesiones')
     for nombre,s in (b['carteras']|b['referencias']).items():
@@ -145,6 +201,9 @@ def validar(ruta,modo='real'):
                 exigir(abs(a['umbral']-ref)<1e-5,'Umbral real')
         for p in d[11]['portafolio_demo']['posiciones']:
             exigir(abs(p['costo']-d[2]['cierres'][p['ticker']][-64])<1e-5,'Costo demo')
+        validar_auditoria(d[5]['metodologia'],historico['fechas'],corte)
+        validar_auditoria(d[6]['metodologia'],historico['fechas'],corte)
+        validar_cortes(ruta,ts,historico,meta)
         audit=d[5]['metodologia'];exigir(audit['ultima_etiqueta_entrenamiento']<audit['prueba_inicio'] and audit['ultima_etiqueta_prueba']<=corte,'Fuga temporal')
         exigir(audit['embargo_sesiones']==30 and audit['fechas_prueba']==252 and audit['n_prueba']==252*26,'Prueba temporal')
         exigir(all(m['n_prueba']==252*26 for m in d[5]['modelos']+d[6]['modelos']),'n_prueba real')

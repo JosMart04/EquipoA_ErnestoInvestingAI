@@ -3,6 +3,8 @@ import numpy as np
 import cvxpy as cp
 from pymoo.core.problem import Problem
 from pymoo.core.repair import Repair
+from pymoo.core.callback import Callback
+from pymoo.util.nds.non_dominated_sorting import NonDominatedSorting
 from pymoo.algorithms.moo.nsga2 import NSGA2
 from pymoo.algorithms.moo.nsga3 import NSGA3
 from pymoo.util.ref_dirs import get_reference_directions
@@ -46,6 +48,17 @@ def cvar(ret,w):
 class Reparar(Repair):
     def _do(self,problem,X,**kwargs): return proyectar(X)
 
+class ArchivoPareto(Callback):
+    """Conserva soluciones realmente evaluadas; no modifica la evolución."""
+    def __init__(self):
+        super().__init__();self.X=None;self.F=None
+    def notify(self,algorithm):
+        x=algorithm.pop.get('X');f=algorithm.pop.get('F')
+        if self.X is not None:x=np.vstack([self.X,x]);f=np.vstack([self.F,f])
+        _,ids=np.unique(x.round(12),axis=0,return_index=True);x=x[ids];f=f[ids]
+        ids=NonDominatedSorting().do(f,only_non_dominated_front=True)
+        self.X=x[ids];self.F=f[ids]
+
 class Carteras(Problem):
     def __init__(self,mu,cov,ret,nobj):
         super().__init__(n_var=len(mu),n_obj=nobj,xl=0,xu=TOPE)
@@ -78,14 +91,15 @@ def ejecutar(panel,universo,c05,c06):
     notas=[]
     for objetivos,cantidad,clave,prefijo in [(2,40,'nsga2_elegibles','N2'),(3,60,'nsga3_elegibles','N3')]:
         algoritmo=NSGA2(pop_size=100,repair=Reparar()) if objetivos==2 else NSGA3(ref_dirs=get_reference_directions('das-dennis',3,n_partitions=12),repair=Reparar())
-        res=minimize(Carteras(m,s,rr,objetivos),algoritmo,('n_gen',200),seed=2026,verbose=False)
+        res=minimize(Carteras(m,s,rr,objetivos),algoritmo,('n_gen',200),seed=2026,callback=ArchivoPareto(),verbose=False)
         if res.X is None: raise ValueError('NSGA sin solución')
-        pesos=np.atleast_2d(res.X);vol=np.sqrt(np.einsum('bi,ij,bj->b',pesos,s,pesos));pesos=pesos[np.argsort(vol)]
+        pesos=res.X if objetivos==2 else res.algorithm.callback.X;vol=np.sqrt(np.einsum('bi,ij,bj->b',pesos,s,pesos));pesos=pesos[np.argsort(vol)]
         # Si el frente tiene menos puntos, no inventar soluciones: repetir y declararlo.
         ids=np.linspace(0,len(pesos)-1,cantidad).round().astype(int)
         resultado[clave]=[dict(id=f'{prefijo}-{j+1:02d}',**punto(pesos[k],eleg,m,s,rr)) for j,k in enumerate(ids)]
-        notas.append(f'{prefijo}: {len(pesos)} soluciones no dominadas; {cantidad} puntos publicados ({len(set(ids))} distintos).')
-    resultado['nota']='NSGA-II y NSGA-III ejecutados con pymoo, semilla 2026, 200 generaciones. Markowitz: cvxpy/CLARABEL. CVaR historico diario al 95 %. '+ ' '.join(notas)
+        procedencia='de la poblacion final' if objetivos==2 else 'archivadas de las 200 generaciones'
+        notas.append(f'{prefijo}: {len(pesos)} soluciones no dominadas {procedencia}; {cantidad} puntos publicados ({len(set(ids))} distintos).')
+    resultado['nota']='NSGA-II y NSGA-III ejecutados con pymoo, semilla 2026, 200 generaciones, NSGA-II desde el frente final y NSGA-III desde un archivo de soluciones no dominadas evaluadas (sin modificar la evolucion). Markowitz: cvxpy/CLARABEL. CVaR historico diario al 95 %. '+ ' '.join(notas)
     if agregados: resultado['nota']+=' Se agregaron '+', '.join(agregados)+' para poder respetar el tope de 25 %.'
     resultado['metodologia']={'mu':'0.5 * anualizacion de mediana recortada [-0.50,0.80] + 0.5 * (0.04 + beta * 0.05)','covarianza':'Ledoit-Wolf, ultimas 252 sesiones','elegibles_agregados':agregados}
     c04={'tickers':ts,'correlacion':np.corrcoef(ret,rowvar=False).round(10).tolist(),'covarianza_anual':cov.round(12).tolist(),'retorno_esperado_anual_simulado':mu.round(12).tolist()}

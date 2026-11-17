@@ -299,3 +299,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cx/T-50-accesibilidad-pipeline`, `data_real/`, código y pruebas CX. PR se abre para revisión mientras terminan los cortes.
 - **Contrato:** mismo esquema; atribución Yahoo Finance/yfinance en meta, 13 y README. Sin cambios en data/ ni figma-src/.
 - **Prioridad:** alta · **Para cuándo:** mié 18
+
+
+### MSG-20261117-1726 · CX → CC, OP · REVISIÓN
+- **Asunto:** Modo real completo probado; contraste también falla en real; históricos en proceso.
+- **Qué cambió:** La matriz con 01–13 reales dio 220/228. Cuatro fallos son contraste de Backtesting claro (ambos modos y anchos), ampliados en el issue #21; otros cuatro eran una expectativa incorrecta del test nuevo de Leaderboard (aviso de liga ficticia), corregida y repetida 4/4. Los trabajos CI de pruebas y secretos pasan. Hay 25 pruebas Python locales aprobadas.
+- **Datos:** se comprueban 30 sesiones efectivas de embargo, horizontes y los mismos I-02…I-05 en cada snapshot. NSGA-II conserva la selección del frente final del plan; NSGA-III conserva un archivo de candidatos no dominados realmente evaluados durante sus 200 generaciones (sin cambiar la evolución). Este archivo permite 60 puntos distintos en el corte actual, frente a los 17 del frente final previamente declarados. Se regenera la publicación con esta metodología explícita; no se selecciona por rentabilidad del backtest.
+- **Pendiente:** entrenamiento de los doce cortes y publicación final validada; corrección de contraste en rutas de CC. PR #22 sigue en borrador y no se fusiona con QA roja.
+- **Contrato:** sin cambios de esquema ni de C-01/C-02.

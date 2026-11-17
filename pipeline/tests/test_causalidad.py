@@ -14,6 +14,17 @@ class Causalidad(unittest.TestCase):
         datos={t:pd.DataFrame({'c':p[t],'v':rng.integers(100,10000,n)},index=fechas) for t in ts}
         datos['^VIX']=pd.DataFrame({'c':20+np.sin(np.arange(n)/7)},index=fechas)
         return u,datos,p
+    def test_umbrales_publicados_y_sentinela_no_financiero(self):
+        from pipeline.mercado import pronosticos
+        p=pd.DataFrame({'A':[100.]},index=pd.to_datetime(['2026-11-16']))
+        for prob,confianza in [(0.5,'baja'),(0.54,'media'),(0.58,'alta'),(0.42,'alta')]:
+            with self.subTest(prob=prob):
+                base={'modelo':'fixture unitario','familia':'ML','metricas':{},'entrenamiento':{'missing':float('nan')}}
+                r={'auditoria':{'tasa_base_sube':0.5},'clasificacion':[dict(base,actual=np.array([prob])) for _ in range(18)],'regresion':[dict(base,actual=np.zeros((1,30))) for _ in range(18)]}
+                c,_=pronosticos(p,r,np.array([0.2]));v=c['predicciones']['A']
+                self.assertEqual(v['confianza'],confianza)
+                self.assertEqual(v['consenso'],'SUBE' if prob>=0.5 else 'BAJA')
+                self.assertEqual(c['modelos'][0]['hiperparametros']['missing'],'nan')
     def test_variables_no_cambian_al_alterar_el_futuro(self):
         u,d,p=self.datos();x,y,_=construir(u,d,p)
         corte=800;p2=p.copy();p2.iloc[corte:]*=5

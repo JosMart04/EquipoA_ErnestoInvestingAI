@@ -63,7 +63,10 @@ una hora del plan; `meta.duracion_s` registra la duración medida.
 - Markowitz: cvxpy/CLARABEL, 35 objetivos; μ mezcla mediana anualizada recortada
   y CAPM supuesto, Σ Ledoit-Wolf de 252 días. NSGA-II/III: pymoo, 200
   generaciones, semilla 2026, reparación al símplex con tope 25 %. CVaR de la
-  peor cola histórica diaria al 5 %. Si el frente tiene menos de 40/60 puntos,
+  peor cola histórica diaria al 5 %. NSGA-II toma 40 puntos del frente final.
+  NSGA-III archiva candidatos no dominados realmente evaluados durante las
+  200 generaciones, sin modificar la evolución, y toma 60 del archivo.
+  Si el archivo tiene menos de 40/60 puntos,
   se repiten soluciones existentes y se declara cuántas son distintas.
 - Tres carteras del NSGA-II: mínima volatilidad, máximo Sharpe, máximo retorno.
   Elegibles SUBE y proyección positiva; se completa hasta cuatro por

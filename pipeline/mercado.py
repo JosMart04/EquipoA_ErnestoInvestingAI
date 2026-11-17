@@ -2,6 +2,7 @@
 from datetime import datetime, timezone, timedelta
 import json
 import math
+from decimal import Decimal
 import numpy as np
 import exchange_calendars as xcals
 from .descarga_cierres import ROOT,FUENTE
@@ -31,8 +32,8 @@ def pronosticos(panel,resultados,vol):
     for j,t in enumerate(ts):
         modelos=[{'modelo':m['modelo'],'familia':m['familia'],'prob_sube':round(float(m['actual'][j]),3)} for m in resultados['clasificacion']]
         for m in modelos: m['senal']='SUBE' if m['prob_sube']>=0.5 else 'BAJA'
-        media=float(np.mean([m['prob_sube'] for m in modelos]));votos=sum(m['senal']=='SUBE' for m in modelos);dist=abs(media-0.5)
-        c05['predicciones'][t]={'modelos':modelos,'votos_sube':votos,'votos_baja':18-votos,'prob_media':round(media,6),'consenso':'SUBE' if media>=0.5 else 'BAJA','confianza':'alta' if dist>=0.08 else 'media' if dist>=0.04 else 'baja'}
+        media=round(float(np.mean([m['prob_sube'] for m in modelos])),6);votos=sum(m['senal']=='SUBE' for m in modelos);dist=abs(Decimal(str(media))-Decimal('0.5'))
+        c05['predicciones'][t]={'modelos':modelos,'votos_sube':votos,'votos_baja':18-votos,'prob_media':round(media,6),'consenso':'SUBE' if media>=0.5 else 'BAJA','confianza':'alta' if dist>=Decimal('0.08') else 'media' if dist>=Decimal('0.04') else 'baja'}
         ultimo=round(float(panel[t].iloc[-1]),6)
         caminos=np.array([ultimo*np.exp(m['actual'][j]) for m in resultados['regresion']]).round(6)
         if not np.isfinite(caminos).all() or (caminos<=0).any(): raise ValueError('Pronósticos de precios inválidos')

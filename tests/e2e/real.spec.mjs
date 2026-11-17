@@ -8,11 +8,15 @@ const selectores = {
 for (const [pagina, selector] of Object.entries(selectores)) {
   test('Publicación real completa: ' + pagina, async ({ page, registro }) => {
     const meta = await leerJSON('data_real/meta.json');
+    const avisos = (await leerJSON('i18n/es-PE.json')).aviso.real;
+    const fecha = new Intl.DateTimeFormat('es-PE', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(meta.fecha_corte + 'T12:00:00Z'));
+    const aviso = (avisos[pagina] || avisos.generico).replace('{fecha}', fecha);
     await page.goto('/' + pagina + '.html?modo=real&lang=es-PE');
     await expect(page.locator(selector).first()).toBeVisible();
     await expect(page.locator('.estado-error')).toHaveCount(0);
     await expect(page.locator('#ctl-modo [data-modo="real"]')).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.locator('main > [data-aviso]')).toContainText('Yahoo Finance');
+    await expect(page.locator('main > [data-aviso]')).toContainText(aviso);
+    await expect(page.locator('footer [data-aviso="global"]')).toContainText(avisos.global.replace('{fecha}', fecha));
     await expect(page.locator('footer [data-aviso="global"]')).not.toContainText('publicación parcial');
     expect(meta.fecha_corte).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     await sinDesborde(page);
