@@ -4,13 +4,13 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 11:55 (Lima)
+- Fecha y hora: 2026-11-17 12:03 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-23-portafolios` → PR #16 (Portafolios y «Llevar a Trading»)
+- Rama / último commit: `cc/T-24-backtesting` → PR #17 (Backtesting)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **113/113, ninguna omitida**. Además, CX tiene 40 E2E con Playwright (PR #15) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **119/119, ninguna omitida**. Además, CX tiene 40 E2E con Playwright (PR #15) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -29,6 +29,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **113/113
 | #13 | T-21, T-22 | **Trading** (vista previa, errores en el campo con `aria-invalid` y foco, posiciones, historial, reinicio con diálogo, tarjeta «Portafolio aplicado») y **Leaderboard** (ranking con tu fila marcada; el retorno sale de tu cartera de Trading). La cartera vive en el núcleo: `EIA.cartera` | 107/107; navegador: errores de cantidad, efectivo y venta; compra; reinicio; Trading → Leaderboard; 27 cargas de humo |
 | #15 (CX) | T-50 | E2E: cámara falsa + MediaPipe real (cuadros crecientes 10 s), clic real en NSGA-II, aviso parcial en 9 páginas | 40 E2E en la CI |
 | #16 | T-23, T-25 (parte) | **Portafolios** (tarjetas, elegir nivel, composición, razones con «Excluir») y **«Llevar a Trading»** compartido (`EIA.ui.llevarATrading`) desde Portafolios y el Optimizador; Trading muestra la cartera aplicada | 113/113; flujo Portafolios → Trading → Leaderboard en el navegador; 390 px; 27 cargas de humo |
+| #17 | T-24 | **Backtesting** (P06): capital y caída conectados, métricas con las carteras marcadas, R-BT-06 visible, nota del tope 0,35, línea de tiempo de 12 rebalanceos con pesos y cambio frente al anterior, interpretación generada con reglas. Se retira `js/stub.js` | 119/119; navegador: 1280 y 390 px, EN sin recargar, `?nivel=`, contraste de 12 elementos en claro y oscuro; 27 cargas de humo |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -48,13 +49,14 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **113/113
 - El atajo `Alt+Shift+A` con una pulsación real (el evento sintético llega y abre el panel).
 
 ## En curso (estado exacto)
-- Nada a medias tras el PR #16. Lo siguiente es T-24 Backtesting.
+- Nada a medias tras el PR #17. **Los nueve módulos usan `EIA.modulo` e i18n**; ya no queda ninguna página stub.
 
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
-2. **T-24 Backtesting** (P06): curvas base 100 y drawdown sincronizado, tabla de métricas, línea de tiempo de rebalanceos, interpretación generada por reglas, R-BT-06 visible y la nota del tope 0,35 del Agresivo (N-3). `backtesting.html?nivel=Moderado` llega desde Portafolios. Después: lo que falta de T-25 (migas de pan) y T-26 (Modo real).
-3. T-19…T-22: pasar los heredados de `window.init` a `EIA.modulo` con su `js/<modulo>.js` y sus textos a i18n.
-4. Cuando Josué vuelva a probar la webcam, ajusta signos y umbrales con lo que reporte.
+2. **T-25** (lo que falta): migas de pan y enlaces cruzados entre módulos (R-INT-05).
+3. **T-27** (accesibilidad a y e): resumen y lectura punto a punto de cada gráfico, barrido; **T-26** (Modo real) cuando CX publique 01–13 en `data_real/`.
+4. Mejora pendiente del Optimizador: a 390 px los puntos de NSGA-II y NSGA-III se superponen.
+5. Cuando Josué vuelva a probar la webcam, ajusta signos y umbrales con lo que reporte.
 
 ## Cómo se hace un módulo (el ejemplo vivo es `js/clasificacion.js` + `tests/unit/clasificacion.test.mjs`)
 1. HTML mínimo: `<body data-page="<id>">`, un `<h1>`, un `<p class="sub">`, contenedores vacíos con `id`, `js/common.js` y luego `js/<id>.js`. Texto estático con `data-i18n="clave"`. Sin cifras en el HTML.
@@ -88,9 +90,9 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **113/113
 - **El «Agresivo» de `08` rinde menos que el «Moderado»** (nota N-4): no escribir textos que afirmen un orden entre niveles.
 - **Texto sobre `--ac`:** usar siempre `--on-ac` (blanco fijo da 2,08:1 en oscuro; hay una prueba que lo vigila).
 - **Los diccionarios i18n no llevan cifras** (prueba «sin cifras de datos»): los números entran como parámetros. Las claves que terminan en `_` son prefijos (`"a11y.mod_" + modalidad`).
-- **Páginas con `window.init`** (Dashboard, Watchlist, Trading, Leaderboard y las 4 stub): su texto estático sigue solo en español y recargan al cambiar de modo o idioma.
 - `09.fechas[0]` es `"inicio"`, no una fecha (I-06). `EIA.fmt.fecha("inicio")` ya lo traduce.
-- El Agresivo del backtesting del profesor usa tope 0,35 aunque `08` diga 25 % (nota N-3): se documenta, no se corrige.
+- El Agresivo del backtesting del profesor usa tope 0,35 aunque `08` diga 25 % (nota N-3): se documenta, no se corrige. Backtesting lo calcula (`pesoMaximo`) y muestra `#nota-tope` solo si alguna cartera supera el tope de `13`.
+- **Interpretación del Backtesting:** las frases salen de `B.interpretar(c09, tope)`; no escribas conclusiones fijas en i18n (hay una prueba que altera los datos y espera otro texto).
 - `es-PE` en `Intl` usa punto decimal: `+2.93%`, `USD 355.63`. Las fechas ISO se formatean en **UTC**.
 - En el celular (≤ 640 px) la cabecera no es fija, a propósito: ocupa varias filas.
 - `figma-src/` trae sus propios `.gitignore` y `.gitattributes`: son parte del export y no se tocan.

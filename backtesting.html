@@ -1,10 +1,39 @@
 <!doctype html>
 <html lang="es-PE"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Backtesting de portafolios · Ernesto Investing AI</title><link rel="stylesheet" href="css/styles.css"></head>
+<title data-i18n="backtesting.titulo_pagina">Backtesting de portafolios · Ernesto Investing AI</title><link rel="stylesheet" href="css/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script></head>
 <body data-page="backtesting"><main>
-<h1>Backtesting de portafolios</h1>
-<div class="stub"><p><strong>Módulo por construir por su equipo.</strong> Simular el desempeño de los 3 portafolios durante 252 sesiones con rebalanceo mensual y compararlos con SPY, QQQ, EPU y un portafolio igual ponderado.</p>
-<h2>Qué debe contener</h2><ul><li>Curvas de capital (base 100) y de drawdown.</li><li>Tabla de métricas: retorno total, CAGR, volatilidad, Sharpe, máximo drawdown, Calmar y meses positivos.</li><li>Línea de tiempo de rebalanceos con los pesos de cada fecha.</li><li>Interpretación escrita: ¿por qué las carteras superaron o no al benchmark en estos datos sintéticos?</li></ul>
-<p class="mut">Datos de entrada: <code>data/09_backtesting_portafolios.json</code>. Todos están simulados (patrones realistas).</p></div>
-<h2>Vista previa de los datos de entrada</h2><div id="prev"></div>
-<script src="js/common.js"></script><script>window.STUB={files:['09_backtesting_portafolios.json']}</script><script src="js/stub.js"></script></main></body></html>
+<h1 data-i18n="backtesting.titulo">Backtesting de portafolios</h1>
+<p class="sub" data-i18n="backtesting.sub">¿Cómo les habría ido a los tres perfiles en el pasado, frente al mercado? Se muestra tal como salió.</p>
+<!-- El aviso de simulación lo inserta js/common.js aquí, según el modo de datos -->
+<div id="ficha"></div>
+<p id="metodo" class="mut"></p>
+
+<div id="curvas"></div>
+<div id="caidas"></div>
+
+<section class="card" aria-labelledby="h-metricas">
+  <h2 id="h-metricas" data-i18n="backtesting.metricas_titulo">Métricas</h2>
+  <p class="mut" data-i18n="backtesting.metricas_ayuda">Los encabezados ordenan la tabla. Las filas de las carteras están marcadas.</p>
+  <div id="metricas"></div>
+  <p id="verificacion" class="comprobacion"></p>
+  <p id="nota-tope" class="aviso" hidden></p>
+</section>
+
+<section class="card" aria-labelledby="h-tl">
+  <h2 id="h-tl" data-i18n="backtesting.tl_seccion">Línea de tiempo de rebalanceos</h2>
+  <div><span class="rotulo" data-i18n="backtesting.tl_cartera">Cartera</span><div id="tl-cartera"></div></div>
+  <ol id="tl-fechas" class="linea-tiempo" aria-label="Fechas de rebalanceo" data-i18n-attr="aria-label=backtesting.tl_fechas"></ol>
+  <div id="tl-detalle" aria-live="polite"></div>
+</section>
+
+<section class="card" id="interpretacion"></section>
+
+<section class="card" id="recalculo" aria-labelledby="h-recalculo">
+  <h2 id="h-recalculo" data-i18n="backtesting.recalculo_titulo">Recalcular con otro periodo</h2>
+  <p data-i18n="backtesting.recalculo_profesor">En el Modo profesor el backtesting se lee del archivo del curso y no se recalcula. El recálculo en tu navegador estará disponible en el Modo real.</p>
+  <button type="button" id="recalcular" disabled data-i18n="backtesting.recalcular">Recalcular en mi navegador</button>
+</section>
+<script src="js/common.js"></script>
+<script src="js/backtesting.js"></script>
+</main></body></html>
