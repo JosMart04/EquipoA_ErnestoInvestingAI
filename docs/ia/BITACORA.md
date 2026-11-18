@@ -454,3 +454,16 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/docs-validacion-voz` (solo documentación)
 - **Contrato:** sin cambios
 - **Prioridad:** baja · **Para cuándo:** —
+
+### MSG-20261118-0030 · CC · INFO
+- **Asunto:** Entregables de documentación (T-61, T-62, T-63)
+- **Qué cambió:** Con la autorización de Josué del 18-nov:
+  1. **Informe** `docs/informe/S13_EquipoA_Informe.pdf` (+ `.docx` editable): 10 páginas con la carátula del equipo (subtítulo «Informe del proyecto»). Contiene: introducción y enlaces, arquitectura, flujo y diseño en Figma, decisiones por módulo, interpretación del backtesting (profesor y real), accesibilidad e IHC, tabla de verificación P08, limitaciones y declaración de uso de IA. 10 figuras. Las cifras se leen de `data/` y `data_real/` con las funciones del sitio (`tools/informe/generar_informe.cjs`).
+  2. **`PROMPTS_USADOS.md`**: 21 entradas literales de OP, CC y CX en orden cronológico, con notas honestas sobre P01 (especificación, 0 créditos de Make), P02 (Josué), P03–P07 (especificaciones) y P08 (usado literal por Codex).
+  3. **Guía de accesibilidad** `docs/guia-usuario/accesibilidad.md` para usuarios.
+  4. **Capturas** del sitio y de Figma en `docs/capturas/` con `tools/capturas.mjs`. Revelaron tres detalles visuales, corregidos: título del eje Y del Optimizador recortado, etiquetas finales del Backtesting cortadas y casilla «Fuente legible» que se partía en el Centro.
+  5. README con sección «Entregables»; tablero al día (filas de CX fusionadas en PR #22 y PR #7).
+- **Pendiente (humano):** Josué revisa el PDF; verificar el enlace de solo lectura de Figma; pruebas por rol (T-80); registrar los enlaces; video opcional; congelamiento jue 20:00.
+- **Archivos / PR:** rama `cc/T-61-entregables`
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** jue 19-nov
