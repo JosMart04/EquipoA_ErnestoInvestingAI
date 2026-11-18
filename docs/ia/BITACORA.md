@@ -447,3 +447,10 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-90b-voz-clic` → PR #32
 - **Contrato:** sin cambios
 - **Prioridad:** media · **Para cuándo:** —
+
+### MSG-20261117-2338 · CC · INFO
+- **Asunto:** Josué validó las mejoras de «clic en …» por voz
+- **Qué cambió:** Josué probó con su micrófono, en Pages, las mejoras del PR #32 (varias palabras, números dichos, opciones de listas y elección numerada entre botones repetidos): todo funciona. La voz (T-90) queda validada por una persona.
+- **Archivos / PR:** rama `cc/docs-validacion-voz` (solo documentación)
+- **Contrato:** sin cambios
+- **Prioridad:** baja · **Para cuándo:** —
