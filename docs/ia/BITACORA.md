@@ -427,3 +427,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-90-voz` → PR #30
 - **Contrato:** sin cambios
 - **Prioridad:** media · **Para cuándo:** —
+
+### MSG-20261117-2233 · CC · INFO
+- **Asunto:** README profesional y «About» del repositorio
+- **Qué cambió:** A pedido de Josué (D-24), `README.md` reescrito: presentación con insignias (Pages, QA, WCAG, i18n, licencia), aviso educativo, acerca del proyecto, los 9 módulos, características, tecnologías por capa con versiones (sitio, ECharts 5.5.1, MediaPipe 1.2.3, APIs del navegador, algoritmos propios, pipeline Python con versiones de `pipeline/requirements*.txt`, pruebas, CI/CD y diseño), arquitectura de carpetas, cómo ejecutar y probar, datos y procedencia, accesibilidad por modalidad, créditos y uso de IA, licencia. En GitHub, el «About» tiene ahora descripción, enlace a Pages y 20 temas (html, css, javascript, python, echarts, mediapipe, web-speech-api, accessibility, wcag, machine-learning, deep-learning, scikit-learn, pytorch, xgboost, lightgbm, cvxpy, pymoo, portfolio-optimization, nsga-ii, backtesting).
+- **Pendiente:** `PROMPTS_USADOS.md`, informe PDF y guía de accesibilidad, al final y con autorización de Josué.
+- **Archivos / PR:** rama `cc/readme-profesional` → PR #31
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** —

@@ -51,11 +51,11 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-50 | Suite E2E + axe + datos | CX | en revisión | PR #22 | §11 | 132 JS, 31 Python, 244/244 navegador locales (228 + 16), 72/72 axe sin violaciones; contraste #21 corregido. Nuevos E2E T-26/T-28/T-29. P08 identifica tres hallazgos aparte. |
 | T-51 | qa.yml (CI) + escaneo de secretos | CX | en revisión | PR #22 | R-ETI-03 | CI de resolución 4c62ca3 verde (228 casos); la entrega P08 amplía a 244. Sin exclusiones axe. |
 | T-60 | Auditoría P08 | CX | en revisión | PR #22 · docs/informe/auditoria_P08.md | R-FLU-06 | Entregada con prompt literal, citas, JSON y tres capturas: H-01 alta (historia futura en corte antiguo), H-02/H-03 medias (veracidad). Evidencia humana MSG-1957. CC debe reproducir/corregir para T-29. |
-| T-61 | README + PROMPTS_USADOS.md | CX | en curso | cx/T-51-ci-referencias-datos · PR #7 | R-ENT-02, R-ENT-05 | README actualizado al pipeline completo, atribución y bot autorizado; informe técnico/QA en Markdown. PROMPTS_USADOS e informe PDF final siguen pendientes. |
+| T-61 | README + PROMPTS_USADOS.md | CC-O (D-24) | en curso | cc/readme-profesional · PR #31 | R-ENT-02, R-ENT-05 | README profesional y «About» de GitHub (descripción, sitio y 20 temas) hechos. `PROMPTS_USADOS.md` queda para el final, con autorización de Josué |
 | T-62 | Informe PDF S13_EquipoA_Informe.pdf | CX | pendiente | | R-ENT-04 | |
 | T-63 | Guía de accesibilidad para el usuario | CX | pendiente | | §9 | |
 | T-64 | Video (opcional) | CX | pendiente | | D-11 | |
 | T-70 | Mockups de Figma Make + importación | OP | hecho | fuera del repo | R-FLU-01 | https://www.figma.com/make/BWA9B3JoRbAWZiVoPSyoBO |
 | T-71 | Compartir Figma (solo lectura) + figma-src/ sin editar | JM | hecho | main | R-FLU-02, R-ENT-01 | |
 | T-80 | Pruebas humanas por rol | HUM | pendiente | issues | §11, Anexo A | |
-| T-90 | Comandos de voz (última fase) | CC-O | en revisión | cc/T-90-voz · PR #30 | D-07 (b) | Pedido por Josué. Web Speech API en ES/EN con consentimiento, indicador, confirmación visual y hablada, ayuda, Alt+Shift+V y reanudación al navegar. Gramática en i18n; acciones por el bus. Sin probar con un micrófono real |
+| T-90 | Comandos de voz (última fase) | CC-O | hecho | PR #30 | D-07 (b) | Pedido por Josué. Web Speech API en ES/EN con consentimiento, indicador, confirmación visual y hablada, ayuda, Alt+Shift+V y reanudación al navegar. Gramática en i18n; acciones por el bus. Sin probar con un micrófono real |
