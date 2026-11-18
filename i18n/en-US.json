@@ -693,7 +693,8 @@
     "recalculo_opcion": "Estimation window",
     "ventana_opcion": "{n} sessions: {desde} to {hasta}",
     "recalculado_detalle": "{n}-session window, from {desde} to {hasta}.",
-    "debajo_navegador": "These fronts were recomputed in your browser with a real evolutionary algorithm on Yahoo Finance closes."
+    "debajo_navegador": "These fronts were recomputed in your browser with a real evolutionary algorithm on Yahoo Finance closes.",
+    "ayuda_zoom": "To separate points that overlap, zoom in with two fingers on the chart (or Ctrl and the mouse wheel); you can also pick them from the table."
   },
   "portafolios": {
     "titulo_pagina": "Portfolios at three risk levels · Ernesto Investing AI",
@@ -776,7 +777,7 @@
     "ficha_que_hace": "Simulates what would have happened to {n} portfolio profiles over {sesiones} sessions, from {inicio} to {fin}, rebalancing every month using only the information available on each date.",
     "ficha_que_tan_bien": "In this period, {superan} of {n} profiles beat {ref}. A backtest does not predict the future: it shows how a rule would have behaved in one specific past.",
     "ficha_por_que": "Every month the rule filters the assets that had been rising, estimates risk from the last months and splits the money according to the profile. Below, the figures explain why each portfolio won or lost against the market.",
-    "ficha_controlas": "Which series you see in the charts (click the legend), and which portfolio and date you inspect in the timeline.",
+    "ficha_controlas": "Which series you see in the charts (checkboxes or legend), which portfolio and date you inspect in the timeline and, in Real mode, on which date the period ends.",
     "ficha_ignorar": "A good or bad past result commits you to nothing. This is not investment advice.",
     "metodo": "Method (from the file):",
     "metricas_titulo": "Metrics",
@@ -847,7 +848,10 @@
     "recalculo_opcion": "End the period on",
     "fin_ultimo": "{fecha} (last close)",
     "recalculado_detalle": "period from {inicio} to {fin}.",
-    "metodo_navegador": "Recomputed in your browser with the real closes: rebalancing every {paso} sessions; risk estimated with the last {ventana} and a momentum filter of {momentum}; fee of {comision} bp on what is bought and sold. Conservative: minimum variance (cap {tc}); Moderate: maximum Sharpe (cap {tm}); Aggressive: maximum return (cap {ta})."
+    "metodo_navegador": "Recomputed in your browser with the real closes: rebalancing every {paso} sessions; risk estimated with the last {ventana} and a momentum filter of {momentum}; fee of {comision} bp on what is bought and sold. Conservative: minimum variance (cap {tc}); Moderate: maximum Sharpe (cap {tm}); Aggressive: maximum return (cap {ta}).",
+    "series_titulo": "Visible series",
+    "serie_visible": "{serie} is shown in the charts.",
+    "serie_oculta": "{serie} is hidden in the charts."
   },
   "datos": {
     "senal": {

@@ -70,7 +70,7 @@ test("R-BT-03: rebalanceos con pesos ordenados y turnover frente al anterior; no
 
 test("backtesting.html: sin cifras escritas a mano, recálculo deshabilitado y la inconsistencia documentada en el código", () => {
   const h = leer("backtesting.html");
-  for (const id of ["ficha", "metodo", "curvas", "caidas", "metricas", "verificacion", "nota-tope", "tl-cartera", "tl-fechas", "tl-detalle", "interpretacion", "recalcular"]) assert.ok(h.includes(`id="${id}"`), "falta #" + id);
+  for (const id of ["ficha", "metodo", "series-visibles", "curvas", "caidas", "metricas", "verificacion", "nota-tope", "tl-cartera", "tl-fechas", "tl-detalle", "interpretacion", "recalcular"]) assert.ok(h.includes(`id="${id}"`), "falta #" + id);
   assert.match(h, /id="recalcular" disabled/);
   const visible = h.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " ");
   assert.ok(!/\d/.test(visible), "hay dígitos: " + (visible.match(/\S*\d\S*/) || [""])[0]);

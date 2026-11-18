@@ -4,9 +4,9 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 19:24 (Lima)
+- Fecha y hora: 2026-11-17 19:32 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-28-calibracion-gestos` → PR #25 (calibración de la cabeza, guía de gestos y desplazar con dos dedos)
+- Rama / último commit: `cc/T-29-conformidad` → PR #26 (casillas de series en Backtesting y Optimizador móvil)
 
 ## Hecho (con evidencia)
 
@@ -36,6 +36,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **132/132
 | #23 | T-29 (QA) | Issue #21 de CX (axe): texto con contraste medido sobre cada color de serie (`--serie-texto-N`) en Backtesting y Portafolios | 169 tramos ≥ 4,95:1 en claro, oscuro y alto contraste |
 | #24 | T-26 | **Modo real** con los datos del PR #22 de CX: recálculo en Workers en Backtesting y Optimizador (`EIA.ui.recalculo`), cortes ordenados, textos que solo valían para el curso | 130/130; probado con los datos reales en un worktree: 9 páginas, recálculo, «Volver», idioma, corte antiguo, 390 px; 27 cargas de humo |
 | #25 | T-28 | **Calibración de 5 puntos** de la cabeza con interfaz, **guía de gestos** con SVG propios y **«V» de dos dedos** para desplazar (D-23: sin deslizar ni pulgar arriba) | 132/132; navegador con poses simuladas: calibración exacta, Esc, quitar desde el Centro, V desplaza sin mover el puntero, 390 px |
+| #26 | T-29 (parte) | Pasada de conformidad con Figma: casillas de series visibles en Backtesting (como en Figma) sincronizadas con la leyenda; Optimizador móvil con símbolos más chicos y zoom con dos dedos | 132/132; navegador: casillas ↔ leyenda en los dos gráficos sin bucle, EN, 390 px; 27 cargas de humo |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -64,8 +65,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **132/132
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
 2. Fusionar el PR #22 de CX en cuanto resuelva el conflicto de la bitácora y quede en verde; después revisar el Modo real en Pages.
-2b. **T-29** (conformidad con Figma, correcciones de QA y P08; congelamiento).
-3. Mejora pendiente del Optimizador: a 390 px los puntos de NSGA-II y NSGA-III se superponen.
+2b. **T-29**: esperar la auditoría P08 de CX (`docs/informe/auditoria_P08.md`), corregir sus hallazgos y congelar funciones (jue 19, 20:00).
+3. Optimizador a 390 px: mejoró (símbolos y zoom, PR #26), pero los frentes del curso casi coinciden; en el celular se elige apagando una serie o desde la tabla.
 4. Josué probó la webcam el 17-nov y funciona; si alguien reporta el puntero invertido, usa las casillas «Invertir» del Centro.
 
 ## Cómo se hace un módulo (el ejemplo vivo es `js/clasificacion.js` + `tests/unit/clasificacion.test.mjs`)
@@ -101,6 +102,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **132/132
 - **Remontar componentes:** `EIA.ui.tabla`, `segmentado` y `grafico` cancelan sus oyentes anteriores al montarse otra vez sobre el mismo nodo (`montar()` en `common.js`). Si creas un componente nuevo con `addEventListener` sobre `destino`, usa `montar(destino).control.signal`.
 - **Formato de `js/lib`:** cada archivo publica `EIALib.<nombre>` y `module.exports`; las dependencias se piden con `dep("nombre")`. En un Worker se cargan con `importScripts` **en orden de dependencia** (estadistica y simplex antes de markowitz; markowitz antes de nsga2, nsga3 y backtest).
 - **Las carteras de `09` del profesor no se reproducen** con `backtest.js` (su optimizador no está documentado); las referencias sí. No es un fallo: el recálculo solo existe en el Modo real. **Con los datos reales sí:** misma fecha final → EPU y 1/N idénticos al Python de CX; Moderado +17,05 % frente a +17,03 %.
+- **ECharts conectados (`echarts.connect`):** nunca llames a `dispatchAction` dentro de un evento de leyenda: se reenvía entre los gráficos sin fin. Usa `setOption({legend: {selected}})` (no emite eventos) y deja que `connect` propague los clics.
+- **`String.replace` con texto de reemplazo:** `$$` se vuelve `$` (me pasó con `$$(…)`). En los scripts de edición, usa una función como reemplazo.
 - **Recálculo (`EIA.ui.recalculo`):** el módulo guarda `recalc` y en `pintar(datos)` lo mezcla con los datos del archivo; se descarta al cambiar de modo (y de corte en el Optimizador). El Worker solo se crea en el núcleo (`EIA.trabajo`); una prueba vigila que ningún módulo cree Workers.
 - **`cortes/index.json`:** `ultimo` no está en `cortes[]` y el arreglo viene ascendente; usa siempre `EIA.ordenarCortes`.
 - **R-REG-09 literal falla en 5 activos** de `data/` por redondeo: se verifica con I-03b (contrato §4 y nota N-1).

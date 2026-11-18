@@ -693,7 +693,8 @@
     "recalculo_opcion": "Ventana de estimación",
     "ventana_opcion": "{n} sesiones: {desde} a {hasta}",
     "recalculado_detalle": "ventana de {n} sesiones, del {desde} al {hasta}.",
-    "debajo_navegador": "Estos frentes se recalcularon en tu navegador con un algoritmo evolutivo real sobre los cierres de Yahoo Finance."
+    "debajo_navegador": "Estos frentes se recalcularon en tu navegador con un algoritmo evolutivo real sobre los cierres de Yahoo Finance.",
+    "ayuda_zoom": "Para separar puntos que se tapan, acércate con dos dedos sobre el gráfico (o Ctrl y la rueda del ratón); también puedes elegirlos desde la tabla."
   },
   "portafolios": {
     "titulo_pagina": "Portafolios en tres niveles de riesgo · Ernesto Investing AI",
@@ -776,7 +777,7 @@
     "ficha_que_hace": "Simula qué habría pasado con {n} perfiles de cartera durante {sesiones} sesiones, del {inicio} al {fin}, rebalanceando cada mes solo con la información disponible en cada fecha.",
     "ficha_que_tan_bien": "En este periodo, {superan} de {n} perfiles superaron a {ref}. Un backtesting no predice el futuro: muestra cómo se habría comportado una regla en un pasado concreto.",
     "ficha_por_que": "Cada mes la regla filtra los activos que venían subiendo, estima riesgos con los últimos meses y reparte el dinero según el perfil. Abajo se explica, con las cifras, por qué cada cartera ganó o perdió frente al mercado.",
-    "ficha_controlas": "Qué series ves en los gráficos (pulsa la leyenda), qué cartera y qué fecha examinas en la línea de tiempo.",
+    "ficha_controlas": "Qué series ves en los gráficos (casillas o leyenda), qué cartera y qué fecha examinas en la línea de tiempo y, en el Modo real, con qué fecha termina el periodo.",
     "ficha_ignorar": "Un buen o mal resultado pasado no obliga a nada. Esto no es asesoría de inversión.",
     "metodo": "Método (del archivo):",
     "metricas_titulo": "Métricas",
@@ -847,7 +848,10 @@
     "recalculo_opcion": "Terminar el periodo en",
     "fin_ultimo": "{fecha} (último cierre)",
     "recalculado_detalle": "periodo del {inicio} al {fin}.",
-    "metodo_navegador": "Recalculado en tu navegador con los cierres reales: rebalanceo cada {paso} sesiones; riesgo estimado con las últimas {ventana} y filtro de impulso de {momentum}; comisión de {comision} pb sobre lo que se compra y vende. Conservador: mínima varianza (tope {tc}); Moderado: máximo Sharpe (tope {tm}); Agresivo: máximo retorno (tope {ta})."
+    "metodo_navegador": "Recalculado en tu navegador con los cierres reales: rebalanceo cada {paso} sesiones; riesgo estimado con las últimas {ventana} y filtro de impulso de {momentum}; comisión de {comision} pb sobre lo que se compra y vende. Conservador: mínima varianza (tope {tc}); Moderado: máximo Sharpe (tope {tm}); Agresivo: máximo retorno (tope {ta}).",
+    "series_titulo": "Series visibles",
+    "serie_visible": "Se muestra {serie} en los gráficos.",
+    "serie_oculta": "Se oculta {serie} en los gráficos."
   },
   "datos": {
     "senal": {

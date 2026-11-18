@@ -97,6 +97,7 @@
   const GRUPO_GRAFICOS = "eia-backtesting";                              // curvas y drawdown comparten el cursor
   let D = null, S = null, carteraTL = null, idxTL = 0, enlazado = false, gCurvas = null, gDD = null;
   let base = null, recalc = null; // recalc = {c09, fin, modo}: resultado calculado en el navegador (T-26)
+  const ocultas = new Set();      // claves de las series ocultas (casillas y leyenda; las dos se sincronizan)
   const nombre = clave => (D.c09.carteras[clave] ? EIA.nombre("nivel", clave) : EIA.nombre("referencia", clave));
 
   function pintarFicha() {
@@ -125,7 +126,7 @@
   function opcionesLineas(c, campo, ejeY) {
     return {
       textStyle: { color: c.fg },
-      legend: { top: 0, textStyle: { color: c.fg }, data: S.map(s => nombre(s.clave)) },
+      legend: { top: 0, textStyle: { color: c.fg }, data: S.map(s => nombre(s.clave)), selected: Object.fromEntries(S.map(s => [nombre(s.clave), !ocultas.has(s.clave)])) },
       tooltip: { trigger: "axis", valueFormatter: v => EIA.fmt.num(v) },
       grid: { left: 52, right: 16, top: 56, bottom: 36 },
       xAxis: { type: "category", data: D.c09.fechas, axisLabel: { color: c.mut, formatter: v => EIA.fmt.fecha(v) }, axisLine: { lineStyle: { color: c.bd } } },
@@ -149,8 +150,32 @@
     const etiquetas = D.c09.fechas.map(f => EIA.fmt.fecha(f));
     return { inicial: Math.max(0, S.findIndex(s => s.clave === carteraTL)), series: S.map((s, k) => ({ nombre: nombre(s.clave), valores: s[campo], etiquetas, formato, indice: k })) };
   }
+  /** Casillas de series visibles (como en Figma): la leyenda de ECharts no se maneja con el teclado. El trazo del rótulo
+      repite el del gráfico (continuo, discontinuo o punto-raya en las carteras; punteado en las referencias). */
+  const TRAZO = ["━━", "╍╍", "━·", "┈┈"];
+  function pintarSeries() {
+    const caja = $("#series-visibles");
+    caja.innerHTML = S.map((s, i) => `<label class="casilla"><input type="checkbox" data-serie="${esc(s.clave)}"${ocultas.has(s.clave) ? "" : " checked"}> <span><span aria-hidden="true" class="trazo">${s.tipo === "cartera" ? TRAZO[i % 3] : TRAZO[3]}</span> ${esc(nombre(s.clave))}</span></label>`).join("");
+  }
+  /** Muestra u oculta una serie en los dos gráficos y en las casillas. */
+  function verSerie(clave, ver) {
+    if (ver) ocultas.delete(clave); else ocultas.add(clave);
+    // setOption y no dispatchAction: no emite eventos. Con los dos gráficos conectados, un dispatchAction dentro del evento
+    // de la leyenda se reenviaba entre ellos sin fin (medido: 51 eventos en 4,7 s antes de cortarlo).
+    const seleccion = Object.fromEntries(S.map(s => [nombre(s.clave), !ocultas.has(s.clave)]));
+    for (const g of [gCurvas, gDD]) { const inst = g && g.instancia(); if (inst) inst.setOption({ legend: { selected: seleccion } }); }
+    const cb = $$("#series-visibles input[data-serie]").find(x => x.dataset.serie === clave); if (cb) cb.checked = ver;
+  }
   function conectar() {
     const a = gCurvas && gCurvas.instancia(), b = gDD && gDD.instancia();
+    // Si se usa la leyenda del gráfico, solo se actualizan el estado y las casillas: el otro gráfico ya recibe el mismo
+    // clic por echarts.connect (si además se le fijara aquí, ese reenvío lo volvería a alternar)
+    for (const inst of [a, b]) if (inst) inst.on("legendselectchanged", e => {
+      const s = S.find(x => nombre(x.clave) === e.name); if (!s) return;
+      const ver = !!e.selected[e.name];
+      if (ver) ocultas.delete(s.clave); else ocultas.add(s.clave);
+      const cb = $$("#series-visibles input[data-serie]").find(x => x.dataset.serie === s.clave); if (cb) cb.checked = ver;
+    });
     if (a && b && global.echarts) { a.group = GRUPO_GRAFICOS; b.group = GRUPO_GRAFICOS; global.echarts.connect(GRUPO_GRAFICOS); }
   }
   function pintarGraficos() {
@@ -242,6 +267,10 @@ ${x.causas.length ? `<p>${esc(t("backtesting.causas_intro"))}</p><ul>${x.causas.
   function enlazar() {
     if (enlazado) return;
     enlazado = true;
+    $("main").addEventListener("change", e => {
+      const cb = e.target.closest("input[data-serie]");
+      if (cb) { verSerie(cb.dataset.serie, cb.checked); EIA.ui.anunciar(t(cb.checked ? "backtesting.serie_visible" : "backtesting.serie_oculta", { serie: nombre(cb.dataset.serie) })); }
+    });
     $("main").addEventListener("click", e => {
       const b = e.target.closest("button[data-rebalanceo]");
       if (!b) return;
@@ -278,6 +307,7 @@ ${x.causas.length ? `<p>${esc(t("backtesting.causas_intro"))}</p><ul>${x.causas.
     if (!carteraTL) { const pedido = new URLSearchParams(global.location.search).get("nivel"); carteraTL = D.c09.carteras[pedido] ? pedido : null; }
     enlazar();
     pintarFicha();
+    pintarSeries();
     pintarGraficos();
     pintarMetricas();
     pintarLineaTiempo();
