@@ -50,6 +50,8 @@
       porFamilia: ms.reduce((a, m) => { a[m.familia] = (a[m.familia] || 0) + 1; return a; }, {}),
       mape: rango("mape_30d_pct"), r2: rango("r2_retornos_30d"), mejora: rango("mejora_vs_persistencia_pct"),
       mejoran: ms.filter(m => m.mejora_vs_persistencia_pct > 0).length,
+      // Rango solo de los que sí mejoran: con datos reales puede haber modelos peores que «el precio no cambia» (T-26)
+      mejoraPositiva: (pos => (pos.length ? [Math.min.apply(null, pos), Math.max.apply(null, pos)] : null))(ms.map(m => m.mejora_vs_persistencia_pct).filter(v => v > 0)),
       horizonte: c06.fechas_pronostico.length
     };
   }
@@ -98,12 +100,21 @@
     EIA.estado.set("eia_filtros", todo);
   }
 
+  /** Frase sobre la mejora frente a «el precio no cambia»: todos, algunos o ninguno mejoran (cifras de 06). */
+  function frasesMejora(R) {
+    const p = v => EIA.fmt.pct(v, 1, { signo: false });
+    if (R.mejoran === R.modelos) return t("regresion.mejora_todos", { n: R.modelos, mejmin: p(R.mejora[0]), mejmax: p(R.mejora[1]) });
+    if (!R.mejoran) return t("regresion.mejora_ninguno", { n: R.modelos, peor: EIA.fmt.pct(R.mejora[0], 1), mejor: EIA.fmt.pct(R.mejora[1], 1) });
+    return t("regresion.mejora_algunos", { mejoran: R.mejoran, n: R.modelos, mejmin: p(R.mejoraPositiva[0]), mejmax: p(R.mejoraPositiva[1]),
+      resto: R.modelos - R.mejoran, peor: EIA.fmt.pct(R.mejora[0], 1) });
+  }
+
   function pintarFicha() {
     EIA.ui.fichaIA($("#ficha"), {
       que_hace: t("regresion.ficha_que_hace", { h: R.horizonte, n: R.modelos, ml: R.porFamilia.ML || 0, dl: R.porFamilia.DL || 0 }),
       que_tan_bien: t("regresion.ficha_que_tan_bien", {
         mapemin: EIA.fmt.pct(R.mape[0], 2, { signo: false }), mapemax: EIA.fmt.pct(R.mape[1], 2, { signo: false }),
-        mejoran: R.mejoran, n: R.modelos, mejmin: EIA.fmt.pct(R.mejora[0], 1, { signo: false }), mejmax: EIA.fmt.pct(R.mejora[1], 1, { signo: false }),
+        mejora: frasesMejora(R),
         r2min: EIA.fmt.num(R.r2[0], 3), r2max: EIA.fmt.num(R.r2[1], 3)
       }),
       por_que: t("regresion.ficha_por_que", { n: R.modelos, nivel: EIA.fmt.pct(NIVEL_CONO * 100, 0, { signo: false }) }),

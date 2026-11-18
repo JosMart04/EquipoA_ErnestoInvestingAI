@@ -4,13 +4,13 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 19:03 (Lima)
+- Fecha y hora: 2026-11-17 19:16 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/fix-21-contraste` → PR #23 (contraste de las etiquetas en barras de color, issue #21)
+- Rama / último commit: `cc/T-26-modo-real` → PR #24 (Modo real con los datos de CX: recálculo, cortes y textos)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **126/126, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **130/130, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -33,6 +33,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **126/126
 | #18 (CX) | T-50 | E2E de Backtesting (curvas, métricas, nota del tope, Agresivo → 12 rebalanceos) y ausencia aislada de `09` | 48 E2E en la CI |
 | #19 | T-25 | **Migas de pan** en el núcleo al llegar por un enlace cruzado (Clasificación › NVDA › Regresión › Optimizador; Portafolios › Agresivo › Backtesting) | 120/120; navegador: cadena, recarga, vuelta atrás, cambio de activo, EN, barra de módulos sin migas, 390 px; 27 cargas de humo. Además `EIA.todos`: el diagnóstico de datos ausentes nombra el primer archivo en orden |
 | #20 | T-27 | **Accesibilidad de gráficos (a) y barrido (e):** exploración punto a punto con tono y anuncio, resumen automático por serie, «Leer en voz alta», consenso sonoro, barrido de 6 grupos, fuente legible y cursor grande; corrige el aria-label en inglés de ECharts | 126/126; navegador: 5 módulos con gráfico, barrido completo (grupo → bloque → `<select>` → diálogo → opción → Esc), reanudación al navegar, 390 px, contraste ≥ 5,5:1; 27 cargas de humo |
+| #23 | T-29 (QA) | Issue #21 de CX (axe): texto con contraste medido sobre cada color de serie (`--serie-texto-N`) en Backtesting y Portafolios | 169 tramos ≥ 4,95:1 en claro, oscuro y alto contraste |
+| #24 | T-26 | **Modo real** con los datos del PR #22 de CX: recálculo en Workers en Backtesting y Optimizador (`EIA.ui.recalculo`), cortes ordenados, textos que solo valían para el curso | 130/130; probado con los datos reales en un worktree: 9 páginas, recálculo, «Volver», idioma, corte antiguo, 390 px; 27 cargas de humo |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -59,9 +61,10 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **126/126
 
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
-2. **T-26** (Modo real) cuando CX publique 01–13 en `data_real/`; mientras tanto, **T-28** (calibración de 5 puntos con interfaz, tarjeta de ayuda de gestos) y **T-29** (conformidad con Figma y P08).
+2. Fusionar el PR #22 de CX en cuanto resuelva el conflicto de la bitácora y quede en verde; después revisar el Modo real en Pages.
+2b. **T-28** (calibración de 5 puntos con interfaz, tarjeta de ayuda de gestos) y **T-29** (conformidad con Figma y P08).
 3. Mejora pendiente del Optimizador: a 390 px los puntos de NSGA-II y NSGA-III se superponen.
-4. Cuando Josué vuelva a probar la webcam, ajusta signos y umbrales con lo que reporte.
+4. Josué probó la webcam el 17-nov y funciona; si alguien reporta el puntero invertido, usa las casillas «Invertir» del Centro.
 
 ## Cómo se hace un módulo (el ejemplo vivo es `js/clasificacion.js` + `tests/unit/clasificacion.test.mjs`)
 1. HTML mínimo: `<body data-page="<id>">`, un `<h1>`, un `<p class="sub">`, contenedores vacíos con `id`, `js/common.js` y luego `js/<id>.js`. Texto estático con `data-i18n="clave"`. Sin cifras en el HTML.
@@ -94,7 +97,9 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **126/126
 - **El navegador cachea `js/common.js` y los `i18n/*.json`** con `python -m http.server`: tras editarlos, recarga forzada (Ctrl+F5).
 - **Remontar componentes:** `EIA.ui.tabla`, `segmentado` y `grafico` cancelan sus oyentes anteriores al montarse otra vez sobre el mismo nodo (`montar()` en `common.js`). Si creas un componente nuevo con `addEventListener` sobre `destino`, usa `montar(destino).control.signal`.
 - **Formato de `js/lib`:** cada archivo publica `EIALib.<nombre>` y `module.exports`; las dependencias se piden con `dep("nombre")`. En un Worker se cargan con `importScripts` **en orden de dependencia** (estadistica y simplex antes de markowitz; markowitz antes de nsga2, nsga3 y backtest).
-- **Las carteras de `09` del profesor no se reproducen** con `backtest.js` (su optimizador no está documentado); las referencias sí. No es un fallo: el recálculo solo existe en el Modo real.
+- **Las carteras de `09` del profesor no se reproducen** con `backtest.js` (su optimizador no está documentado); las referencias sí. No es un fallo: el recálculo solo existe en el Modo real. **Con los datos reales sí:** misma fecha final → EPU y 1/N idénticos al Python de CX; Moderado +17,05 % frente a +17,03 %.
+- **Recálculo (`EIA.ui.recalculo`):** el módulo guarda `recalc` y en `pintar(datos)` lo mezcla con los datos del archivo; se descarta al cambiar de modo (y de corte en el Optimizador). El Worker solo se crea en el núcleo (`EIA.trabajo`); una prueba vigila que ningún módulo cree Workers.
+- **`cortes/index.json`:** `ultimo` no está en `cortes[]` y el arreglo viene ascendente; usa siempre `EIA.ordenarCortes`.
 - **R-REG-09 literal falla en 5 activos** de `data/` por redondeo: se verifica con I-03b (contrato §4 y nota N-1).
 - **El 1/N del profesor es de rebalanceo diario** (contrato I-10, nota N-2). La volatilidad de `09` usa desviación poblacional.
 - **El «Agresivo» de `08` rinde menos que el «Moderado»** (nota N-4): no escribir textos que afirmen un orden entre niveles.

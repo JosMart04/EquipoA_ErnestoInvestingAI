@@ -71,3 +71,12 @@ test("optimizador.html: sin cifras escritas a mano, contenedores E2E y recálcul
   const visible = h.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " ");
   assert.ok(!/\d/.test(visible.replace(/CVaR 95/g, "")), "hay dígitos en el texto de la página: " + (visible.match(/\S*\d\S*/) || [""])[0]);
 });
+
+test("T-26: ventanas de estimación que terminan en el corte y caben en la historia", () => {
+  const fechas = Array.from({ length: 300 }, (_, i) => "2026-" + String(1 + Math.floor(i / 28)).padStart(2, "0") + "-" + String(1 + (i % 28)).padStart(2, "0"));
+  const v = O.ventanas(fechas, fechas[260], [126, 252, 504]);
+  assert.deepEqual(v.map(x => x.n), [126, 252], "504 no cabe");
+  assert.equal(v[0].hasta, fechas[260]);
+  assert.equal(v[1].desde, fechas[260 - 252]);
+  assert.equal(O.ventanas(fechas, null, [126])[0].hasta, fechas[299], "sin corte, el último cierre");
+});

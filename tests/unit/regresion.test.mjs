@@ -75,3 +75,15 @@ test("regresion.html: sin cifras escritas a mano y con los contenedores que usan
     .replace(/\bp10\b|\bp90\b/g, "");
   assert.ok(!/\d/.test(visible), "hay dígitos en el texto de la página: " + (visible.match(/\S*\d\S*/) || [""])[0]);
 });
+
+test("T-26: con modelos peores que «el precio no cambia» (datos reales), el rango de mejora es solo el de los que mejoran", () => {
+  const otro = JSON.parse(JSON.stringify(c06));
+  otro.modelos.forEach((m, i) => { m.mejora_vs_persistencia_pct = i < 6 ? 0.5 + i * 0.25 : -1 - i; });
+  const r = R.resumen(otro);
+  assert.equal(r.mejoran, 6);
+  assert.deepEqual(r.mejoraPositiva, [0.5, 1.75], "solo los 6 que mejoran");
+  assert.ok(r.mejora[0] < 0, "el rango completo sigue disponible para «hasta {peor}»");
+  otro.modelos.forEach(m => { m.mejora_vs_persistencia_pct = -2; });
+  assert.equal(R.resumen(otro).mejoraPositiva, null, "si ninguno mejora no hay rango positivo");
+  assert.equal(R.resumen(c06).mejoran, R.resumen(c06).modelos, "en el Modo profesor mejoran los 18");
+});

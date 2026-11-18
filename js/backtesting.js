@@ -15,6 +15,8 @@
   const COMISION = 0.0005;     // 5 pb sobre el turnover (09.metodo y contrato §6)
   const REFERENCIA = "SPY";    // la guía compara cada cartera con SPY
   const UNO_N = "Igual ponderado (1/N)";
+  const CIERRES = "cierres_historicos.json"; // Modo real: historia completa para recalcular (contrato §7)
+  const OPCIONES_FIN = 13;                   // el último cierre y los 12 fines de mes anteriores
 
   /* ═════════════ Modelo de vista (puro) ═════════════ */
 
@@ -75,7 +77,15 @@
     return { fecha: r.fecha, pesos: Object.entries(r.pesos).map(([ticker, peso]) => ({ ticker, peso })).sort((a, b) => b.peso - a.peso), turnover };
   }
 
-  const Backtesting = { drawdown, series, verificar, interpretar, rebalanceo, pesoMaximo, pesoMedio, TOLERANCIA_PP, COMISION, REFERENCIA, UNO_N, ARCHIVO };
+  /** Fechas en que puede terminar un backtesting recalculado: el último cierre y el último día hábil de cada mes
+      anterior, de la más reciente a la más antigua (como mucho n). Pura. */
+  function finesDeMes(fechas, n) {
+    const salida = fechas.length ? [fechas[fechas.length - 1]] : [];
+    for (let i = fechas.length - 2; i >= 0 && salida.length < n; i--) if (fechas[i].slice(0, 7) !== fechas[i + 1].slice(0, 7)) salida.push(fechas[i]);
+    return salida;
+  }
+
+  const Backtesting = { drawdown, series, verificar, interpretar, rebalanceo, pesoMaximo, pesoMedio, finesDeMes, TOLERANCIA_PP, COMISION, REFERENCIA, UNO_N, ARCHIVO };
   if (typeof module !== "undefined" && module.exports) module.exports = Backtesting;
   if (typeof document === "undefined") return;
   global.Backtesting = Backtesting;
@@ -86,6 +96,7 @@
   const pctS = (x, d) => EIA.fmt.pct(x, d == null ? 2 : d, { signo: false });
   const GRUPO_GRAFICOS = "eia-backtesting";                              // curvas y drawdown comparten el cursor
   let D = null, S = null, carteraTL = null, idxTL = 0, enlazado = false, gCurvas = null, gDD = null;
+  let base = null, recalc = null; // recalc = {c09, fin, modo}: resultado calculado en el navegador (T-26)
   const nombre = clave => (D.c09.carteras[clave] ? EIA.nombre("nivel", clave) : EIA.nombre("referencia", clave));
 
   function pintarFicha() {
@@ -97,7 +108,11 @@
       controlas: t("backtesting.ficha_controlas"),
       ignorar: t("backtesting.ficha_ignorar")
     });
-    $("#metodo").innerHTML = `${esc(t("backtesting.metodo"))} <span lang="es">${esc(D.c09.metodo)}</span>`;
+    const pm = recalc && D.c09.parametros;
+    if (pm) {
+      const tope = n => pctS(pm.perfiles[n].tope * 100, 0);
+      $("#metodo").textContent = t("backtesting.metodo_navegador", { paso: pm.paso, ventana: pm.ventana, momentum: pm.momentum, comision: pm.comisionPb, tc: tope("Conservador"), tm: tope("Moderado"), ta: tope("Agresivo") });
+    } else $("#metodo").innerHTML = `${esc(t("backtesting.metodo"))} <span lang="es">${esc(D.c09.metodo)}</span>`;
   }
 
   /** Estilo de cada serie: carteras con línea gruesa continua, discontinua o de punto y raya; referencias punteadas y finas.
@@ -220,7 +235,8 @@ ${x.causas.length ? `<p>${esc(t("backtesting.causas_intro"))}</p><ul>${x.causas.
     const exceden = Object.entries(D.c09.carteras).map(([k, c]) => ({ k, max: pesoMaximo(c) })).filter(x => x.max > D.tope + 1e-9);
     const caja = $("#nota-tope");
     caja.hidden = !exceden.length;
-    if (exceden.length) caja.textContent = t("backtesting.nota_tope", { lista: exceden.map(x => t("backtesting.nota_tope_item", { cartera: EIA.nombre("nivel", x.k), max: pctS(x.max * 100, 0) })).join(", "), tope: pctS(D.tope * 100, 0) });
+    // En el Modo profesor es una inconsistencia del material (N-3); en el real, una regla declarada en el método del archivo
+    if (exceden.length) caja.textContent = t(EIA.modo() === "real" ? "backtesting.nota_tope_real" : "backtesting.nota_tope", { lista: exceden.map(x => t("backtesting.nota_tope_item", { cartera: EIA.nombre("nivel", x.k), max: pctS(x.max * 100, 0) })).join(", "), tope: pctS(D.tope * 100, 0) });
   }
 
   function enlazar() {
@@ -236,8 +252,28 @@ ${x.causas.length ? `<p>${esc(t("backtesting.causas_intro"))}</p><ul>${x.causas.
     });
   }
 
+  /** Sección «Recalcular con otro periodo»: en el Modo real, el Worker de backtest con los cierres reales (D-03). */
+  function pintarRecalculo() {
+    const montarCon = opciones => EIA.ui.recalculo($("#recalculo"), {
+      modulo: "backtesting", opciones, valor: recalc ? recalc.fin : (opciones[0] || [])[0],
+      activo: recalc ? t("backtesting.recalculado_detalle", { inicio: EIA.fmt.fecha(recalc.c09.periodo.inicio), fin: EIA.fmt.fecha(recalc.c09.periodo.fin) }) : null,
+      async calcular(fin) {
+        const [ch, u] = await EIA.todos([EIA.datos(CIERRES), EIA.universo()]);
+        return { worker: "backtest", params: { fechas: ch.fechas, cierres: ch.cierres, tickers: u.map(a => a.ticker).filter(tk => ch.cierres[tk]), fin } };
+      },
+      alResultado(c09, fin) { recalc = { c09, fin, modo: EIA.modo() }; pintar(base); },
+      alVolver() { recalc = null; pintar(base); }
+    });
+    if (EIA.modo() !== "real") { montarCon([]); return; }
+    EIA.datos(CIERRES)
+      .then(ch => montarCon(finesDeMes(ch.fechas, OPCIONES_FIN).map((f, i) => [f, i === 0 ? t("backtesting.fin_ultimo", { fecha: EIA.fmt.fecha(f) }) : EIA.fmt.fecha(f)])))
+      .catch(() => montarCon([]));
+  }
+
   function pintar(datos) {
-    D = datos;
+    base = datos;
+    if (recalc && recalc.modo !== EIA.modo()) recalc = null; // al volver al Modo profesor se descarta
+    D = recalc ? Object.assign({}, datos, { c09: recalc.c09 }) : datos;
     S = series(D.c09);
     if (!carteraTL) { const pedido = new URLSearchParams(global.location.search).get("nivel"); carteraTL = D.c09.carteras[pedido] ? pedido : null; }
     enlazar();
@@ -247,6 +283,7 @@ ${x.causas.length ? `<p>${esc(t("backtesting.causas_intro"))}</p><ul>${x.causas.
     pintarLineaTiempo();
     pintarInterpretacion();
     pintarNotaTope();
+    pintarRecalculo();
   }
 
   EIA.modulo({

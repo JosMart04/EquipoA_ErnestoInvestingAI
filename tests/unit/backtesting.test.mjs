@@ -78,3 +78,12 @@ test("backtesting.html: sin cifras escritas a mano, recálculo deshabilitado y l
   assert.match(js, /0,35/, "comentario sobre la inconsistencia del tope del Agresivo");
   assert.ok(!/EIA\.trabajo|new Worker/.test(js), "en el Modo profesor no se recalcula");
 });
+
+test("T-26: fechas para terminar un backtesting recalculado (último cierre y fines de mes, del más reciente al más antiguo)", () => {
+  const f = ["2026-09-29", "2026-09-30", "2026-10-01", "2026-10-30", "2026-11-02", "2026-11-16"];
+  assert.deepEqual(B.finesDeMes(f, 13), ["2026-11-16", "2026-10-30", "2026-09-30"]);
+  assert.deepEqual(B.finesDeMes(f, 2), ["2026-11-16", "2026-10-30"]);
+  assert.deepEqual(B.finesDeMes([], 13), []);
+  const js = leer("js", "backtesting.js");
+  assert.ok(!/EIA\.trabajo|new Worker/.test(js), "el Worker lo lanza el núcleo (EIA.ui.recalculo), solo en el Modo real");
+});
