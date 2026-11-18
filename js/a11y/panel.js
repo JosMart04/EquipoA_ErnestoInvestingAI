@@ -51,6 +51,7 @@
     const activa = m => cam.estado !== "apagada" && cam.modalidad === m;
     const botonCamara = m => `<button type="button" data-camara="${m}" aria-pressed="${activa(m)}">${esc(t(activa(m) ? "a11y.detener_mod" : "a11y.activar_mod", { modalidad: t("a11y.mod_" + m) }))}</button>`;
     const barridoActivo = !!(EIA.barrido && EIA.barrido.activo());
+    const vozDisponible = !!(global.SpeechRecognition || global.webkitSpeechRecognition), vozActiva = !!(EIA.voz && EIA.voz.activo());
     return `<p class="mut">${esc(t("a11y.intro"))}</p>
 <h3>${esc(t("a11y.sec_visual"))}</h3>
 ${deslizador("texto", 100, 200, 10, p)}
@@ -61,6 +62,7 @@ ${EIA.hayVoz()
     : `<p class="mut">${esc(t("a11y.sin_voz"))}</p>`}
 ${interruptor("sonido", p)}
 <h3>${esc(t("a11y.sec_control"))}</h3>
+${vozDisponible ? `<p class="mut">${esc(t("voz.panel_ayuda"))}</p><div class="acciones"><button type="button" data-voz-panel aria-pressed="${vozActiva}">${esc(t(vozActiva ? "voz.panel_detener" : "voz.panel_activar"))}</button></div>` : `<p class="mut">${esc(t("voz.no_disponible"))}</p>`}
 <p class="mut">${esc(t("a11y.barrido_ayuda"))}</p>
 <div class="acciones"><button type="button" data-barrido aria-pressed="${barridoActivo}">${esc(t(barridoActivo ? "a11y.barrido_detener_btn" : "a11y.barrido_activar"))}</button></div>
 ${deslizador("barrido_ms", 500, 3000, 100, p)}
@@ -75,7 +77,7 @@ ${interruptor("invertirX", p)}${interruptor("invertirY", p)}
 ${p.calibracion ? `<p class="mut" id="calib-estado">${esc(t("a11y.calib_activa"))}</p><div class="acciones"><button type="button" data-quitar-calibracion>${esc(t("a11y.calib_quitar"))}</button></div>` : ""}
 <h3>${esc(t("a11y.sec_ayuda"))}</h3>
 <div class="acciones"><button type="button" data-ver-gestos>${esc(t("a11y.ver_gestos"))}</button></div>
-<ul><li>${esc(t("a11y.atajo_panel"))}</li><li>${esc(t("a11y.atajo_esc"))}</li><li>${esc(t("a11y.ayuda_barrido"))}</li><li>${esc(t("a11y.ayuda_teclado"))}</li></ul>`;
+<ul><li>${esc(t("a11y.atajo_panel"))}</li><li>${esc(t("voz.atajo"))}</li><li>${esc(t("a11y.atajo_esc"))}</li><li>${esc(t("a11y.ayuda_barrido"))}</li><li>${esc(t("a11y.ayuda_teclado"))}</li></ul>`;
   }
 
   let abierto = null;
@@ -101,6 +103,7 @@ ${p.calibracion ? `<p class="mut" id="calib-estado">${esc(t("a11y.calib_activa")
       const qc = e.target.closest("button[data-quitar-calibracion]");
       if (qc) { guardar({ calibracion: null }); $("#calib-estado", caja).textContent = t("a11y.calib_quitada"); qc.remove(); EIA.ui.anunciar(t("a11y.calib_quitada")); return; }
       if (e.target.closest("button[data-ver-gestos]")) { dlg.cerrar(); await EIA.cargar("js/a11y/camara.js"); EIA.camara.ayuda(); return; }
+      if (e.target.closest("button[data-voz-panel]")) { dlg.cerrar(); await EIA.cargar("js/a11y/voz.js"); EIA.voz.alternar(); return; }
       if (e.target.closest("button[data-barrido]")) {
         dlg.cerrar();
         await EIA.cargar("js/a11y/barrido.js");

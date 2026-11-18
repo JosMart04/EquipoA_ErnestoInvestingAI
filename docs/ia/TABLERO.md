@@ -58,4 +58,4 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-70 | Mockups de Figma Make + importación | OP | hecho | fuera del repo | R-FLU-01 | https://www.figma.com/make/BWA9B3JoRbAWZiVoPSyoBO |
 | T-71 | Compartir Figma (solo lectura) + figma-src/ sin editar | JM | hecho | main | R-FLU-02, R-ENT-01 | |
 | T-80 | Pruebas humanas por rol | HUM | pendiente | issues | §11, Anexo A | |
-| T-90 | Comandos de voz (última fase) | CC | pendiente | | D-07 (b) | solo si todo está en verde |
+| T-90 | Comandos de voz (última fase) | CC-O | en revisión | cc/T-90-voz · PR #30 | D-07 (b) | Pedido por Josué. Web Speech API en ES/EN con consentimiento, indicador, confirmación visual y hablada, ayuda, Alt+Shift+V y reanudación al navegar. Gramática en i18n; acciones por el bus. Sin probar con un micrófono real |
