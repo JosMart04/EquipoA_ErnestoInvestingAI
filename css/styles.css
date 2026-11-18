@@ -448,3 +448,13 @@ body.modo-puntero button.enlace, body.modo-puntero th button.orden, body.modo-pu
 .control-recalculo select { max-width: 100%; }
 #recalculo-progreso { margin: .5rem 0; }
 .recalculado { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; background: var(--hl); border: 1px solid var(--bd); border-left: 4px solid var(--ac); border-radius: 8px; padding: .6rem .9rem; }
+
+/* Calibración de la cabeza y tarjeta de gestos (T-28) */
+.calibracion { position: fixed; inset: 0; z-index: 10000; background: var(--bg); }
+.calib-caja { position: absolute; left: 50%; top: 50%; transform: translate(-50%, 40%); width: min(28rem, calc(100vw - 2rem)); text-align: center; }
+.calib-caja h2 { margin-top: 0; }
+.calib-punto { position: absolute; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; border: 6px solid var(--ac); box-shadow: 0 0 0 4px var(--bg); }
+.calib-punto.midiendo { background: var(--ac); }
+.gestos { list-style: none; margin: 0; padding: 0; display: grid; gap: .6rem; }
+.gesto { display: flex; gap: .75rem; align-items: flex-start; }
+.gesto-fig { flex: 0 0 auto; color: var(--ac); }

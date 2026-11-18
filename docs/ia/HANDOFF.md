@@ -4,13 +4,13 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 19:16 (Lima)
+- Fecha y hora: 2026-11-17 19:24 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-26-modo-real` → PR #24 (Modo real con los datos de CX: recálculo, cortes y textos)
+- Rama / último commit: `cc/T-28-calibracion-gestos` → PR #25 (calibración de la cabeza, guía de gestos y desplazar con dos dedos)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **130/130, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **132/132, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -35,6 +35,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **130/130
 | #20 | T-27 | **Accesibilidad de gráficos (a) y barrido (e):** exploración punto a punto con tono y anuncio, resumen automático por serie, «Leer en voz alta», consenso sonoro, barrido de 6 grupos, fuente legible y cursor grande; corrige el aria-label en inglés de ECharts | 126/126; navegador: 5 módulos con gráfico, barrido completo (grupo → bloque → `<select>` → diálogo → opción → Esc), reanudación al navegar, 390 px, contraste ≥ 5,5:1; 27 cargas de humo |
 | #23 | T-29 (QA) | Issue #21 de CX (axe): texto con contraste medido sobre cada color de serie (`--serie-texto-N`) en Backtesting y Portafolios | 169 tramos ≥ 4,95:1 en claro, oscuro y alto contraste |
 | #24 | T-26 | **Modo real** con los datos del PR #22 de CX: recálculo en Workers en Backtesting y Optimizador (`EIA.ui.recalculo`), cortes ordenados, textos que solo valían para el curso | 130/130; probado con los datos reales en un worktree: 9 páginas, recálculo, «Volver», idioma, corte antiguo, 390 px; 27 cargas de humo |
+| #25 | T-28 | **Calibración de 5 puntos** de la cabeza con interfaz, **guía de gestos** con SVG propios y **«V» de dos dedos** para desplazar (D-23: sin deslizar ni pulgar arriba) | 132/132; navegador con poses simuladas: calibración exacta, Esc, quitar desde el Centro, V desplaza sin mover el puntero, 390 px |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -52,6 +53,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **130/130
 **NO probado todavía (Anexo A: Adrian y Augusto):**
 - **El signo de los ejes de la cabeza.** `senales.anguloCabeza` supone la matriz de MediaPipe en orden por columnas. Si el puntero va al revés, hay dos casillas «Invertir» en el Centro; si hace falta, cambia el valor por defecto de `sx`/`sy` en `js/a11y/cabeza-mirada.js`.
 - Umbrales reales de parpadeo (0,5 durante 400 ms), boca (0,5 durante 300 ms), pellizco (0,35 / 0,5) y puño (1,5 s); el recorrido por defecto de la cabeza (18°).
+- **La calibración de 5 puntos y la «V» de dos dedos (PR #25) no se probaron con una webcam real**: solo con poses simuladas. Pídele a Josué una prueba de 2 minutos.
 - La reanudación de la cámara al cambiar de página (`sessionStorage.eia_cam`).
 - Lectores de pantalla reales (NVDA, Narrador, TalkBack).
 - El atajo `Alt+Shift+A` con una pulsación real (el evento sintético llega y abre el panel).
@@ -62,7 +64,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **130/130
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
 2. Fusionar el PR #22 de CX en cuanto resuelva el conflicto de la bitácora y quede en verde; después revisar el Modo real en Pages.
-2b. **T-28** (calibración de 5 puntos con interfaz, tarjeta de ayuda de gestos) y **T-29** (conformidad con Figma y P08).
+2b. **T-29** (conformidad con Figma, correcciones de QA y P08; congelamiento).
 3. Mejora pendiente del Optimizador: a 390 px los puntos de NSGA-II y NSGA-III se superponen.
 4. Josué probó la webcam el 17-nov y funciona; si alguien reporta el puntero invertido, usa las casillas «Invertir» del Centro.
 
@@ -77,7 +79,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **130/130
 ## Desviaciones respecto del plan (decididas al ejecutar)
 - **Markowitz** usa un algoritmo de pares exacto (KKT), no gradiente proyectado: el gradiente tardaba 28 s; este, 16 ms.
 - **`js/a11y/preferencias.js` y `anunciador.js` no existen:** las preferencias las aplica `EIA.aplicarPreferencias()` de `common.js` (para no cargar nada más en cada página) y los anuncios son `EIA.ui.anunciar()`. El panel está en `js/a11y/panel.js`.
-- **Calibración de 5 puntos:** está la matemática (`senales.ajusteAfin`, probada) pero no la interfaz; hoy se usa «Recentrar» y ganancias fijas (±18° de giro y ±12° de inclinación recorren la pantalla).
+- **Calibración de 5 puntos:** está con interfaz desde el PR #25 (`EIA.camara.calibrar`); sin calibrar se usan «Recentrar» y ganancias fijas (±18° de giro y ±12° de inclinación). El **ajuste fino con el iris no se hizo**.
+- **Gestos de mano (D-23):** sin «deslizar» ni «pulgar arriba»; hay «V» de dos dedos para desplazar.
 - **`resumen.js` y `lectura.js` no existen:** el resumen automático y la exploración punto a punto viven en `EIA.ui.grafico` (núcleo), para que todos los gráficos los tengan sin cargar nada más. `js/a11y/sonificacion.js` (tonos) y `js/a11y/barrido.js` sí son archivos aparte, cargados bajo demanda.
 - **Sonificación de la regresión:** la mediana y la historia suenan como series (↑/↓ para cambiar); la banda como ruido suave no se hizo.
 - **Fuente legible:** usa Atkinson Hyperlegible o Verdana **si están instaladas**; no se descarga ninguna fuente (el sitio no carga recursos externos aparte de ECharts y MediaPipe).
