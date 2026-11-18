@@ -103,6 +103,32 @@
     const pares = [[8, 6], [12, 10], [16, 14], [20, 18]];
     return pares.every(([punta, nudillo]) => distancia(lm[punta], lm[0]) < distancia(lm[nudillo], lm[0]));
   }
+  /** ¿«V» con dos dedos? Índice y medio extendidos, anular y meñique doblados. Es el gesto de desplazar la página (T-28);
+      no se confunde con el puño (dos dedos están extendidos) ni con la mano abierta (anular y meñique doblados). */
+  function dosDedos(lm) {
+    const extendido = (p, n) => distancia(lm[p], lm[0]) > 1.15 * distancia(lm[n], lm[0]);
+    const doblado = (p, n) => distancia(lm[p], lm[0]) < distancia(lm[n], lm[0]);
+    return extendido(8, 6) && extendido(12, 10) && doblado(16, 14) && doblado(20, 18);
+  }
+
+  /* Calibración de 5 puntos de la cabeza (PLAN_MAESTRO §9.5): se mira el centro y las cuatro esquinas, y un ajuste afín
+     por mínimos cuadrados lleva (giro, inclinación) respecto del centro a un punto de la pantalla. */
+  const PUNTOS_CALIBRACION = [[0.5, 0.5], [0.1, 0.1], [0.9, 0.1], [0.9, 0.9], [0.1, 0.9]];
+  const GIRO_MINIMO = 4, INCLINACION_MINIMA = 3; // grados: con menos, la persona casi no movió la cabeza y el ajuste no sirve
+  /** muestras = [{dy, dp, u, v}] → {cx, cy} (coeficientes que se guardan en JSON) o null si no sirven. */
+  function calibracionCabeza(muestras) {
+    if (!muestras || muestras.length < 3) return null;
+    const rango = k => Math.max.apply(null, muestras.map(m => m[k])) - Math.min.apply(null, muestras.map(m => m[k]));
+    if (rango("dy") < GIRO_MINIMO || rango("dp") < INCLINACION_MINIMA) return null;
+    const a = ajusteAfin(muestras.map(m => ({ u: m.dy, v: m.dp, x: m.u, y: m.v })));
+    return a ? { cx: a.cx, cy: a.cy } : null;
+  }
+  /** Aplica una calibración guardada: (giro, inclinación) respecto del centro → punto de la pantalla (0–1, recortado). */
+  function aplicarCalibracion(cal, dy, dp) {
+    const lim = v => Math.max(0, Math.min(1, v));
+    return { u: lim(cal.cx[0] * dy + cal.cx[1] * dp + cal.cx[2]), v: lim(cal.cy[0] * dy + cal.cy[1] * dp + cal.cy[2]) };
+  }
+
   /** Punto de la mano que mueve el puntero: el medio de los nudillos del índice y del medio (landmarks 5 y 9).
       Casi no se mueve al pellizcar, a diferencia de la punta del índice. */
   function puntoMano(lm) { return { x: (lm[5].x + lm[9].x) / 2, y: (lm[5].y + lm[9].y) / 2 }; }
@@ -113,7 +139,8 @@
     return { u: lim(1 - (x - g) / lado), v: lim((y - g) / lado) };
   }
 
-  const api = { filtroOneEuro, ajusteAfin, detectorSostenido, detectorPellizco, anguloCabeza, matrizCabeza, razonPellizco, palmaAbierta, punoCerrado, puntoMano, mapaCaja, distancia };
+  const api = { filtroOneEuro, ajusteAfin, detectorSostenido, detectorPellizco, anguloCabeza, matrizCabeza, razonPellizco, palmaAbierta, punoCerrado, puntoMano, mapaCaja, distancia,
+    dosDedos, calibracionCabeza, aplicarCalibracion, PUNTOS_CALIBRACION, GIRO_MINIMO, INCLINACION_MINIMA };
   L.senales = api;
   if (typeof module !== "undefined" && module.exports) module.exports = api;
 })(typeof self !== "undefined" ? self : globalThis);

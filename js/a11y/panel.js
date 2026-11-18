@@ -72,7 +72,9 @@ ${deslizador("ms", 500, 2000, 100, p)}
 ${deslizador("rango", 10, 30, 2, p)}
 <p class="mut">${esc(t("a11y.rango_ayuda"))}</p>
 ${interruptor("invertirX", p)}${interruptor("invertirY", p)}
+${p.calibracion ? `<p class="mut" id="calib-estado">${esc(t("a11y.calib_activa"))}</p><div class="acciones"><button type="button" data-quitar-calibracion>${esc(t("a11y.calib_quitar"))}</button></div>` : ""}
 <h3>${esc(t("a11y.sec_ayuda"))}</h3>
+<div class="acciones"><button type="button" data-ver-gestos>${esc(t("a11y.ver_gestos"))}</button></div>
 <ul><li>${esc(t("a11y.atajo_panel"))}</li><li>${esc(t("a11y.atajo_esc"))}</li><li>${esc(t("a11y.ayuda_barrido"))}</li><li>${esc(t("a11y.ayuda_teclado"))}</li></ul>`;
   }
 
@@ -96,6 +98,9 @@ ${interruptor("invertirX", p)}${interruptor("invertirY", p)}
         if (lectura) pintarBoton(true);
         return;
       }
+      const qc = e.target.closest("button[data-quitar-calibracion]");
+      if (qc) { guardar({ calibracion: null }); $("#calib-estado", caja).textContent = t("a11y.calib_quitada"); qc.remove(); EIA.ui.anunciar(t("a11y.calib_quitada")); return; }
+      if (e.target.closest("button[data-ver-gestos]")) { dlg.cerrar(); await EIA.cargar("js/a11y/camara.js"); EIA.camara.ayuda(); return; }
       if (e.target.closest("button[data-barrido]")) {
         dlg.cerrar();
         await EIA.cargar("js/a11y/barrido.js");
