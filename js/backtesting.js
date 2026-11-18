@@ -128,7 +128,8 @@
       textStyle: { color: c.fg },
       legend: { top: 0, textStyle: { color: c.fg }, data: S.map(s => nombre(s.clave)), selected: Object.fromEntries(S.map(s => [nombre(s.clave), !ocultas.has(s.clave)])) },
       tooltip: { trigger: "axis", valueFormatter: v => EIA.fmt.num(v) },
-      grid: { left: 52, right: 16, top: 56, bottom: 36 },
+      // A la derecha cabe el nombre de cada cartera al final de su línea (antes se cortaba: «Co…», «Mo…»)
+      grid: { left: 52, right: 96, top: 56, bottom: 36 },
       xAxis: { type: "category", data: D.c09.fechas, axisLabel: { color: c.mut, formatter: v => EIA.fmt.fecha(v) }, axisLine: { lineStyle: { color: c.bd } } },
       yAxis: { type: "value", scale: true, name: ejeY, nameTextStyle: { color: c.mut }, axisLabel: { color: c.mut }, splitLine: { lineStyle: { color: c.bd } } },
       dataZoom: [{ type: "inside" }],

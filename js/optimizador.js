@@ -168,11 +168,12 @@
     const n3 = VIS.findIndex(s => s.tipo === "nsga3"), cv = D.c07.nsga3_elegibles.map(p => p.cvar95_diario_pct);
     return {
       textStyle: { color: c.fg },
-      grid: { left: 56, right: 24, top: 40, bottom: n3 >= 0 ? 92 : 56 },
+      grid: { left: 64, right: 24, top: 40, bottom: n3 >= 0 ? 92 : 56 },
       legend: { top: 0, selectedMode: false, textStyle: { color: c.fg }, data: VIS.map(nombreSerie) },
       tooltip: { trigger: "item", formatter: p => (p.seriesId === "seleccion" ? "" : esc(describir(VIS.find(s => s.clave === p.seriesId), p.dataIndex))) },
       xAxis: { type: "value", scale: true, name: t("optimizador.eje_x"), nameLocation: "middle", nameGap: 28, nameTextStyle: { color: c.mut }, axisLabel: { color: c.mut, formatter: v => EIA.fmt.num(v, 0) }, splitLine: { lineStyle: { color: c.bd } } },
-      yAxis: { type: "value", scale: true, name: t("optimizador.eje_y"), nameTextStyle: { color: c.mut }, axisLabel: { color: c.mut, formatter: v => EIA.fmt.num(v, 0) }, splitLine: { lineStyle: { color: c.bd } } },
+      // El título del eje va vertical junto al eje: horizontal arriba se cortaba por la izquierda
+      yAxis: { type: "value", scale: true, name: t("optimizador.eje_y"), nameLocation: "middle", nameGap: 40, nameRotate: 90, nameTextStyle: { color: c.mut }, axisLabel: { color: c.mut, formatter: v => EIA.fmt.num(v, 0) }, splitLine: { lineStyle: { color: c.bd } } },
       // Zoom: con dos dedos en el celular y con Ctrl + rueda en el escritorio. No arrastra ni captura la rueda sola,
       // para que la página se siga desplazando con el dedo o la rueda sobre el gráfico.
       dataZoom: [{ type: "inside", xAxisIndex: 0, filterMode: "none", zoomOnMouseWheel: "ctrl", moveOnMouseMove: false, moveOnMouseWheel: false },
