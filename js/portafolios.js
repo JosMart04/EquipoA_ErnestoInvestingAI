@@ -111,7 +111,7 @@
           name: f.ticker, type: "bar", stack: "pesos", barWidth: "60%",
           data: f.pesos.map(w => w * 100),
           itemStyle: { color: c.serie[i % c.serie.length], borderColor: c.panel, borderWidth: 1 },
-          label: { show: true, position: "inside", color: c.panel, fontWeight: "bold", formatter: p => (p.value >= 6 ? f.ticker : "") }
+          label: { show: true, position: "inside", color: c.serieTexto[i % c.serieTexto.length], fontWeight: "bold", formatter: p => (p.value >= 6 ? f.ticker : "") }
         }))
       }),
       tabla: () => ({

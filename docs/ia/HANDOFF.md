@@ -4,9 +4,9 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 15:33 (Lima)
+- Fecha y hora: 2026-11-17 19:03 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-27-a11y-graficos` → PR #20 (accesibilidad de gráficos y barrido)
+- Rama / último commit: `cc/fix-21-contraste` → PR #23 (contraste de las etiquetas en barras de color, issue #21)
 
 ## Hecho (con evidencia)
 
@@ -40,13 +40,14 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **126/126
 - **Bucle real de la cámara** (PR #8): MediaPipe 1.2.3 cargado de verdad con un video falso (`canvas.captureStream`): 369 cuadros en 10 s (46 por segundo), el `<video>` sigue en la página y sin pausa. Con un detector sustituto en movimiento: el puntero sigue moviéndose a los 10 s con la cabeza; con la mano abierta no se pausa; el puño 1,5 s pausa y reanuda; si algo saca el `<video>`, el vigilante lo devuelve.
 - Centro de accesibilidad (`#btn-a11y` o `Alt+Shift+A`): tamaño de texto, alto contraste, reducir movimiento, espaciado, subrayar enlaces y tramas; se guardan en `eia_a11y` y se aplican en todas las páginas.
 - **Barrido** con `?barrido=1` (o el botón del Centro): grupos, bloques, «Salir del grupo», `<select>` → diálogo → opción, Esc, reanudación al cambiar de página. Interruptor probado con eventos de teclado sintéticos; **falta probarlo con un interruptor físico o con parpadeo real**.
-- **Exploración de gráficos:** flechas, Inicio/Fin, Re Pág/Av Pág, ↑/↓ y S en Dashboard, Regresión, Backtesting y Portafolios; anuncios en `#eia-vivo` y tooltip. **El sonido y la voz no se oyeron** (el panel del navegador no tiene salida de audio que pueda comprobar): falta escucharlo una vez.
+- **Exploración de gráficos:** flechas, Inicio/Fin, Re Pág/Av Pág, ↑/↓ y S en Dashboard, Regresión, Backtesting y Portafolios; anuncios en `#eia-vivo` y tooltip. **Josué confirmó el 17-nov que el sonido y la voz funcionan.**
 - Puntero virtual con `?puntero=raton`: permanencia sobre un botón (un solo clic, sin repetir), `<select>` → diálogo de opciones → elige una, abrir y cerrar el Centro, enlace de otro módulo.
 - Guion simulado (`EIA.camara.iniciar("cabeza" | "manos", {simulada: true, objetivo: "#tema"})` o `?camara=simulada&mod=cabeza&objetivo=%23tema`): **cabeza + permanencia**, **cabeza + parpadeo largo** y **mano + pellizco** llevan el puntero al botón y hacen clic; Esc detiene; al detener se quitan HUD, puntero y `modo-puntero`.
 - Sin cámara no se descarga MediaPipe (comprobado en los recursos de la página).
 
-**NO probado (necesita una persona con webcam; Anexo A: Adrian y Augusto):**
-- **Josué probó la versión del PR #6 el 17-nov: el puntero solo se movía el primer instante.** La causa se corrigió en el PR #8; **falta que vuelva a probarlo** con la cámara real (al menos 1 minuto con la cabeza y 1 con la mano, en dos páginas).
+**Probado por Josué con la webcam de su laptop (17-nov, tras el PR #20):** cabeza y manos funcionan de forma continua; el sonido y la voz se oyen.
+
+**NO probado todavía (Anexo A: Adrian y Augusto):**
 - **El signo de los ejes de la cabeza.** `senales.anguloCabeza` supone la matriz de MediaPipe en orden por columnas. Si el puntero va al revés, hay dos casillas «Invertir» en el Centro; si hace falta, cambia el valor por defecto de `sx`/`sy` en `js/a11y/cabeza-mirada.js`.
 - Umbrales reales de parpadeo (0,5 durante 400 ms), boca (0,5 durante 300 ms), pellizco (0,35 / 0,5) y puño (1,5 s); el recorrido por defecto de la cabeza (18°).
 - La reanudación de la cámara al cambiar de página (`sessionStorage.eia_cam`).

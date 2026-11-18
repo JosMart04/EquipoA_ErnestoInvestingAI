@@ -469,7 +469,8 @@
     return {
       fg: v("--fg"), mut: v("--mut"), bd: v("--bd"), bg: v("--bg"), panel: v("--panel"), hl: v("--hl"),
       up: v("--up"), dn: v("--dn"), ac: v("--ac"), warn: v("--warn"),
-      serie: [1, 2, 3, 4, 5, 6].map(i => v("--serie-" + i))
+      serie: [1, 2, 3, 4, 5, 6].map(i => v("--serie-" + i)),
+      serieTexto: [1, 2, 3, 4, 5, 6].map(i => v("--serie-texto-" + i)) // texto sobre cada color de serie (≥ 4,5:1)
     };
   };
   EIA.movimientoReducido = () => document.documentElement.dataset.movimiento === "reducido"
