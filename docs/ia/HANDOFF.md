@@ -4,9 +4,9 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 19:32 (Lima)
+- Fecha y hora: 2026-11-17 19:57 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-29-conformidad` → PR #26 (casillas de series en Backtesting y Optimizador móvil)
+- Rama / último commit: `cc/docs-validacion-camara` (solo documentación: Josué validó la calibración y la «V»)
 
 ## Hecho (con evidencia)
 
@@ -49,12 +49,11 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **132/132
 - Guion simulado (`EIA.camara.iniciar("cabeza" | "manos", {simulada: true, objetivo: "#tema"})` o `?camara=simulada&mod=cabeza&objetivo=%23tema`): **cabeza + permanencia**, **cabeza + parpadeo largo** y **mano + pellizco** llevan el puntero al botón y hacen clic; Esc detiene; al detener se quitan HUD, puntero y `modo-puntero`.
 - Sin cámara no se descarga MediaPipe (comprobado en los recursos de la página).
 
-**Probado por Josué con la webcam de su laptop (17-nov, tras el PR #20):** cabeza y manos funcionan de forma continua; el sonido y la voz se oyen.
+**Probado por Josué con la webcam de su laptop (17-nov):** cabeza y manos funcionan de forma continua (tras el PR #20); el sonido y la voz se oyen; la **calibración de 5 puntos** y la **«V» de dos dedos** funcionan bien (tras el PR #25, en Pages).
 
 **NO probado todavía (Anexo A: Adrian y Augusto):**
 - **El signo de los ejes de la cabeza.** `senales.anguloCabeza` supone la matriz de MediaPipe en orden por columnas. Si el puntero va al revés, hay dos casillas «Invertir» en el Centro; si hace falta, cambia el valor por defecto de `sx`/`sy` en `js/a11y/cabeza-mirada.js`.
 - Umbrales reales de parpadeo (0,5 durante 400 ms), boca (0,5 durante 300 ms), pellizco (0,35 / 0,5) y puño (1,5 s); el recorrido por defecto de la cabeza (18°).
-- **La calibración de 5 puntos y la «V» de dos dedos (PR #25) no se probaron con una webcam real**: solo con poses simuladas. Pídele a Josué una prueba de 2 minutos.
 - La reanudación de la cámara al cambiar de página (`sessionStorage.eia_cam`).
 - Lectores de pantalla reales (NVDA, Narrador, TalkBack).
 - El atajo `Alt+Shift+A` con una pulsación real (el evento sintético llega y abre el panel).
