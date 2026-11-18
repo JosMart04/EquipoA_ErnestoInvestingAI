@@ -76,7 +76,8 @@
       "vencido": {
         "one": "Atención: estos datos tienen {n} día hábil de antigüedad.",
         "other": "Atención: estos datos tienen {n} días hábiles de antigüedad."
-      }
+      },
+      "corte_historico": "Ves los modelos con corte al {corte}: solo usaron datos hasta esa fecha."
     }
   },
   "ficha": {
@@ -464,7 +465,7 @@
     "titulo": "Clasificación binaria de tendencia",
     "sub": "¿Sube o baja cada activo? Solo hay dos clases: SUBE o BAJA.",
     "ficha_que_hace": "Estima con {n} modelos ({ml} de Machine Learning y {dl} de Deep Learning) si el precio de cada activo dentro de {h} sesiones será mayor que el de hoy. Solo hay dos respuestas: SUBE o BAJA.",
-    "ficha_que_tan_bien": "Exactitud de {exmin} a {exmax} y AUC de {aucmin} a {aucmax} en una prueba de {n} días. Es apenas mejor que lanzar una moneda: un modelo que siempre dijera SUBE acertaría {base}.",
+    "ficha_que_tan_bien": "Exactitud de {exmin} a {exmax} y AUC de {aucmin} a {aucmax} en {prueba}. {comparacion}",
     "ficha_por_que": "Cada celda es la probabilidad de SUBE que da un modelo para un activo. El consenso es el promedio de los {n} modelos, y la confianza dice cuánto se aleja ese promedio de {mitad}.",
     "ficha_controlas": "El grupo de activos, la familia de modelos, qué modelos se muestran y si ves solo tu watchlist.",
     "ficha_ignorar": "Puedes ocultar los modelos que no te convenzan. Nada de esto es una orden de compra ni de venta.",
@@ -502,7 +503,7 @@
     "ver_optimizador": "Ver en el optimizador",
     "metricas_titulo": "Métricas por modelo",
     "metricas_ayuda": "Elige un modelo para ver su matriz de confusión. Los encabezados ordenan la tabla.",
-    "metricas_caption": "Métricas de cada modelo en una prueba de {n} días",
+    "metricas_caption": "Métricas de cada modelo en {prueba}",
     "col_exactitud": "Exactitud",
     "col_precision": "Precisión",
     "col_recall": "Recall",
@@ -523,9 +524,20 @@
     "mc_frase": "De los {dijo} días en que dijo SUBE, acertó {vp}; de los {dijo_baja} en que dijo BAJA, acertó {vn}. La prueba tiene {n} días.",
     "honestidad_titulo": "¿Qué significa acertar {tipico}?",
     "honestidad_p1": "Si lanzas una moneda {cien} veces para adivinar si un precio sube o baja, aciertas unas {mitad}. Estos {n} modelos acertaron entre {min} y {max} de cada {cien} en la prueba: apenas un poco más que la moneda. Sirven como una pista débil, no como una certeza.",
-    "honestidad_p2": "Además, un modelo que siempre dijera SUBE habría acertado {base}, porque en esos {dias} días de prueba el precio subió esa proporción de las veces. Por eso junto a cada señal ves el consenso, la confianza y las métricas.",
+    "honestidad_p2": "Además, un modelo que siempre dijera SUBE habría acertado {base}, porque en {prueba} el precio subió esa proporción de las veces. Por eso junto a cada señal ves el consenso, la confianza y las métricas.",
     "escuchar_mapa": "Escuchar el consenso",
-    "escuchando_mapa": "Reproduciendo el consenso de {n} activos, de arriba abajo: un tono que sube es ▲ SUBE ({sube}) y uno que baja es ▼ BAJA ({baja})."
+    "escuchando_mapa": "Reproduciendo el consenso de {n} activos, de arriba abajo: un tono que sube es ▲ SUBE ({sube}) y uno que baja es ▼ BAJA ({baja}).",
+    "prueba_sesiones": "una prueba de {sesiones} sesiones ({n} observaciones: cada activo en cada sesión)",
+    "prueba_observaciones": "una prueba de {n} observaciones",
+    "comp_ninguno": "Ninguno de los {m} modelos supera a la regla «siempre SUBE», que acierta {base}.",
+    "comp_ninguno_mitad": {
+      "one": "Ninguno de los {m} modelos supera a la regla «siempre SUBE», que acierta {base}, y {n} acierta menos de la mitad de las veces.",
+      "other": "Ninguno de los {m} modelos supera a la regla «siempre SUBE», que acierta {base}, y {n} aciertan menos de la mitad de las veces."
+    },
+    "comp_algunos": {
+      "one": "{n} de {m} modelos supera a la regla «siempre SUBE», que acierta {base}; el mejor llega a {exmax}.",
+      "other": "{n} de {m} modelos superan a la regla «siempre SUBE», que acierta {base}; el mejor llega a {exmax}."
+    }
   },
   "regresion": {
     "titulo_pagina": "Regresión de precios a 30 sesiones · Ernesto Investing AI",
@@ -618,7 +630,7 @@
     "titulo": "Optimizador de portafolios",
     "sub": "Cada punto es una cartera posible: más a la derecha, más riesgo; más arriba, más retorno esperado.",
     "ficha_que_hace": "Muestra carteras que reparten el dinero entre los {n} activos elegibles, con un máximo de {tope} por activo: la curva de Markowitz y los frentes de NSGA-II y NSGA-III.",
-    "ficha_que_tan_bien_profesor": "En el Modo profesor las fronteras son simuladas: no se ejecutó ningún algoritmo. Aun así siguen la teoría: a igual retorno, NSGA-II queda en promedio {media} puntos de volatilidad por encima de Markowitz. El retorno esperado es una estimación, no una promesa.",
+    "ficha_que_tan_bien_profesor": "En el Modo profesor, la curva de Markowitz se calcula sobre los datos sintéticos del curso (la reproducimos con las mismas cifras); los frentes NSGA-II y NSGA-III son simulados: no se ejecutó ningún algoritmo evolutivo. Aun así siguen la teoría: a igual retorno, NSGA-II queda en promedio {media} puntos de volatilidad por encima de Markowitz. El retorno esperado es una estimación, no una promesa.",
     "ficha_que_tan_bien_real": "Las fronteras se calcularon con los datos reales. A igual retorno, NSGA-II queda en promedio {media} puntos de volatilidad por encima de Markowitz. El retorno esperado es una estimación, no una promesa.",
     "ficha_por_que": "Solo entran los activos con consenso SUBE de los clasificadores y proyección positiva de los regresores. Elige un punto para ver qué activos tiene y con qué peso.",
     "ficha_controlas": "Qué curvas y frentes ves, si la curva de Markowitz usa todo el universo o solo los elegibles, y qué cartera examinas.",

@@ -126,6 +126,7 @@
   EIA.ErrorDatos = ErrorDatos;
 
   const DEPENDE_DEL_CORTE = /^0[5-8]_/; // 05, 06, 07 y 08 existen también por fecha de corte
+  const MODULOS_CON_CORTE = ["clasificacion", "regresion", "optimizador", "portafolios"];
   /** Ruta de un archivo de datos. Función pura (la usan las pruebas). */
   EIA.urlDatos = function (nombre, op) {
     const o = op || {};
@@ -754,8 +755,11 @@
     if (modo === "real" && !mt.disponible) clave = "aviso.real.sin_datos";
     else if (modo === "real" && _parcial) clave = "aviso.real.parcial"; // no se afirma que haya modelos reales
     else if (!EIA.hayTexto(clave)) clave = "aviso." + modo + ".generico";
+    // Corte antiguo en un módulo que depende de él: el aviso dice de qué fecha son los modelos (auditoría P08, H-01)
+    const corte = modo === "real" && mt.disponible && !_parcial && MODULOS_CON_CORTE.includes(modulo) ? EIA.corte() : null;
+    const notaCorte = corte ? `<span class="aviso-extra">${esc(EIA.t("aviso.real.corte_historico", { corte: EIA.fmt.fecha(corte, "larga") }))}</span>` : "";
     const vencido = modo === "real" && mt.vencido ? `<span class="aviso-extra">${esc(EIA.t("aviso.real.vencido", { n: mt.antiguedad_habiles }))}</span>` : "";
-    el.innerHTML = `<span class="aviso-ico" aria-hidden="true">⚠</span><span>${esc(EIA.t(clave, { fecha }))} ${vencido}</span>`;
+    el.innerHTML = `<span class="aviso-ico" aria-hidden="true">⚠</span><span>${esc(EIA.t(clave, { fecha }))} ${notaCorte}${vencido}</span>`;
     return el;
   };
 

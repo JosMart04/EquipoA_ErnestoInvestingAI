@@ -39,7 +39,11 @@
       aucMin: Math.min.apply(null, auc), aucMax: Math.max.apply(null, auc),
       // Tasa base: lo que acertaría un modelo que siempre dijera SUBE. Campo opcional del Modo real; si falta, se deriva.
       tasaBase: typeof c05.tasa_base_sube === "number" ? c05.tasa_base_sube : (mc.VP + mc.FN) / ms[0].n_prueba,
-      nPrueba: ms[0].n_prueba
+      nPrueba: ms[0].n_prueba,
+      // Sesiones de prueba: solo si el archivo las declara (Modo real: 252 sesiones × 26 activos = n_prueba observaciones).
+      fechasPrueba: c05.metodologia && typeof c05.metodologia.fechas_prueba === "number" ? c05.metodologia.fechas_prueba : null,
+      superanBase: ms.filter(m => m.exactitud > (typeof c05.tasa_base_sube === "number" ? c05.tasa_base_sube : (mc.VP + mc.FN) / ms[0].n_prueba) + 1e-12).length,
+      bajoMitad: ms.filter(m => m.exactitud < 0.5).length // aciertan menos de la mitad de las veces
     };
   }
 
@@ -95,10 +99,23 @@
   const ocultos = () => EIA.estado.get("eia_modelos_ocultos") || [];
   const filtrosActivos = () => Object.assign(leerFiltros(), { watch: EIA.watch.lista(), ocultos: ocultos() });
 
+  /** «una prueba de N sesiones (M observaciones…)» o, si no se conocen las sesiones, «una prueba de M observaciones» (P08, H-02). */
+  function textoPrueba(R) {
+    return R.fechasPrueba ? t("clasificacion.prueba_sesiones", { sesiones: EIA.fmt.ent(R.fechasPrueba), n: EIA.fmt.ent(R.nPrueba) })
+      : t("clasificacion.prueba_observaciones", { n: EIA.fmt.ent(R.nPrueba) });
+  }
+  /** Comparación con la regla «siempre SUBE», según las cifras (antes decía siempre «apenas mejor que una moneda»). */
+  function textoComparacion(R) {
+    const p = { m: R.modelos, k: R.superanBase, base: pct(R.tasaBase), exmax: pct(R.exactitudMax), mitad: R.bajoMitad };
+    // `n` elige la forma plural (EIA.t usa Intl.PluralRules sobre params.n)
+    if (R.superanBase === 0) return t(R.bajoMitad ? "clasificacion.comp_ninguno_mitad" : "clasificacion.comp_ninguno", Object.assign({}, p, { n: R.bajoMitad }));
+    return t("clasificacion.comp_algunos", Object.assign({}, p, { n: R.superanBase }));
+  }
+
   function pintarFicha() {
     EIA.ui.fichaIA($("#ficha"), {
       que_hace: t("clasificacion.ficha_que_hace", { n: R.modelos, ml: R.porFamilia.ML || 0, dl: R.porFamilia.DL || 0, h: D.horizonte }),
-      que_tan_bien: t("clasificacion.ficha_que_tan_bien", { exmin: pct(R.exactitudMin), exmax: pct(R.exactitudMax), aucmin: EIA.fmt.num(R.aucMin), aucmax: EIA.fmt.num(R.aucMax), n: EIA.fmt.ent(R.nPrueba), base: pct(R.tasaBase) }),
+      que_tan_bien: t("clasificacion.ficha_que_tan_bien", { exmin: pct(R.exactitudMin), exmax: pct(R.exactitudMax), aucmin: EIA.fmt.num(R.aucMin), aucmax: EIA.fmt.num(R.aucMax), prueba: textoPrueba(R), comparacion: textoComparacion(R) }),
       por_que: t("clasificacion.ficha_por_que", { n: R.modelos, mitad: pct(EIA.K.UMBRAL_SENAL, 0) }),
       controlas: t("clasificacion.ficha_controlas"),
       ignorar: t("clasificacion.ficha_ignorar")
@@ -193,7 +210,7 @@
     }
     const comoPct = v => esc(pct(v)), comoNum = v => esc(EIA.fmt.num(v, 3));
     EIA.ui.tabla($("#metricas"), {
-      id: "tabla-metricas", titulo: t("clasificacion.metricas_caption", { n: EIA.fmt.ent(R.nPrueba) }),
+      id: "tabla-metricas", titulo: t("clasificacion.metricas_caption", { prueba: textoPrueba(R) }),
       columnas: [
         { clave: "modelo", titulo: t("comun.modelo"), tipo: "texto", ordenable: true, valor: m => EIA.nombre("modelo", m.modelo), fmt: v => esc(v) },
         { clave: "familia", titulo: t("comun.familia"), tipo: "texto", ordenable: true, fmt: v => esc(EIA.nombre("familia", v)) },
@@ -213,7 +230,7 @@
     const cien = 100, mitad = EIA.K.UMBRAL_SENAL * cien;
     $("#honestidad").innerHTML = `<h2>${esc(t("clasificacion.honestidad_titulo", { tipico: pct(R.exactitudTipica, 0) }))}</h2>
 <p>${esc(t("clasificacion.honestidad_p1", { cien: EIA.fmt.ent(cien), mitad: EIA.fmt.ent(mitad), n: R.modelos, min: EIA.fmt.ent(Math.round(R.exactitudMin * cien)), max: EIA.fmt.ent(Math.round(R.exactitudMax * cien)) }))}</p>
-<p>${esc(t("clasificacion.honestidad_p2", { base: pct(R.tasaBase), dias: EIA.fmt.ent(R.nPrueba) }))}</p>`;
+<p>${esc(t("clasificacion.honestidad_p2", { base: pct(R.tasaBase), prueba: textoPrueba(R) }))}</p>`;
   }
 
   /** Mapa, consenso y métricas: lo que cambia con los filtros. */

@@ -76,7 +76,8 @@
       "vencido": {
         "one": "Note: this data is {n} business day old.",
         "other": "Note: this data is {n} business days old."
-      }
+      },
+      "corte_historico": "You are viewing the models with a cut-off of {corte}: they only used data up to that date."
     }
   },
   "ficha": {
@@ -464,7 +465,7 @@
     "titulo": "Binary trend classification",
     "sub": "Will each asset go up or down? There are only two classes: UP or DOWN.",
     "ficha_que_hace": "Uses {n} models ({ml} Machine Learning and {dl} Deep Learning) to estimate whether each asset's price {h} sessions from now will be higher than today's. There are only two answers: UP or DOWN.",
-    "ficha_que_tan_bien": "Accuracy from {exmin} to {exmax} and AUC from {aucmin} to {aucmax} on a {n}-day test. That is barely better than a coin flip: a model that always said UP would score {base}.",
+    "ficha_que_tan_bien": "Accuracy from {exmin} to {exmax} and AUC from {aucmin} to {aucmax} on {prueba}. {comparacion}",
     "ficha_por_que": "Each cell is the probability of UP that one model gives for one asset. The consensus is the average of the {n} models, and confidence tells how far that average is from {mitad}.",
     "ficha_controlas": "The asset group, the model family, which models are shown and whether you see only your watchlist.",
     "ficha_ignorar": "You can hide any model you do not trust. None of this is an order to buy or sell.",
@@ -502,7 +503,7 @@
     "ver_optimizador": "See in the optimizer",
     "metricas_titulo": "Metrics per model",
     "metricas_ayuda": "Pick a model to see its confusion matrix. The column headers sort the table.",
-    "metricas_caption": "Metrics for each model on a {n}-day test",
+    "metricas_caption": "Metrics of each model on {prueba}",
     "col_exactitud": "Accuracy",
     "col_precision": "Precision",
     "col_recall": "Recall",
@@ -523,9 +524,20 @@
     "mc_frase": "Of the {dijo} days it said UP, it was right {vp} times; of the {dijo_baja} days it said DOWN, it was right {vn} times. The test covers {n} days.",
     "honestidad_titulo": "What does {tipico} accuracy mean?",
     "honestidad_p1": "If you flip a coin {cien} times to guess whether a price goes up or down, you are right about {mitad} times. These {n} models were right between {min} and {max} out of every {cien} on the test: only slightly better than the coin. They are a weak hint, not a certainty.",
-    "honestidad_p2": "Also, a model that always said UP would have been right {base}, because over those {dias} test days the price went up that share of the time. That is why every signal comes with the consensus, the confidence and the metrics.",
+    "honestidad_p2": "Also, a model that always said UP would have been right {base} of the time, because on {prueba} the price rose that share of the time. That is why next to each signal you see the consensus, the confidence and the metrics.",
     "escuchar_mapa": "Listen to the consensus",
-    "escuchando_mapa": "Playing the consensus of {n} assets, top to bottom: a rising tone is ▲ UP ({sube}) and a falling one is ▼ DOWN ({baja})."
+    "escuchando_mapa": "Playing the consensus of {n} assets, top to bottom: a rising tone is ▲ UP ({sube}) and a falling one is ▼ DOWN ({baja}).",
+    "prueba_sesiones": "a test of {sesiones} sessions ({n} observations: each asset in each session)",
+    "prueba_observaciones": "a test of {n} observations",
+    "comp_ninguno": "None of the {m} models beats the “always UP” rule, which is right {base} of the time.",
+    "comp_ninguno_mitad": {
+      "one": "None of the {m} models beats the “always UP” rule, which is right {base} of the time, and {n} is right less than half of the time.",
+      "other": "None of the {m} models beats the “always UP” rule, which is right {base} of the time, and {n} are right less than half of the time."
+    },
+    "comp_algunos": {
+      "one": "{n} of {m} models beats the “always UP” rule, which is right {base} of the time; the best reaches {exmax}.",
+      "other": "{n} of {m} models beat the “always UP” rule, which is right {base} of the time; the best reaches {exmax}."
+    }
   },
   "regresion": {
     "titulo_pagina": "30-session price regression · Ernesto Investing AI",
@@ -618,7 +630,7 @@
     "titulo": "Portfolio optimizer",
     "sub": "Each point is a possible portfolio: further right, more risk; higher up, more expected return.",
     "ficha_que_hace": "Shows portfolios that split the money among the {n} eligible assets, with at most {tope} per asset: the Markowitz curve and the NSGA-II and NSGA-III fronts.",
-    "ficha_que_tan_bien_profesor": "In Course mode the fronts are simulated: no algorithm was run. Even so they follow the theory: at the same return, NSGA-II sits on average {media} volatility points above Markowitz. Expected return is an estimate, not a promise.",
+    "ficha_que_tan_bien_profesor": "In Course mode, the Markowitz curve is computed on the course's synthetic data (we reproduce it with the same figures); the NSGA-II and NSGA-III fronts are simulated: no evolutionary algorithm was run. Even so they follow the theory: at equal return, NSGA-II is on average {media} volatility points above Markowitz. Expected return is an estimate, not a promise.",
     "ficha_que_tan_bien_real": "The fronts were computed with the real data. At the same return, NSGA-II sits on average {media} volatility points above Markowitz. Expected return is an estimate, not a promise.",
     "ficha_por_que": "Only assets with an UP consensus from the classifiers and a positive projection from the regressors are included. Pick a point to see which assets it holds and with what weight.",
     "ficha_controlas": "Which curves and fronts you see, whether the Markowitz curve uses the whole universe or only the eligible assets, and which portfolio you inspect.",
