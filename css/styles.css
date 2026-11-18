@@ -33,6 +33,9 @@
   --serie-4: #c0649a;
   --serie-5: #2b8cc4;
   --serie-6: #d55e00;
+  /* Texto sobre cada color de serie (etiquetas dentro de barras): ≥ 4,5:1 medido (blanco 5,2; negro 4,95–6,1) */
+  --serie-texto-1: #ffffff; --serie-texto-2: #000000; --serie-texto-3: #000000;
+  --serie-texto-4: #000000; --serie-texto-5: #000000; --serie-texto-6: #000000;
 }
 /* ───────────── Tokens: tema oscuro (elegido por el usuario) ───────────── */
 :root[data-theme="dark"] {
@@ -64,6 +67,8 @@
   --serie-4: #e08abf;
   --serie-5: #9ed0f0;
   --serie-6: #ff8a4c;
+  --serie-texto-1: #17202b; --serie-texto-2: #17202b; --serie-texto-3: #17202b;
+  --serie-texto-4: #17202b; --serie-texto-5: #17202b; --serie-texto-6: #17202b;
 }
 /* ───────────── Tokens: tema oscuro (preferencia del sistema; debe ser idéntico al bloque anterior) ───────────── */
 @media (prefers-color-scheme: dark) {
@@ -96,6 +101,8 @@
     --serie-4: #e08abf;
     --serie-5: #9ed0f0;
     --serie-6: #ff8a4c;
+    --serie-texto-1: #17202b; --serie-texto-2: #17202b; --serie-texto-3: #17202b;
+    --serie-texto-4: #17202b; --serie-texto-5: #17202b; --serie-texto-6: #17202b;
   }
 }
 
@@ -286,9 +293,11 @@ button.quitar { min-height: 1.75rem; padding: .1rem .5rem; }
 #tabla-metricas tr.fila-cartera > th { box-shadow: inset 4px 0 0 var(--ac); }
 .linea-tiempo { list-style: none; margin: .75rem 0; padding: 0; display: flex; flex-wrap: wrap; gap: .35rem; }
 .barra-apilada { display: flex; height: 2rem; border: 1px solid var(--bd-ctl); border-radius: 8px; overflow: hidden; margin: .5rem 0; }
-.barra-apilada .seg { display: flex; align-items: center; justify-content: center; color: var(--panel); font-size: .8rem; font-weight: 700; border-right: 1px solid var(--panel); overflow: hidden; white-space: nowrap; }
-.seg-0 { background: var(--serie-1); } .seg-1 { background: var(--serie-2); } .seg-2 { background: var(--serie-3); }
-.seg-3 { background: var(--serie-4); } .seg-4 { background: var(--serie-5); } .seg-5 { background: var(--serie-6); }
+.barra-apilada .seg { display: flex; align-items: center; justify-content: center; font-size: .8rem; font-weight: 700; border-right: 1px solid var(--panel); overflow: hidden; white-space: nowrap; }
+/* Cada tramo lleva su color de texto medido (issue #21: el blanco daba 3,4–4,2:1 en tema claro) */
+.seg-0 { background: var(--serie-1); color: var(--serie-texto-1); } .seg-1 { background: var(--serie-2); color: var(--serie-texto-2); }
+.seg-2 { background: var(--serie-3); color: var(--serie-texto-3); } .seg-3 { background: var(--serie-4); color: var(--serie-texto-4); }
+.seg-4 { background: var(--serie-5); color: var(--serie-texto-5); } .seg-5 { background: var(--serie-6); color: var(--serie-texto-6); }
 .interp { border-top: 1px solid var(--bd); padding-top: .5rem; }
 .interp h3 { display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
 .cierre { margin-top: 1rem; }

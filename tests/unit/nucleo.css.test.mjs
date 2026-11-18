@@ -19,7 +19,9 @@ const oscuroSistema = tokens(/:root:not\(\[data-theme="light"\]\)\s*\{([^}]*)\}/
 const TEXTO = [["--fg", "--bg"], ["--fg", "--panel"], ["--fg", "--hl"], ["--fg", "--aviso"], ["--mut", "--bg"], ["--mut", "--panel"], ["--mut", "--hl"],
   ["--ac", "--panel"], ["--ac", "--bg"], ["--ac", "--hl"], ["--up", "--panel"], ["--up", "--bg"], ["--up", "--hl"],
   ["--dn", "--panel"], ["--dn", "--bg"], ["--dn", "--hl"], ["--warn", "--panel"], ["--warn", "--aviso"], ["--on-ac", "--ac"],
-  ["--up-t", "--up-1"], ["--up-t", "--up-2"], ["--up-t", "--up-3"], ["--dn-t", "--dn-1"], ["--dn-t", "--dn-2"], ["--dn-t", "--dn-3"]];
+  ["--up-t", "--up-1"], ["--up-t", "--up-2"], ["--up-t", "--up-3"], ["--dn-t", "--dn-1"], ["--dn-t", "--dn-2"], ["--dn-t", "--dn-3"],
+  // Etiquetas dentro de barras de color (issue #21: barra apilada de Backtesting y composición de Portafolios)
+  ...[1, 2, 3, 4, 5, 6].map(i => ["--serie-texto-" + i, "--serie-" + i])];
 // Bordes de controles, foco y marcas de gráficos: WCAG 1.4.11 pide 3:1
 const NO_TEXTO = [["--bd-ctl", "--panel"], ["--bd-ctl", "--bg"], ["--ac", "--panel"], ["--ac", "--bg"], ["--up", "--panel"], ["--dn", "--panel"],
   ...[1, 2, 3, 4, 5, 6].map(i => ["--serie-" + i, "--panel"])];
