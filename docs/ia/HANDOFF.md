@@ -4,9 +4,9 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-18 00:50 (Lima)
+- Fecha y hora: 2026-11-18 01:05 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/docs-informe-revisado` (Josué aprobó el informe; entregables fusionados en el PR #34)
+- Rama / último commit: `cc/docs-figma-verificado` (Josué comprobó el enlace de Figma; informe aprobado y entregables fusionados en el PR #34)
 
 ## Hecho (con evidencia)
 
@@ -70,7 +70,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
 2. **Informe aprobado por Josué (18-nov).** Si cambia algo del sitio o de las cifras antes de la entrega, se editan los textos en `tools/informe/generar_informe.cjs` y se regenera (ver «Cómo probar»). No editar el PDF a mano.
-3. **Pendientes humanos:** comprobar que el archivo de Figma Make se ve con enlace de solo lectura sin iniciar sesión; pruebas por rol del Anexo A (T-80, incluidos lectores de pantalla); registrar los enlaces en la tabla del curso; video opcional (T-64).
+3. **Pendientes humanos** (Josué ya comprobó el 18-nov que el archivo de Figma Make se abre sin iniciar sesión): pruebas por rol del Anexo A (T-80, incluidos lectores de pantalla); registrar los enlaces en la tabla del curso; video opcional (T-64).
 4. **Congelamiento de funciones** (jue 19, 20:00): desde ahí solo correcciones. Si cambia algo visible, repetir las capturas (`node tools/capturas.mjs <nombre>`) y regenerar el informe.
 5. Datos reales: revisar el Modo real en Pages tras cada actualización del bot (T-32). El Optimizador a 390 px sigue con frentes superpuestos (se elige apagando series o desde la tabla).
 
