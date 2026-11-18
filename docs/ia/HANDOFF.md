@@ -4,9 +4,9 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 23:12 (Lima)
+- Fecha y hora: 2026-11-17 23:38 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-90b-voz-clic` → PR #32 (mejoras de «clic en» por voz)
+- Rama / último commit: `cc/docs-validacion-voz` (solo documentación: Josué validó las mejoras de «clic en»)
 
 ## Hecho (con evidencia)
 
@@ -54,7 +54,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 - Guion simulado (`EIA.camara.iniciar("cabeza" | "manos", {simulada: true, objetivo: "#tema"})` o `?camara=simulada&mod=cabeza&objetivo=%23tema`): **cabeza + permanencia**, **cabeza + parpadeo largo** y **mano + pellizco** llevan el puntero al botón y hacen clic; Esc detiene; al detener se quitan HUD, puntero y `modo-puntero`.
 - Sin cámara no se descarga MediaPipe (comprobado en los recursos de la página).
 
-**Probado por Josué (17-nov):** los **comandos de voz** con su micrófono funcionan (los ajustes de «clic en» del PR #32 vienen de su prueba). Con la webcam de su laptop: cabeza y manos funcionan de forma continua (tras el PR #20); el sonido y la voz se oyen; la **calibración de 5 puntos** y la **«V» de dos dedos** funcionan bien (tras el PR #25, en Pages).
+**Probado por Josué (17-nov):** los **comandos de voz** con su micrófono funcionan, incluidas las mejoras de «clic en» del PR #32 (varias palabras, números, opciones de listas y botones repetidos). Con la webcam de su laptop: cabeza y manos funcionan de forma continua (tras el PR #20); el sonido y la voz se oyen; la **calibración de 5 puntos** y la **«V» de dos dedos** funcionan bien (tras el PR #25, en Pages).
 
 **NO probado todavía (Anexo A: Adrian y Augusto):**
 - **El signo de los ejes de la cabeza.** `senales.anguloCabeza` supone la matriz de MediaPipe en orden por columnas. Si el puntero va al revés, hay dos casillas «Invertir» en el Centro; si hace falta, cambia el valor por defecto de `sx`/`sy` en `js/a11y/cabeza-mirada.js`.
