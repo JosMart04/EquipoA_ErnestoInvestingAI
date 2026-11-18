@@ -4,13 +4,13 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 19:57 (Lima)
+- Fecha y hora: 2026-11-17 22:02 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/docs-validacion-camara` (solo documentación: Josué validó la calibración y la «V»)
+- Rama / último commit: `cc/T-29-auditoria-p08` → PR #29 (correcciones de la auditoría P08: #28, H-02, H-03)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **132/132, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **134/134, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -37,6 +37,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **132/132
 | #24 | T-26 | **Modo real** con los datos del PR #22 de CX: recálculo en Workers en Backtesting y Optimizador (`EIA.ui.recalculo`), cortes ordenados, textos que solo valían para el curso | 130/130; probado con los datos reales en un worktree: 9 páginas, recálculo, «Volver», idioma, corte antiguo, 390 px; 27 cargas de humo |
 | #25 | T-28 | **Calibración de 5 puntos** de la cabeza con interfaz, **guía de gestos** con SVG propios y **«V» de dos dedos** para desplazar (D-23: sin deslizar ni pulgar arriba) | 132/132; navegador con poses simuladas: calibración exacta, Esc, quitar desde el Centro, V desplaza sin mover el puntero, 390 px |
 | #26 | T-29 (parte) | Pasada de conformidad con Figma: casillas de series visibles en Backtesting (como en Figma) sincronizadas con la leyenda; Optimizador móvil con símbolos más chicos y zoom con dos dedos | 132/132; navegador: casillas ↔ leyenda en los dos gráficos sin bucle, EN, 390 px; 27 cargas de humo |
+| #22 (CX) | T-31…T-38, T-50 | **Datos reales 01–13 y 12 cortes**, bot T-32, auditoría P08 con capturas | 244/244 pruebas de navegador de CX |
+| #29 | T-29 (P08) | **H-01 / #28:** Regresión con corte antiguo usa los precios congelados de `cortes/<fecha>/auditoria.json` (antes mezclaba la historia actual). **H-02:** Clasificación habla de observaciones (y sesiones si se conocen) y compara con «siempre SUBE» según las cifras. **H-03:** en el Optimizador profesor, Markowitz se calcula; solo NSGA es simulado | 134/134; navegador con datos reales: cortes 2025-11-28 y 2026-10-30, sin corte, ES/EN; 27 cargas de humo |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -63,8 +65,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **132/132
 
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
-2. Fusionar el PR #22 de CX en cuanto resuelva el conflicto de la bitácora y quede en verde; después revisar el Modo real en Pages.
-2b. **T-29**: esperar la auditoría P08 de CX (`docs/informe/auditoria_P08.md`), corregir sus hallazgos y congelar funciones (jue 19, 20:00).
+2. Datos reales: fusionados (PR #22). Revisar el Modo real en Pages tras cada actualización del bot de CX (T-32).
+2b. **T-29**: que CX repita su reproductor P08 sobre `main` y cierre #28; luego **congelamiento de funciones** (jue 19, 20:00): desde ahí solo correcciones.
 3. Optimizador a 390 px: mejoró (símbolos y zoom, PR #26), pero los frentes del curso casi coinciden; en el celular se elige apagando una serie o desde la tabla.
 4. Josué probó la webcam el 17-nov y funciona; si alguien reporta el puntero invertido, usa las casillas «Invertir» del Centro.
 
@@ -104,6 +106,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **132/132
 - **ECharts conectados (`echarts.connect`):** nunca llames a `dispatchAction` dentro de un evento de leyenda: se reenvía entre los gráficos sin fin. Usa `setOption({legend: {selected}})` (no emite eventos) y deja que `connect` propague los clics.
 - **`String.replace` con texto de reemplazo:** `$$` se vuelve `$` (me pasó con `$$(…)`). En los scripts de edición, usa una función como reemplazo.
 - **Recálculo (`EIA.ui.recalculo`):** el módulo guarda `recalc` y en `pintar(datos)` lo mezcla con los datos del archivo; se descarta al cambiar de modo (y de corte en el Optimizador). El Worker solo se crea en el núcleo (`EIA.trabajo`); una prueba vigila que ningún módulo cree Workers.
+- **Corte antiguo en Regresión:** la historia sale de `cortes/<fecha>/auditoria.json → precios_validacion` (precios congelados del corte). No uses el 02 actual recortado salvo como respaldo: Yahoo revisa los ajustados.
 - **`cortes/index.json`:** `ultimo` no está en `cortes[]` y el arreglo viene ascendente; usa siempre `EIA.ordenarCortes`.
 - **R-REG-09 literal falla en 5 activos** de `data/` por redondeo: se verifica con I-03b (contrato §4 y nota N-1).
 - **El 1/N del profesor es de rebalanceo diario** (contrato I-10, nota N-2). La volatilidad de `09` usa desviación poblacional.

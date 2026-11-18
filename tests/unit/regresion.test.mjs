@@ -87,3 +87,16 @@ test("T-26: con modelos peores que «el precio no cambia» (datos reales), el ra
   assert.equal(R.resumen(otro).mejoraPositiva, null, "si ninguno mejora no hay rango positivo");
   assert.equal(R.resumen(c06).mejoran, R.resumen(c06).modelos, "en el Modo profesor mejoran los 18");
 });
+
+test("P08 H-01 (#28): la historia de un corte antiguo termina en el corte (sin mezclar con la actual)", () => {
+  const corte = c02.fechas[c02.fechas.length - 40];
+  const h = R.recortarAlCorte(c02, corte);
+  assert.equal(h.fechas.at(-1), corte);
+  assert.ok(h.fechas.every(f => f <= corte), "ninguna fecha posterior al corte");
+  assert.equal(h.cierres.AAPL.length, h.fechas.length);
+  assert.equal(h.cierres.AAPL.at(-1), c02.cierres.AAPL[c02.fechas.length - 40]);
+  // El eje del gráfico queda creciente: la historia termina antes del primer día del pronóstico
+  const v = R.vistaActivo(c06, h, "AAPL", { ventana: 60 });
+  assert.ok(v.fechasHistoria.at(-1) <= corte && v.fechasHistoria.length === 60);
+  assert.equal(R.recortarAlCorte(c02, "1900-01-01").fechas.length, 0, "corte anterior a toda la historia: vacía");
+});

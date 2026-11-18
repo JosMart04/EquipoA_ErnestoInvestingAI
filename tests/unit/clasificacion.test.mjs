@@ -2,7 +2,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import C from "../../js/clasificacion.js";
-import { dato, leer } from "./_util.mjs";
+import { dato, leer, leerJSON } from "./_util.mjs";
 
 const c05 = dato("05_clasificadores_binarios.json"), universo = dato("10_dashboard_mercado.json");
 const todo = C.modeloVista(c05, universo, {});
@@ -104,4 +104,22 @@ test("clasificacion.html: sin cifras escritas a mano y con los contenedores que 
   assert.ok(!/\d/.test(visible), "hay dígitos en el texto de la página: " + (visible.match(/\S*\d\S*/) || [""])[0]);
   const js = leer("js", "clasificacion.js").replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, "");
   assert.ok(!/0\.5[0-9]|0\.08|0\.04|\b468\b|\b18\b|\b26\b/.test(js), "constantes de datos escritas en js/clasificacion.js");
+});
+
+test("P08 H-02: observaciones no son días; la comparación con «siempre SUBE» sale de las cifras", () => {
+  const prof = C.resumen(c05);
+  assert.equal(prof.fechasPrueba, null, "el archivo del profesor no declara sesiones: se habla de observaciones");
+  // Como el Modo real: 252 sesiones × 26 activos = 6552 observaciones, ninguno supera la tasa base y uno queda bajo la mitad
+  const real = JSON.parse(JSON.stringify(c05));
+  real.metodologia = { fechas_prueba: 252, n_prueba: 6552 }; real.tasa_base_sube = 0.565;
+  real.modelos.forEach((m, i) => { m.exactitud = i === 0 ? 0.47 : 0.55; });
+  const r = C.resumen(real);
+  assert.deepEqual([r.fechasPrueba, r.superanBase, r.bajoMitad], [252, 0, 1]);
+  real.modelos[1].exactitud = 0.6;
+  assert.equal(C.resumen(real).superanBase, 1);
+  const es = leerJSON("i18n", "es-PE.json").clasificacion, en = leerJSON("i18n", "en-US.json").clasificacion;
+  for (const k of ["ficha_que_tan_bien", "metricas_caption", "honestidad_p2"]) {
+    assert.ok(!/días|moneda/.test(es[k]), "es-PE " + k + " ya no dice «días» ni «moneda»");
+    assert.ok(!/days|coin/.test(en[k]), "en-US " + k);
+  }
 });

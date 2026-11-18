@@ -82,7 +82,16 @@
     };
   }
 
-  const Regresion = { verificar, verificacionGlobal, resumen, modelosVisibles, vistaActivo, TOLERANCIA_GUIA, NIVEL_CONO, VENTANAS, VENTANA_POR_DEFECTO, ARCHIVO };
+  /** Historia recortada al corte: fechas ≤ corte. Pura. Es el respaldo si un corte no trae sus precios congelados. */
+  function recortarAlCorte(c02, corte) {
+    let k = c02.fechas.length - 1;
+    while (k >= 0 && c02.fechas[k] > corte) k--;
+    const cierres = {};
+    for (const tk of Object.keys(c02.cierres)) cierres[tk] = c02.cierres[tk].slice(0, k + 1);
+    return { fechas: c02.fechas.slice(0, k + 1), cierres };
+  }
+
+  const Regresion = { verificar, verificacionGlobal, resumen, modelosVisibles, vistaActivo, recortarAlCorte, TOLERANCIA_GUIA, NIVEL_CONO, VENTANAS, VENTANA_POR_DEFECTO, ARCHIVO };
   if (typeof module !== "undefined" && module.exports) module.exports = Regresion;
   if (typeof document === "undefined") return;
   global.Regresion = Regresion;
@@ -340,10 +349,23 @@
     pintarDatos();
   }
 
+  /** Precios congelados del corte (cortes/<fecha>/auditoria.json → precios_validacion, publicados por CX): la misma
+      versión de precios con que se entrenó; recortar la descarga actual no basta porque Yahoo revisa los ajustados. */
+  async function historiaCorte(corte) {
+    try {
+      const a = await EIA.datos("cortes/" + corte + "/auditoria.json"), pv = a && a.precios_validacion;
+      if (pv && Array.isArray(pv.fechas) && pv.cierres) return { fechas: pv.fechas, cierres: pv.cierres };
+    } catch (e) { /* sin auditoría: se recorta la historia actual al corte */ }
+    return recortarAlCorte(await EIA.datos(ARCHIVO_HISTORIA), corte);
+  }
+
   EIA.modulo({
     id: "regresion",
     async cargar() {
-      const [c06, c02, universo, parametros] = await EIA.todos([EIA.datos(ARCHIVO), EIA.datos(ARCHIVO_HISTORIA), EIA.universo(), EIA.datos(ARCHIVO_PARAMETROS)]);
+      // Con un corte antiguo (Modo real), la historia es la que vio el modelo: termina en el corte y su último cierre es
+      // 06.precio_ultimo (auditoría P08, H-01 / #28). Antes se dibujaba la historia actual y el eje retrocedía un año.
+      const corte = EIA.modo() === "real" ? EIA.corte() : null;
+      const [c06, c02, universo, parametros] = await EIA.todos([EIA.datos(ARCHIVO), corte ? historiaCorte(corte) : EIA.datos(ARCHIVO_HISTORIA), EIA.universo(), EIA.datos(ARCHIVO_PARAMETROS)]);
       return { c06, c02, universo, horizonte: parametros.parametros.N_FC };
     },
     pintar
