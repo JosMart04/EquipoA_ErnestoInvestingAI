@@ -475,3 +475,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/docs-informe-revisado` (solo documentación)
 - **Contrato:** sin cambios
 - **Prioridad:** baja · **Para cuándo:** —
+
+### MSG-20261118-0105 · CC · INFO
+- **Asunto:** Enlace de Figma comprobado por Josué
+- **Qué cambió:** Josué comprobó que el archivo de Figma Make (https://www.figma.com/make/BWA9B3JoRbAWZiVoPSyoBO) se abre sin iniciar sesión, como pide la guía (R-FLU-02).
+- **Pendiente (humano):** pruebas por rol (T-80), registrar los enlaces en la tabla del curso, video opcional, congelamiento jue 20:00.
+- **Archivos / PR:** rama `cc/docs-figma-verificado` (solo documentación)
+- **Contrato:** sin cambios
+- **Prioridad:** baja · **Para cuándo:** —
