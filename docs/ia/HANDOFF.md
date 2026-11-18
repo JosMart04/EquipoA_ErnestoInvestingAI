@@ -4,9 +4,9 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 22:23 (Lima)
+- Fecha y hora: 2026-11-17 22:33 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-90-voz` → PR #30 (comandos de voz)
+- Rama / último commit: `cc/readme-profesional` → PR #31 (README profesional; «About» de GitHub actualizado)
 
 ## Hecho (con evidencia)
 
@@ -40,6 +40,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **140/140
 | #22 (CX) | T-31…T-38, T-50 | **Datos reales 01–13 y 12 cortes**, bot T-32, auditoría P08 con capturas | 244/244 pruebas de navegador de CX |
 | #29 | T-29 (P08) | **H-01 / #28:** Regresión con corte antiguo usa los precios congelados de `cortes/<fecha>/auditoria.json` (antes mezclaba la historia actual). **H-02:** Clasificación habla de observaciones (y sesiones si se conocen) y compara con «siempre SUBE» según las cifras. **H-03:** en el Optimizador profesor, Markowitz se calcula; solo NSGA es simulado | 134/134; navegador con datos reales: cortes 2025-11-28 y 2026-10-30, sin corte, ES/EN; 27 cargas de humo |
 | #30 | T-90 | **Comandos de voz** (`js/a11y/voz.js`): Web Speech API ES/EN, consentimiento, indicador, confirmación visual y hablada, ayuda, Alt+Shift+V, reanudación al navegar; gramática en i18n y acciones por el bus | 140/140; navegador con reconocedor simulado: tema, filtro, activo por empresa, clic en, ayuda, pausa, idioma, detener, atajo, Centro, navegación con reanudación, 390 px; 27 cargas de humo. **Sin micrófono real** |
+| #31 | T-61 (parte) | **README profesional** (módulos, características, tecnologías con versiones, arquitectura, ejecución, pruebas, datos, accesibilidad, créditos) y «About» de GitHub (descripción, sitio, 20 temas) | Enlaces del README verificados |
 
 ### Accesibilidad: qué está probado y qué no
 
