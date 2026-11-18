@@ -211,11 +211,18 @@
   /** Compatibilidad con la base. */
   const loadJSON = nombre => EIA.datos(nombre);
 
+  /** Pura: fechas de corte del índice, de la más reciente a la más antigua. `ultimo` (los archivos de la raíz de data_real/)
+      va primero aunque no esté en `cortes[]`; el orden del arreglo publicado no importa. */
+  EIA.ordenarCortes = function (ix) {
+    const lista = (ix.cortes || []).slice().sort().reverse();
+    if (ix.ultimo && lista[0] !== ix.ultimo) lista.unshift(ix.ultimo);
+    return Array.from(new Set(lista));
+  };
   /** Fechas de corte disponibles (la primera es la más reciente). */
   EIA.cortes = async function () {
     const mt = await EIA.meta();
     if (EIA.modo() === "real" && mt.disponible) {
-      try { const ix = await EIA.datos("cortes/index.json"); if (ix && Array.isArray(ix.cortes) && ix.cortes.length) return ix.cortes.slice(); } catch (e) { /* sin cortes históricos */ }
+      try { const ix = await EIA.datos("cortes/index.json"); if (ix && Array.isArray(ix.cortes) && ix.cortes.length) return EIA.ordenarCortes(ix); } catch (e) { /* sin cortes históricos */ }
     }
     return mt.fecha_corte ? [mt.fecha_corte] : [];
   };
@@ -469,7 +476,8 @@
     return {
       fg: v("--fg"), mut: v("--mut"), bd: v("--bd"), bg: v("--bg"), panel: v("--panel"), hl: v("--hl"),
       up: v("--up"), dn: v("--dn"), ac: v("--ac"), warn: v("--warn"),
-      serie: [1, 2, 3, 4, 5, 6].map(i => v("--serie-" + i))
+      serie: [1, 2, 3, 4, 5, 6].map(i => v("--serie-" + i)),
+      serieTexto: [1, 2, 3, 4, 5, 6].map(i => v("--serie-texto-" + i)) // texto sobre cada color de serie (≥ 4,5:1)
     };
   };
   EIA.movimientoReducido = () => document.documentElement.dataset.movimiento === "reducido"
@@ -801,6 +809,53 @@
     sel.innerHTML = cortes.map((c, i) => `<option value="${esc(c)}"${c === actual ? " selected" : ""}>${esc(i === 0 ? EIA.t("comun.corte_ultimo", { fecha: EIA.fmt.fecha(c) }) : EIA.fmt.fecha(c))}</option>`).join("");
     sel.addEventListener("change", () => EIA.setCorte(sel.value === cortes[0] ? null : sel.value), { signal: m.control.signal });
     caja.hidden = false;
+  };
+
+  /** Recálculo en el navegador (D-03; solo Modo real): selector, botón, progreso, Cancelar y «Volver a los datos del archivo».
+      En el Modo profesor solo explica que no se recalcula y deja #recalcular deshabilitado (R-OPT-08). Se monta sobre la
+      sección: conserva su <h2> y reemplaza lo demás. cfg = {modulo (prefijo i18n), opciones:[[valor, texto]], valor,
+      activo (texto del resultado vigente o null), calcular(valor) → Promise<{worker, params}>, alResultado(datos, valor), alVolver()} */
+  EIA.ui.recalculo = function (seccion, cfg) {
+    const m = montar(seccion), t = EIA.t, k = cfg.modulo, h2 = $("h2", seccion);
+    Array.from(seccion.childNodes).forEach(n => { if (n !== h2) n.remove(); });
+    const cuerpo = document.createElement("div");
+    seccion.appendChild(cuerpo);
+    if (EIA.modo() !== "real") {
+      cuerpo.innerHTML = `<p>${esc(t(k + ".recalculo_profesor"))}</p><button type="button" id="recalcular" disabled>${esc(t(k + ".recalcular"))}</button>`;
+      return;
+    }
+    cuerpo.innerHTML = `<p>${esc(t(k + ".recalculo_real"))}</p>
+<div class="control-recalculo"><label for="recalculo-opcion">${esc(t(k + ".recalculo_opcion"))}</label>
+<select id="recalculo-opcion">${cfg.opciones.map(([v, txt]) => `<option value="${esc(v)}"${v === cfg.valor ? " selected" : ""}>${esc(txt)}</option>`).join("")}</select></div>
+<p class="acciones"><button type="button" id="recalcular" class="primary">${esc(t(k + ".recalcular"))}</button><button type="button" id="recalculo-cancelar" hidden>${esc(t("comun.cancelar"))}</button></p>
+<div id="recalculo-progreso"></div>${cfg.activo ? `
+<p class="recalculado" role="status"><span><strong>${esc(t("comun.recalculado"))}</strong> ${esc(cfg.activo)}</span> <button type="button" id="recalculo-volver">${esc(t("comun.volver_archivo"))}</button></p>` : ""}`;
+    let tarea = null;
+    const boton = $("#recalcular", cuerpo), cancelar = $("#recalculo-cancelar", cuerpo);
+    if (!cfg.opciones.length) { boton.disabled = true; $("p", cuerpo).textContent = t("comun.recalculo_sin_cierres"); }
+    seccion.addEventListener("click", async e => {
+      const b = e.target.closest("button"); if (!b || !cuerpo.contains(b)) return;
+      if (b.id === "recalculo-cancelar") { if (tarea) tarea.cancelar(); return; }
+      if (b.id === "recalculo-volver") { cfg.alVolver(); EIA.ui.anunciar(t("comun.volviste_archivo")); return; }
+      if (b.id !== "recalcular" || tarea) return;
+      const valor = $("#recalculo-opcion", cuerpo).value;
+      boton.disabled = true; cancelar.hidden = false;
+      const prog = EIA.ui.progreso($("#recalculo-progreso", cuerpo), { etiqueta: t("comun.recalculando") });
+      EIA.ui.anunciar(t("comun.recalculando"));
+      try {
+        const encargo = await cfg.calcular(valor);
+        tarea = EIA.trabajo(encargo.worker, encargo.params, { alProgresar: p => prog.set(p) });
+        const datos = await tarea.promesa;
+        tarea = null; prog.fin();
+        cfg.alResultado(datos, valor); // repinta el módulo (y esta sección) con el resultado
+        EIA.ui.anunciar(t("comun.recalculo_listo"));
+      } catch (err) {
+        tarea = null; prog.fin(); boton.disabled = false; cancelar.hidden = true;
+        if (err && err.cancelado) EIA.ui.anunciar(t("comun.recalculo_cancelado"));
+        else EIA.ui.notificar(t("comun.recalculo_error", { error: String((err && err.message) || err) }), "error");
+      }
+    }, { signal: m.control.signal });
+    m.alDesmontar = () => { if (tarea) tarea.cancelar(); };
   };
 
   /** Control segmentado: botones con aria-pressed. opciones = [[valor, texto], …]. */

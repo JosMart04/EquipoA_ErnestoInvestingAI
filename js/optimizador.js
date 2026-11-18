@@ -10,6 +10,10 @@
   const ARCHIVO = "07_optimizador_markowitz_nsga.json", ARCHIVO_CLASIF = "05_clasificadores_binarios.json", ARCHIVO_REGRES = "06_regresores_precio_30d.json";
   const TOLERANCIA_SUMA = 0.02;   // P05: «la suma de pesos de cada punto es 1 ± 0,02»
   const TOLERANCIA_TOPE = 1e-9;   // comparación de coma flotante con el tope
+  const ANCHO_MOVIL = 640;        // px: el mismo corte que la hoja de estilos; debajo, símbolos más chicos y zoom táctil
+  const CIERRES = "cierres_historicos.json";  // Modo real: historia completa para recalcular (contrato §7)
+  const VENTANAS = [126, 252, 504, 756];       // sesiones de estimación que se ofrecen: medio año, uno, dos y tres
+  const SEMILLA = 42;                          // NSGA reproducible: el mismo recálculo da el mismo frente
   /** Series del gráfico, en el orden en que se recorren con ↑/↓. campo = clave del JSON. */
   const SERIES = [
     { clave: "mk_universo", campo: "markowitz_universo_completo", tipo: "markowitz" },
@@ -95,7 +99,15 @@
     return { s, i };
   }
 
-  const Optimizador = { SERIES, seriesVisibles, verificarPesos, verificarTodos, pesosOrdenados, distanciaAMarkowitz, razonElegible, navegar, puntoInicial, TOLERANCIA_SUMA, ARCHIVO };
+  /** Ventanas de estimación que terminan en `hasta` (o en el último cierre anterior), de la más corta a la más larga;
+      solo las que caben en la historia. Pura. */
+  function ventanas(fechas, hasta, tamanos) {
+    let i1 = fechas.length - 1;
+    if (hasta) { const k = fechas.findIndex(f => f > hasta); i1 = k < 0 ? fechas.length - 1 : k - 1; }
+    return tamanos.filter(n => i1 - n >= 0).map(n => ({ n, desde: fechas[i1 - n], hasta: fechas[i1] }));
+  }
+
+  const Optimizador = { SERIES, ventanas, seriesVisibles, verificarPesos, verificarTodos, pesosOrdenados, distanciaAMarkowitz, razonElegible, navegar, puntoInicial, TOLERANCIA_SUMA, ARCHIVO };
   if (typeof module !== "undefined" && module.exports) module.exports = Optimizador;
   if (typeof document === "undefined") return;
   global.Optimizador = Optimizador;
@@ -141,15 +153,17 @@
   }
 
   function opcionesGrafico(c) {
+    // En el celular (hallazgo de CX en E2E) los puntos de NSGA-II y NSGA-III se tapaban: símbolos más chicos y zoom con dos dedos
+    const movil = global.innerWidth < ANCHO_MOVIL, tam = { mk: movil ? 4 : 6, n2: movil ? 6 : 9, n3: movil ? 8 : 11, sel: movil ? 18 : 24 };
     const series = VIS.map((s, k) => {
       const datos = s.puntos.map(p => [p.volatilidad_anual_pct, p.retorno_esperado_anual_pct, p.cvar95_diario_pct]);
       const base = { id: s.clave, name: nombreSerie(s), data: datos, emphasis: { scale: 1.6 } };
-      if (s.tipo === "markowitz") return Object.assign(base, { type: "line", symbol: "circle", symbolSize: 6, showAllSymbol: true, lineStyle: { width: 2.5, type: s.clave === "mk_universo" ? "dashed" : "solid", color: s.clave === "mk_universo" ? c.mut : c.fg }, itemStyle: { color: s.clave === "mk_universo" ? c.mut : c.fg } });
-      if (s.tipo === "nsga2") return Object.assign(base, { type: "scatter", symbol: "circle", symbolSize: 9, itemStyle: { color: c.serie[0], borderColor: c.panel, borderWidth: 1 } });
-      return Object.assign(base, { type: "scatter", symbol: "triangle", symbolSize: 11, itemStyle: { borderColor: c.panel, borderWidth: 1 } });
+      if (s.tipo === "markowitz") return Object.assign(base, { type: "line", symbol: "circle", symbolSize: tam.mk, showAllSymbol: true, lineStyle: { width: 2.5, type: s.clave === "mk_universo" ? "dashed" : "solid", color: s.clave === "mk_universo" ? c.mut : c.fg }, itemStyle: { color: s.clave === "mk_universo" ? c.mut : c.fg } });
+      if (s.tipo === "nsga2") return Object.assign(base, { type: "scatter", symbol: "circle", symbolSize: tam.n2, itemStyle: { color: c.serie[0], borderColor: c.panel, borderWidth: 1 } });
+      return Object.assign(base, { type: "scatter", symbol: "triangle", symbolSize: tam.n3, itemStyle: { borderColor: c.panel, borderWidth: 1 } });
     });
     const sel = VIS[pos.s] && VIS[pos.s].puntos[pos.i];
-    if (sel) series.push({ id: "seleccion", name: t("optimizador.serie_seleccion"), type: "scatter", symbol: "circle", symbolSize: 24, silent: true, z: 10,
+    if (sel) series.push({ id: "seleccion", name: t("optimizador.serie_seleccion"), type: "scatter", symbol: "circle", symbolSize: tam.sel, silent: true, z: 10,
       itemStyle: { color: "transparent", borderColor: c.ac, borderWidth: 3 }, data: [[sel.volatilidad_anual_pct, sel.retorno_esperado_anual_pct]], tooltip: { show: false } });
     const n3 = VIS.findIndex(s => s.tipo === "nsga3"), cv = D.c07.nsga3_elegibles.map(p => p.cvar95_diario_pct);
     return {
@@ -159,6 +173,10 @@
       tooltip: { trigger: "item", formatter: p => (p.seriesId === "seleccion" ? "" : esc(describir(VIS.find(s => s.clave === p.seriesId), p.dataIndex))) },
       xAxis: { type: "value", scale: true, name: t("optimizador.eje_x"), nameLocation: "middle", nameGap: 28, nameTextStyle: { color: c.mut }, axisLabel: { color: c.mut, formatter: v => EIA.fmt.num(v, 0) }, splitLine: { lineStyle: { color: c.bd } } },
       yAxis: { type: "value", scale: true, name: t("optimizador.eje_y"), nameTextStyle: { color: c.mut }, axisLabel: { color: c.mut, formatter: v => EIA.fmt.num(v, 0) }, splitLine: { lineStyle: { color: c.bd } } },
+      // Zoom: con dos dedos en el celular y con Ctrl + rueda en el escritorio. No arrastra ni captura la rueda sola,
+      // para que la página se siga desplazando con el dedo o la rueda sobre el gráfico.
+      dataZoom: [{ type: "inside", xAxisIndex: 0, filterMode: "none", zoomOnMouseWheel: "ctrl", moveOnMouseMove: false, moveOnMouseWheel: false },
+        { type: "inside", yAxisIndex: 0, filterMode: "none", zoomOnMouseWheel: "ctrl", moveOnMouseMove: false, moveOnMouseWheel: false }],
       // NSGA-III coloreado por CVaR 95 % (el valor también está en la información emergente y en la tabla)
       visualMap: n3 >= 0 ? { type: "continuous", seriesIndex: n3, dimension: 2, min: Math.min.apply(null, cv), max: Math.max.apply(null, cv), orient: "horizontal", left: "center", bottom: 0, itemHeight: 140,
         text: [t("optimizador.cvar_alto"), t("optimizador.cvar_bajo")], textStyle: { color: c.fg }, calculable: false, inRange: { color: [c.serie[2], c.serie[1], c.serie[5]] } } : undefined,
@@ -248,7 +266,7 @@
 <dt>${esc(t("optimizador.serie_nsga3"))}</dt><dd>${esc(t("optimizador.explica_nsga3"))}</dd></dl>
 <h3>${esc(t("optimizador.debajo_titulo"))}</h3>
 <p>${esc(t("optimizador.debajo_texto", { m2: EIA.fmt.num(g2.media, 2), x2: EIA.fmt.num(g2.max, 2), m3: EIA.fmt.num(g3.media, 2), x3: EIA.fmt.num(g3.max, 2) }))}</p>
-<p class="mut">${esc(t(EIA.modo() === "profesor" ? "optimizador.debajo_profesor" : "optimizador.debajo_real"))}</p>
+<p class="mut">${esc(t(EIA.modo() === "profesor" ? "optimizador.debajo_profesor" : recalc ? "optimizador.debajo_navegador" : "optimizador.debajo_real"))}</p>
 <p>${esc(t("optimizador.verif_global", { cumplen: todos.cumplen, puntos: todos.puntos, tol: EIA.fmt.num(TOLERANCIA_SUMA, 2), tope: pct(D.c07.tope_peso_por_activo * 100, 0) }))}</p>`;
   }
 
@@ -300,8 +318,34 @@
     });
   }
 
+  let base = null, recalc = null; // recalc = {c07, n, desde, hasta, modo, corte}: frentes calculados en el navegador (T-26)
+  /** Sección «Recalcular con otras fechas»: en el Modo real, el Worker del optimizador con los cierres reales (D-03). */
+  function pintarRecalculo() {
+    const fecha = f => EIA.fmt.fecha(f);
+    const montarCon = (opciones, lista) => EIA.ui.recalculo($("#recalculo"), {
+      modulo: "optimizador", opciones, valor: recalc ? String(recalc.n) : (opciones[1] || opciones[0] || [])[0],
+      activo: recalc ? t("optimizador.recalculado_detalle", { n: EIA.fmt.ent(recalc.n), desde: fecha(recalc.desde), hasta: fecha(recalc.hasta) }) : null,
+      async calcular(valor) {
+        const [ch, u] = await EIA.todos([EIA.datos(CIERRES), EIA.universo()]), v = lista.find(x => String(x.n) === valor), c = base.c07;
+        return { worker: "optimizador", params: { fechas: ch.fechas, cierres: ch.cierres, tickers: u.map(a => a.ticker).filter(tk => ch.cierres[tk]),
+          elegibles: c.elegibles.filter(tk => ch.cierres[tk]), desde: v.desde, hasta: v.hasta, tope: c.tope_peso_por_activo, rf: c.tasa_libre_riesgo,
+          semilla: SEMILLA, criterio_elegibilidad: c.criterio_elegibilidad, nota: c.nota } };
+      },
+      alResultado(c07, valor) { const v = lista.find(x => String(x.n) === valor); recalc = { c07, n: v.n, desde: v.desde, hasta: v.hasta, modo: EIA.modo(), corte: EIA.corte() }; pintar(base); },
+      alVolver() { recalc = null; pintar(base); }
+    });
+    if (EIA.modo() !== "real") { montarCon([], []); return; }
+    Promise.all([EIA.datos(CIERRES), EIA.meta()]).then(([ch, mt]) => {
+      const lista = ventanas(ch.fechas, EIA.corte() || mt.fecha_corte, VENTANAS);
+      montarCon(lista.map(v => [String(v.n), t("optimizador.ventana_opcion", { n: EIA.fmt.ent(v.n), desde: fecha(v.desde), hasta: fecha(v.hasta) })]), lista);
+    }).catch(() => montarCon([], []));
+  }
+
   function pintar(datos) {
-    D = datos;
+    base = datos;
+    // Un resultado del navegador vale para el modo y el corte con que se calculó
+    if (recalc && (recalc.modo !== EIA.modo() || recalc.corte !== EIA.corte())) recalc = null;
+    D = recalc ? Object.assign({}, datos, { c07: recalc.c07 }) : datos;
     enlazar();
     recalcularVisibles(false);
     pintarFicha();
@@ -311,6 +355,7 @@
     pintarComposicion();
     pintarExplicacion();
     pintarElegibles();
+    pintarRecalculo();
   }
 
   EIA.modulo({

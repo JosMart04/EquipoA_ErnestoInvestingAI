@@ -165,3 +165,32 @@ Bitácora, tablero y prompt literal registrados. T-50 sigue parcial: faltan axe,
 
 Codex estará disponible dentro de 4 horas, así que tu puedes continuar con el proyecto, lo que falte. Luego delegarle tareas a Codex.
 ```
+
+## 2026-11-17 19:00 · Claude Code · Claude Opus 5.5
+
+Respuesta de Josué al cierre del turno anterior (botón): «Sigue con T-28/T-29».
+
+Mensaje de Josué recibido durante el trabajo:
+
+```text
+Sobre el sonido y la voz sí funciona. La prueba con mi webcam(mi camara de laptop) está todo funcional, ya realice las pruebas, sí funcionan.
+Le envie tu mensaje a Codex, terminó su arduo trabajo y me dijo esto y te envía este mensaje:
+
+[PR #22 listo para revisión](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/22):
+
+* 01–13 reales y doce cortes mensuales, validados: 12,69 MB.
+* 126 pruebas JS y 31 Python aprobadas; navegador: 224/228.
+* Bot T-32 configurado con tu autorización.
+
+📨 MENSAJE PARA CC: corregir [#21](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/issues/21): cuatro fallos de contraste en Backtesting claro. El merge y la activación del bot quedan pendientes de obtener CI verde.
+```
+
+## 2026-11-17 19:50 · Claude Code · Claude Opus 5.5
+
+Respuesta de Josué al cierre del turno anterior (botón): «Sí, la pruebo».
+
+## 2026-11-17 19:57 · Claude Code · Claude Opus 5.5
+
+```text
+Ya lo probé, la calibración y la V funcionan bien
+```

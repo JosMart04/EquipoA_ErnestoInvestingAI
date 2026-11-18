@@ -15,6 +15,8 @@
   const COMISION = 0.0005;     // 5 pb sobre el turnover (09.metodo y contrato §6)
   const REFERENCIA = "SPY";    // la guía compara cada cartera con SPY
   const UNO_N = "Igual ponderado (1/N)";
+  const CIERRES = "cierres_historicos.json"; // Modo real: historia completa para recalcular (contrato §7)
+  const OPCIONES_FIN = 13;                   // el último cierre y los 12 fines de mes anteriores
 
   /* ═════════════ Modelo de vista (puro) ═════════════ */
 
@@ -75,7 +77,15 @@
     return { fecha: r.fecha, pesos: Object.entries(r.pesos).map(([ticker, peso]) => ({ ticker, peso })).sort((a, b) => b.peso - a.peso), turnover };
   }
 
-  const Backtesting = { drawdown, series, verificar, interpretar, rebalanceo, pesoMaximo, pesoMedio, TOLERANCIA_PP, COMISION, REFERENCIA, UNO_N, ARCHIVO };
+  /** Fechas en que puede terminar un backtesting recalculado: el último cierre y el último día hábil de cada mes
+      anterior, de la más reciente a la más antigua (como mucho n). Pura. */
+  function finesDeMes(fechas, n) {
+    const salida = fechas.length ? [fechas[fechas.length - 1]] : [];
+    for (let i = fechas.length - 2; i >= 0 && salida.length < n; i--) if (fechas[i].slice(0, 7) !== fechas[i + 1].slice(0, 7)) salida.push(fechas[i]);
+    return salida;
+  }
+
+  const Backtesting = { drawdown, series, verificar, interpretar, rebalanceo, pesoMaximo, pesoMedio, finesDeMes, TOLERANCIA_PP, COMISION, REFERENCIA, UNO_N, ARCHIVO };
   if (typeof module !== "undefined" && module.exports) module.exports = Backtesting;
   if (typeof document === "undefined") return;
   global.Backtesting = Backtesting;
@@ -86,6 +96,8 @@
   const pctS = (x, d) => EIA.fmt.pct(x, d == null ? 2 : d, { signo: false });
   const GRUPO_GRAFICOS = "eia-backtesting";                              // curvas y drawdown comparten el cursor
   let D = null, S = null, carteraTL = null, idxTL = 0, enlazado = false, gCurvas = null, gDD = null;
+  let base = null, recalc = null; // recalc = {c09, fin, modo}: resultado calculado en el navegador (T-26)
+  const ocultas = new Set();      // claves de las series ocultas (casillas y leyenda; las dos se sincronizan)
   const nombre = clave => (D.c09.carteras[clave] ? EIA.nombre("nivel", clave) : EIA.nombre("referencia", clave));
 
   function pintarFicha() {
@@ -97,7 +109,11 @@
       controlas: t("backtesting.ficha_controlas"),
       ignorar: t("backtesting.ficha_ignorar")
     });
-    $("#metodo").innerHTML = `${esc(t("backtesting.metodo"))} <span lang="es">${esc(D.c09.metodo)}</span>`;
+    const pm = recalc && D.c09.parametros;
+    if (pm) {
+      const tope = n => pctS(pm.perfiles[n].tope * 100, 0);
+      $("#metodo").textContent = t("backtesting.metodo_navegador", { paso: pm.paso, ventana: pm.ventana, momentum: pm.momentum, comision: pm.comisionPb, tc: tope("Conservador"), tm: tope("Moderado"), ta: tope("Agresivo") });
+    } else $("#metodo").innerHTML = `${esc(t("backtesting.metodo"))} <span lang="es">${esc(D.c09.metodo)}</span>`;
   }
 
   /** Estilo de cada serie: carteras con línea gruesa continua, discontinua o de punto y raya; referencias punteadas y finas.
@@ -110,7 +126,7 @@
   function opcionesLineas(c, campo, ejeY) {
     return {
       textStyle: { color: c.fg },
-      legend: { top: 0, textStyle: { color: c.fg }, data: S.map(s => nombre(s.clave)) },
+      legend: { top: 0, textStyle: { color: c.fg }, data: S.map(s => nombre(s.clave)), selected: Object.fromEntries(S.map(s => [nombre(s.clave), !ocultas.has(s.clave)])) },
       tooltip: { trigger: "axis", valueFormatter: v => EIA.fmt.num(v) },
       grid: { left: 52, right: 16, top: 56, bottom: 36 },
       xAxis: { type: "category", data: D.c09.fechas, axisLabel: { color: c.mut, formatter: v => EIA.fmt.fecha(v) }, axisLine: { lineStyle: { color: c.bd } } },
@@ -134,8 +150,32 @@
     const etiquetas = D.c09.fechas.map(f => EIA.fmt.fecha(f));
     return { inicial: Math.max(0, S.findIndex(s => s.clave === carteraTL)), series: S.map((s, k) => ({ nombre: nombre(s.clave), valores: s[campo], etiquetas, formato, indice: k })) };
   }
+  /** Casillas de series visibles (como en Figma): la leyenda de ECharts no se maneja con el teclado. El trazo del rótulo
+      repite el del gráfico (continuo, discontinuo o punto-raya en las carteras; punteado en las referencias). */
+  const TRAZO = ["━━", "╍╍", "━·", "┈┈"];
+  function pintarSeries() {
+    const caja = $("#series-visibles");
+    caja.innerHTML = S.map((s, i) => `<label class="casilla"><input type="checkbox" data-serie="${esc(s.clave)}"${ocultas.has(s.clave) ? "" : " checked"}> <span><span aria-hidden="true" class="trazo">${s.tipo === "cartera" ? TRAZO[i % 3] : TRAZO[3]}</span> ${esc(nombre(s.clave))}</span></label>`).join("");
+  }
+  /** Muestra u oculta una serie en los dos gráficos y en las casillas. */
+  function verSerie(clave, ver) {
+    if (ver) ocultas.delete(clave); else ocultas.add(clave);
+    // setOption y no dispatchAction: no emite eventos. Con los dos gráficos conectados, un dispatchAction dentro del evento
+    // de la leyenda se reenviaba entre ellos sin fin (medido: 51 eventos en 4,7 s antes de cortarlo).
+    const seleccion = Object.fromEntries(S.map(s => [nombre(s.clave), !ocultas.has(s.clave)]));
+    for (const g of [gCurvas, gDD]) { const inst = g && g.instancia(); if (inst) inst.setOption({ legend: { selected: seleccion } }); }
+    const cb = $$("#series-visibles input[data-serie]").find(x => x.dataset.serie === clave); if (cb) cb.checked = ver;
+  }
   function conectar() {
     const a = gCurvas && gCurvas.instancia(), b = gDD && gDD.instancia();
+    // Si se usa la leyenda del gráfico, solo se actualizan el estado y las casillas: el otro gráfico ya recibe el mismo
+    // clic por echarts.connect (si además se le fijara aquí, ese reenvío lo volvería a alternar)
+    for (const inst of [a, b]) if (inst) inst.on("legendselectchanged", e => {
+      const s = S.find(x => nombre(x.clave) === e.name); if (!s) return;
+      const ver = !!e.selected[e.name];
+      if (ver) ocultas.delete(s.clave); else ocultas.add(s.clave);
+      const cb = $$("#series-visibles input[data-serie]").find(x => x.dataset.serie === s.clave); if (cb) cb.checked = ver;
+    });
     if (a && b && global.echarts) { a.group = GRUPO_GRAFICOS; b.group = GRUPO_GRAFICOS; global.echarts.connect(GRUPO_GRAFICOS); }
   }
   function pintarGraficos() {
@@ -220,12 +260,17 @@ ${x.causas.length ? `<p>${esc(t("backtesting.causas_intro"))}</p><ul>${x.causas.
     const exceden = Object.entries(D.c09.carteras).map(([k, c]) => ({ k, max: pesoMaximo(c) })).filter(x => x.max > D.tope + 1e-9);
     const caja = $("#nota-tope");
     caja.hidden = !exceden.length;
-    if (exceden.length) caja.textContent = t("backtesting.nota_tope", { lista: exceden.map(x => t("backtesting.nota_tope_item", { cartera: EIA.nombre("nivel", x.k), max: pctS(x.max * 100, 0) })).join(", "), tope: pctS(D.tope * 100, 0) });
+    // En el Modo profesor es una inconsistencia del material (N-3); en el real, una regla declarada en el método del archivo
+    if (exceden.length) caja.textContent = t(EIA.modo() === "real" ? "backtesting.nota_tope_real" : "backtesting.nota_tope", { lista: exceden.map(x => t("backtesting.nota_tope_item", { cartera: EIA.nombre("nivel", x.k), max: pctS(x.max * 100, 0) })).join(", "), tope: pctS(D.tope * 100, 0) });
   }
 
   function enlazar() {
     if (enlazado) return;
     enlazado = true;
+    $("main").addEventListener("change", e => {
+      const cb = e.target.closest("input[data-serie]");
+      if (cb) { verSerie(cb.dataset.serie, cb.checked); EIA.ui.anunciar(t(cb.checked ? "backtesting.serie_visible" : "backtesting.serie_oculta", { serie: nombre(cb.dataset.serie) })); }
+    });
     $("main").addEventListener("click", e => {
       const b = e.target.closest("button[data-rebalanceo]");
       if (!b) return;
@@ -236,17 +281,39 @@ ${x.causas.length ? `<p>${esc(t("backtesting.causas_intro"))}</p><ul>${x.causas.
     });
   }
 
+  /** Sección «Recalcular con otro periodo»: en el Modo real, el Worker de backtest con los cierres reales (D-03). */
+  function pintarRecalculo() {
+    const montarCon = opciones => EIA.ui.recalculo($("#recalculo"), {
+      modulo: "backtesting", opciones, valor: recalc ? recalc.fin : (opciones[0] || [])[0],
+      activo: recalc ? t("backtesting.recalculado_detalle", { inicio: EIA.fmt.fecha(recalc.c09.periodo.inicio), fin: EIA.fmt.fecha(recalc.c09.periodo.fin) }) : null,
+      async calcular(fin) {
+        const [ch, u] = await EIA.todos([EIA.datos(CIERRES), EIA.universo()]);
+        return { worker: "backtest", params: { fechas: ch.fechas, cierres: ch.cierres, tickers: u.map(a => a.ticker).filter(tk => ch.cierres[tk]), fin } };
+      },
+      alResultado(c09, fin) { recalc = { c09, fin, modo: EIA.modo() }; pintar(base); },
+      alVolver() { recalc = null; pintar(base); }
+    });
+    if (EIA.modo() !== "real") { montarCon([]); return; }
+    EIA.datos(CIERRES)
+      .then(ch => montarCon(finesDeMes(ch.fechas, OPCIONES_FIN).map((f, i) => [f, i === 0 ? t("backtesting.fin_ultimo", { fecha: EIA.fmt.fecha(f) }) : EIA.fmt.fecha(f)])))
+      .catch(() => montarCon([]));
+  }
+
   function pintar(datos) {
-    D = datos;
+    base = datos;
+    if (recalc && recalc.modo !== EIA.modo()) recalc = null; // al volver al Modo profesor se descarta
+    D = recalc ? Object.assign({}, datos, { c09: recalc.c09 }) : datos;
     S = series(D.c09);
     if (!carteraTL) { const pedido = new URLSearchParams(global.location.search).get("nivel"); carteraTL = D.c09.carteras[pedido] ? pedido : null; }
     enlazar();
     pintarFicha();
+    pintarSeries();
     pintarGraficos();
     pintarMetricas();
     pintarLineaTiempo();
     pintarInterpretacion();
     pintarNotaTope();
+    pintarRecalculo();
   }
 
   EIA.modulo({

@@ -99,7 +99,9 @@
     referencias[NOMBRE_1N] = empaquetar(igualPonderado(cierres, tickers, i0, o.sesiones));
     return {
       metodo: p.metodo || "", fechas: ["inicio"].concat(fechas.slice(i0 + 1, fin + 1)), base: BASE,
-      periodo: { inicio: fechas[i0 + 1], fin: fechas[fin], sesiones: o.sesiones }, carteras, referencias
+      periodo: { inicio: fechas[i0 + 1], fin: fechas[fin], sesiones: o.sesiones }, carteras, referencias,
+      // Parámetros usados, para declararlos en la interfaz cuando el backtesting se recalcula en el navegador
+      parametros: { paso: o.paso, ventana: o.ventana, momentum: o.momentum, comisionPb: o.comisionPb, rf: o.rf, perfiles: o.perfiles }
     };
   }
 

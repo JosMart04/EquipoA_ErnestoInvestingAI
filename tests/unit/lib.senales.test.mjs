@@ -91,12 +91,12 @@ test("los textos del centro de accesibilidad existen en los dos idiomas", () => 
 // ── Regresión del 17-nov: el puntero solo se movía el primer instante (cámara congelada y pausa accidental) ──
 
 /** Mano sintética como la de js/a11y/manos.js: nudillos en (0,5; 0,5). */
-function mano({ pellizco = false, palma = false, puno = false } = {}) {
+function mano({ pellizco = false, palma = false, puno = false, dos = false } = {}) {
   const ix = 0.5, iy = 0.5, lm = Array.from({ length: 21 }, () => ({ x: ix, y: iy }));
   const pon = (i, dx, dy) => { lm[i] = { x: ix + dx, y: iy + dy }; };
   pon(0, 0, 0.16); pon(5, -0.02, 0); pon(9, 0.02, 0); pon(13, 0.05, 0.01); pon(17, 0.08, 0.02);
   pon(6, -0.02, -0.05); pon(8, -0.02, puno ? 0.04 : -0.10);
-  for (const [punta, nudillo, dx] of [[12, 10, 0.02], [16, 14, 0.05], [20, 18, 0.08]]) { pon(nudillo, dx, -0.05); pon(punta, dx, palma ? -0.10 : 0.04); }
+  for (const [punta, nudillo, dx] of [[12, 10, 0.02], [16, 14, 0.05], [20, 18, 0.08]]) { pon(nudillo, dx, -0.05); pon(punta, dx, palma || (dos && punta === 12) ? -0.10 : 0.04); }
   if (pellizco) lm[4] = { x: lm[8].x + 0.01, y: lm[8].y + 0.01 }; else pon(4, -0.12, 0.02);
   return lm;
 }
@@ -127,9 +127,39 @@ test("detector sostenido: el progreso sube hasta disparar y vuelve a cero", () =
 
 test("cámara: el HUD no se reescribe con innerHTML después de crearse (sacaría el <video> y lo pausaría)", () => {
   const src = leer("js", "a11y", "camara.js").replace(/\/\*[\s\S]*?\*\//g, "");
-  const usos = src.match(/\.innerHTML\s*=/g) || [];
-  assert.equal(usos.length, 1, "un solo innerHTML: el de crearHUD");
+  const usos = src.match(/hud\.innerHTML\s*=/g) || [];
+  assert.equal(usos.length, 1, "un solo innerHTML sobre el HUD: el de crearHUD");
+  // Los demás innerHTML son de nodos fuera del HUD (la capa de calibración, T-28), nunca del que contiene el <video>
+  const nodos = new Set((src.match(/(\w+)\.innerHTML\s*=/g) || []).map(x => x.split(".")[0]));
+  assert.deepEqual([...nodos].sort(), ["capa", "hud"]);
   const cuerpo = src.slice(src.indexOf("function crearHUD"), src.indexOf("const ponerTexto"));
   assert.match(cuerpo, /hud\.innerHTML\s*=/);
   assert.match(src, /video\.paused/, "el bucle vigila que el video siga reproduciéndose");
+});
+
+test("T-28: la «V» de dos dedos desplaza y no se confunde con el puño, la mano abierta, señalar ni el pellizco", () => {
+  assert.equal(S.dosDedos(mano({ dos: true })), true);
+  assert.equal(S.punoCerrado(mano({ dos: true })), false, "la V no pausa");
+  assert.equal(S.dosDedos(mano({ palma: true })), false, "mano abierta: mueve el puntero");
+  assert.equal(S.dosDedos(mano()), false, "señalar con el índice");
+  assert.equal(S.dosDedos(mano({ puno: true })), false);
+  assert.equal(S.dosDedos(mano({ pellizco: true })), false);
+});
+
+test("T-28: calibración de 5 puntos de la cabeza (centro y esquinas) y su aplicación", () => {
+  assert.equal(S.PUNTOS_CALIBRACION.length, 5);
+  assert.deepEqual(S.PUNTOS_CALIBRACION[0], [0.5, 0.5], "se empieza por el centro");
+  // Persona que gira 15° y se inclina 9° hacia cada esquina, con el eje horizontal invertido (espejo)
+  const muestras = S.PUNTOS_CALIBRACION.map(([u, v]) => ({ dy: -(u - 0.5) / 0.4 * 15, dp: -(v - 0.5) / 0.4 * 9, u, v }));
+  const cal = S.calibracionCabeza(muestras);
+  assert.ok(cal && cal.cx.length === 3 && cal.cy.length === 3);
+  for (const m of muestras) {
+    const p = S.aplicarCalibracion(cal, m.dy, m.dp);
+    assert.ok(Math.abs(p.u - m.u) < 1e-9 && Math.abs(p.v - m.v) < 1e-9, "vuelve a cada punto");
+  }
+  assert.deepEqual(S.aplicarCalibracion(cal, -40, -30), { u: 1, v: 1 }, "se recorta a la pantalla");
+  assert.equal(JSON.parse(JSON.stringify(cal)).cx.length, 3, "se puede guardar en eia_a11y");
+  // Si casi no movió la cabeza, la calibración se rechaza
+  assert.equal(S.calibracionCabeza(muestras.map(m => ({ ...m, dy: m.dy / 10, dp: m.dp / 10 }))), null);
+  assert.equal(S.calibracionCabeza(muestras.slice(0, 2)), null);
 });

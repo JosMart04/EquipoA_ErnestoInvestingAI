@@ -70,11 +70,20 @@ test("R-BT-03: rebalanceos con pesos ordenados y turnover frente al anterior; no
 
 test("backtesting.html: sin cifras escritas a mano, recálculo deshabilitado y la inconsistencia documentada en el código", () => {
   const h = leer("backtesting.html");
-  for (const id of ["ficha", "metodo", "curvas", "caidas", "metricas", "verificacion", "nota-tope", "tl-cartera", "tl-fechas", "tl-detalle", "interpretacion", "recalcular"]) assert.ok(h.includes(`id="${id}"`), "falta #" + id);
+  for (const id of ["ficha", "metodo", "series-visibles", "curvas", "caidas", "metricas", "verificacion", "nota-tope", "tl-cartera", "tl-fechas", "tl-detalle", "interpretacion", "recalcular"]) assert.ok(h.includes(`id="${id}"`), "falta #" + id);
   assert.match(h, /id="recalcular" disabled/);
   const visible = h.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, " ");
   assert.ok(!/\d/.test(visible), "hay dígitos: " + (visible.match(/\S*\d\S*/) || [""])[0]);
   const js = leer("js", "backtesting.js");
   assert.match(js, /0,35/, "comentario sobre la inconsistencia del tope del Agresivo");
   assert.ok(!/EIA\.trabajo|new Worker/.test(js), "en el Modo profesor no se recalcula");
+});
+
+test("T-26: fechas para terminar un backtesting recalculado (último cierre y fines de mes, del más reciente al más antiguo)", () => {
+  const f = ["2026-09-29", "2026-09-30", "2026-10-01", "2026-10-30", "2026-11-02", "2026-11-16"];
+  assert.deepEqual(B.finesDeMes(f, 13), ["2026-11-16", "2026-10-30", "2026-09-30"]);
+  assert.deepEqual(B.finesDeMes(f, 2), ["2026-11-16", "2026-10-30"]);
+  assert.deepEqual(B.finesDeMes([], 13), []);
+  const js = leer("js", "backtesting.js");
+  assert.ok(!/EIA\.trabajo|new Worker/.test(js), "el Worker lo lanza el núcleo (EIA.ui.recalculo), solo en el Modo real");
 });

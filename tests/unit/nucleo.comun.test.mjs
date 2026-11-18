@@ -142,3 +142,10 @@ test("EIA.todos: en paralelo, pero el error es el primero en el orden pedido (el
   // 13 falla antes que 09, pero se informa 09 (el archivo principal del módulo va primero)
   await assert.rejects(EIA.todos([espera(20, "09", true), espera(1, "13", true)]), /09/);
 });
+
+test("T-26: cortes del más reciente al más antiguo, con `ultimo` (la raíz de data_real/) primero aunque no esté en la lista", () => {
+  const ix = { ultimo: "2026-11-16", cortes: ["2025-11-28", "2026-10-30", "2026-06-30"] };
+  assert.deepEqual(EIA.ordenarCortes(ix), ["2026-11-16", "2026-10-30", "2026-06-30", "2025-11-28"]);
+  assert.deepEqual(EIA.ordenarCortes({ cortes: ["2026-01-30", "2026-03-31"] }), ["2026-03-31", "2026-01-30"], "sin `ultimo`, solo se ordena");
+  assert.deepEqual(EIA.ordenarCortes({ ultimo: "2026-03-31", cortes: ["2026-03-31", "2026-01-30"] }), ["2026-03-31", "2026-01-30"], "sin duplicados");
+});

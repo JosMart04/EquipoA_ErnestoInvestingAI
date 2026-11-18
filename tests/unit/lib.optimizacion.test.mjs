@@ -162,7 +162,9 @@ test("Workers: protocolo calcular → progreso → resultado, y errores como men
   const b = [];
   WB.manejar({ tipo: "calcular", params: { fechas: c2.fechas, cierres: c2.cierres, tickers: TODOS } }, m => b.push(m));
   assert.equal(b.at(-1).tipo, "resultado");
-  assert.deepEqual(Object.keys(b.at(-1).datos).sort(), Object.keys(c9).sort(), "mismo esquema que 09");
+  // Mismo esquema que 09, más «parametros» (los que usó el recálculo, para declararlos en la interfaz; T-26)
+  assert.deepEqual(Object.keys(b.at(-1).datos).filter(k => k !== "parametros").sort(), Object.keys(c9).sort(), "mismo esquema que 09");
+  assert.deepEqual(Object.keys(b.at(-1).datos.parametros).sort(), ["comisionPb", "momentum", "paso", "perfiles", "rf", "ventana"]);
   WO.manejar({ tipo: "otro" }, () => assert.fail("no debe responder a otros mensajes"));
 });
 

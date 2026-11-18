@@ -4,13 +4,13 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 15:33 (Lima)
+- Fecha y hora: 2026-11-17 19:57 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-27-a11y-graficos` → PR #20 (accesibilidad de gráficos y barrido)
+- Rama / último commit: `cc/docs-validacion-camara` (solo documentación: Josué validó la calibración y la «V»)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **126/126, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **132/132, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -33,6 +33,10 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **126/126
 | #18 (CX) | T-50 | E2E de Backtesting (curvas, métricas, nota del tope, Agresivo → 12 rebalanceos) y ausencia aislada de `09` | 48 E2E en la CI |
 | #19 | T-25 | **Migas de pan** en el núcleo al llegar por un enlace cruzado (Clasificación › NVDA › Regresión › Optimizador; Portafolios › Agresivo › Backtesting) | 120/120; navegador: cadena, recarga, vuelta atrás, cambio de activo, EN, barra de módulos sin migas, 390 px; 27 cargas de humo. Además `EIA.todos`: el diagnóstico de datos ausentes nombra el primer archivo en orden |
 | #20 | T-27 | **Accesibilidad de gráficos (a) y barrido (e):** exploración punto a punto con tono y anuncio, resumen automático por serie, «Leer en voz alta», consenso sonoro, barrido de 6 grupos, fuente legible y cursor grande; corrige el aria-label en inglés de ECharts | 126/126; navegador: 5 módulos con gráfico, barrido completo (grupo → bloque → `<select>` → diálogo → opción → Esc), reanudación al navegar, 390 px, contraste ≥ 5,5:1; 27 cargas de humo |
+| #23 | T-29 (QA) | Issue #21 de CX (axe): texto con contraste medido sobre cada color de serie (`--serie-texto-N`) en Backtesting y Portafolios | 169 tramos ≥ 4,95:1 en claro, oscuro y alto contraste |
+| #24 | T-26 | **Modo real** con los datos del PR #22 de CX: recálculo en Workers en Backtesting y Optimizador (`EIA.ui.recalculo`), cortes ordenados, textos que solo valían para el curso | 130/130; probado con los datos reales en un worktree: 9 páginas, recálculo, «Volver», idioma, corte antiguo, 390 px; 27 cargas de humo |
+| #25 | T-28 | **Calibración de 5 puntos** de la cabeza con interfaz, **guía de gestos** con SVG propios y **«V» de dos dedos** para desplazar (D-23: sin deslizar ni pulgar arriba) | 132/132; navegador con poses simuladas: calibración exacta, Esc, quitar desde el Centro, V desplaza sin mover el puntero, 390 px |
+| #26 | T-29 (parte) | Pasada de conformidad con Figma: casillas de series visibles en Backtesting (como en Figma) sincronizadas con la leyenda; Optimizador móvil con símbolos más chicos y zoom con dos dedos | 132/132; navegador: casillas ↔ leyenda en los dos gráficos sin bucle, EN, 390 px; 27 cargas de humo |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -40,13 +44,14 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **126/126
 - **Bucle real de la cámara** (PR #8): MediaPipe 1.2.3 cargado de verdad con un video falso (`canvas.captureStream`): 369 cuadros en 10 s (46 por segundo), el `<video>` sigue en la página y sin pausa. Con un detector sustituto en movimiento: el puntero sigue moviéndose a los 10 s con la cabeza; con la mano abierta no se pausa; el puño 1,5 s pausa y reanuda; si algo saca el `<video>`, el vigilante lo devuelve.
 - Centro de accesibilidad (`#btn-a11y` o `Alt+Shift+A`): tamaño de texto, alto contraste, reducir movimiento, espaciado, subrayar enlaces y tramas; se guardan en `eia_a11y` y se aplican en todas las páginas.
 - **Barrido** con `?barrido=1` (o el botón del Centro): grupos, bloques, «Salir del grupo», `<select>` → diálogo → opción, Esc, reanudación al cambiar de página. Interruptor probado con eventos de teclado sintéticos; **falta probarlo con un interruptor físico o con parpadeo real**.
-- **Exploración de gráficos:** flechas, Inicio/Fin, Re Pág/Av Pág, ↑/↓ y S en Dashboard, Regresión, Backtesting y Portafolios; anuncios en `#eia-vivo` y tooltip. **El sonido y la voz no se oyeron** (el panel del navegador no tiene salida de audio que pueda comprobar): falta escucharlo una vez.
+- **Exploración de gráficos:** flechas, Inicio/Fin, Re Pág/Av Pág, ↑/↓ y S en Dashboard, Regresión, Backtesting y Portafolios; anuncios en `#eia-vivo` y tooltip. **Josué confirmó el 17-nov que el sonido y la voz funcionan.**
 - Puntero virtual con `?puntero=raton`: permanencia sobre un botón (un solo clic, sin repetir), `<select>` → diálogo de opciones → elige una, abrir y cerrar el Centro, enlace de otro módulo.
 - Guion simulado (`EIA.camara.iniciar("cabeza" | "manos", {simulada: true, objetivo: "#tema"})` o `?camara=simulada&mod=cabeza&objetivo=%23tema`): **cabeza + permanencia**, **cabeza + parpadeo largo** y **mano + pellizco** llevan el puntero al botón y hacen clic; Esc detiene; al detener se quitan HUD, puntero y `modo-puntero`.
 - Sin cámara no se descarga MediaPipe (comprobado en los recursos de la página).
 
-**NO probado (necesita una persona con webcam; Anexo A: Adrian y Augusto):**
-- **Josué probó la versión del PR #6 el 17-nov: el puntero solo se movía el primer instante.** La causa se corrigió en el PR #8; **falta que vuelva a probarlo** con la cámara real (al menos 1 minuto con la cabeza y 1 con la mano, en dos páginas).
+**Probado por Josué con la webcam de su laptop (17-nov):** cabeza y manos funcionan de forma continua (tras el PR #20); el sonido y la voz se oyen; la **calibración de 5 puntos** y la **«V» de dos dedos** funcionan bien (tras el PR #25, en Pages).
+
+**NO probado todavía (Anexo A: Adrian y Augusto):**
 - **El signo de los ejes de la cabeza.** `senales.anguloCabeza` supone la matriz de MediaPipe en orden por columnas. Si el puntero va al revés, hay dos casillas «Invertir» en el Centro; si hace falta, cambia el valor por defecto de `sx`/`sy` en `js/a11y/cabeza-mirada.js`.
 - Umbrales reales de parpadeo (0,5 durante 400 ms), boca (0,5 durante 300 ms), pellizco (0,35 / 0,5) y puño (1,5 s); el recorrido por defecto de la cabeza (18°).
 - La reanudación de la cámara al cambiar de página (`sessionStorage.eia_cam`).
@@ -58,9 +63,10 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **126/126
 
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
-2. **T-26** (Modo real) cuando CX publique 01–13 en `data_real/`; mientras tanto, **T-28** (calibración de 5 puntos con interfaz, tarjeta de ayuda de gestos) y **T-29** (conformidad con Figma y P08).
-3. Mejora pendiente del Optimizador: a 390 px los puntos de NSGA-II y NSGA-III se superponen.
-4. Cuando Josué vuelva a probar la webcam, ajusta signos y umbrales con lo que reporte.
+2. Fusionar el PR #22 de CX en cuanto resuelva el conflicto de la bitácora y quede en verde; después revisar el Modo real en Pages.
+2b. **T-29**: esperar la auditoría P08 de CX (`docs/informe/auditoria_P08.md`), corregir sus hallazgos y congelar funciones (jue 19, 20:00).
+3. Optimizador a 390 px: mejoró (símbolos y zoom, PR #26), pero los frentes del curso casi coinciden; en el celular se elige apagando una serie o desde la tabla.
+4. Josué probó la webcam el 17-nov y funciona; si alguien reporta el puntero invertido, usa las casillas «Invertir» del Centro.
 
 ## Cómo se hace un módulo (el ejemplo vivo es `js/clasificacion.js` + `tests/unit/clasificacion.test.mjs`)
 1. HTML mínimo: `<body data-page="<id>">`, un `<h1>`, un `<p class="sub">`, contenedores vacíos con `id`, `js/common.js` y luego `js/<id>.js`. Texto estático con `data-i18n="clave"`. Sin cifras en el HTML.
@@ -73,7 +79,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **126/126
 ## Desviaciones respecto del plan (decididas al ejecutar)
 - **Markowitz** usa un algoritmo de pares exacto (KKT), no gradiente proyectado: el gradiente tardaba 28 s; este, 16 ms.
 - **`js/a11y/preferencias.js` y `anunciador.js` no existen:** las preferencias las aplica `EIA.aplicarPreferencias()` de `common.js` (para no cargar nada más en cada página) y los anuncios son `EIA.ui.anunciar()`. El panel está en `js/a11y/panel.js`.
-- **Calibración de 5 puntos:** está la matemática (`senales.ajusteAfin`, probada) pero no la interfaz; hoy se usa «Recentrar» y ganancias fijas (±18° de giro y ±12° de inclinación recorren la pantalla).
+- **Calibración de 5 puntos:** está con interfaz desde el PR #25 (`EIA.camara.calibrar`); sin calibrar se usan «Recentrar» y ganancias fijas (±18° de giro y ±12° de inclinación). El **ajuste fino con el iris no se hizo**.
+- **Gestos de mano (D-23):** sin «deslizar» ni «pulgar arriba»; hay «V» de dos dedos para desplazar.
 - **`resumen.js` y `lectura.js` no existen:** el resumen automático y la exploración punto a punto viven en `EIA.ui.grafico` (núcleo), para que todos los gráficos los tengan sin cargar nada más. `js/a11y/sonificacion.js` (tonos) y `js/a11y/barrido.js` sí son archivos aparte, cargados bajo demanda.
 - **Sonificación de la regresión:** la mediana y la historia suenan como series (↑/↓ para cambiar); la banda como ruido suave no se hizo.
 - **Fuente legible:** usa Atkinson Hyperlegible o Verdana **si están instaladas**; no se descarga ninguna fuente (el sitio no carga recursos externos aparte de ECharts y MediaPipe).
@@ -93,7 +100,11 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **126/126
 - **El navegador cachea `js/common.js` y los `i18n/*.json`** con `python -m http.server`: tras editarlos, recarga forzada (Ctrl+F5).
 - **Remontar componentes:** `EIA.ui.tabla`, `segmentado` y `grafico` cancelan sus oyentes anteriores al montarse otra vez sobre el mismo nodo (`montar()` en `common.js`). Si creas un componente nuevo con `addEventListener` sobre `destino`, usa `montar(destino).control.signal`.
 - **Formato de `js/lib`:** cada archivo publica `EIALib.<nombre>` y `module.exports`; las dependencias se piden con `dep("nombre")`. En un Worker se cargan con `importScripts` **en orden de dependencia** (estadistica y simplex antes de markowitz; markowitz antes de nsga2, nsga3 y backtest).
-- **Las carteras de `09` del profesor no se reproducen** con `backtest.js` (su optimizador no está documentado); las referencias sí. No es un fallo: el recálculo solo existe en el Modo real.
+- **Las carteras de `09` del profesor no se reproducen** con `backtest.js` (su optimizador no está documentado); las referencias sí. No es un fallo: el recálculo solo existe en el Modo real. **Con los datos reales sí:** misma fecha final → EPU y 1/N idénticos al Python de CX; Moderado +17,05 % frente a +17,03 %.
+- **ECharts conectados (`echarts.connect`):** nunca llames a `dispatchAction` dentro de un evento de leyenda: se reenvía entre los gráficos sin fin. Usa `setOption({legend: {selected}})` (no emite eventos) y deja que `connect` propague los clics.
+- **`String.replace` con texto de reemplazo:** `$$` se vuelve `$` (me pasó con `$$(…)`). En los scripts de edición, usa una función como reemplazo.
+- **Recálculo (`EIA.ui.recalculo`):** el módulo guarda `recalc` y en `pintar(datos)` lo mezcla con los datos del archivo; se descarta al cambiar de modo (y de corte en el Optimizador). El Worker solo se crea en el núcleo (`EIA.trabajo`); una prueba vigila que ningún módulo cree Workers.
+- **`cortes/index.json`:** `ultimo` no está en `cortes[]` y el arreglo viene ascendente; usa siempre `EIA.ordenarCortes`.
 - **R-REG-09 literal falla en 5 activos** de `data/` por redondeo: se verifica con I-03b (contrato §4 y nota N-1).
 - **El 1/N del profesor es de rebalanceo diario** (contrato I-10, nota N-2). La volatilidad de `09` usa desviación poblacional.
 - **El «Agresivo» de `08` rinde menos que el «Moderado»** (nota N-4): no escribir textos que afirmen un orden entre niveles.
