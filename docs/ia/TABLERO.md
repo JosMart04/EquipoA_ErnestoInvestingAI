@@ -51,9 +51,9 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-50 | Suite E2E + axe + datos | CX | hecho | PR #22 (fusionado) | §11 | 132 JS, 31 Python, 244/244 navegador locales (228 + 16), 72/72 axe sin violaciones; contraste #21 corregido. Nuevos E2E T-26/T-28/T-29. P08 identifica tres hallazgos aparte. |
 | T-51 | qa.yml (CI) + escaneo de secretos | CX | hecho | PR #22 (fusionado) | R-ETI-03 | CI de resolución 4c62ca3 verde (228 casos); la entrega P08 amplía a 244. Sin exclusiones axe. |
 | T-60 | Auditoría P08 | CX | hecho | PR #22 (fusionado) · docs/informe/auditoria_P08.md | R-FLU-06 | Entregada con prompt literal, citas, JSON y tres capturas: H-01 alta (historia futura en corte antiguo), H-02/H-03 medias (veracidad). Evidencia humana MSG-1957. CC reprodujo y corrigió los tres hallazgos (PR #29). |
-| T-61 | README + PROMPTS_USADOS.md | CC-O (D-24) | en revisión | PR #31 · cc/T-61-entregables | R-ENT-02, R-ENT-05 | README profesional y «About» de GitHub (PR #31). `PROMPTS_USADOS.md`: 21 entradas literales de OP, CC y CX en orden cronológico, generado con `tools/compilar_prompts.mjs` (autorizado por Josué el 18-nov) |
-| T-62 | Informe PDF S13_EquipoA_Informe.pdf | CC-O (D-24) | en revisión | cc/T-61-entregables | R-ENT-04 | 10 páginas con la carátula del equipo; 10 figuras; cifras leídas de los JSON (`tools/informe/`). **Josué debe revisarlo** |
-| T-63 | Guía de accesibilidad para el usuario | CC-O (D-24) | en revisión | cc/T-61-entregables | §9 | `docs/guia-usuario/accesibilidad.md` |
+| T-61 | README + PROMPTS_USADOS.md | CC-O (D-24) | hecho | PR #31 · PR #34 | R-ENT-02, R-ENT-05 | README profesional y «About» de GitHub (PR #31). `PROMPTS_USADOS.md`: 21 entradas literales de OP, CC y CX en orden cronológico, generado con `tools/compilar_prompts.mjs` (autorizado por Josué el 18-nov) |
+| T-62 | Informe PDF S13_EquipoA_Informe.pdf | CC-O (D-24) | hecho | PR #34 | R-ENT-04 | 10 páginas con la carátula del equipo; 10 figuras; cifras leídas de los JSON (`tools/informe/`). **Josué lo revisó y lo aprobó el 18-nov** |
+| T-63 | Guía de accesibilidad para el usuario | CC-O (D-24) | hecho | PR #34 | §9 | `docs/guia-usuario/accesibilidad.md` |
 | T-64 | Video (opcional) | HUM (D-24) | pendiente | | D-11 | |
 | T-70 | Mockups de Figma Make + importación | OP | hecho | fuera del repo | R-FLU-01 | https://www.figma.com/make/BWA9B3JoRbAWZiVoPSyoBO |
 | T-71 | Compartir Figma (solo lectura) + figma-src/ sin editar | JM | hecho | main | R-FLU-02, R-ENT-01 | |

@@ -467,3 +467,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-61-entregables`
 - **Contrato:** sin cambios
 - **Prioridad:** media · **Para cuándo:** jue 19-nov
+
+### MSG-20261118-0050 · CC · INFO
+- **Asunto:** Josué aprobó el informe PDF
+- **Qué cambió:** Josué revisó `docs/informe/S13_EquipoA_Informe.pdf` (fusionado en el PR #34) y dijo que está bien. T-61, T-62 y T-63 pasan a «hecho».
+- **Pendiente (humano):** enlace de solo lectura de Figma, pruebas por rol (T-80), registrar los enlaces en la tabla del curso, video opcional, congelamiento jue 20:00.
+- **Archivos / PR:** rama `cc/docs-informe-revisado` (solo documentación)
+- **Contrato:** sin cambios
+- **Prioridad:** baja · **Para cuándo:** —

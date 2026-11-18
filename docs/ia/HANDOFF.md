@@ -4,9 +4,9 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-18 00:30 (Lima)
+- Fecha y hora: 2026-11-18 00:50 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-61-entregables` (entregables de documentación: informe PDF, `PROMPTS_USADOS.md`, guía de accesibilidad, capturas)
+- Rama / último commit: `cc/docs-informe-revisado` (Josué aprobó el informe; entregables fusionados en el PR #34)
 
 ## Hecho (con evidencia)
 
@@ -42,7 +42,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 | #30 | T-90 | **Comandos de voz** (`js/a11y/voz.js`): Web Speech API ES/EN, consentimiento, indicador, confirmación visual y hablada, ayuda, Alt+Shift+V, reanudación al navegar; gramática en i18n y acciones por el bus | 140/140; navegador con reconocedor simulado: tema, filtro, activo por empresa, clic en, ayuda, pausa, idioma, detener, atajo, Centro, navegación con reanudación, 390 px; 27 cargas de humo. **Sin micrófono real** |
 | #31 | T-61 (parte) | **README profesional** (módulos, características, tecnologías con versiones, arquitectura, ejecución, pruebas, datos, accesibilidad, créditos) y «About» de GitHub (descripción, sitio, 20 temas) | Enlaces del README verificados |
 | #32 | T-90b | «Clic en …» por voz: por palabras, números dichos («tres meses» → 3M), opciones de listas y elección numerada entre botones repetidos (o «el segundo …») | 144/144; navegador: periodos del Dashboard, opción «ETF sectoriales», «Magníficas siete», «Elegir» ×3 con marcas, «el segundo», «cancelar» |
-| cc/T-61-entregables | T-61, T-62, T-63 | **Entregables (autorizados por Josué el 18-nov):** `docs/informe/S13_EquipoA_Informe.pdf` (+ `.docx` editable) con la carátula del equipo, `PROMPTS_USADOS.md` (21 entradas literales), `docs/guia-usuario/accesibilidad.md`, capturas en `docs/capturas/sitio` y `docs/capturas/figma`, generadores en `tools/` (`capturas.mjs`, `compilar_prompts.mjs`, `informe/`). Las capturas revelaron tres detalles visuales, corregidos: título del eje Y del Optimizador, etiquetas finales del Backtesting y casilla «Fuente legible» del Centro | 144/144; PDF de 10 páginas revisado página por página; copia literal de prompts comprobada (20/20) |
+| #34 | T-61, T-62, T-63 | **Entregables (autorizados por Josué el 18-nov; informe aprobado por él):** `docs/informe/S13_EquipoA_Informe.pdf` (+ `.docx` editable) con la carátula del equipo, `PROMPTS_USADOS.md` (21 entradas literales), `docs/guia-usuario/accesibilidad.md`, capturas en `docs/capturas/sitio` y `docs/capturas/figma`, generadores en `tools/` (`capturas.mjs`, `compilar_prompts.mjs`, `informe/`). Las capturas revelaron tres detalles visuales, corregidos: título del eje Y del Optimizador, etiquetas finales del Backtesting y casilla «Fuente legible» del Centro | 144/144; PDF de 10 páginas revisado página por página; copia literal de prompts comprobada (20/20) |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -69,7 +69,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
-2. **Josué revisa el informe** (`docs/informe/S13_EquipoA_Informe.pdf`) y, si pide cambios, se editan los textos en `tools/informe/generar_informe.cjs` y se regenera (ver «Cómo probar»). No editar el PDF a mano.
+2. **Informe aprobado por Josué (18-nov).** Si cambia algo del sitio o de las cifras antes de la entrega, se editan los textos en `tools/informe/generar_informe.cjs` y se regenera (ver «Cómo probar»). No editar el PDF a mano.
 3. **Pendientes humanos:** comprobar que el archivo de Figma Make se ve con enlace de solo lectura sin iniciar sesión; pruebas por rol del Anexo A (T-80, incluidos lectores de pantalla); registrar los enlaces en la tabla del curso; video opcional (T-64).
 4. **Congelamiento de funciones** (jue 19, 20:00): desde ahí solo correcciones. Si cambia algo visible, repetir las capturas (`node tools/capturas.mjs <nombre>`) y regenerar el informe.
 5. Datos reales: revisar el Modo real en Pages tras cada actualización del bot (T-32). El Optimizador a 390 px sigue con frentes superpuestos (se elige apagando series o desde la tabla).
