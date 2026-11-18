@@ -32,6 +32,7 @@ Proyecto del curso **Interacción Humano-Computador (IHC 2026-II)** · Facultad 
 - [Pruebas y calidad](#pruebas-y-calidad)
 - [Datos y procedencia](#datos-y-procedencia)
 - [Accesibilidad](#accesibilidad)
+- [Entregables](#entregables)
 - [Créditos y uso de IA](#créditos-y-uso-de-ia)
 - [Licencia](#licencia)
 
@@ -153,7 +154,7 @@ npm --prefix tests run test:e2e              # E2E y axe en ambos temas, modos y
 python tools/validar_contrato.py data --modo profesor
 ```
 
-- **140 pruebas unitarias** de JavaScript, **31 de Python** y **244 casos de navegador** (Playwright + axe sin violaciones *serious* o *critical*) al 17-nov-2026.
+- **144 pruebas unitarias** de JavaScript, **31 de Python** y **244 casos de navegador** (Playwright + axe sin violaciones *serious* o *critical*) al 17-nov-2026.
 - Cada PR pasa por GitHub Actions: pruebas, escaneo de secretos con Gitleaks y la suite E2E. Solo se fusiona con todo en verde.
 - La [auditoría P08](docs/informe/auditoria_P08.md) revisa el sistema completo de forma independiente.
 
@@ -180,11 +181,26 @@ El sitio apunta a **WCAG 2.2 AA**. Hay un **Centro de accesibilidad** en la cabe
 
 La cámara y la voz piden consentimiento. La imagen de la cámara se procesa **solo en el navegador**. Para entender la voz, Chrome y Edge envían el audio a su propio servicio de reconocimiento.
 
+La guía paso a paso para usuarios está en [docs/guia-usuario/accesibilidad.md](docs/guia-usuario/accesibilidad.md).
+
+## Entregables
+
+| Entregable | Dónde |
+|---|---|
+| Informe (PDF, 10 páginas con carátula) | [docs/informe/S13_EquipoA_Informe.pdf](docs/informe/S13_EquipoA_Informe.pdf) · editable en [.docx](docs/informe/S13_EquipoA_Informe.docx) |
+| Prompts literales usados | [PROMPTS_USADOS.md](PROMPTS_USADOS.md) |
+| Guía de accesibilidad para usuarios | [docs/guia-usuario/accesibilidad.md](docs/guia-usuario/accesibilidad.md) |
+| Auditoría P08 | [docs/informe/auditoria_P08.md](docs/informe/auditoria_P08.md) |
+| Diseño en Figma Make | [archivo](https://www.figma.com/make/BWA9B3JoRbAWZiVoPSyoBO) · [prototipo navegable](https://misty-umber-07813177.figma.site/) · export sin editar en [`figma-src/`](figma-src/) |
+| Capturas del sitio y de Figma | [docs/capturas/](docs/capturas/) |
+
+El informe se regenera con los scripts de [`tools/informe/`](tools/informe/): las cifras se leen de los JSON, no se escriben a mano.
+
 ## Créditos y uso de IA
 
 - **Material base y datos sintéticos:** Ernesto D. Cancho-Rodríguez (FISI-UNMSM), bajo [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 - **Equipo A, IHC 2026-II:** diseño en Figma, dirección del proyecto y pruebas con usuarios.
-- **Asistencia de IA declarada:** el código y los textos se desarrollaron con asistencia de IA (Claude Code y Codex). Todo se ejecutó, verificó y revisó antes de integrarse. Cada commit asistido lleva coautoría y los prompts usados se documentan en [`docs/ia/prompts/`](docs/ia/prompts/).
+- **Asistencia de IA declarada:** el código y los textos se desarrollaron con asistencia de IA (Claude Code y Codex). Todo se ejecutó, verificó y revisó antes de integrarse. Cada commit asistido lleva coautoría y los prompts literales están en [`PROMPTS_USADOS.md`](PROMPTS_USADOS.md) (por herramienta, en [`docs/ia/prompts/`](docs/ia/prompts/)).
 
 ## Licencia
 

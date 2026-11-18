@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es-PE"><head><meta charset="utf-8"><title>Arquitectura · Ernesto Investing AI</title>
+<!-- Diagrama de arquitectura para el informe (tools/informe/). Se captura con Edge sin ventana a 1400×760. -->
+<style>
+  :root { --g: #771A23; --tx: #1b1f24; --mut: #4d5b6b; --bd: #c9d1da; --az: #0b4f9c; --azc: #e8f0fa; --gc: #f7eded; --vc: #eaf6ee; --v: #1e6b3a; --nc: #fff6e5; --n: #8a5a00; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 22px 26px; font: 15px/1.35 "Segoe UI", Arial, sans-serif; color: var(--tx); background: #fff; width: 1400px; }
+  .fila { display: grid; gap: 14px; margin-bottom: 14px; }
+  .caja { border: 2px solid var(--bd); border-radius: 12px; padding: 10px 14px; background: #fff; }
+  .caja h3 { margin: 0 0 4px; font-size: 16px; }
+  .caja p { margin: 0; color: var(--mut); }
+  .datos { background: var(--nc); border-color: #e2c48a; } .datos h3 { color: var(--n); }
+  .nucleo { background: var(--gc); border-color: #d6aab0; } .nucleo h3 { color: var(--g); }
+  .mod { background: var(--azc); border-color: #a9c3e6; } .mod h3 { color: var(--az); }
+  .ok { background: var(--vc); border-color: #a8d5b8; } .ok h3 { color: var(--v); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip { border: 1px solid #a9c3e6; background: #fff; border-radius: 999px; padding: 2px 10px; font-size: 13.5px; color: var(--az); }
+  .flecha { text-align: center; color: var(--mut); font-size: 13px; margin: -6px 0 6px; }
+</style></head>
+<body>
+  <div class="fila" style="grid-template-columns: 1fr 1fr">
+    <div class="caja datos"><h3>Modo profesor · data/</h3><p>13 JSON sintéticos del curso (anclados al 11-nov-2026). Se abren por defecto y no se modifican.</p></div>
+    <div class="caja datos"><h3>Modo real · data_real/</h3><p>Mismo esquema con precios de Yahoo Finance (yfinance) y modelos del equipo: pipeline en Python, 12 cortes mensuales y actualización diaria con GitHub Actions.</p></div>
+  </div>
+  <div class="flecha">▼ JSON con caché por modo y corte (contrato de datos)</div>
+  <div class="fila" style="grid-template-columns: 2.2fr 1fr 1fr">
+    <div class="caja nucleo"><h3>Núcleo EIA · js/common.js + css/styles.css</h3><p>Capa de datos · modos y cortes · i18n ES-PE / EN-US con Intl · temas y alto contraste · estado compartido (watchlist, cartera, migas) · componentes: gráfico con tabla y resumen, tabla ordenable, diálogo, recálculo · ciclo de vida <b>EIA.modulo</b></p></div>
+    <div class="caja nucleo"><h3>Algoritmos · js/lib</h3><p>Markowitz (KKT), NSGA-II, NSGA-III, backtest walk-forward y estadística; Web Workers para recalcular en el Modo real.</p></div>
+    <div class="caja nucleo"><h3>Accesibilidad · js/a11y</h3><p>Bus de comandos: teclado, puntero, cabeza y manos (MediaPipe), barrido, voz y sonido. Se carga bajo demanda.</p></div>
+  </div>
+  <div class="flecha">▼ cada página: modelo de vista puro (probado en Node) + pintado con Apache ECharts</div>
+  <div class="caja mod" style="margin-bottom:14px"><h3>9 módulos en una sola navegación</h3>
+    <div class="chips"><span class="chip">Dashboard</span><span class="chip">Watchlist y alertas</span><span class="chip">Trading simulado</span><span class="chip">Leaderboard</span><span class="chip">Clasificación ★</span><span class="chip">Regresión 30 sesiones ★</span><span class="chip">Optimizador ★</span><span class="chip">Portafolios ★</span><span class="chip">Backtesting ★</span></div>
+  </div>
+  <div class="fila" style="grid-template-columns: 1fr 1fr">
+    <div class="caja ok"><h3>Calidad</h3><p>Pruebas unitarias (node:test) · E2E y axe-core (Playwright) · validador del contrato (Python) · auditoría P08 independiente</p></div>
+    <div class="caja ok"><h3>Integración y despliegue</h3><p>Ramas y PR con CI obligatoria (pruebas, Gitleaks, E2E) en GitHub Actions · sitio estático en GitHub Pages, sin compilación</p></div>
+  </div>
+</body></html>

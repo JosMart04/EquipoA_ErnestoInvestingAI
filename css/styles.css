@@ -389,6 +389,10 @@ button.enlace, th button.orden { min-width: 1.5rem; } /* objetivo mínimo de 24 
 .panel-a11y h3 { margin-top: 1.25rem; border-bottom: 1px solid var(--bd); padding-bottom: .25rem; }
 .panel-a11y .fila-pref { display: flex; align-items: flex-start; gap: .6rem; margin: .5rem 0; flex-wrap: wrap; }
 .panel-a11y .fila-pref > label { margin: 0; flex: 1 1 12rem; }
+/* Filas con casilla: la casilla y su texto siempre en la misma línea (con una ayuda larga, el texto bajaba solo) */
+.panel-a11y .casilla.fila-pref { flex-wrap: nowrap; }
+.panel-a11y .casilla.fila-pref > input { flex: none; margin-top: .2rem; }
+.panel-a11y .casilla.fila-pref > span { flex: 1 1 auto; min-width: 0; }
 .panel-a11y input[type="range"] { max-width: 16rem; padding: 0; }
 .opciones-select { display: grid; gap: .5rem; }
 .opciones-select button { text-align: left; min-height: 3rem; }

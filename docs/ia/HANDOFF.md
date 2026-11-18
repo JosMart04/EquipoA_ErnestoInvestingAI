@@ -4,9 +4,9 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 23:38 (Lima)
+- Fecha y hora: 2026-11-18 00:30 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/docs-validacion-voz` (solo documentación: Josué validó las mejoras de «clic en»)
+- Rama / último commit: `cc/T-61-entregables` (entregables de documentación: informe PDF, `PROMPTS_USADOS.md`, guía de accesibilidad, capturas)
 
 ## Hecho (con evidencia)
 
@@ -42,6 +42,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 | #30 | T-90 | **Comandos de voz** (`js/a11y/voz.js`): Web Speech API ES/EN, consentimiento, indicador, confirmación visual y hablada, ayuda, Alt+Shift+V, reanudación al navegar; gramática en i18n y acciones por el bus | 140/140; navegador con reconocedor simulado: tema, filtro, activo por empresa, clic en, ayuda, pausa, idioma, detener, atajo, Centro, navegación con reanudación, 390 px; 27 cargas de humo. **Sin micrófono real** |
 | #31 | T-61 (parte) | **README profesional** (módulos, características, tecnologías con versiones, arquitectura, ejecución, pruebas, datos, accesibilidad, créditos) y «About» de GitHub (descripción, sitio, 20 temas) | Enlaces del README verificados |
 | #32 | T-90b | «Clic en …» por voz: por palabras, números dichos («tres meses» → 3M), opciones de listas y elección numerada entre botones repetidos (o «el segundo …») | 144/144; navegador: periodos del Dashboard, opción «ETF sectoriales», «Magníficas siete», «Elegir» ×3 con marcas, «el segundo», «cancelar» |
+| cc/T-61-entregables | T-61, T-62, T-63 | **Entregables (autorizados por Josué el 18-nov):** `docs/informe/S13_EquipoA_Informe.pdf` (+ `.docx` editable) con la carátula del equipo, `PROMPTS_USADOS.md` (21 entradas literales), `docs/guia-usuario/accesibilidad.md`, capturas en `docs/capturas/sitio` y `docs/capturas/figma`, generadores en `tools/` (`capturas.mjs`, `compilar_prompts.mjs`, `informe/`). Las capturas revelaron tres detalles visuales, corregidos: título del eje Y del Optimizador, etiquetas finales del Backtesting y casilla «Fuente legible» del Centro | 144/144; PDF de 10 páginas revisado página por página; copia literal de prompts comprobada (20/20) |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -68,10 +69,10 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 
 ## Siguiente paso exacto
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
-2. Datos reales: fusionados (PR #22). Revisar el Modo real en Pages tras cada actualización del bot de CX (T-32).
-2b. **T-29**: que CX repita su reproductor P08 sobre `main` y cierre #28; luego **congelamiento de funciones** (jue 19, 20:00): desde ahí solo correcciones.
-3. Optimizador a 390 px: mejoró (símbolos y zoom, PR #26), pero los frentes del curso casi coinciden; en el celular se elige apagando una serie o desde la tabla.
-4. Josué probó la webcam el 17-nov y funciona; si alguien reporta el puntero invertido, usa las casillas «Invertir» del Centro.
+2. **Josué revisa el informe** (`docs/informe/S13_EquipoA_Informe.pdf`) y, si pide cambios, se editan los textos en `tools/informe/generar_informe.cjs` y se regenera (ver «Cómo probar»). No editar el PDF a mano.
+3. **Pendientes humanos:** comprobar que el archivo de Figma Make se ve con enlace de solo lectura sin iniciar sesión; pruebas por rol del Anexo A (T-80, incluidos lectores de pantalla); registrar los enlaces en la tabla del curso; video opcional (T-64).
+4. **Congelamiento de funciones** (jue 19, 20:00): desde ahí solo correcciones. Si cambia algo visible, repetir las capturas (`node tools/capturas.mjs <nombre>`) y regenerar el informe.
+5. Datos reales: revisar el Modo real en Pages tras cada actualización del bot (T-32). El Optimizador a 390 px sigue con frentes superpuestos (se elige apagando series o desde la tabla).
 
 ## Cómo se hace un módulo (el ejemplo vivo es `js/clasificacion.js` + `tests/unit/clasificacion.test.mjs`)
 1. HTML mínimo: `<body data-page="<id>">`, un `<h1>`, un `<p class="sub">`, contenedores vacíos con `id`, `js/common.js` y luego `js/<id>.js`. Texto estático con `data-i18n="clave"`. Sin cifras en el HTML.
@@ -125,6 +126,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 - En el celular (≤ 640 px) la cabecera no es fija, a propósito: ocupa varias filas.
 - `figma-src/` trae sus propios `.gitignore` y `.gitattributes`: son parte del export y no se tocan.
 - La CI es `.github/workflows/qa.yml` (de CX): fusiona solo con `pruebas` y `secretos` en verde.
+- **Informe con Word (`tools/informe/unir_caratula.ps1`):** al insertar el cuerpo en la carátula, Word aplica los estilos de la carátula y **descarta el formato de párrafo igual al estilo por defecto del cuerpo**. Por eso el cuerpo usa formato directo y el mismo espaciado por defecto que la carátula (después 120, interlineado 276). La carátula ya termina con un salto de página: el cuerpo va en un párrafo nuevo, no tras otro salto. Si un intento falla, quedan procesos `WINWORD.EXE /Automation`: ciérralos.
+- **Capturas con Edge sin ventana:** Edge no baja de unos 500 px de ancho; las vistas a 390 px se capturan en el panel de navegador.
 
 ## Cómo probar
 - `python -m http.server 8000` → http://127.0.0.1:8000 (o `?modo=real`, `?lang=en-US`, `?t=NVDA`)
@@ -132,3 +135,9 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 - Puntero sin cámara: `clasificacion.html?puntero=raton` (quédate quieto 0,9 s sobre un botón).
 - Guion simulado: `clasificacion.html?camara=simulada&mod=cabeza&objetivo=%23tema` (el tema cambia solo a los ~2 s).
 - Cámara real: botón «Accesibilidad» → «Activar: puntero con la cabeza». Requiere `http://localhost` o HTTPS.
+- **Regenerar el informe** (Windows con Word; `docx` de npm fuera del repo):
+  1. `node tools/capturas.mjs` (con el servidor en el puerto 8000) → `docs/capturas/`.
+  2. `python tools/informe/recortar.py <carpeta>/img`.
+  3. `NODE_PATH=<carpeta>/node_modules node tools/informe/generar_informe.cjs <carpeta>/img <carpeta>/cuerpo.docx`.
+  4. `powershell -File tools/informe/unir_caratula.ps1 -Caratula caratula-proyecto.docx -Cuerpo <carpeta>/cuerpo.docx -Salida docs/informe/S13_EquipoA_Informe`.
+- `PROMPTS_USADOS.md`: `node tools/compilar_prompts.mjs` (lo arma desde `docs/ia/prompts/*.md`).
