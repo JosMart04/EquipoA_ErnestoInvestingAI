@@ -514,6 +514,8 @@
     }
     let barrido = null; try { barrido = global.sessionStorage.getItem("eia_barrido"); } catch (e) { barrido = null; }
     if (barrido || q.get("barrido") === "1") EIA.cargar("js/a11y/barrido.js").then(() => EIA.barrido.iniciar()).catch(() => {});
+    let voz = null; try { voz = global.sessionStorage.getItem("eia_voz"); } catch (e) { voz = null; }
+    if (voz) EIA.cargar("js/a11y/voz.js").then(() => EIA.voz.iniciar({ reanudar: true })).catch(() => {});
     if (!modalidad && q.get("puntero") === "raton") {
       EIA.cargar("js/a11y/bus-entrada.js").then(() => EIA.cargar("js/a11y/puntero.js"))
         .then(() => EIA.puntero.activar({ raton: true, permanencia: true, ms: (EIA.estado.get("eia_a11y") || {}).ms || 900 })).catch(() => {});
@@ -700,6 +702,8 @@
       if (e.key === "Escape" && menuAbierto) alternarMenu(false, true);
       // Atajo con modificadores para no chocar con los lectores de pantalla (WCAG 2.1.4)
       if (e.altKey && e.shiftKey && !e.ctrlKey && !e.metaKey && e.code === "KeyA") { e.preventDefault(); EIA.abrirAccesibilidad(); }
+      // Alt+Shift+V: activar o detener los comandos de voz (T-90)
+      if (e.altKey && e.shiftKey && !e.ctrlKey && !e.metaKey && e.code === "KeyV") { e.preventDefault(); EIA.cargar("js/a11y/voz.js").then(() => EIA.voz.alternar()).catch(() => {}); }
     });
     // Otra pestaña cambió el estado: se reenvía como evento
     global.addEventListener("storage", e => {

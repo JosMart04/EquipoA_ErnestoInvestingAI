@@ -461,3 +461,15 @@ body.modo-puntero button.enlace, body.modo-puntero th button.orden, body.modo-pu
 
 /* Backtesting: rótulo del trazo de cada serie en las casillas (repite el estilo de línea del gráfico) */
 .trazo { display: inline-block; min-width: 2ch; font-weight: 700; letter-spacing: -.1em; }
+
+/* Comandos de voz (T-90): indicador fijo abajo a la izquierda (el HUD de la cámara va a la derecha) */
+#eia-voz { position: fixed; left: .75rem; bottom: .75rem; z-index: 80; width: min(19rem, calc(100vw - 1.5rem)); background: var(--panel); color: var(--fg); border: 2px solid var(--ac); border-radius: 12px; padding: .6rem .75rem; font-size: .9rem; box-shadow: 0 6px 20px rgb(0 0 0 / .35); }
+#eia-voz p { margin: 0 0 .35rem; }
+.voz-cab { font-weight: 700; }
+.voz-punto { color: var(--dn); }
+#eia-voz.pausado .voz-punto { color: var(--mut); }
+.voz-oido { min-height: 1.2em; overflow-wrap: anywhere; }
+.voz-botones { display: flex; flex-wrap: wrap; gap: .35rem; }
+.voz-ayuda { margin: .25rem 0 0; padding-left: 1.2rem; }
+.voz-ayuda li { margin: .3rem 0; }
+/* En el celular, si el recuadro de la cámara también está activo, voz.js sube el indicador por encima de él */

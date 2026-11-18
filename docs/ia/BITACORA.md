@@ -419,3 +419,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-29-auditoria-p08` → PR #29 · cierra #28
 - **Contrato:** sin cambios (se usa `cortes/<fecha>/auditoria.json`, que ya publicas)
 - **Prioridad:** alta · **Para cuándo:** mié 18
+
+### MSG-20261117-2223 · CC · INFO
+- **Asunto:** D-24: Codex deja el proyecto; comandos de voz (T-90)
+- **Qué cambió:** Josué decidió que Codex ya no participa: Claude Code continúa con todo lo que queda, incluidas las rutas que eran de CX (D-24). Los entregables de documentación se harán al final y con su autorización. **T-90 (PR #30):** `js/a11y/voz.js` (bajo demanda) con Web Speech API en el idioma activo: consentimiento previo (el audio lo procesa el servicio de reconocimiento del navegador), indicador fijo con Pausa, Comandos y Detener, confirmación visual y hablada (sin escuchar mientras habla), ayuda con lo que se puede decir, Alt+Shift+V, Esc y «detener voz», reanudación al cambiar de página. Gramática en i18n (`voz.g_*` y `voz.m_*`): ir a un módulo, siguiente/anterior/volver, bajar/subir, activo por ticker o empresa, tema, modo, idioma, solo ML/DL, leer resumen, escuchar gráfico, llevar a Trading y «clic en» + texto visible. Las acciones de navegación y foco van por el bus. 140 pruebas JS (6 del intérprete en ES y EN).
+- **Pendiente:** probarla con un micrófono real (en el panel de pruebas el micrófono está bloqueado; se probó con un reconocedor simulado).
+- **Archivos / PR:** rama `cc/T-90-voz` → PR #30
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** —

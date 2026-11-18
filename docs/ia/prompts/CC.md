@@ -212,3 +212,11 @@ P08 requiere reproducir y corregir esos hallazgos antes de cerrar T-29.
 ##############
 Un paréntesis, falta mucho para terminar el proyecto?
 ```
+
+## 2026-11-17 22:15 · Claude Code · Claude Opus 5.5
+
+Respuesta de Josué al cierre del turno anterior (botón y mensaje):
+
+```text
+Realiza los comandos de voz (T-90). Codex ya no se usará para el proyecto, no está disponible por el momento, así que tú continuarás con lo que queda. Sobro los entregables de documentación se realizarán al final con mi autorización, ya que no son importantes por el momento. Eso sí quiero que actualices el README, que lo hagas profesional, también la parte de About y colocar las tecnologías, frameworks, lenguajes, librerías que se usan.
+```
