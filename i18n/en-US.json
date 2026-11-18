@@ -10,7 +10,16 @@
     "modelo": "Model",
     "corte_rotulo": "Model cutoff date",
     "corte_ultimo": "{fecha} (last close)",
-    "confianza": "Confidence: {nivel}"
+    "confianza": "Confidence: {nivel}",
+    "cancelar": "Cancel",
+    "recalculado": "Recomputed in your browser:",
+    "volver_archivo": "Back to the file data",
+    "volviste_archivo": "The file data is shown again.",
+    "recalculando": "Recomputing in your browser…",
+    "recalculo_listo": "Recomputation finished: the page shows the result computed in your browser.",
+    "recalculo_cancelado": "Recomputation cancelled.",
+    "recalculo_error": "Could not recompute: {error}",
+    "recalculo_sin_cierres": "The real closes (cierres_historicos.json) were not found, so it cannot be recomputed."
   },
   "nav": {
     "etiqueta": "System modules",
@@ -490,7 +499,7 @@
     "titulo": "30-session price regression",
     "sub": "Where could the price go? Each model projects a path; the band shows how much they disagree.",
     "ficha_que_hace": "Projects each asset's price for the next {h} sessions with {n} models ({ml} Machine Learning and {dl} Deep Learning) and summarizes their paths with the median and a band.",
-    "ficha_que_tan_bien": "On the test, the mean price error (MAPE) ranges from {mapemin} to {mapemax}. {mejoran} of {n} models beat “the price does not change”, but only by {mejmin} to {mejmax}. The R² of returns ranges from {r2min} to {r2max}: they explain very little of what happens.",
+    "ficha_que_tan_bien": "On the test, the mean price error (MAPE) ranges from {mapemin} to {mapemax}. {mejora} The R² of returns ranges from {r2min} to {r2max}: they explain very little of what happens.",
     "ficha_por_que": "The thick line is the median of the {n} models; the band runs from the most pessimistic to the most optimistic model without the extremes (p10–p90), and the cone shows where {nivel} of the scenarios would fall given the asset's volatility.",
     "ficha_controlas": "The asset, the model family, which models are drawn, how much history you see and whether the band and the cone are shown.",
     "ficha_ignorar": "Hide any model you do not trust or look only at the band. A forecast is not an order to buy or sell.",
@@ -566,7 +575,10 @@
     "def_r2": "How much of the variation in returns the model explains: zero is nothing and one is everything.",
     "def_mejora": "How much it lowers MAPE compared with assuming the price does not change. Positive: the model adds something.",
     "modelo_resaltado": "{modelo} line highlighted in the chart.",
-    "modelo_sin_resaltar": "No model highlighted."
+    "modelo_sin_resaltar": "No model highlighted.",
+    "mejora_todos": "All {n} models beat “the price does not change”, but only by {mejmin} to {mejmax}.",
+    "mejora_algunos": "{mejoran} of {n} models beat “the price does not change”, but only by {mejmin} to {mejmax}; the other {resto} do worse (down to {peor}).",
+    "mejora_ninguno": "None of the {n} models beats “the price does not change”: they range from {peor} to {mejor}."
   },
   "optimizador": {
     "titulo_pagina": "Optimizer: Markowitz, NSGA-II and NSGA-III · Ernesto Investing AI",
@@ -588,7 +600,7 @@
     "curva_ambas": "Both",
     "ayuda_teclado": "With the focus on the chart: left and right arrows move through the points of a series, up and down change series, Enter shows its composition.",
     "recalculo_titulo": "Recompute with other dates",
-    "recalculo_profesor": "In Course mode the fronts are read from the course file and are not recomputed. Recomputing in your browser will be available in Real mode.",
+    "recalculo_profesor": "In Course mode the fronts are read from the course file and are not recomputed. Recomputing in your browser is available in Real mode.",
     "recalcular": "Recompute in my browser",
     "serie_mk_universo": "Markowitz (whole universe)",
     "serie_mk_elegibles": "Markowitz (eligible)",
@@ -643,7 +655,12 @@
     "pedido_consenso": "{ticker} is not eligible because the classifiers' consensus is {consenso} (even though its projection is {retorno}).",
     "pedido_retorno": "{ticker} is not eligible because its projection is {retorno} (even though the consensus is {consenso}).",
     "pedido_ambos": "{ticker} is not eligible: the consensus is {consenso} and its projection is {retorno}.",
-    "llevar": "Take this portfolio to trading"
+    "llevar": "Take this portfolio to trading",
+    "recalculo_real": "You can recompute the frontiers in your browser with the real closes and another estimation window. The expected return will be the historical mean of that window (not the regressors' projection), so the result does not match the file.",
+    "recalculo_opcion": "Estimation window",
+    "ventana_opcion": "{n} sessions: {desde} to {hasta}",
+    "recalculado_detalle": "{n}-session window, from {desde} to {hasta}.",
+    "debajo_navegador": "These fronts were recomputed in your browser with a real evolutionary algorithm on Yahoo Finance closes."
   },
   "portafolios": {
     "titulo_pagina": "Portfolios at three risk levels · Ernesto Investing AI",
@@ -790,8 +807,14 @@
     "cierre_profesor": "This backtest uses synthetic history: the prices are not real.",
     "cierre_real": "This backtest uses real Yahoo Finance prices; even so, the past does not repeat itself.",
     "recalculo_titulo": "Recompute with another period",
-    "recalculo_profesor": "In Course mode the backtest is read from the course file and is not recomputed. Recomputing in your browser will be available in Real mode.",
-    "recalcular": "Recompute in my browser"
+    "recalculo_profesor": "In Course mode the backtest is read from the course file and is not recomputed. Recomputing in your browser is available in Real mode.",
+    "recalcular": "Recompute in my browser",
+    "nota_tope_real": "Note on the data: {lista} per asset, above the general cap of {tope}. In the real data it is a rule stated in the file's method, the same as in the course material.",
+    "recalculo_real": "You can recompute the backtest in your browser with the real closes, ending on another date. It uses the same monthly rule; the result may differ somewhat from the file, which was computed in Python.",
+    "recalculo_opcion": "End the period on",
+    "fin_ultimo": "{fecha} (last close)",
+    "recalculado_detalle": "period from {inicio} to {fin}.",
+    "metodo_navegador": "Recomputed in your browser with the real closes: rebalancing every {paso} sessions; risk estimated with the last {ventana} and a momentum filter of {momentum}; fee of {comision} bp on what is bought and sold. Conservative: minimum variance (cap {tc}); Moderate: maximum Sharpe (cap {tm}); Aggressive: maximum return (cap {ta})."
   },
   "datos": {
     "senal": {

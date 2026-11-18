@@ -192,7 +192,7 @@ Tienen nombre en el código (`EIA.K.*` o constantes del módulo) y nunca aparece
 | `meta.json` | `{version_contrato, generado_en (ISO UTC), fecha_corte, fuente, tickers_ok[], tickers_con_problemas[], stale, duracion_s, commit, aviso}` |
 | `precios/<TICKER>.json` | `{ticker, desde, fechas[], o[], h[], l[], c[], v[]}` diario ajustado |
 | `cierres_historicos.json` | `{fechas[], cierres{TICKER: []}}` (lo usan los Workers) |
-| `cortes/index.json` | `{ultimo, cortes[]}` |
+| `cortes/index.json` | `{ultimo, cortes[]}`: `ultimo` es la fecha de los archivos de la raíz de `data_real/` (no tiene carpeta); `cortes[]`, las carpetas históricas, en cualquier orden (la interfaz las ordena de la más reciente a la más antigua y pone `ultimo` primero) |
 | `cortes/<AAAA-MM-DD>/05…, 06…, 07…, 08…` | Mismos esquemas, entrenados solo con datos hasta esa fecha |
 
 Reglas adicionales: las de PLAN_MAESTRO §5.4 (liga ficticia marcada, umbrales de `11` recalculados, completar hasta 4 elegibles con aviso, `data_real/` ≤ 15 MB).
@@ -231,3 +231,4 @@ Las peticiones a `data_real/` llevan `?v=<meta.generado_en>` para esquivar la ca
 | **C-01** | 1.0.0 | 2026-11-16 | R-REG-09 se valida con **I-03b: igualdad inversa exacta**, no con 1 centavo fijo. La cota ampliada queda solo como diagnóstico | **aceptado** (ACK de CX, MSG-20261117-0150, solo para la igualdad inversa) |
 | **C-02** | 1.0.0 | 2026-11-16 | 1/N = rebalanceo **diario** sin comisión (I-10), en lugar del «mensual» de PLAN_MAESTRO §6.3 | **aceptado** (ACK de CX, MSG-20261117-0150; error máximo 0,00049) |
 | — | 1.0.0 | 2026-11-17 | Aclaración editorial (CC-O): I-03b ya no llama «equivalente» a la cota ampliada; N-1 declara que R-REG-09 literal sigue incumpliéndose; §7 describe la publicación parcial. Sin cambio de esquema | vigente |
+| — | 1.0.0 | 2026-11-17 | Aclaración editorial (CC-O) sobre `cortes/index.json`, según lo que publicó CX en el PR #22: `ultimo` no está en `cortes[]` y `cortes[]` va en orden ascendente. Sin cambio de esquema | vigente |

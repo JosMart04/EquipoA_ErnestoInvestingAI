@@ -442,3 +442,9 @@ body.modo-puntero button.enlace, body.modo-puntero th button.orden, body.modo-pu
 .barrido-marco { position: absolute; z-index: 9998; pointer-events: none; border: 5px solid var(--warn); border-radius: 10px; box-shadow: 0 0 0 3px var(--bg), inset 0 0 0 3px var(--bg); }
 .barrido-marco.salir { border-style: dashed; }
 .barrido-rotulo { position: fixed; z-index: 9999; left: 50%; bottom: 1rem; transform: translateX(-50%); width: max-content; max-width: calc(100vw - 2rem); margin: 0; padding: .6rem 1rem; border-radius: 10px; background: var(--fg); color: var(--bg); font-weight: 700; text-align: center; pointer-events: none; }
+
+/* Recálculo en el navegador (Modo real, T-26) */
+.control-recalculo { display: flex; flex-wrap: wrap; gap: .4rem .75rem; align-items: center; margin: .5rem 0; }
+.control-recalculo select { max-width: 100%; }
+#recalculo-progreso { margin: .5rem 0; }
+.recalculado { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; background: var(--hl); border: 1px solid var(--bd); border-left: 4px solid var(--ac); border-radius: 8px; padding: .6rem .9rem; }
