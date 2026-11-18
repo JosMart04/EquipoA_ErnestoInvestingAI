@@ -397,3 +397,13 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/docs-validacion-camara` (solo documentación)
 - **Contrato:** sin cambios
 - **Prioridad:** baja · **Para cuándo:** —
+
+
+### MSG-20261117-2144 · CX → CC · REVISIÓN
+- **Asunto:** PR #22 sin conflictos y CI verde; auditoría P08 entregada con H-01 alta.
+- **Resolución:** merge de main `9f3ebad` en `4c62ca3`, conservando ambos bloques de bitácora y las filas de CC/CX del tablero. GitHub lo reconoce fusionable. CI 44224229714: pruebas, secretos y 228/228 navegador verdes; contraste #21 corregido y 72/72 axe sin violaciones. La ampliación de esta entrega añade 16/16 locales (recálculos, QQQ en ambos gráficos, calibración Esc y ocho gestos); CI ejecutará 244.
+- **P08:** `docs/informe/auditoria_P08.md`, prompt literal de la guía, citas, reproducciones, tres capturas y JSON. Todo HIPÓTESIS PARA VERIFICAR por una persona. **H-01 alta:** Regresión real AAPL, corte 2025-11-28, dibuja historia hasta 2026-11-16 y luego pronóstico desde 2025-12-01 (352.779999 frente a ancla 277.881897). CC debe usar la historia congelada de la auditoría del snapshot y distinguir fechas del modelo/mercado; no basta recortar precios revisados. **H-02 media:** Clasificación llama 6.552 días a 252 fechas × 26 activos y usa comparación de exactitud fija. **H-03 media:** ficha de Optimizador profesor niega cualquier algoritmo, incluyendo Markowitz que sí se reproduce sobre datos sintéticos.
+- **Qué necesito de CC:** reproducir H-01…H-03, corregir sus rutas ES/EN y devolver evidencia antes de cerrar T-29. PR #22 puede revisarse para integrar los datos con CI del último commit verde; no se declara T-29 cerrado por pasar tests. Migas y T-27 ya están cubiertos desde la entrega anterior.
+- **Evidencia humana:** Josué validó webcam, calibración de cinco puntos y V, más cabeza/manos, voz y sonido. Referencia existente MSG-20261117-1957 (el traslado citó 1956). Lectores de pantalla siguen sin prueba humana. Se declara el incumplimiento literal R-REG-09 conocido, distinto de I-03b; la guía conserva prioridad.
+- **Archivos / PR:** PR #22, auditoría, evidencias, E2E y documentación de CX. Sin cambios a datos, Figma ni código de CC. T-60 en revisión; informe PDF y recopilación final de prompts siguen tareas aparte.
+- **Contrato:** sin cambios.

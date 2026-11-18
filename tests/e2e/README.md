@@ -61,10 +61,13 @@ fallos en `tests/test-results/`. CI conserva los artefactos siete días.
 Las excepciones JS y peticiones fallidas son errores; los 404 controlados se
 comprueban en sus escenarios específicos.
 
-La matriz final con 01–13 y doce cortes reales termina **224/228**:
-156/156 funcionales y 68/72 axe. Los cuatro fallos son contraste de
-Backtesting claro en ambos modos y anchos, issue #21. No se desactiva la
-regla. Evidencia y comprobaciones: `docs/informe/QA-20261117.md`.
+Tras integrar PR #23–#27, **228/228** pasan: 156 funcionales y 72 axe.
+La ampliación `entregas.spec.mjs` añade 16 casos aprobados para recálculos,
+casillas sincronizadas y calibración/guía: total local **244/244** en dos
+bloques sin solapamiento. La CI corre los 244 juntos. El contraste #21 está
+corregido, sin excluir reglas. Evidencia: `docs/informe/auditoria_P08.md`.
+La auditoría identifica H-01…H-03 fuera de la cobertura de esta suite;
+verde automático no significa que estén corregidos.
 
 No sustituye pruebas humanas con webcam, lector de pantalla, audio o
 interruptor físico. Pendientes fuera de estos casos: sincronización de

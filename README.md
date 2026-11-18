@@ -53,11 +53,13 @@ cortes. Se guarda caché local ignorada por Git. Embargo de 30 sesiones,
 Pruebas de navegador y axe: [tests/e2e/README.md](tests/e2e/README.md).
 Contrato: [docs/CONTRATO_DATOS.md](docs/CONTRATO_DATOS.md).
 
-QA incluye pruebas JS, datos, causalidad, E2E y axe. La matriz inicial de esta
-entrega encontró contraste insuficiente en Backtesting claro:
-[issue #21](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/issues/21).
-No se desactivan reglas para ocultar el hallazgo. Las verificaciones automáticas
-no sustituyen pruebas humanas con webcam, lectores de pantalla o audio.
+QA actual: 132 pruebas JS, 31 Python y 244 casos de navegador locales
+(228 de matriz completa más 16 de las últimas entregas), con 72/72 axe sin
+violaciones. La corrección de contraste #21 quedó verificada. La
+[auditoría P08](docs/informe/auditoria_P08.md) identifica un fallo importante
+al combinar cortes históricos en Regresión y dos ajustes de veracidad;
+siguen pendientes de CC. La validación humana de webcam de Josué está
+registrada allí; lectores de pantalla y otras pruebas humanas siguen pendientes.
 
 `actualizar-datos.yml` configura el bot autorizado: diario L–V 22:15 UTC,
 cortes domingo 06:00 UTC y ejecución manual. Valida, conserva un artefacto,

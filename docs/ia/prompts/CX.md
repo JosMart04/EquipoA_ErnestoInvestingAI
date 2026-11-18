@@ -80,3 +80,54 @@ En el tablero, T-27 todavía figura «en revisión»: lo pasaré a «hecho» en 
 [{"questionItemId":"[\"request_user_input_async\",\"call_307c40ac2ee2419689c2859ec121fd99\",0]","question":"¿Autorizas activar T-32 para publicar automáticamente solo `data_real/**` en `main`, tras validar, de lunes a viernes a las 22:15 UTC y domingos a las 06:00 UTC? La propuesta está en `docs/informe/T-32-propuesta.md`; el workflow manual ya funciona sin escritura remota.","answer":"Sí, autorizar el bot programado"}]
 </send_user_message_question_reply>
 ```
+
+
+## 20261117-2140 · Resolución PR #22 y auditoría P08
+
+```text
+Ya le envié tu mensaje a Opus 5.5 y terminó de trabajar, te envió este mensaje:
+
+Sigo esperando dos cosas de Codex para cerrar T-29 antes del congelamiento del jueves a las 20:00:
+
+1. Que resuelva en su [PR #22](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/22) el conflicto en docs/ia/BITACORA.md para poder fusionar los datos reales. Ese PR sigue sin cambios desde su último commit.
+2. La auditoría P08, para corregir lo que encuentre.
+
+Cuando me pases cualquiera de las dos, sigo.
+
+📨 MENSAJE PARA CX\
+Josué validó con su webcam, en Pages, la calibración de 5 puntos y la «V» de dos dedos (PR [JosMart04/EquipoA_ErnestoInvestingAI#25 · feat(a11y): calibración de la…](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/25)): funcionan bien. Puedes citarlo como evidencia humana en la auditoría P08 y en el informe (bitácora `MSG-20261117-1956`). Sigue pendiente de ti: el conflicto de docs/ia/BITACORA.md en el PR [JosMart04/EquipoA_ErnestoInvestingAI#22](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/pull/22) y la auditoría P08.
+```
+
+### P08 aplicado desde la guía, página 17
+
+Transcripción literal por extracción del PDF; se conservan los saltos de línea y se omiten espacios finales de extracción. Se aplica a ambos modos según CX-03. No lo pegó el usuario: CX lo recuperó de la especificación.
+
+```xml
+<prompt id="P08" nombre="Claude: auditoría de calidad, accesibilidad y veracidad del sistema">
+  <role>Eres un auditor de calidad de software y accesibilidad (WCAG 2.2 AA) que no inventa
+hallazgos.</role>
+  <context>
+Se entrega el código HTML/CSS/JS del sistema integrado y, si es posible, la salida de axe-core
+sobre cada página.
+Es un sistema con datos sintéticos y predicciones simuladas.
+  </context>
+  <task>
+1. Verificar que cada módulo de predicción, optimización y backtesting muestra el aviso de
+datos sintéticos o simulados.
+2. Verificar que la clasificación solo muestra SUBE o BAJA.
+3. Verificar que ninguna cifra se escribió a mano en el código en lugar de leerse de los JSON.
+4. Auditar contraste, teclado, etiquetas, tablas con scope y alternativas en texto de los
+gráficos.
+5. Producir una tabla: módulo | hallazgo | evidencia (cita literal del código) | severidad |
+corrección propuesta.
+  </task>
+  <constraints>
+- Sin evidencia literal no hay hallazgo: anótalo en «No verificable».
+- Marcar todo como HIPÓTESIS PARA VERIFICAR hasta que una persona lo compruebe en pantalla.
+  </constraints>
+  <output>Tabla en Markdown, sección «No verificable» y sección «Criterios aparentemente
+cumplidos».</output>
+  <verification>El equipo reproduce cada fila en el navegador; las que no se reproducen se
+descartan y se declara en el informe.</verification>
+</prompt>
+```
