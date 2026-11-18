@@ -27,6 +27,100 @@
     const porNombre = (activos || []).find(a => { const n = normalizar(a.nombre); return n === t || (t.length >= 3 && (n.startsWith(t + " ") || n.split(" ")[0] === t)); });
     return porNombre ? porNombre.ticker : null;
   }
+
+  /* ── Coincidencia de «clic en …» (T-90b): por palabras, con números dichos en palabras y ordinales ── */
+  const NUM = {
+    es: { cero: 0, uno: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10, once: 11, doce: 12, trece: 13,
+      catorce: 14, quince: 15, dieciseis: 16, diecisiete: 17, dieciocho: 18, diecinueve: 19, veinte: 20, veintiuno: 21, veintidos: 22, veintitres: 23,
+      veinticuatro: 24, veinticinco: 25, veintiseis: 26, veintisiete: 27, veintiocho: 28, veintinueve: 29, treinta: 30, cuarenta: 40, cincuenta: 50,
+      sesenta: 60, setenta: 70, ochenta: 80, noventa: 90, cien: 100, ciento: 100, doscientos: 200, trescientos: 300, cuatrocientos: 400, quinientos: 500,
+      seiscientos: 600, setecientos: 700, ochocientos: 800, novecientos: 900 },
+    en: { zero: 0, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13,
+      fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, thirty: 30, forty: 40, fifty: 50, sixty: 60,
+      seventy: 70, eighty: 80, ninety: 90 }
+  };
+  const MIL = { es: "mil", en: "thousand" }, CIEN_EN = "hundred";
+  const ORD = {
+    es: { primero: 1, primera: 1, primer: 1, segundo: 2, segunda: 2, tercero: 3, tercera: 3, tercer: 3, cuarto: 4, cuarta: 4, quinto: 5, quinta: 5,
+      sexto: 6, sexta: 6, septimo: 7, septima: 7, octavo: 8, octava: 8, noveno: 9, novena: 9, decimo: 10, decima: 10, ultimo: -1, ultima: -1 },
+    en: { first: 1, second: 2, third: 3, fourth: 4, fifth: 5, sixth: 6, seventh: 7, eighth: 8, ninth: 9, tenth: 10, last: -1 }
+  };
+  const VACIAS = {
+    es: new Set(["de", "del", "la", "el", "los", "las", "en", "a", "al", "y", "e", "o", "un", "una", "unos", "unas", "por", "para", "con", "su", "sus", "boton", "enlace", "opcion"]),
+    en: new Set(["the", "of", "to", "a", "an", "and", "or", "on", "in", "for", "with", "button", "link", "option"])
+  };
+  const UNIDADES = {
+    es: { mes: "m", meses: "m", ano: "a", anos: "a", semana: "s", semanas: "s", dia: "d", dias: "d" },
+    en: { month: "m", months: "m", year: "y", years: "y", week: "w", weeks: "w", day: "d", days: "d" }
+  };
+  const lengua = idioma => (String(idioma || "es").slice(0, 2) === "en" ? "en" : "es");
+  /** Números dichos con palabras → cifras: «treinta y siete» → 37, «dos mil veinticinco» → 2025. Texto ya normalizado. Pura. */
+  function palabrasANumeros(texto, idioma) {
+    const L = lengua(idioma), num = NUM[L], salida = [], tk = String(texto || "").split(" ").filter(Boolean);
+    let actual = null, total = 0;
+    const cerrar = () => { if (actual !== null || total) { salida.push(String(total + (actual || 0))); actual = null; total = 0; } };
+    for (let i = 0; i < tk.length; i++) {
+      const w = tk[i];
+      if (w in num) { const v = num[w]; actual = actual === null ? v : (v < 10 && actual % 10 === 0 && actual >= 20 ? actual + v : (v < 100 && actual >= 100 && actual % 100 === 0 ? actual + v : (cerrar(), v))); continue; }
+      if (/^\d+$/.test(w) && actual === null && !total) { salida.push(w); continue; }
+      if (L === "es" && w === "y" && actual !== null && actual >= 20 && actual % 10 === 0 && tk[i + 1] in num && num[tk[i + 1]] < 10) continue; // «treinta y siete»
+      if (w === MIL[L] && (actual !== null || tk[i + 1] in num)) { total += (actual === null ? 1 : actual) * 1000; actual = null; continue; }
+      if (L === "en" && w === CIEN_EN && actual !== null) { actual *= 100; continue; }
+      cerrar(); salida.push(w);
+    }
+    cerrar();
+    return salida.join(" ");
+  }
+  /** «el segundo comprar», «comprar número dos», «la última» → {indice (1, 2… o −1 = último), resto}. Pura. */
+  function extraerOrdinal(texto, idioma) {
+    const L = lengua(idioma), ord = ORD[L], t = palabrasANumeros(normalizar(texto), L), tk = t.split(" ").filter(Boolean);
+    let indice = null;
+    const resto = [];
+    for (let i = 0; i < tk.length; i++) {
+      const w = tk[i];
+      if (indice === null && w in ord) { indice = ord[w]; continue; }
+      if (indice === null && (w === "numero" || w === "number" || w === "nro") && /^\d+$/.test(tk[i + 1] || "")) { indice = Number(tk[i + 1]); i++; continue; }
+      resto.push(w);
+    }
+    return { indice, resto: resto.join(" ") };
+  }
+  /** Palabras significativas: normalizadas, números en cifras y sin artículos ni preposiciones. Pura. */
+  function palabras(texto, idioma) {
+    const L = lengua(idioma);
+    const tk = palabrasANumeros(normalizar(texto), L).split(" ").filter(Boolean), salida = [];
+    const uno = L === "es" ? ["un", "una"] : ["a", "an"];
+    // «3 meses» → «3m» y «un año» → «1a»: así coincide con los botones de periodo «1M», «3M», «1A»
+    for (let i = 0; i < tk.length; i++) {
+      const cantidad = /^\d+$/.test(tk[i]) ? tk[i] : uno.includes(tk[i]) ? "1" : null;
+      if (cantidad && UNIDADES[L][tk[i + 1]]) { salida.push(cantidad + UNIDADES[L][tk[i + 1]]); i++; }
+      else if (!VACIAS[L].has(tk[i])) salida.push(tk[i]);
+    }
+    return salida;
+  }
+  /** Qué tan bien coincide lo dicho con el nombre de un control (0 = nada; ≥ 1 = la frase completa está). Pura.
+      Cuenta las palabras dichas que aparecen (iguales, abreviadas como «nov» por «noviembre», o en plural) y compara
+      también sin espacios para que «3 m» encuentre «3M». Penaliza un poco los nombres con muchas palabras de más. */
+  function puntuar(dicho, nombre, idioma) {
+    const Q = palabras(dicho, idioma), N = palabras(nombre, idioma);
+    if (!Q.length || !N.length) return 0;
+    const raiz = w => w.replace(/(es|s)$/, "");
+    const parecido = (a, b) => a === b || (a.length >= 3 && b.length >= 3 && (a.startsWith(b) || b.startsWith(a))) || (a.length > 3 && raiz(a) === raiz(b));
+    let s = Q.filter(q => N.some(n => parecido(q, n))).length / Q.length;
+    const cq = Q.join(""), cn = N.join("");
+    // Sin espacios, pero solo sobre palabras completas seguidas del nombre: «3 m» = «3M»; en cambio «…63 mínimo…» no es «3m»
+    const seguidas = () => { for (let i = 0; i < N.length; i++) { let j = ""; for (let k = i; k < N.length && j.length < cq.length; k++) { j += N[k]; if (j === cq) return true; } } return false; };
+    if (cq === cn) s = 1.5; else if (cq.length >= 2 && seguidas()) s = Math.max(s, 1.1);
+    return s - Math.min(0.2, 0.02 * Math.max(0, N.length - Q.length));
+  }
+  const UMBRAL_CLIC = 0.6; // menos: la frase y el nombre comparten muy poco
+  /** De una lista [{nombres:[…]}] (en orden del documento), las mejores coincidencias empatadas. Pura. */
+  function mejoresCoincidencias(dicho, items, idioma) {
+    const con = items.map((it, i) => ({ it, i, s: Math.max.apply(null, it.nombres.map(n => puntuar(dicho, n, idioma))) })).filter(x => x.s >= UMBRAL_CLIC);
+    if (!con.length) return [];
+    const top = Math.max.apply(null, con.map(x => x.s));
+    return con.filter(x => top - x.s < 1e-9).sort((a, b) => a.i - b.i).map(x => x.it);
+  }
+
   /** Frase → acción. G = {g_*: "alt1|alt2", m_<modulo>: "…"} del idioma activo. Devuelve null si no se entiende. Pura. */
   function interpretar(texto, G, activos) {
     const t = normalizar(texto); if (!t) return null;
@@ -55,7 +149,7 @@
     return null;
   }
 
-  const api = { normalizar, buscarActivo, interpretar, MODULOS };
+  const api = { normalizar, buscarActivo, interpretar, palabrasANumeros, extraerOrdinal, palabras, puntuar, mejoresCoincidencias, MODULOS, UMBRAL_CLIC };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   const EIA = global.EIA;
   if (!EIA || !global.document || EIA.voz) return;
@@ -71,7 +165,7 @@
     const G = {};
     ["g_ir", "g_clic", "g_activo", "g_siguiente", "g_anterior", "g_volver", "g_bajar", "g_subir", "g_tema_oscuro", "g_tema_claro",
       "g_modo_real", "g_modo_profesor", "g_solo_ml", "g_solo_dl", "g_todos", "g_leer", "g_escuchar", "g_llevar", "g_ayuda", "g_detener",
-      "g_ingles", "g_espanol"].concat(MODULOS.map(m => "m_" + m)).forEach(k => { G[k] = t("voz." + k); });
+      "g_ingles", "g_espanol", "g_cancelar"].concat(MODULOS.map(m => "m_" + m)).forEach(k => { G[k] = t("voz." + k); });
     return G;
   }
 
@@ -119,15 +213,79 @@
   /* ── Ejecución de las acciones ── */
   const nombreAccesible = el => (el.getAttribute("aria-label") || (el.labels && el.labels[0] && el.labels[0].textContent) || el.textContent || el.value || el.title || "");
   const visible = el => !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
-  /** «clic en X»: el elemento interactivo visible cuyo nombre accesible coincide mejor (exacto, empieza, contiene). */
-  function buscarControl(texto) {
+  /** Controles visibles que se pueden pulsar por voz y, de cada lista desplegable, también sus opciones.
+      Cada uno con sus nombres posibles: el accesible (aria-label o etiqueta) y el texto visible, que pueden diferir. */
+  function candidatos() {
     const raiz = document.querySelector("dialog[open]") || document;
-    const q = normalizar(texto);
-    const lista = Array.from(raiz.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),summary,[role="tab"],[tabindex]:not([tabindex="-1"])'))
-      .filter(el => visible(el) && !el.closest("#eia-voz")).map(el => ({ el, n: normalizar(nombreAccesible(el)) })).filter(x => x.n);
-    const exacto = lista.filter(x => x.n === q), empieza = lista.filter(x => x.n.startsWith(q)), contiene = lista.filter(x => x.n.includes(q));
-    const grupo = exacto.length ? exacto : empieza.length ? empieza : contiene;
-    return grupo.length ? grupo.sort((a, b) => a.n.length - b.n.length)[0].el : null;
+    const lista = [];
+    // Solo lo que se activa: las regiones desplazables y los lienzos de gráficos (tabindex sin rol de control) no se «pulsan»
+    Array.from(raiz.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),summary,[role="tab"],[role="button"],[role="link"],[role="option"],[role="menuitem"]'))
+      .filter(el => visible(el) && !el.closest("#eia-voz")).forEach(el => {
+        const nombres = [nombreAccesible(el), el.textContent || ""].map(s => s.replace(/\s+/g, " ").trim()).filter(Boolean);
+        if (nombres.length) lista.push({ el, nombres, tipo: "control" });
+        if (el.tagName === "SELECT") {
+          const etiqueta = nombreAccesible(el).trim();
+          Array.from(el.options).forEach(op => { const tx = op.textContent.trim(); if (tx) lista.push({ el, opcion: op, nombres: [tx, etiqueta + " " + tx], tipo: "opcion" }); });
+        }
+      });
+    return lista;
+  }
+  /* Elección cuando hay varios con el mismo nombre: se numeran en pantalla y se espera «uno», «dos»… o «cancelar» */
+  const ESPERA_ELECCION_MS = 20000;
+  let eleccion = null; // {cand: [...], hasta}
+  function quitarMarcas() { $$(".voz-marca").forEach(m => m.remove()); }
+  function marcar(cand) {
+    quitarMarcas();
+    cand.forEach((c, i) => {
+      const r = c.el.getBoundingClientRect(), m = document.createElement("span");
+      m.className = "voz-marca"; m.setAttribute("aria-hidden", "true"); m.textContent = EIA.fmt.ent(i + 1);
+      m.style.left = (r.left + global.scrollX - 6) + "px"; m.style.top = (r.top + global.scrollY - 10) + "px";
+      document.body.appendChild(m);
+    });
+  }
+  function terminarEleccion() { eleccion = null; quitarMarcas(); }
+  function nombreDe(c) { return (c.tipo === "opcion" ? c.opcion.textContent : nombreAccesible(c.el)).replace(/\s+/g, " ").trim().slice(0, 60); }
+  function pulsarCandidato(c) {
+    terminarEleccion();
+    if (c.tipo === "opcion") {
+      c.el.value = c.opcion.value; c.el.dispatchEvent(new Event("change", { bubbles: true }));
+      confirmar(t("voz.ok_opcion", { opcion: nombreDe(c), campo: nombreAccesible(c.el).replace(/\s+/g, " ").trim().slice(0, 40) }));
+      return;
+    }
+    const nombre = nombreDe(c);
+    pulsar(c.el); confirmar(t("voz.ok_clic", { nombre }));
+  }
+  /** «clic en …»: la mejor coincidencia; si hay varias empatadas, el ordinal dicho («el segundo») o una elección numerada. */
+  function clicPorVoz(texto) {
+    const L = EIA.idioma(), o = extraerOrdinal(texto, L);
+    const buscar = q => mejoresCoincidencias(q, candidatos(), L);
+    let cand = o.indice !== null && o.resto ? buscar(o.resto) : [];
+    let indice = cand.length ? o.indice : null;
+    if (!cand.length) { cand = buscar(texto); indice = null; } // «clic en primer nivel»: el ordinal era parte del nombre
+    if (!cand.length) { confirmar(t("voz.no_clic", { texto }), "error"); return; }
+    if (indice !== null) {
+      const c = indice === -1 ? cand[cand.length - 1] : cand[indice - 1];
+      if (!c) { confirmar(t("voz.elegir_fuera", { n: EIA.fmt.ent(cand.length) }), "error"); return; }
+      pulsarCandidato(c); return;
+    }
+    if (cand.length === 1) { pulsarCandidato(cand[0]); return; }
+    eleccion = { cand: cand.slice(0, 9), hasta: Date.now() + ESPERA_ELECCION_MS };
+    marcar(eleccion.cand);
+    confirmar(t("voz.elegir", { n: eleccion.cand.length, texto }));
+  }
+  /** Respuesta a una elección pendiente: un número, un ordinal o «cancelar». Devuelve true si la atendió. */
+  function responderEleccion(oido) {
+    if (!eleccion) return false;
+    if (Date.now() > eleccion.hasta) { terminarEleccion(); return false; }
+    const L = EIA.idioma(), G = gramatica(), n = normalizar(oido);
+    if ((G.g_cancelar || "").split("|").map(normalizar).includes(n)) { terminarEleccion(); confirmar(t("voz.elegir_cancelado")); return true; }
+    const o = extraerOrdinal(n, L), cifra = (palabrasANumeros(n, L).match(/\d+/) || [])[0];
+    const i = o.indice !== null ? o.indice : cifra ? Number(cifra) : null;
+    if (i === null) { terminarEleccion(); return false; } // otra orden: se olvida la elección y se interpreta normal
+    const c = i === -1 ? eleccion.cand[eleccion.cand.length - 1] : eleccion.cand[i - 1];
+    if (!c) { confirmar(t("voz.elegir_fuera", { n: EIA.fmt.ent(eleccion.cand.length) }), "error"); return true; }
+    pulsarCandidato(c);
+    return true;
   }
   function pulsar(el) {
     if (el.tagName === "SELECT") { EIA.ui.opcionesSelect(el); return; }
@@ -180,12 +338,7 @@
         if (!b) { confirmar(t("voz.no_aqui"), "error"); return; }
         b.click(); confirmar(t("voz.ok_llevar")); return;
       }
-      case "clic": {
-        const el = buscarControl(a.texto);
-        if (!el) { confirmar(t("voz.no_clic", { texto: a.texto }), "error"); return; }
-        const nombre = nombreAccesible(el).replace(/\s+/g, " ").trim().slice(0, 60);
-        pulsar(el); confirmar(t("voz.ok_clic", { nombre })); return;
-      }
+      case "clic": clicPorVoz(a.texto); return;
       case "ayuda": ayuda(); return;
       case "detener": detener(); return;
       default: confirmar(t("voz.no_entendi", { texto: oido }), "error");
@@ -195,6 +348,7 @@
   async function ejecutarTexto(texto) {
     const oido = String(texto || "").trim(); if (!oido) return null;
     pintarChip(t("voz.oido", { texto: oido }));
+    if (responderEleccion(oido)) return { accion: "eleccion" };
     const a = interpretar(oido, gramatica(), activos);
     if (!a) { confirmar(t("voz.no_entendi", { texto: oido }), "error"); return null; }
     await ejecutar(a, oido);
@@ -257,6 +411,7 @@
     const estaba = activo;
     activo = false; pausado = false; pararReconocimiento(); rec = null;
     if (chip) { chip.remove(); chip = null; }
+    terminarEleccion();
     sesion.set(CLAVE, null);
     if (estaba && !silencioso) EIA.ui.anunciar(t("voz.detenido"));
   }

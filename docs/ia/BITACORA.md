@@ -435,3 +435,15 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/readme-profesional` → PR #31
 - **Contrato:** sin cambios
 - **Prioridad:** media · **Para cuándo:** —
+
+### MSG-20261117-2312 · CC · INFO
+- **Asunto:** Voz validada por Josué; mejoras de «clic en …» (T-90b)
+- **Qué cambió:** Josué probó los comandos de voz con su micrófono: funcionan. Reportó cuatro problemas de «clic en …», corregidos en el PR #32:
+  1. **Varias palabras:** la coincidencia es por palabras (sin artículos ni preposiciones), acepta abreviaturas («noviembre» → «nov.») y plurales, y compara con el nombre accesible y con el texto visible.
+  2. **Números:** los números dichos con palabras pasan a cifras («treinta y siete», «dos mil veinticinco», «magníficas siete») y las unidades se juntan como en los botones («tres meses» → «3M», «un año» → «1A»). La comparación sin espacios solo vale sobre palabras completas (una etiqueta larga con «…63 mínimo…» ya no se confunde con «3 meses»).
+  3. **Listas desplegables:** se buscan también sus opciones: «clic en ETF sectoriales» la elige directamente en «Grupo».
+  4. **Botones repetidos:** si empatan, aparece un número sobre cada uno y se espera «uno», «dos», «el segundo» o «cancelar» (20 s); también se puede decir de una vez «clic en el segundo comprar».
+  Además, las regiones desplazables y los lienzos de gráficos ya no cuentan como «pulsables». 144 pruebas JS.
+- **Archivos / PR:** rama `cc/T-90b-voz-clic` → PR #32
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** —
