@@ -124,7 +124,8 @@ class ContratoEntrega(unittest.TestCase):
             self.assertTrue(all(type(v) in (int, float) and math.isfinite(v) and v > 0 for v in valores), t)
         self.assertIn("Yahoo Finance", meta["fuente"])
         self.assertIn("yfinance", meta["fuente"])
-        self.assertIn("parcial", meta["aviso"])
+        self.assertIn("Yahoo Finance", meta["aviso"])
+        self.assertIn("yfinance", meta["aviso"])
         self.assertTrue(meta["metodologia"]["auto_adjust"])
         path = ROOT / "data_real/cierres_historicos.json"
         self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), meta["metodologia"]["cierres_sha256"])

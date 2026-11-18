@@ -1,78 +1,84 @@
-# Ernesto Investing AI — sistema base (Semana 13, IHC 2026-II)
+# Ernesto Investing AI · Equipo A
 
-## Estado del Equipo A (17-nov-2026)
+Sistema web integrado de IHC 2026-II, FISI-UNMSM: Dashboard, Watchlist,
+Trading simulado, Leaderboard, Clasificación, Regresión a 30 sesiones,
+Optimizador, Portafolios y Backtesting. HTML, CSS y JavaScript sin compilación.
+Interfaz ES/EN, temas claro/oscuro y navegación móvil.
 
-El sitio del equipo se desarrolla sobre la base descrita abajo. Ya cuenta con
-núcleo compartido, Clasificación, bibliotecas de optimización y núcleo de
-accesibilidad; el avance detallado está en `docs/ia/HANDOFF.md`.
-
-- [Sitio del equipo](https://josmart04.github.io/EquipoA_ErnestoInvestingAI/).
-- [Figma Make](https://www.figma.com/make/BWA9B3JoRbAWZiVoPSyoBO) y
-  [prototipo publicado](https://misty-umber-07813177.figma.site/).
-- `data/` conserva los 13 JSON sintéticos del profesor, sin cambios.
-- `data_real/` es una **entrega parcial**: metadatos y cierres ajustados de 26
-  activos, 2.115 sesiones comunes (19-jun-2018 a 16-nov-2026). Procedencia:
-  **Yahoo Finance vía yfinance**, proyecto no afiliado a Yahoo, con fines
-  educativos; pueden existir retrasos o errores. No es asesoría de inversión.
-  Estos datos no están cubiertos por la licencia del material base.
-- Aún faltan los 13 JSON del Modo real y el entrenamiento de los modelos;
-  los módulos que los requieren mostrarán el archivo ausente.
-- [Reproducción y pruebas de la entrega de CX](pipeline/README.md).
-  `qa.yml` ejecuta las pruebas JS con el patrón entre comillas, pruebas Python
-  de datos/descarga y escaneo de secretos. E2E/axe y el validador completo
-  siguen pendientes.
-
-**ES** · Versión base y adaptada del sistema web que el Equipo A construyó en la Semana 4 (Dashboard, Watchlist y alertas, Trading simulado y Leaderboard, con tema claro/oscuro y vista móvil). Está reescrita en HTML + CSS + JavaScript puro, sin compilación, y lee **datos sintéticos** de la carpeta `data/`. Es el punto de partida del Trabajo Grupal de la Semana 13: *Sistema web integrado Ernesto Investing AI con clasificación, regresión, IA de portafolios en 3 niveles de riesgo y backtesting*.
-
-**EN** · Baseline, adapted version of the web system built by Team A in Week 4 (Dashboard, Watchlist and alerts, simulated Trading, Leaderboard, light/dark theme and mobile view), rewritten as plain HTML + CSS + JavaScript with no build step. It reads **synthetic data** from `data/`. It is the starting point for the Week 13 group assignment.
-
-Material educativo de Ernesto D. Cancho-Rodríguez (FISI-UNMSM). Los precios son sintéticos, anclados al cierre del 11-nov-2026; no son asesoría de inversión.
-
-## Qué incluye
-
-| Página | Estado |
-|---|---|
-| `index.html` Dashboard (velas, universo de 26 activos) | funcionando |
-| `watchlist.html` Watchlist y alertas | funcionando |
-| `trading.html` Trading simulado (guarda en el navegador) | funcionando |
-| `leaderboard.html` Leaderboard | funcionando |
-| `clasificacion.html`, `regresion.html`, `optimizador.html`, `portafolios.html`, `backtesting.html` ★ | **por construir por cada equipo**; muestran una vista previa de sus JSON de entrada |
-
-## Datos (`data/`)
-
-26 activos: las 7 Magníficas (AAPL, MSFT, GOOGL, AMZN, NVDA, META, TSLA), 5 mineras con operaciones en Perú (BVN, FSM, SCCO, BHP, B), 11 ETF sectoriales (XLK, XLF, XLE, XLV, XLY, XLP, XLI, XLU, XLB, XLRE, XLC) y los ETF SPY, QQQ y EPU (Perú).
-
-| Archivo | Contenido |
-|---|---|
-| `01_universo_tickers.json` | Universo, grupos, precio ancla, volatilidad y beta |
-| `02_precios_sinteticos_504d.json` / `03_ohlcv_sintetico_120d.json` | Historia sintética de 504 sesiones y velas de 120 |
-| `04_matriz_correlacion_covarianza.json` | Correlaciones, covarianzas y retornos esperados simulados |
-| `05_clasificadores_binarios.json` | 18 clasificadores (11 ML + 7 DL), SUBE/BAJA a 30 sesiones, solo dos clases |
-| `06_regresores_precio_30d.json` | 18 regresores (11 ML + 7 DL), 30 precios futuros por activo |
-| `07_optimizador_markowitz_nsga.json` | Frontera de Markowitz y frentes NSGA-II y NSGA-III (simulados) |
-| `08_portafolios_3_niveles_riesgo.json` | Portafolios Conservador, Moderado y Agresivo |
-| `09_backtesting_portafolios.json` | Backtesting walk-forward de 252 sesiones frente a SPY, QQQ, EPU y 1/N |
-| `10`–`12` | Dashboard, watchlist/alertas/portafolio demo y leaderboard |
-| `13_patrones_y_parametros.json` | Patrones realistas aplicados, parámetros y qué es real y qué es sintético |
-
-Los modelos **no se entrenaron**: sus salidas y los frentes NSGA-II/III están simulados con patrones razonables.
-
-## Cómo ejecutarlo
-
-Los navegadores bloquean `fetch()` en archivos abiertos con doble clic. Use un servidor local:
-
-```bash
-git clone https://github.com/mbaernestocr-tech/ernesto-investing-ai-base-s13.git
-cd ernesto-investing-ai-base-s13
-python -m http.server 8000      # abrir http://127.0.0.1:8000
+```powershell
+python -m http.server 8000
 ```
 
-## Publicar su versión en GitHub Pages
+Abrir [sitio local](http://127.0.0.1:8000).
+Repositorio del equipo: [EquipoA_ErnestoInvestingAI](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI).
 
-1. Cree un repositorio **propio de su equipo** (no haga fork de este) y suba su código.
-2. En *Settings → Pages* elija *Deploy from a branch*, rama `main`, carpeta `/ (root)`.
-3. Espere unos minutos y abra `https://<usuario>.github.io/<repositorio>/`.
+## Modos y procedencia
 
-## Licencia
+- **Profesor (`data/`):** 13 JSON originales intocables. Historia y resultados
+  sintéticos del curso; no se entrenaron esos modelos. Anclas al 11-nov-2026.
+- **Real (`data_real/`):** el pipeline de esta entrega descarga OHLCV ajustado,
+  entrena los 18 clasificadores y 18 regresores, ejecuta cvxpy/pymoo y calcula
+  backtesting causal. El corte y la procedencia están en `meta.json`; los
+  13 archivos conservan el contrato. Esta entrega incluye doce cortes de
+  fin de mes (nov-2025 a oct-2026), con sus auditorías; ocupa 12,69 MB.
+  Los estados parciales se muestran como
+  tales y no activan automáticamente el otro modo.
+- La liga y el Trading son simulados en ambos modos. No se conectan cuentas,
+  no se ejecutan órdenes reales y no hay claves de proveedor en el repositorio.
 
-© 2026 Ernesto D. Cancho-Rodríguez. Código, datos sintéticos y textos bajo [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); texto legal en [`LICENSE`](LICENSE). Parte del código se elaboró con asistencia de IA generativa (Claude, de Anthropic); el autor revisó el contenido y responde por él.
+Los datos reales proceden de **Yahoo Finance, obtenidos con yfinance**
+(proyecto no afiliado a Yahoo), con fines educativos. Pueden tener retrasos o
+errores. No son asesoría de inversión. La historia ajustada descargada hoy
+puede incorporar revisiones posteriores a cortes históricos; el universo fijo
+introduce sesgo de supervivencia. Los resultados se publican tal como salen.
+
+## Reproducir el pipeline y las pruebas
+
+```powershell
+python -m venv .venv
+.venv/Scripts/python -m pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
+.venv/Scripts/python -m pip install -r pipeline/requirements.txt
+.venv/Scripts/python -m pipeline.ejecutar --salida data_real --modo completo
+.venv/Scripts/python tools/validar_contrato.py data_real --modo real
+node --test "tests/unit/*.test.mjs"
+npm ci --prefix tests --ignore-scripts
+npx --prefix tests playwright install chromium
+npm --prefix tests run test:e2e
+```
+
+El entrenamiento requiere CPU y puede ser prolongado, especialmente los doce
+cortes. Se guarda caché local ignorada por Git. Embargo de 30 sesiones,
+252 fechas de prueba externa, hiperparámetros y limitaciones:
+[pipeline/README.md](pipeline/README.md).
+Pruebas de navegador y axe: [tests/e2e/README.md](tests/e2e/README.md).
+Contrato: [docs/CONTRATO_DATOS.md](docs/CONTRATO_DATOS.md).
+
+QA actual: 132 pruebas JS, 31 Python y 244 casos de navegador locales
+(228 de matriz completa más 16 de las últimas entregas), con 72/72 axe sin
+violaciones. La corrección de contraste #21 quedó verificada. La
+[auditoría P08](docs/informe/auditoria_P08.md) identifica un fallo importante
+al combinar cortes históricos en Regresión y dos ajustes de veracidad;
+siguen pendientes de CC. La validación humana de webcam de Josué está
+registrada allí; lectores de pantalla y otras pruebas humanas siguen pendientes.
+
+`actualizar-datos.yml` configura el bot autorizado: diario L–V 22:15 UTC,
+cortes domingo 06:00 UTC y ejecución manual. Valida, conserva un artefacto,
+publica solo `data_real/**` en main sin force y solicita reconstruir Pages.
+Entrará en vigor al integrar el PR con CI verde; [límites y autorización
+T-32](docs/informe/T-32-propuesta.md).
+
+## Accesibilidad
+
+Centro de accesibilidad en la cabecera (`Alt+Shift+A`), preferencias de texto,
+contraste y movimiento, exploración de gráficos con flechas/Inicio/Fin,
+lectura y sonificación, barrido con Espacio/Enter y Esc para detener.
+Cámara con consentimiento para cabeza y manos; manos se pausa con puño
+cerrado 1,5 s (D-22). La validación física de estas modalidades sigue pendiente.
+
+## Atribución
+
+Base educativa de Ernesto D. Cancho-Rodríguez (FISI-UNMSM), adaptada por el
+Equipo A con asistencia de IA. Código, textos y datos sintéticos del material
+base bajo [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), ver
+[LICENSE](LICENSE). Los datos de Yahoo Finance no se incluyen bajo esa licencia.
+El export de Figma Make en `figma-src/` se conserva sin editar.

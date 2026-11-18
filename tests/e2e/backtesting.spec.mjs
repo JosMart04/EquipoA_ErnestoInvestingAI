@@ -59,6 +59,10 @@ test('Portafolios → Agresivo: selección y pesos de los doce rebalanceos', asy
   await page.goto('/portafolios.html?modo=profesor&lang=es-PE');
   await page.locator('#niveles article[data-nivel="Agresivo"]').getByRole('link', { name: 'Ver su backtesting' }).click();
   await expect(page).toHaveURL(/backtesting\.html\?nivel=Agresivo$/);
+  const migas = page.locator('nav.migas');
+  await expect(migas.locator('li')).toHaveCount(3);
+  await expect(migas.locator('.migas-contexto')).toHaveText('Agresivo');
+  await expect(migas.locator('[aria-current="page"]')).toHaveText('Backtesting');
   await expect(page.locator('#tl-cartera [data-valor="Agresivo"]')).toHaveAttribute('aria-pressed', 'true');
   const botones = page.locator('#tl-fechas button[data-rebalanceo]');
   await expect(botones).toHaveCount(12);

@@ -1,94 +1,129 @@
-# Datos y referencias de CX
+# Pipeline real y validación de CX
 
-Esta entrega atiende MSG-20261117-0130. Es una parte de T-31 y T-39;
-no contiene los 36 modelos, la optimización completa ni el backtesting real.
+Python 3.12. Precios ajustados de Yahoo Finance vía yfinance (proyecto no
+afiliado a Yahoo), con fines educativos. Pueden tener retrasos o errores;
+no es asesoría de inversión. Los precios no se distribuyen bajo la licencia
+del material sintético del curso.
 
-## Instalación y ejecución
-
-Desde la raíz del clon de CX (Python 3.12):
+## Reproducir
 
 ```powershell
 python -m venv .venv
-.venv/Scripts/python -m pip install -r pipeline/requirements-base.txt
-.venv/Scripts/python -m pipeline.referencia_opt
-.venv/Scripts/python -m pipeline.descarga_cierres
+.venv/Scripts/python -m pip install torch==2.15.0 --index-url https://download.pytorch.org/whl/cpu
+.venv/Scripts/python -m pip install -r pipeline/requirements.txt
+.venv/Scripts/python -m pipeline.ejecutar --salida data_real --modo completo --corte 2026-11-16
+.venv/Scripts/python tools/validar_contrato.py data_real --modo real
+.venv/Scripts/python tools/validar_contrato.py data --modo profesor
 ```
 
-- La referencia de 35 puntos usa los μ y Σ anuales de `data/04`,
-  y el tope y tasa de `data/07`. CVXPY/CLARABEL resuelve mínima
-  varianza bajo restricciones de presupuesto, tope y retorno objetivo.
-  No importa código JS ni copia las salidas de Markowitz del profesor.
-- La descarga consulta Yahoo Finance mediante yfinance con
-  `auto_adjust=True`. `--corte AAAA-MM-DD` admite solo sesiones
-  ya cerradas; por defecto se usa la última de XNYS, considerando festivos,
-  horario de verano y cierres anticipados.
-- `--usar-cache` reutiliza descargas del mismo corte en
-  `pipeline/.cache/` (excluidas de Git). Para obtener datos revisados
-  de Yahoo se ejecuta sin esa opción.
-- Cada ticker se solicita desde 2010-01-01. El panel rectangular se inicia
-  en la primera sesión disponible para todos los activos: XLC limita la
-  publicación actual a 2018-06-19. No se inventan precios anteriores a
-  su cotización. La descarga de B ya trae historia desde 2010-01-04;
-  no se empalma con otro símbolo.
-- Se rellenan hacia adelante únicamente huecos internos de hasta dos sesiones;
-  se registran en `meta.metodologia.sesiones_rellenadas`.
-  Un hueco mayor, un cierre final ausente, valores no positivos/no finitos
-  o menos de 504 sesiones impiden publicar.
-- La publicación del 17-nov-2026 contiene 2.115 sesiones hasta 16-nov-2026,
-  26 tickers y ningún relleno. Ambos JSON se validan antes de escribir;
-  cada archivo se reemplaza atómicamente y el manifiesto se escribe al final.
-  La coherencia del par se comprueba mediante SHA-256 en la CI.
-- El publicador parcial rechaza `data/` y una salida que ya tenga los
-  archivos numerados 01–09. No sustituye el futuro publicador completo.
+Sin `--corte` usa la última sesión XNYS cerrada (incluye festivos, DST y cierres
+anticipados). Descarga desde 2010 o desde la primera cotización; el panel común
+empieza cuando todos tienen historia (XLC limita a 2018-06-19). OHLCV conserva
+la historia individual completa. Huecos internos de hasta dos sesiones se
+rellenan hacia adelante y se registran; un hueco mayor o último cierre
+faltante impide publicar. No se fabrica historia previa a la cotización.
+VIX solo es variable explicativa, no activo invertible.
 
-## Alcance de data_real/
+`diario` genera 01–13 y conserva los cortes existentes. `cortes` y `completo`
+generan también los doce cierres de mes previos, en dos procesos. En esta
+versión `diario` reentrena DL con el mismo presupuesto reducido: no reutiliza
+pesos semanales que contaminarían la evaluación externa. Cada resultado por
+algoritmo/corte se guarda en `pipeline/.cache/modelos/`, identificado por
+SHA-256 de variables, etiquetas, código de modelado y presupuesto de épocas.
+La misma ejecución puede retomarse desde esa caché. No se versionan pesos ni
+cachés. El modo completo requiere CPU y puede tardar más que el objetivo de
+una hora del plan; `meta.duracion_s` registra la duración medida.
 
-Solo están `meta.json` y `cierres_historicos.json`.
-El manifiesto declara el estado parcial y la atribución.
-Los módulos que necesiten 01–13 seguirán mostrando el archivo que falta:
-esta entrega no significa que el Modo real completo esté terminado.
+## Método y prevención de fuga
 
-La historia ajustada descargada hoy puede incorporar revisiones posteriores
-a un corte histórico. Por sí sola no demuestra un experimento point-in-time.
-Los modelos, embargo de 30 sesiones y evaluación fuera de muestra todavía
-no se implementan ni se afirman en esta entrega.
+- Modelos de panel: los 26 activos juntos. Variables de PLAN_MAESTRO §6.3:
+  retornos, volatilidad, RSI, MACD, medias, volumen, beta/correlación con SPY,
+  mercado, VIX y grupo. Las ventanas solo alcanzan el cierre de cada fecha.
+- Prueba externa: últimas 252 fechas con etiqueta a 30 sesiones conocida;
+  6.552 filas. Entre entrenamiento y prueba hay 30 fechas embargadas. El
+  escalado se ajusta solo en entrenamiento. La auditoría exporta fechas y
+  número real de filas. No se seleccionan modelos por el resultado externo.
+- Once ML por tarea con nombres contractuales. SVC, SVR y kNN usan como
+  máximo las 12.000 filas más recientes; los demás usan todo el entrenamiento
+  válido. Regresores ML estiman log-retornos a 5/10/15/20/25/30 sesiones y se
+  interpolan desde horizonte cero. Hiperparámetros modestos, fijos y publicados.
+- Siete DL separados por tarea: MLP (20 sesiones aplanadas), RNN, LSTM, GRU,
+  BiLSTM, CNN 1D y Transformer (60 sesiones). Semilla 2026, Adam 0,001, lote
+  256, cuatro hilos CPU. Presupuesto predeterminado **3 épocas**, fijado antes
+  de observar resultados; máximo permitido 15. Early stopping con paciencia
+  3 en las últimas 126 fechas internas, separadas por embargo de 30 sesiones.
+  Tras medir externamente, se reinicia y entrena con todos los datos
+  etiquetados hasta el corte durante las épocas elegidas internamente.
+  La regresión DL aprende 30 log-retornos directamente; factor de escala 10
+  reversible para la pérdida. El Transformer incluye posición entrenable.
+- Métricas de regresión sobre horizonte 30: MAPE relativo al precio futuro,
+  MAE/RMSE relativos al precio inicial, R² de retornos simples y mejora de MAE
+  contra persistencia. Resultados negativos se conservan. Mediana y bandas
+  se calculan de los 18 caminos publicados, cono con volatilidad de 252 días.
+- Markowitz: cvxpy/CLARABEL, 35 objetivos; μ mezcla mediana anualizada recortada
+  y CAPM supuesto, Σ Ledoit-Wolf de 252 días. NSGA-II/III: pymoo, 200
+  generaciones, semilla 2026, reparación al símplex con tope 25 %. CVaR de la
+  peor cola histórica diaria al 5 %. NSGA-II toma 40 puntos del frente final.
+  NSGA-III archiva candidatos no dominados realmente evaluados durante las
+  200 generaciones, sin modificar la evolución, y toma 60 del archivo.
+  Si el archivo tiene menos de 40/60 puntos,
+  se repiten soluciones existentes y se declara cuántas son distintas.
+- Tres carteras del NSGA-II: mínima volatilidad, máximo Sharpe, máximo retorno.
+  Elegibles SUBE y proyección positiva; se completa hasta cuatro por
+  probabilidad media, con aviso, si hace falta.
+- Backtesting: 252 sesiones; decisión cada 21 al cierre, publicada en la sesión
+  siguiente; ventana 126 y momentum 63. Mínima varianza / máximo Sharpe al 25 %;
+  máximo retorno al 35 %. Coste 5 pb sobre turnover contra los pesos que
+  derivaron por precios, incluida inversión inicial. SPY/QQQ/EPU buy-and-hold;
+  **1/N diario sin comisión** (C-02). Volatilidad poblacional. No se utilizan
+  predicciones posteriores para reconstruir el pasado.
 
-Los datos proceden de Yahoo Finance, obtenidos con yfinance (proyecto no
-afiliado a Yahoo), con fines educativos. Pueden tener retrasos o errores y
-no son asesoría de inversión. No se incluyen bajo la licencia CC BY 4.0
-del material base. La atribución también deberá aparecer en el archivo 13
-cuando se genere como parte del pipeline completo.
+Cada snapshot conserva en `auditoria.json` los 253 cierres de su propia
+versión de descarga y su SHA-256 para verificar anclas, volatilidad y CVaR.
+Una revisión posterior de Yahoo no modifica ese snapshot ni impide la
+publicación diaria; el job semanal puede regenerarlo explícitamente.
 
-## C-01 y C-02: evidencia independiente
+Cada corte histórico vuelve a truncar precios, construir variables, separar
+prueba/entrenamiento y entrenar. La descarga actual ajustada puede incorporar
+revisiones de splits/dividendos posteriores al corte: no es una base
+point-in-time de versiones históricas. Universo fijo y sesgo de supervivencia
+se declaran; los resultados no se ajustan para que las carteras ganen.
 
-C-01: se acepta la igualdad inversa exacta I-03b:
-`round((mediana[29] / precio_ultimo - 1) * 100, 2) == retorno_proyectado_30d_pct`.
-Pasa 26/26. La comprobación literal de P04 de un centavo falla en MSFT,
-AMZN, META, TSLA y SPY (máximo: 0,021411 USD en META).
-Se conserva este diagnóstico, sin afirmar que la guía literal se cumple.
-La cota `0,01 + precio_ultimo * 0,00005` es más permisiva;
-no es matemáticamente equivalente a la igualdad inversa. CC debe ajustar
-esa redacción en el contrato, cuya propiedad conserva.
+## Publicación y controles
 
-C-02: el 1/N diario sin comisión reproduce las 253 cifras de la referencia
-del profesor con error máximo 0,0004932791 (por el redondeo a tres decimales).
-SPY/QQQ/EPU son comprar y mantener. Las pruebas comprueban además I-09,
-I-10, I-11, desviación poblacional y fechas de rebalanceo publicadas en la
-sesión posterior a la decisión. No se afirma reproducir las tres carteras.
+Se genera en una carpeta temporal de la caché. `tools/validar_contrato.py`
+comprueba estructura, nombres, I-01…I-11, atribución, embargo y presupuesto de
+15 MB. Solo después se reemplaza `data_real/`; si falla el reemplazo, se
+restaura el respaldo. Se conservan respaldos locales ignorados por Git.
+`data/` y `figma-src/` permanecen intactos. La publicación remota de esta
+entrega se revisa mediante PR.
 
-## Verificación
+El workflow `actualizar-datos.yml`, autorizado explícitamente el 17-nov-2026,
+se ejecuta de lunes a viernes a las 22:15 UTC (`diario`), domingos a las
+06:00 UTC (`cortes`) y manualmente. Solo corre en main. Valida y conserva el
+artefacto antes de publicar exclusivamente `data_real/**`; nunca fuerza un
+push ni incorpora cambios de otras rutas. Después solicita reconstruir el
+Pages existente para que reciba los datos (GITHUB_TOKEN no inicia el build
+implícito). Si main avanzó durante el cálculo,
+la publicación falla y queda el artefacto para revisión. La configuración
+entrará en vigor al integrar el PR con CI verde. Autorización y límites en
+`docs/informe/T-32-propuesta.md`.
 
 ```powershell
 node --test "tests/unit/*.test.mjs"
 .venv/Scripts/python -m unittest discover -s tests/datos -p "test_*.py" -v
 .venv/Scripts/python -m unittest discover -s pipeline/tests -p "test_*.py" -v
+npm --prefix tests run test:e2e
 ```
 
-La CI usa Node 22 y Python 3.12, ejecuta estas pruebas y Gitleaks, sin
-consultar Yahoo. Estos controles no sustituyen el validador completo
-(T-30), Playwright ni axe (T-50).
+Las pruebas alteran datos futuros y comprueban que el pasado no cambie;
+verifican embargo por fecha, pesos y rechazo de corrupción. QA de navegador
+incluye modos reales completos y regresiones HTTP parciales controladas.
+La referencia independiente `pipeline.referencia_opt` sigue disponible.
+C-01 se valida solo por igualdad inversa; el diagnóstico literal de un centavo
+se mantiene y puede fallar sin convertirlo en aprobado.
 
-Referencias de implementación:
-- [API de descarga de yfinance](https://ranaroussi.github.io/yfinance/reference/api/yfinance.download.html).
-- [Problemas cuadráticos en CVXPY](https://www.cvxpy.org/examples/basic/quadratic_program.html).
-- [Gitleaks Action](https://github.com/gitleaks/gitleaks-action).
+Referencias: [yfinance](https://ranaroussi.github.io/yfinance/reference/api/yfinance.download.html),
+[validación temporal scikit-learn](https://scikit-learn.org/stable/modules/cross_validation.html),
+[NSGA-III pymoo](https://pymoo.org/algorithms/moo/nsga3.html),
+[reparación pymoo](https://pymoo.org/constraints/repair.html).

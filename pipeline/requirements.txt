@@ -1,0 +1,8 @@
+-r requirements-base.txt
+scipy==1.18.0
+scikit-learn==1.9.1
+xgboost==3.4.0
+lightgbm==4.7.0
+pymoo==0.6.2
+# Instalar torch==2.15.0 desde el índice CPU antes de este archivo.
+torch==2.15.0
