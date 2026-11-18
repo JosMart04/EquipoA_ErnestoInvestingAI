@@ -64,3 +64,42 @@ test("la gramática es la misma en los dos idiomas y la voz solo se carga bajo d
   for (const html of ["index.html", "clasificacion.html", "regresion.html"]) assert.ok(!leer(html).includes("voz.js"), html + " no carga voz.js por su cuenta");
   assert.match(leer("js", "common.js"), /js\/a11y\/voz\.js/, "el núcleo la carga con Alt+Shift+V o al reanudar");
 });
+
+test("T-90b: números dichos con palabras pasan a cifras (ES y EN)", () => {
+  assert.equal(V.palabrasANumeros("treinta y siete", "es"), "37");
+  assert.equal(V.palabrasANumeros("dos mil veinticinco", "es"), "2025");
+  assert.equal(V.palabrasANumeros("ciento veinte", "es"), "120");
+  assert.equal(V.palabrasANumeros("magnificas siete", "es"), "magnificas 7");
+  assert.equal(V.palabrasANumeros("two thousand twenty five", "en"), "2025");
+  assert.equal(V.palabrasANumeros("one hundred five", "en"), "105");
+  assert.equal(V.palabrasANumeros("mil", "es"), "mil", "«mil» suelto no es un número aquí");
+});
+
+test("T-90b: ordinales para elegir entre botones repetidos", () => {
+  assert.deepEqual(V.extraerOrdinal("el segundo comprar", "es"), { indice: 2, resto: "el comprar" });
+  assert.deepEqual(V.extraerOrdinal("comprar número dos", "es"), { indice: 2, resto: "comprar" });
+  assert.deepEqual(V.extraerOrdinal("la última", "es"), { indice: -1, resto: "la" });
+  assert.deepEqual(V.extraerOrdinal("the third buy", "en"), { indice: 3, resto: "the buy" });
+  assert.equal(V.extraerOrdinal("mostrar todos", "es").indice, null);
+});
+
+test("T-90b: «clic en …» con varias palabras, abreviaturas, números y periodos", () => {
+  const ok = (dicho, nombre, l = "es") => assert.ok(V.puntuar(dicho, nombre, l) >= V.UMBRAL_CLIC, `«${dicho}» → «${nombre}» (${V.puntuar(dicho, nombre, l).toFixed(2)})`);
+  const no = (dicho, nombre, l = "es") => assert.ok(V.puntuar(dicho, nombre, l) < V.UMBRAL_CLIC, `«${dicho}» no es «${nombre}»`);
+  ok("elegir moderado", "Elegir el nivel Moderado");
+  ok("mostrar todos", "Mostrar todos los modelos");
+  ok("veinticinco de noviembre", "1. 25 nov. 2025");
+  ok("magnificas siete", "Magníficas 7");
+  ok("tres meses", "3M"); ok("un año", "1A"); ok("3 m", "3M"); ok("one year", "1Y", "en");
+  no("tres meses", "1M"); no("comprar", "Vender"); no("ver su regresion", "Ver en el optimizador");
+  // Entre varios candidatos gana el más completo; si empatan, vuelven todos (en orden del documento) para elegir
+  const items = [{ nombres: ["Quitar AAPL de la watchlist", "Quitar"] }, { nombres: ["Quitar MSFT de la watchlist", "Quitar"] }, { nombres: ["Agregar"] }];
+  assert.equal(V.mejoresCoincidencias("quitar", items, "es").length, 2, "dos «Quitar» empatados: se pregunta cuál");
+  assert.deepEqual(V.mejoresCoincidencias("quitar msft", items, "es"), [items[1]], "con el ticker ya no hay duda");
+  assert.deepEqual(V.mejoresCoincidencias("nada que ver", items, "es"), []);
+});
+
+test("T-90b: sin espacios solo cuenta sobre palabras completas (una etiqueta larga con «…63 mínimo…» no es «3 meses»)", () => {
+  assert.ok(V.puntuar("tres meses", "AAPL: último cierre USD 355.63 el 11 de noviembre; el mínimo fue USD 328.21", "es") < V.UMBRAL_CLIC);
+  assert.ok(V.puntuar("3 m", "3M", "es") >= 1);
+});

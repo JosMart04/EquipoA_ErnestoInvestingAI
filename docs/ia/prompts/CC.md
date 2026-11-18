@@ -220,3 +220,11 @@ Respuesta de Josué al cierre del turno anterior (botón y mensaje):
 ```text
 Realiza los comandos de voz (T-90). Codex ya no se usará para el proyecto, no está disponible por el momento, así que tú continuarás con lo que queda. Sobro los entregables de documentación se realizarán al final con mi autorización, ya que no son importantes por el momento. Eso sí quiero que actualices el README, que lo hagas profesional, también la parte de About y colocar las tecnologías, frameworks, lenguajes, librerías que se usan.
 ```
+
+## 2026-11-17 23:12 · Claude Code · Claude Opus 5.5
+
+Respuesta de Josué (botón): «Sí, la pruebo». Después:
+
+```text
+Ya lo probé, los comandos de voz funcionan bien, pero hay un problema con el comando: click en .... Cuando donde se quiere hacer click tiene varias palabras o cuando es un menu desplegable o cuando tiene numero. También cuando hay el mismo botón con el mismo nombre sí funciona, pero no se tiene control sobre qué boton se quiere pulsar. Solo esto encontré para que se mejore
+```

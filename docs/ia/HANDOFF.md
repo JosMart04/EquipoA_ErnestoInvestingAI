@@ -4,13 +4,13 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-17 22:33 (Lima)
+- Fecha y hora: 2026-11-17 23:12 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/readme-profesional` → PR #31 (README profesional; «About» de GitHub actualizado)
+- Rama / último commit: `cc/T-90b-voz-clic` → PR #32 (mejoras de «clic en» por voz)
 
 ## Hecho (con evidencia)
 
-Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **140/140, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
+Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144, ninguna omitida**. Además, CX tiene 48 E2E con Playwright (PR #15 y #18) en la CI. La CI (`qa.yml` de CX) corre en cada PR: pruebas JS, 16 pruebas Python de datos y Gitleaks.
 
 | PR | Tareas | Qué hay | Evidencia |
 |---|---|---|---|
@@ -41,6 +41,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **140/140
 | #29 | T-29 (P08) | **H-01 / #28:** Regresión con corte antiguo usa los precios congelados de `cortes/<fecha>/auditoria.json` (antes mezclaba la historia actual). **H-02:** Clasificación habla de observaciones (y sesiones si se conocen) y compara con «siempre SUBE» según las cifras. **H-03:** en el Optimizador profesor, Markowitz se calcula; solo NSGA es simulado | 134/134; navegador con datos reales: cortes 2025-11-28 y 2026-10-30, sin corte, ES/EN; 27 cargas de humo |
 | #30 | T-90 | **Comandos de voz** (`js/a11y/voz.js`): Web Speech API ES/EN, consentimiento, indicador, confirmación visual y hablada, ayuda, Alt+Shift+V, reanudación al navegar; gramática en i18n y acciones por el bus | 140/140; navegador con reconocedor simulado: tema, filtro, activo por empresa, clic en, ayuda, pausa, idioma, detener, atajo, Centro, navegación con reanudación, 390 px; 27 cargas de humo. **Sin micrófono real** |
 | #31 | T-61 (parte) | **README profesional** (módulos, características, tecnologías con versiones, arquitectura, ejecución, pruebas, datos, accesibilidad, créditos) y «About» de GitHub (descripción, sitio, 20 temas) | Enlaces del README verificados |
+| #32 | T-90b | «Clic en …» por voz: por palabras, números dichos («tres meses» → 3M), opciones de listas y elección numerada entre botones repetidos (o «el segundo …») | 144/144; navegador: periodos del Dashboard, opción «ETF sectoriales», «Magníficas siete», «Elegir» ×3 con marcas, «el segundo», «cancelar» |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -53,7 +54,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **140/140
 - Guion simulado (`EIA.camara.iniciar("cabeza" | "manos", {simulada: true, objetivo: "#tema"})` o `?camara=simulada&mod=cabeza&objetivo=%23tema`): **cabeza + permanencia**, **cabeza + parpadeo largo** y **mano + pellizco** llevan el puntero al botón y hacen clic; Esc detiene; al detener se quitan HUD, puntero y `modo-puntero`.
 - Sin cámara no se descarga MediaPipe (comprobado en los recursos de la página).
 
-**Probado por Josué con la webcam de su laptop (17-nov):** cabeza y manos funcionan de forma continua (tras el PR #20); el sonido y la voz se oyen; la **calibración de 5 puntos** y la **«V» de dos dedos** funcionan bien (tras el PR #25, en Pages).
+**Probado por Josué (17-nov):** los **comandos de voz** con su micrófono funcionan (los ajustes de «clic en» del PR #32 vienen de su prueba). Con la webcam de su laptop: cabeza y manos funcionan de forma continua (tras el PR #20); el sonido y la voz se oyen; la **calibración de 5 puntos** y la **«V» de dos dedos** funcionan bien (tras el PR #25, en Pages).
 
 **NO probado todavía (Anexo A: Adrian y Augusto):**
 - **El signo de los ejes de la cabeza.** `senales.anguloCabeza` supone la matriz de MediaPipe en orden por columnas. Si el puntero va al revés, hay dos casillas «Invertir» en el Centro; si hace falta, cambia el valor por defecto de `sx`/`sy` en `js/a11y/cabeza-mirada.js`.
@@ -108,6 +109,7 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **140/140
 - **ECharts conectados (`echarts.connect`):** nunca llames a `dispatchAction` dentro de un evento de leyenda: se reenvía entre los gráficos sin fin. Usa `setOption({legend: {selected}})` (no emite eventos) y deja que `connect` propague los clics.
 - **`String.replace` con texto de reemplazo:** `$$` se vuelve `$` (me pasó con `$$(…)`). En los scripts de edición, usa una función como reemplazo.
 - **Recálculo (`EIA.ui.recalculo`):** el módulo guarda `recalc` y en `pintar(datos)` lo mezcla con los datos del archivo; se descarta al cambiar de modo (y de corte en el Optimizador). El Worker solo se crea en el núcleo (`EIA.trabajo`); una prueba vigila que ningún módulo cree Workers.
+- **«Clic en» por voz:** `puntuar` compara palabras (sin vacías, con números en cifras y unidades «3m»/«1a»); `mejoresCoincidencias` devuelve los empatados y `clicPorVoz` pregunta con marcas numeradas si hay más de uno. Las opciones de cada `<select>` también son candidatas.
 - **Voz (`js/a11y/voz.js`):** la gramática está en i18n (`voz.g_*`, `voz.m_*`, alternativas sin tildes separadas por «|»); para un comando nuevo agrega la clave en los dos idiomas y el caso en `interpretar` y `ejecutar`. Mientras el sitio habla se detiene el reconocimiento (si no, se oye a sí mismo). Chrome y Edge envían el audio a su servicio: por eso hay consentimiento.
 - **Corte antiguo en Regresión:** la historia sale de `cortes/<fecha>/auditoria.json → precios_validacion` (precios congelados del corte). No uses el 02 actual recortado salvo como respaldo: Yahoo revisa los ajustados.
 - **`cortes/index.json`:** `ultimo` no está en `cortes[]` y el arreglo viene ascendente; usa siempre `EIA.ordenarCortes`.

@@ -921,7 +921,7 @@
     "ayuda_vista": "“dark theme”, “light theme”, “real mode”, “course mode”, “English”, “Spanish”.",
     "ayuda_filtros": "“only ML”, “only DL”, “all models” (in Classification and Regression).",
     "ayuda_lectura": "“read summary” (reads the page aloud) and “listen to chart”.",
-    "ayuda_acciones": "“send to trading” and “click” followed by the text of a button or link: “click choose moderate”.",
+    "ayuda_acciones": "“send to trading” and “click” with the text of a button, link or list option: “click choose moderate”, “click sector ETFs”, “click three months”. If there are several alike, numbers appear: say “two” or “the second”, or all at once: “click the second buy”.",
     "ayuda_detener": "“stop voice”, the Stop button or the Esc key.",
     "g_ir": "go to|open|show|take me to",
     "g_clic": "click on|click|press|tap",
@@ -953,7 +953,18 @@
     "m_regresion": "regression|regressors|forecast",
     "m_optimizador": "optimizer|optimiser|optimization|frontier",
     "m_portafolios": "portfolios|portfolio",
-    "m_backtesting": "backtesting|backtest"
+    "m_backtesting": "backtesting|backtest",
+    "g_cancelar": "cancel|none|nothing",
+    "elegir": {
+      "one": "There is {n} control for “{texto}”.",
+      "other": "There are {n} controls for “{texto}”. Say the number you see on the one you want, or “cancel”."
+    },
+    "elegir_cancelado": "Choice cancelled.",
+    "elegir_fuera": {
+      "one": "There is only {n} option.",
+      "other": "That number is not there: there are {n} options."
+    },
+    "ok_opcion": "Chose “{opcion}” in {campo}"
   },
   "datos": {
     "senal": {

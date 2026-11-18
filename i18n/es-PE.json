@@ -921,7 +921,7 @@
     "ayuda_vista": "«tema oscuro», «tema claro», «modo real», «modo profesor», «inglés», «español».",
     "ayuda_filtros": "«solo ML», «solo DL», «todos los modelos» (en Clasificación y Regresión).",
     "ayuda_lectura": "«leer resumen» (lee la página en voz alta) y «escuchar gráfico».",
-    "ayuda_acciones": "«llevar a trading» y «clic en» seguido del texto de un botón o enlace: «clic en elegir moderado».",
+    "ayuda_acciones": "«llevar a trading» y «clic en» con el texto de un botón, enlace u opción de una lista: «clic en elegir moderado», «clic en ETF sectoriales», «clic en tres meses». Si hay varios iguales, aparecen números: di «dos» o «el segundo», o dilo de una vez: «clic en el segundo comprar».",
     "ayuda_detener": "«detener voz», el botón Detener o la tecla Esc.",
     "g_ir": "ir a|ir al|abrir|abre|ve a|vamos a|llevame a|mostrar",
     "g_clic": "clic en|click en|haz clic en|pulsa|presiona|toca|clic|click",
@@ -953,7 +953,18 @@
     "m_regresion": "regresion|regresores|pronostico",
     "m_optimizador": "optimizador|optimizacion|frontera",
     "m_portafolios": "portafolios|portafolio|carteras|cartera",
-    "m_backtesting": "backtesting|backtest|prueba historica"
+    "m_backtesting": "backtesting|backtest|prueba historica",
+    "g_cancelar": "cancelar|ninguno|ninguna|nada",
+    "elegir": {
+      "one": "Hay {n} control para «{texto}».",
+      "other": "Hay {n} controles para «{texto}». Di el número que ves sobre el que quieres, o «cancelar»."
+    },
+    "elegir_cancelado": "Elección cancelada.",
+    "elegir_fuera": {
+      "one": "Solo hay {n} opción.",
+      "other": "Ese número no está: hay {n} opciones."
+    },
+    "ok_opcion": "Elegido «{opcion}» en {campo}"
   },
   "datos": {
     "senal": {
