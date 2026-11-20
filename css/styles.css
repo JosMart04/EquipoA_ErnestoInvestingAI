@@ -108,6 +108,8 @@
 
 /* ───────────── Base ───────────── */
 * { box-sizing: border-box; }
+/* El atributo hidden siempre oculta: un display del autor (p. ej. .row o .acciones con flex) lo anulaba */
+[hidden] { display: none !important; }
 html { scroll-padding-top: 7rem; } /* el foco nunca queda tapado por la cabecera fija (WCAG 2.4.11) */
 body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.55 system-ui, "Segoe UI", Roboto, Arial, sans-serif; }
 a { color: var(--ac); }

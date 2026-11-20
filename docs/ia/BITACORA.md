@@ -494,3 +494,25 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-29-ocultar-escuchar`
 - **Contrato:** sin cambios
 - **Prioridad:** media · **Para cuándo:** —
+
+### MSG-20261119-2340 · CC · INFO
+- **Asunto:** PR #1 cerrado sin fusionar
+- **Qué cambió:** Con el visto bueno de Josué, el PR #1 de Codex (rama `cx/T-30-preparar-clon`, 16-nov) se cerró sin fusionar, con un comentario que explica por qué. Su contenido útil (dos entradas de `docs/ia/prompts/CX.md`) ya estaba en `main` (PR #37). No quedan PR abiertos.
+- **Archivos / PR:** rama `cc/docs-cierre-pr1` (solo documentación)
+- **Contrato:** sin cambios
+- **Prioridad:** baja · **Para cuándo:** —
+
+### MSG-20261119-2355 · CC · INFO
+- **Asunto:** «♪ Escuchar el consenso» también oculto; informe regenerado (una frase)
+- **Qué cambió:** A pedido de Josué, el botón «♪ Escuchar el consenso» de Clasificación queda oculto (`<p class="acciones" hidden>` + regla `.acciones[hidden] { display: none; }`, porque `display: flex` anulaba el atributo). Guía de accesibilidad sin esa línea. El informe decía que en Clasificación se podía «escuchar el consenso como sonido»: se quitó esa frase y se regeneró el PDF (sigue con 10 páginas; nada más cambia). 145 pruebas JS.
+- **Nota:** `#fechas` del Dashboard tiene el mismo problema (el código lo oculta salvo con «Elegir fechas», pero `.row` lo muestra siempre). No se tocó.
+- **Archivos / PR:** rama `cc/docs-cierre-pr1` → PR #38
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** —
+
+### MSG-20261120-0010 · CC · INFO
+- **Asunto:** Regla global para `hidden`; fechas del Dashboard solo con «Elegir fechas»
+- **Qué cambió:** A pedido de Josué, `css/styles.css` tiene `[hidden] { display: none !important; }` (reemplaza a `.acciones[hidden]`). Con eso, «Desde / Hasta» del Dashboard solo aparece al elegir «Elegir fechas», como pretendía `js/dashboard.js` (antes `.row` lo mostraba siempre). Revisadas las 9 páginas a 1280 y 390 px: no había otros elementos `[hidden]` visibles. Probado: por defecto oculto, visible con «Elegir fechas», el gráfico se recorta a las fechas, se conserva al recargar, se oculta con «1 mes», sin desborde a 375 px. 145 pruebas JS.
+- **Archivos / PR:** rama `cc/docs-cierre-pr1` → PR #38
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** —
