@@ -509,3 +509,10 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/docs-cierre-pr1` → PR #38
 - **Contrato:** sin cambios
 - **Prioridad:** media · **Para cuándo:** —
+
+### MSG-20261120-0010 · CC · INFO
+- **Asunto:** Regla global para `hidden`; fechas del Dashboard solo con «Elegir fechas»
+- **Qué cambió:** A pedido de Josué, `css/styles.css` tiene `[hidden] { display: none !important; }` (reemplaza a `.acciones[hidden]`). Con eso, «Desde / Hasta» del Dashboard solo aparece al elegir «Elegir fechas», como pretendía `js/dashboard.js` (antes `.row` lo mostraba siempre). Revisadas las 9 páginas a 1280 y 390 px: no había otros elementos `[hidden]` visibles. Probado: por defecto oculto, visible con «Elegir fechas», el gráfico se recorta a las fechas, se conserva al recargar, se oculta con «1 mes», sin desborde a 375 px. 145 pruebas JS.
+- **Archivos / PR:** rama `cc/docs-cierre-pr1` → PR #38
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** —
