@@ -77,5 +77,5 @@ test("el botón «♪ Escuchar» de los gráficos está oculto, pero la tecla S 
   assert.match(js, /e\.key === "s" \|\| e\.key === "S"\) \{[^}]*\$\("\.escuchar", destino\)/, "la tecla S lo sigue pulsando");
   assert.match(leer("js", "a11y", "voz.js"), /case "escuchar": \{\s*const b = \$\("\.escuchar"\)/, "el comando de voz lo sigue pulsando");
   assert.match(leer("clasificacion.html"), /<p class="acciones" hidden><button type="button" id="escuchar-mapa"/, "«Escuchar el consenso» también está oculto");
-  assert.match(leer("css", "styles.css"), /\.acciones\[hidden\] \{ display: none; \}/, "el display: flex de .acciones no anula el hidden");
+  assert.match(leer("css", "styles.css"), /^\[hidden\] \{ display: none !important; \}$/m, "ningún display del autor anula el atributo hidden (.acciones, .row)");
 });

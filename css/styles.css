@@ -108,6 +108,8 @@
 
 /* ───────────── Base ───────────── */
 * { box-sizing: border-box; }
+/* El atributo hidden siempre oculta: un display del autor (p. ej. .row o .acciones con flex) lo anulaba */
+[hidden] { display: none !important; }
 html { scroll-padding-top: 7rem; } /* el foco nunca queda tapado por la cabecera fija (WCAG 2.4.11) */
 body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.55 system-ui, "Segoe UI", Roboto, Arial, sans-serif; }
 a { color: var(--ac); }
@@ -262,7 +264,6 @@ a.btn { display: inline-flex; align-items: center; gap: .35rem; text-decoration:
 a.btn:hover { background: var(--hl); }
 a.btn.primary { background: var(--ac); color: var(--on-ac); border-color: var(--ac); }
 .acciones { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
-.acciones[hidden] { display: none; } /* el display: flex de arriba anularía el atributo hidden */
 .fila-chips { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
 details > summary { cursor: pointer; }
 .lista-casillas { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0 1rem; padding: .5rem 0; }
