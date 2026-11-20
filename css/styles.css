@@ -262,6 +262,7 @@ a.btn { display: inline-flex; align-items: center; gap: .35rem; text-decoration:
 a.btn:hover { background: var(--hl); }
 a.btn.primary { background: var(--ac); color: var(--on-ac); border-color: var(--ac); }
 .acciones { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.acciones[hidden] { display: none; } /* el display: flex de arriba anularía el atributo hidden */
 .fila-chips { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
 details > summary { cursor: pointer; }
 .lista-casillas { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0 1rem; padding: .5rem 0; }

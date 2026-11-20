@@ -67,7 +67,7 @@ test("cada gráfico tiene tabla, resumen y sonido; el Optimizador conserva su pr
     for (const campo of ["tabla:", "resumen:", "sonido:"]) assert.equal((js.match(new RegExp(campo, "g")) || []).length >= n, true, m + " " + campo);
   }
   assert.match(leer("js", "optimizador.js"), /explorar: false/);
-  assert.match(leer("clasificacion.html"), /id="escuchar-mapa"/, "el mapa de calor también suena");
+  assert.match(leer("clasificacion.html"), /id="escuchar-mapa"/, "el código del consenso sonoro se conserva");
   assert.ok(!/abrirOpciones/.test(leer("js", "a11y", "puntero.js")), "el diálogo de <select> vive en el núcleo (no se duplica)");
 });
 
@@ -76,4 +76,6 @@ test("el botón «♪ Escuchar» de los gráficos está oculto, pero la tecla S 
   assert.match(js, /<button type="button" class="escuchar"[^>]*\shidden>/, "el botón se crea con el atributo hidden");
   assert.match(js, /e\.key === "s" \|\| e\.key === "S"\) \{[^}]*\$\("\.escuchar", destino\)/, "la tecla S lo sigue pulsando");
   assert.match(leer("js", "a11y", "voz.js"), /case "escuchar": \{\s*const b = \$\("\.escuchar"\)/, "el comando de voz lo sigue pulsando");
+  assert.match(leer("clasificacion.html"), /<p class="acciones" hidden><button type="button" id="escuchar-mapa"/, "«Escuchar el consenso» también está oculto");
+  assert.match(leer("css", "styles.css"), /\.acciones\[hidden\] \{ display: none; \}/, "el display: flex de .acciones no anula el hidden");
 });
