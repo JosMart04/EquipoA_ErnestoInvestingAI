@@ -50,7 +50,7 @@ Se recomienda NVDA o Narrador en Windows y TalkBack en Android.
 
 ## 4. Sonido
 
-- **«Escuchar»** en cada gráfico: la serie suena de izquierda a derecha; un tono más agudo es un valor más alto.
+- **Tecla `S`** sobre un gráfico enfocado (o el comando de voz «escuchar gráfico»): la serie suena de izquierda a derecha; un tono más agudo es un valor más alto.
 - **Clasificación → «Escuchar el consenso»**: un tono que sube es ▲ SUBE y uno que baja es ▼ BAJA, fila por fila.
 - La sonificación se puede apagar en el Centro (sección Lectura).
 

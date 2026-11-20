@@ -17,10 +17,26 @@ function fechaHora(encabezado) {
   return { fecha: `${m[1]}-${m[2]}-${m[3]}`, hora: m[4] ? `${m[4]}:${m[5]}` : null };
 }
 
+/** Separa el archivo en secciones «## …» sin cortar dentro de bloques de código (``` o ````): un prompt literal
+    puede traer sus propios encabezados «## » (p. ej. las instrucciones de sesión de Codex). */
+function secciones(texto) {
+  const partes = [[]];
+  let cerca = null;
+  for (const l of texto.split("\n")) {
+    const m = /^(`{3,})/.exec(l);
+    if (m) {
+      if (!cerca) cerca = m[1];
+      else if (m[1].length >= cerca.length && /^`+\s*$/.test(l)) cerca = null;
+    } else if (!cerca && l.startsWith("## ")) partes.push([]);
+    partes[partes.length - 1].push(l);
+  }
+  return partes.map(p => p.join("\n"));
+}
+
 const entradas = [];
 for (const f of FUENTES) {
   const texto = readFileSync(f.archivo, "utf8").replace(/\r\n/g, "\n");
-  const partes = texto.split(/\n(?=## )/);
+  const partes = secciones(texto);
   const intro = partes.shift();
   if (!partes.length) {
     // OP.md no tiene secciones: es una sola entrada (la fecha sale de su primera línea con fecha)

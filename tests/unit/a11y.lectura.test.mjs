@@ -70,3 +70,10 @@ test("cada gráfico tiene tabla, resumen y sonido; el Optimizador conserva su pr
   assert.match(leer("clasificacion.html"), /id="escuchar-mapa"/, "el mapa de calor también suena");
   assert.ok(!/abrirOpciones/.test(leer("js", "a11y", "puntero.js")), "el diálogo de <select> vive en el núcleo (no se duplica)");
 });
+
+test("el botón «♪ Escuchar» de los gráficos está oculto, pero la tecla S y la voz lo siguen usando (decisión de Josué, 19-nov)", () => {
+  const js = leer("js", "common.js");
+  assert.match(js, /<button type="button" class="escuchar"[^>]*\shidden>/, "el botón se crea con el atributo hidden");
+  assert.match(js, /e\.key === "s" \|\| e\.key === "S"\) \{[^}]*\$\("\.escuchar", destino\)/, "la tecla S lo sigue pulsando");
+  assert.match(leer("js", "a11y", "voz.js"), /case "escuchar": \{\s*const b = \$\("\.escuchar"\)/, "el comando de voz lo sigue pulsando");
+});

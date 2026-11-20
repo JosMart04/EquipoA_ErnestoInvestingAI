@@ -483,3 +483,14 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/docs-figma-verificado` (solo documentación)
 - **Contrato:** sin cambios
 - **Prioridad:** baja · **Para cuándo:** —
+
+### MSG-20261119-1200 · CC · INFO
+- **Asunto:** Botón «♪ Escuchar» oculto; estado del bot de datos; PR #1 obsoleto
+- **Qué cambió:**
+  1. A pedido de Josué, el botón «♪ Escuchar» de la cabecera de los gráficos queda **oculto** (`hidden`). La serie se sigue escuchando con la tecla S sobre el gráfico enfocado y con «escuchar gráfico» por voz. «♪ Escuchar el consenso» de Clasificación no cambia. Guía de accesibilidad actualizada; prueba de regresión nueva (145 JS).
+  2. **Bot T-32:** el 19-nov publicó el corte 2026-11-18 (26/26 activos, validado). La corrida siguiente falló al descargar («META: hueco no permitido») y no publicó nada, como debe ser.
+  3. **PR #1 de Codex** (16-nov, rama `cx/T-30-preparar-clon`): obsoleto; su cambio del tablero es anterior a T-30 hecho. Sus dos entradas de `docs/ia/prompts/CX.md` (instrucciones de sesión y mensaje de CC del 16-nov 15:09) se rescataron en `main`. `tools/compilar_prompts.mjs` ya no corta en encabezados «## » dentro de bloques de código.
+- **Pendiente:** cerrar el PR #1 si Josué está de acuerdo.
+- **Archivos / PR:** rama `cc/T-29-ocultar-escuchar`
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** —
