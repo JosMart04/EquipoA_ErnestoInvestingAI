@@ -494,3 +494,10 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-29-ocultar-escuchar`
 - **Contrato:** sin cambios
 - **Prioridad:** media · **Para cuándo:** —
+
+### MSG-20261119-2340 · CC · INFO
+- **Asunto:** PR #1 cerrado sin fusionar
+- **Qué cambió:** Con el visto bueno de Josué, el PR #1 de Codex (rama `cx/T-30-preparar-clon`, 16-nov) se cerró sin fusionar, con un comentario que explica por qué. Su contenido útil (dos entradas de `docs/ia/prompts/CX.md`) ya estaba en `main` (PR #37). No quedan PR abiertos.
+- **Archivos / PR:** rama `cc/docs-cierre-pr1` (solo documentación)
+- **Contrato:** sin cambios
+- **Prioridad:** baja · **Para cuándo:** —
