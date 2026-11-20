@@ -501,3 +501,11 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/docs-cierre-pr1` (solo documentación)
 - **Contrato:** sin cambios
 - **Prioridad:** baja · **Para cuándo:** —
+
+### MSG-20261119-2355 · CC · INFO
+- **Asunto:** «♪ Escuchar el consenso» también oculto; informe regenerado (una frase)
+- **Qué cambió:** A pedido de Josué, el botón «♪ Escuchar el consenso» de Clasificación queda oculto (`<p class="acciones" hidden>` + regla `.acciones[hidden] { display: none; }`, porque `display: flex` anulaba el atributo). Guía de accesibilidad sin esa línea. El informe decía que en Clasificación se podía «escuchar el consenso como sonido»: se quitó esa frase y se regeneró el PDF (sigue con 10 páginas; nada más cambia). 145 pruebas JS.
+- **Nota:** `#fechas` del Dashboard tiene el mismo problema (el código lo oculta salvo con «Elegir fechas», pero `.row` lo muestra siempre). No se tocó.
+- **Archivos / PR:** rama `cc/docs-cierre-pr1` → PR #38
+- **Contrato:** sin cambios
+- **Prioridad:** media · **Para cuándo:** —
