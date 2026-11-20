@@ -1042,7 +1042,9 @@
   /** Gráfico ECharts con pestañas Gráfico / Tabla / Resumen, exploración con teclado, sonido y lectura en voz alta.
       cfg = {id, titulo, alto, opciones(colores), tabla(), resumen(), sonido(), explorar}
       sonido() → {series:[{nombre, valores, etiquetas, formato(v), tipo:"tiempo"|"categorias", indice, tip(i, instancia)}], inicial}
-      explorar: false cuando el módulo ya trae su propia navegación con teclado sobre el lienzo (Optimizador). */
+      explorar: false cuando el módulo ya trae su propia navegación con teclado sobre el lienzo (Optimizador).
+      El botón «♪ Escuchar» está oculto por decisión de Josué (19-nov): la serie se sigue escuchando con la tecla S
+      sobre el gráfico enfocado y con el comando de voz «escuchar gráfico», que pulsan ese botón oculto. */
   EIA.ui.grafico = function (destino, cfg) {
     const t = EIA.t, id = cfg.id || "graf-" + (++_uid);
     const pest = [["g", "grafico.pestana_grafico"], ["t", "grafico.pestana_tabla"], ["r", "grafico.pestana_resumen"]];
@@ -1053,7 +1055,7 @@
   <div class="graf-cab"><h2 id="${esc(id)}-h">${esc(cfg.titulo)}</h2>
     <div class="graf-ctl"><div class="seg" role="tablist" aria-label="${esc(t("grafico.vistas"))}">${
       pest.map(([k, clave]) => `<button type="button" role="tab" id="${esc(id)}-tab-${k}" data-pest="${k}" aria-selected="${k === activa}" aria-controls="${esc(id)}-p-${k}" tabindex="${k === activa ? 0 : -1}">${esc(t(clave))}</button>`).join("")}</div>
-      ${cfg.sonido ? `<button type="button" class="escuchar" aria-pressed="false"><span aria-hidden="true">♪</span> ${esc(t("grafico.escuchar"))}</button>` : ""}</div></div>
+      ${cfg.sonido ? `<button type="button" class="escuchar" aria-pressed="false" hidden><span aria-hidden="true">♪</span> ${esc(t("grafico.escuchar"))}</button>` : ""}</div></div>
   <div role="tabpanel" id="${esc(id)}-p-g" aria-labelledby="${esc(id)}-tab-g"><div class="chart" role="img" style="height:${Number(cfg.alto) || 352}px"></div>${
     explorable ? `<p class="mut graf-ayuda" id="${esc(id)}-ayuda">${esc(t("grafico.explorar_ayuda"))}</p>` : ""}</div>
   <div role="tabpanel" id="${esc(id)}-p-t" aria-labelledby="${esc(id)}-tab-t" hidden></div>
