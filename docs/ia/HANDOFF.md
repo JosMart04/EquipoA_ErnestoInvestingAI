@@ -4,9 +4,9 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-18 01:05 (Lima)
+- Fecha y hora: 2026-11-19 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/docs-figma-verificado` (Josué comprobó el enlace de Figma; informe aprobado y entregables fusionados en el PR #34)
+- Rama / último commit: `cc/T-29-ocultar-escuchar` (botón «♪ Escuchar» oculto a pedido de Josué; prompts de Codex rescatados del PR #1)
 
 ## Hecho (con evidencia)
 
@@ -114,6 +114,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 - **Voz (`js/a11y/voz.js`):** la gramática está en i18n (`voz.g_*`, `voz.m_*`, alternativas sin tildes separadas por «|»); para un comando nuevo agrega la clave en los dos idiomas y el caso en `interpretar` y `ejecutar`. Mientras el sitio habla se detiene el reconocimiento (si no, se oye a sí mismo). Chrome y Edge envían el audio a su servicio: por eso hay consentimiento.
 - **Corte antiguo en Regresión:** la historia sale de `cortes/<fecha>/auditoria.json → precios_validacion` (precios congelados del corte). No uses el 02 actual recortado salvo como respaldo: Yahoo revisa los ajustados.
 - **`cortes/index.json`:** `ultimo` no está en `cortes[]` y el arreglo viene ascendente; usa siempre `EIA.ordenarCortes`.
+- **Botón «♪ Escuchar» de los gráficos: oculto** (Josué, 19-nov). Sigue en el DOM con `hidden` porque la tecla S y el comando de voz «escuchar gráfico» lo pulsan; una prueba vigila las tres cosas. Las capturas del informe (18-nov) todavía lo muestran.
+- **Bot de datos (T-32):** publicó el corte 2026-11-18 el 19-nov (commit `be40071`). La corrida del 19-nov falló en la descarga («META: hueco no permitido», un hueco en la respuesta de Yahoo) y **no publicó nada**: el sitio sigue con el corte anterior, validado. Los push del bot no disparan `qa.yml` (los hace `GITHUB_TOKEN`), pero el validador corre dentro del flujo antes de publicar.
 - **R-REG-09 literal falla en 5 activos** de `data/` por redondeo: se verifica con I-03b (contrato §4 y nota N-1).
 - **El 1/N del profesor es de rebalanceo diario** (contrato I-10, nota N-2). La volatilidad de `09` usa desviación poblacional.
 - **El «Agresivo» de `08` rinde menos que el «Moderado»** (nota N-4): no escribir textos que afirmen un orden entre niveles.
