@@ -678,3 +678,36 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Pruebas:** 226 pruebas JS. En el navegador: escritorio (claro, oscuro y plegado), 375 px en es-PE y ar-EG (cajón por la derecha, foco y Esc), consola sin errores y sin desborde.
 - **Archivos / PR:** rama `cc/T-110-shell-diseno`
 - **Contrato:** sin cambios
+
+### MSG-20261123-1500 · CC · INFO
+- **Asunto:** Bloque Mercado: detalle de activo, comparador y volumen (T-111)
+- **Qué cambió:**
+  - **`activo.html?t=TICKER`** (detalle de activo):
+    - cabecera con nombre, grupo, sector, último precio y variación;
+    - acciones: watchlist, operar, crear alerta y comparar;
+    - 6 KPI (5 días, 1 y 3 meses, volatilidad, beta, volumen);
+    - velas con **volumen** en un segundo panel, o la línea de 504 sesiones;
+    - «Qué dicen los modelos»: consenso SUBE/BAJA con probabilidad y confianza, y mediana con banda p10–p90;
+    - 5 activos más y 5 menos correlacionados (04);
+    - la nota del material (01), en español con `lang="es"` si no hay traducción.
+  - **`comparador.html?activos=A,B,C`:**
+    - hasta 5 activos en base 100, cada uno con color, trazo distinto y su nombre al final de la línea;
+    - periodos de 1M a Máx;
+    - retorno, volatilidad y beta del periodo calculados en el navegador (se declara en la página);
+    - matriz de correlación de los elegidos (04);
+    - la selección queda en la URL.
+  - **Código compartido:**
+    - `js/lib/mercado.js`: las series del Dashboard (`serieActivo`, `estadisticas`) se mudan allí y se agregan `base100`, `metricasPeriodo`, `correlacion` y `vecinos`;
+    - `EIA.ui.opcionesVelas`: velas con volumen para el Dashboard y el detalle.
+  - **Dashboard:** volumen bajo las velas y columna «Detalle» en la tabla del universo. En la Watchlist, el ticker enlaza al detalle.
+  - **Navegación:** el bloque Mercado de la barra lateral suma Detalle de activo y Comparador. Configuración audita todas las páginas de la barra y hreflang cubre 12 páginas.
+  - **i18n:** 51 claves nuevas en 12 idiomas.
+- **Correcciones en T-110** (la E2E del PR #45 falló):
+  - el error rediseñado tenía un segundo `<p>` y la prueba lee su único párrafo: ahora los botones van en un `div`;
+  - `.tw` no contenía los `.sr` absolutos de las celdas y quedaban 3 px fuera a 390 px: ahora `.tw` lleva `position: relative`.
+- **Pruebas:**
+  - 232 pruebas JS (`mercado.test.mjs`);
+  - axe local sin violaciones en configuración, activo, comparador, watchlist e index × 1280/390 × claro/oscuro × profesor/real;
+  - navegador en es-PE y ar-EG a 375 px.
+- **Archivos / PR:** rama `cc/T-111-mercado` (sale de T-110)
+- **Contrato:** sin cambios

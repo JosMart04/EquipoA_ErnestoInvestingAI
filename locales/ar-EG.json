@@ -52,7 +52,9 @@
     "bloque_modelos": "النماذج",
     "bloque_cartera": "المحفظة",
     "bloque_operacion": "العمليات",
-    "bloque_cuenta": "الحساب"
+    "bloque_cuenta": "الحساب",
+    "activo": "تفاصيل الأصل",
+    "comparador": "المقارنة"
   },
   "shell": {
     "datos": "البيانات:",
@@ -229,7 +231,9 @@
     "seleccionado": "الأصل المحدد: {ticker}.",
     "rango_velas": "الشموع ({n} جلسة)",
     "serie_cierre": "إغلاق {ticker}",
-    "rango_vacio_titulo": "لا توجد جلسات في هذا النطاق"
+    "rango_vacio_titulo": "لا توجد جلسات في هذا النطاق",
+    "col_detalle": "التفاصيل",
+    "ver_detalle": "عرض تفاصيل {ticker}"
   },
   "a11y": {
     "titulo": "مركز إمكانية الوصول",
@@ -1288,5 +1292,58 @@
     "anuncio_zona": "المنطقة الزمنية: {zona}",
     "anuncio_colores": "تم تحديث ألوان الصعود والهبوط",
     "anuncio_numeros": "تم تحديث الأرقام"
+  },
+  "activo": {
+    "titulo_pagina": "تفاصيل الأصل · Ernesto Investing AI",
+    "titulo": "تفاصيل الأصل",
+    "sub": "السعر والحجم والمخاطر وما تقوله النماذج عن أصل واحد.",
+    "resumen_titulo": "ملخص الأصل",
+    "cierre_de": "إغلاق {fecha}",
+    "operar": "التداول عليه",
+    "crear_alerta": "إنشاء تنبيه",
+    "comparar": "المقارنة بغيره",
+    "kpi_volumen": "حجم آخر جلسة",
+    "modelos_titulo": "ماذا تقول النماذج",
+    "modelos_clasif": "التصنيف: صعود أم هبوط؟",
+    "modelos_votos": "{sube} من {n} مصنِّفًا تقول صعود؛ متوسط احتمال الصعود: {prob}.",
+    "modelos_regr": "الانحدار: السعر المتوقع",
+    "modelos_mediana": "وسيط النماذج في {fecha}: {precio}.",
+    "modelos_aviso": "هذه تقديرات ذات قدرة تنبؤية ضعيفة: ليست توصية بالشراء أو البيع.",
+    "modelos_sin_datos": "لا توجد في هذا الوضع توقعات للنماذج لهذا الأصل.",
+    "ver_regresion": "عرض انحدار {ticker}",
+    "corr_titulo": "الارتباط بالأصول الأخرى",
+    "corr_ayuda": "ارتباط العوائد اليومية: قريب من الواحد يعني أنها تتحرك معًا، وقريب من الصفر يعني لا علاقة، والسالب يعني أنها تتحرك في اتجاهين متعاكسين.",
+    "corr_mas": "الأكثر ارتباطًا",
+    "corr_menos": "الأقل ارتباطًا",
+    "col_correlacion": "الارتباط",
+    "corr_sin_datos": "لا توجد مصفوفة ارتباط في هذا الوضع.",
+    "nota_titulo": "ملاحظة من مادة المقرر"
+  },
+  "comparador": {
+    "titulo_pagina": "مقارنة الأصول · Ernesto Investing AI",
+    "titulo": "مقارنة الأصول",
+    "sub": "قارن تطور عدة أصول على المقياس نفسه ومخاطرها في الفترة نفسها.",
+    "activos_titulo": "الأصول المقارنة",
+    "agregar": "إضافة أصل",
+    "agregar_boton": "إضافة",
+    "quitar_aria": "إزالة {ticker} من المقارنة",
+    "maximo": "الحد الأقصى للأصول في المرة الواحدة: {n}.",
+    "vacio_titulo": "اختر أصولًا للمقارنة",
+    "vacio_texto": "أضف أصلًا واحدًا على الأقل من القائمة أعلاه.",
+    "grafico_titulo": "التطور على أساس {base}",
+    "tabla_titulo": "قيمة كل أصل في كل جلسة على أساس {base}",
+    "resumen": "من {desde} إلى {hasta}: {lista}.",
+    "serie_final": "{ticker} ينتهي عند {valor}",
+    "metricas_titulo": "العائد والمخاطر في الفترة",
+    "metricas_caption": "مقاييس كل أصل في الفترة المختارة",
+    "declaracion": "يُحسب العائد والتقلب السنوي وبيتا في متصفحك من أسعار إغلاق الفترة المختارة؛ أما الارتباط فمن مصفوفة البيانات.",
+    "col_retorno": "عائد الفترة",
+    "col_vol": "التقلب السنوي",
+    "col_beta": "بيتا مقابل {ref}",
+    "corr_titulo": "الارتباط بين الأصول المختارة",
+    "corr_caption": "ارتباط العوائد اليومية بين الأصول المختارة",
+    "corr_minimo": "اختر أصلين على الأقل لرؤية ارتباطهما.",
+    "anuncio_agregado": "أُضيف {ticker} إلى المقارنة.",
+    "anuncio_quitado": "أُزيل {ticker} من المقارنة."
   }
 }

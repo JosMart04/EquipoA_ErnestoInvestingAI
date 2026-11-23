@@ -52,7 +52,9 @@
     "bloque_modelos": "מודלים",
     "bloque_cartera": "תיק",
     "bloque_operacion": "פעילות",
-    "bloque_cuenta": "חשבון"
+    "bloque_cuenta": "חשבון",
+    "activo": "פרטי נכס",
+    "comparador": "השוואה"
   },
   "shell": {
     "datos": "נתונים:",
@@ -214,7 +216,9 @@
     "seleccionado": "הנכס שנבחר: {ticker}.",
     "rango_velas": "נרות ({n} ימי מסחר)",
     "serie_cierre": "סגירה של {ticker}",
-    "rango_vacio_titulo": "אין ימי מסחר בטווח הזה"
+    "rango_vacio_titulo": "אין ימי מסחר בטווח הזה",
+    "col_detalle": "פרטים",
+    "ver_detalle": "צפייה בפרטי {ticker}"
   },
   "a11y": {
     "titulo": "מרכז הנגישות",
@@ -1219,5 +1223,58 @@
     "anuncio_zona": "אזור זמן: {zona}",
     "anuncio_colores": "צבעי העלייה והירידה עודכנו",
     "anuncio_numeros": "הספרות עודכנו"
+  },
+  "activo": {
+    "titulo_pagina": "פרטי נכס · Ernesto Investing AI",
+    "titulo": "פרטי נכס",
+    "sub": "מחיר, מחזור, סיכון ומה שהמודלים אומרים על נכס אחד.",
+    "resumen_titulo": "סיכום הנכס",
+    "cierre_de": "סגירה ב־{fecha}",
+    "operar": "מסחר בנכס",
+    "crear_alerta": "יצירת התראה",
+    "comparar": "השוואה לאחרים",
+    "kpi_volumen": "מחזור יום המסחר האחרון",
+    "modelos_titulo": "מה המודלים אומרים",
+    "modelos_clasif": "סיווג: עולה או יורד?",
+    "modelos_votos": "{sube} מתוך {n} מסווגים אומרים עולה; ההסתברות הממוצעת לעלייה: {prob}.",
+    "modelos_regr": "רגרסיה: מחיר חזוי",
+    "modelos_mediana": "חציון המודלים ב־{fecha}: {precio}.",
+    "modelos_aviso": "אלה הערכות בעלות כוח חיזוי נמוך: אין זו המלצה לקנות או למכור.",
+    "modelos_sin_datos": "במצב הזה אין תחזיות של המודלים לנכס.",
+    "ver_regresion": "צפייה ברגרסיה של {ticker}",
+    "corr_titulo": "מתאם עם נכסים אחרים",
+    "corr_ayuda": "מתאם התשואות היומיות: קרוב לאחד – נעים יחד; קרוב לאפס – ללא קשר; שלילי – נעים בכיוונים מנוגדים.",
+    "corr_mas": "המתואמים ביותר",
+    "corr_menos": "המתואמים פחות",
+    "col_correlacion": "מתאם",
+    "corr_sin_datos": "במצב הזה אין מטריצת מתאם.",
+    "nota_titulo": "הערה מחומר הקורס"
+  },
+  "comparador": {
+    "titulo_pagina": "השוואת נכסים · Ernesto Investing AI",
+    "titulo": "השוואת נכסים",
+    "sub": "השוו את התפתחות כמה נכסים באותו קנה מידה ואת הסיכון שלהם באותה תקופה.",
+    "activos_titulo": "נכסים בהשוואה",
+    "agregar": "הוספת נכס",
+    "agregar_boton": "הוספה",
+    "quitar_aria": "הסרת {ticker} מההשוואה",
+    "maximo": "מספר הנכסים המרבי בבת אחת: {n}.",
+    "vacio_titulo": "בחרו נכסים להשוואה",
+    "vacio_texto": "הוסיפו לפחות נכס אחד בבורר שלמעלה.",
+    "grafico_titulo": "התפתחות לפי בסיס {base}",
+    "tabla_titulo": "ערך כל נכס בכל יום מסחר לפי בסיס {base}",
+    "resumen": "מ־{desde} עד {hasta}: {lista}.",
+    "serie_final": "{ticker} מסיים ב־{valor}",
+    "metricas_titulo": "תשואה וסיכון בתקופה",
+    "metricas_caption": "המדדים של כל נכס בתקופה שנבחרה",
+    "declaracion": "התשואה, התנודתיות השנתית והבטא מחושבות בדפדפן שלך ממחירי הסגירה של התקופה שנבחרה; המתאם לקוח ממטריצת הנתונים.",
+    "col_retorno": "תשואת התקופה",
+    "col_vol": "תנודתיות שנתית",
+    "col_beta": "בטא מול {ref}",
+    "corr_titulo": "מתאם בין הנכסים שנבחרו",
+    "corr_caption": "מתאם התשואות היומיות בין הנכסים שנבחרו",
+    "corr_minimo": "בחרו לפחות שני נכסים כדי לראות את המתאם ביניהם.",
+    "anuncio_agregado": "{ticker} נוסף להשוואה.",
+    "anuncio_quitado": "{ticker} הוסר מההשוואה."
   }
 }

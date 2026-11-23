@@ -15,31 +15,9 @@
 
   /* ═════════════ Modelo de vista (puro) ═════════════ */
 
-  /** Serie del activo para un rango. Si todo el rango cabe en las velas de 03 se dibujan velas; si no, la línea de cierres de 02
-      (en el Modo profesor solo hay 120 velas: «más de 120 sesiones se muestran como línea», PLAN_MAESTRO §8.3 M1).
-      rango = {sesiones} o {desde, hasta} (fechas ISO). */
-  function serieActivo(c02, c03, ticker, rango) {
-    const r = rango || {};
-    const f02 = c02.fechas, cierres = c02.cierres[ticker] || [];
-    let i0 = 0, i1 = f02.length - 1;
-    if (r.sesiones) i0 = Math.max(0, f02.length - r.sesiones);
-    if (r.desde) { const k = f02.findIndex(f => f >= r.desde); i0 = k < 0 ? f02.length : k; }
-    if (r.hasta) { const k = f02.findIndex(f => f > r.hasta); i1 = (k < 0 ? f02.length : k) - 1; }
-    if (i1 < i0) return { tipo: "vacia", fechas: [], cierres: [] };
-    const fechas = f02.slice(i0, i1 + 1), v = c03.series[ticker];
-    const j0 = c03.fechas.indexOf(fechas[0]), j1 = c03.fechas.indexOf(fechas[fechas.length - 1]);
-    if (v && j0 >= 0 && j1 >= j0) {
-      return { tipo: "velas", fechas: c03.fechas.slice(j0, j1 + 1), o: v.o.slice(j0, j1 + 1), h: v.h.slice(j0, j1 + 1), l: v.l.slice(j0, j1 + 1), c: v.c.slice(j0, j1 + 1), v: v.v.slice(j0, j1 + 1) };
-    }
-    return { tipo: "linea", fechas, c: cierres.slice(i0, i1 + 1) };
-  }
-
-  /** Mínimo, máximo y variación de la serie (para el resumen y la tabla). */
-  function estadisticas(s) {
-    const bajos = s.tipo === "velas" ? s.l : s.c, altos = s.tipo === "velas" ? s.h : s.c, n = s.c ? s.c.length : 0;
-    if (!n) return null;
-    return { n, primero: s.c[0], ultimo: s.c[n - 1], variacion: (s.c[n - 1] / s.c[0] - 1) * 100, min: Math.min.apply(null, bajos), max: Math.max.apply(null, altos) };
-  }
+  // serieActivo y estadisticas viven en js/lib/mercado.js: las comparten el detalle de activo y el comparador (T-111)
+  const Mk = (global.EIALib && global.EIALib.mercado) || require("./lib/mercado.js");
+  const serieActivo = Mk.serieActivo, estadisticas = Mk.estadisticas;
 
   const filasUniverso = (c10, grupo) => c10.filter(a => !grupo || a.grupo === grupo);
 
@@ -88,15 +66,11 @@
   }
 
   function opcionesGrafico(c) {
-    const comunes = { textStyle: { color: c.fg }, tooltip: { trigger: "axis" }, grid: { left: 56, right: 16, top: 20, bottom: 56 },
-      xAxis: { type: "category", data: S.fechas, axisLabel: { color: c.mut, formatter: v => EIA.fmt.fecha(v) }, axisLine: { lineStyle: { color: c.bd } } },
-      yAxis: { scale: true, axisLabel: { color: c.mut }, splitLine: { lineStyle: { color: c.bd } } },
-      dataZoom: [{ type: "inside" }, { type: "slider", height: 18, textStyle: { color: c.mut }, labelFormatter: (i, v) => EIA.fmt.fecha(v) }] };
-    const serie = S.tipo === "velas"
-      ? { type: "candlestick", name: elegido, data: S.o.map((o, i) => [o, S.c[i], S.l[i], S.h[i]]), itemStyle: { color: c.up, color0: c.dn, borderColor: c.up, borderColor0: c.dn } }
-      : { type: "line", name: elegido, data: S.c, showSymbol: false, lineStyle: { width: 2, color: c.ac }, itemStyle: { color: c.ac } };
-    return Object.assign(comunes, { series: [serie] });
+    return opcionesVelas(c, S, elegido);
   }
+  /** Velas con el volumen en un segundo panel (Spec W13 G.4: «velas, volumen, rangos»), o línea de cierres.
+      Se comparte con el detalle de activo por EIA.ui.opcionesVelas. */
+  const opcionesVelas = (c, serie, nombre) => EIA.ui.opcionesVelas(c, serie, nombre);
 
   function pintarGrafico() {
     S = serieActivo(D.c02, D.c03, elegido, rangoActual());
@@ -108,7 +82,7 @@
     columnas.push({ clave: "c", titulo: t("dashboard.col_cierre"), tipo: "num", ordenable: true, fmt: num });
     if (S.tipo === "velas") columnas.push({ clave: "v", titulo: t("dashboard.col_volumen"), tipo: "num", ordenable: true, fmt: v => esc(EIA.fmt.compacto(v)) });
     grafico = EIA.ui.grafico($("#grafico"), {
-      id: "velas",
+      id: "velas", alto: S.tipo === "velas" ? 440 : 352,
       titulo: t(S.tipo === "velas" ? "dashboard.velas_titulo" : "dashboard.linea_titulo", { ticker: elegido }),
       opciones: opcionesGrafico,
       tabla: () => ({
@@ -137,6 +111,7 @@
         { clave: "volatilidad_anual_pct", titulo: t("dashboard.col_vol"), tipo: "num", ordenable: true, fmt: v => esc(EIA.fmt.pct(v, 1, { signo: false })) },
         { clave: "beta_vs_SPY", titulo: t("dashboard.col_beta"), tipo: "num", ordenable: true, fmt: v => esc(EIA.fmt.num(v)) },
         { clave: "watch", titulo: t("dashboard.col_watch"), tipo: "texto", valor: a => (EIA.watch.tiene(a.ticker) ? 1 : 0), fmt: (v, a) => botonWatch(a.ticker) },
+        { clave: "detalle", titulo: t("dashboard.col_detalle"), tipo: "texto", fmt: (v, a) => `<a href="activo.html?t=${encodeURIComponent(a.ticker)}">${esc(t("dashboard.ver_detalle", { ticker: a.ticker }))}</a>` },
         { clave: "enlace", titulo: t("dashboard.col_enlace"), tipo: "texto", fmt: (v, a) => `<a href="clasificacion.html?t=${encodeURIComponent(a.ticker)}">${esc(t("dashboard.ver_clasificacion", { ticker: a.ticker }))}</a>` }
       ],
       filas: filasUniverso(D.c10, f.grupo), claveFila: a => a.ticker, elegida: elegido,

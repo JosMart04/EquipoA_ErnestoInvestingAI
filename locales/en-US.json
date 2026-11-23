@@ -44,7 +44,9 @@
     "bloque_modelos": "Models",
     "bloque_cartera": "Portfolio",
     "bloque_operacion": "Operations",
-    "bloque_cuenta": "Account"
+    "bloque_cuenta": "Account",
+    "activo": "Asset detail",
+    "comparador": "Comparison"
   },
   "shell": {
     "datos": "Data:",
@@ -201,7 +203,9 @@
     "seleccionado": "Selected asset: {ticker}.",
     "rango_velas": "Candles ({n} sessions)",
     "serie_cierre": "{ticker} close",
-    "rango_vacio_titulo": "No sessions in that range"
+    "rango_vacio_titulo": "No sessions in that range",
+    "col_detalle": "Detail",
+    "ver_detalle": "See {ticker} detail"
   },
   "a11y": {
     "titulo": "Accessibility center",
@@ -1188,5 +1192,58 @@
     "anuncio_zona": "Time zone: {zona}",
     "anuncio_colores": "Up and down colors updated",
     "anuncio_numeros": "Digits updated"
+  },
+  "activo": {
+    "titulo_pagina": "Asset detail · Ernesto Investing AI",
+    "titulo": "Asset detail",
+    "sub": "Price, volume, risk and what the models say about one asset.",
+    "resumen_titulo": "Asset summary",
+    "cierre_de": "Close on {fecha}",
+    "operar": "Trade it",
+    "crear_alerta": "Create an alert",
+    "comparar": "Compare with others",
+    "kpi_volumen": "Last session volume",
+    "modelos_titulo": "What the models say",
+    "modelos_clasif": "Classification: up or down?",
+    "modelos_votos": "{sube} of {n} classifiers say UP; mean probability of rising: {prob}.",
+    "modelos_regr": "Regression: projected price",
+    "modelos_mediana": "Model median on {fecha}: {precio}.",
+    "modelos_aviso": "These are estimates with little predictive power: they are not a recommendation to buy or sell.",
+    "modelos_sin_datos": "In this mode there are no model predictions for this asset.",
+    "ver_regresion": "See the {ticker} regression",
+    "corr_titulo": "Correlation with other assets",
+    "corr_ayuda": "Correlation of daily returns: close to one, they move together; close to zero, unrelated; negative, they move in opposite directions.",
+    "corr_mas": "Most correlated",
+    "corr_menos": "Least correlated",
+    "col_correlacion": "Correlation",
+    "corr_sin_datos": "In this mode there is no correlation matrix.",
+    "nota_titulo": "Note from the course material"
+  },
+  "comparador": {
+    "titulo_pagina": "Asset comparison · Ernesto Investing AI",
+    "titulo": "Asset comparison",
+    "sub": "Compare how several assets evolved on the same scale and their risk over the same period.",
+    "activos_titulo": "Compared assets",
+    "agregar": "Add an asset",
+    "agregar_boton": "Add",
+    "quitar_aria": "Remove {ticker} from the comparison",
+    "maximo": "Maximum assets at once: {n}.",
+    "vacio_titulo": "Pick assets to compare",
+    "vacio_texto": "Add at least one with the selector above.",
+    "grafico_titulo": "Performance, base {base}",
+    "tabla_titulo": "Value of each asset per session, base {base}",
+    "resumen": "From {desde} to {hasta}: {lista}.",
+    "serie_final": "{ticker} ends at {valor}",
+    "metricas_titulo": "Return and risk over the period",
+    "metricas_caption": "Metrics of each asset over the chosen period",
+    "declaracion": "Return, annualized volatility and beta are computed in your browser from the closes of the chosen period; the correlation comes from the data matrix.",
+    "col_retorno": "Period return",
+    "col_vol": "Annualized volatility",
+    "col_beta": "Beta vs {ref}",
+    "corr_titulo": "Correlation between the chosen assets",
+    "corr_caption": "Correlation of daily returns between the chosen assets",
+    "corr_minimo": "Pick at least two assets to see their correlation.",
+    "anuncio_agregado": "{ticker} added to the comparison.",
+    "anuncio_quitado": "{ticker} removed from the comparison."
   }
 }

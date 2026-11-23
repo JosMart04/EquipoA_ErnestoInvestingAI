@@ -52,7 +52,9 @@
     "bloque_modelos": "मॉडल",
     "bloque_cartera": "पोर्टफ़ोलियो",
     "bloque_operacion": "संचालन",
-    "bloque_cuenta": "खाता"
+    "bloque_cuenta": "खाता",
+    "activo": "एसेट का विवरण",
+    "comparador": "तुलना"
   },
   "shell": {
     "datos": "डेटा:",
@@ -209,7 +211,9 @@
     "seleccionado": "चुना गया एसेट: {ticker}।",
     "rango_velas": "कैंडल ({n} सत्र)",
     "serie_cierre": "{ticker} का क्लोज़",
-    "rango_vacio_titulo": "इस सीमा में कोई सत्र नहीं"
+    "rango_vacio_titulo": "इस सीमा में कोई सत्र नहीं",
+    "col_detalle": "विवरण",
+    "ver_detalle": "{ticker} का विवरण देखें"
   },
   "a11y": {
     "titulo": "सुलभता केंद्र",
@@ -1196,5 +1200,58 @@
     "anuncio_zona": "समय क्षेत्र: {zona}",
     "anuncio_colores": "बढ़त और गिरावट के रंग अपडेट हुए",
     "anuncio_numeros": "अंक अपडेट हुए"
+  },
+  "activo": {
+    "titulo_pagina": "एसेट का विवरण · Ernesto Investing AI",
+    "titulo": "एसेट का विवरण",
+    "sub": "किसी एसेट का भाव, वॉल्यूम, जोखिम और मॉडल क्या कहते हैं।",
+    "resumen_titulo": "एसेट का सारांश",
+    "cierre_de": "{fecha} का क्लोज़",
+    "operar": "ट्रेड करें",
+    "crear_alerta": "अलर्ट बनाएँ",
+    "comparar": "दूसरों से तुलना करें",
+    "kpi_volumen": "पिछले सत्र का वॉल्यूम",
+    "modelos_titulo": "मॉडल क्या कहते हैं",
+    "modelos_clasif": "वर्गीकरण: बढ़ेगा या घटेगा?",
+    "modelos_votos": "{n} में से {sube} क्लासिफ़ायर बढ़त कहते हैं; बढ़ने की औसत संभावना: {prob}।",
+    "modelos_regr": "रिग्रेशन: अनुमानित भाव",
+    "modelos_mediana": "{fecha} को मॉडलों की माध्यिका: {precio}।",
+    "modelos_aviso": "ये कम पूर्वानुमान-क्षमता वाले अनुमान हैं: खरीदने या बेचने की सिफ़ारिश नहीं।",
+    "modelos_sin_datos": "इस मोड में इस एसेट के लिए मॉडलों के पूर्वानुमान नहीं हैं।",
+    "ver_regresion": "{ticker} का रिग्रेशन देखें",
+    "corr_titulo": "दूसरे एसेट के साथ सहसंबंध",
+    "corr_ayuda": "दैनिक रिटर्न का सहसंबंध: एक के पास हो तो साथ चलते हैं; शून्य के पास हो तो कोई संबंध नहीं; ऋणात्मक हो तो उलटी दिशा में चलते हैं।",
+    "corr_mas": "सबसे अधिक सहसंबद्ध",
+    "corr_menos": "सबसे कम सहसंबद्ध",
+    "col_correlacion": "सहसंबंध",
+    "corr_sin_datos": "इस मोड में सहसंबंध मैट्रिक्स नहीं है।",
+    "nota_titulo": "पाठ्यक्रम सामग्री की टिप्पणी"
+  },
+  "comparador": {
+    "titulo_pagina": "एसेट की तुलना · Ernesto Investing AI",
+    "titulo": "एसेट की तुलना",
+    "sub": "कई एसेट के उतार-चढ़ाव को एक ही पैमाने पर और उनके जोखिम को एक ही अवधि में तुलना करें।",
+    "activos_titulo": "तुलना किए जा रहे एसेट",
+    "agregar": "एसेट जोड़ें",
+    "agregar_boton": "जोड़ें",
+    "quitar_aria": "{ticker} को तुलना से हटाएँ",
+    "maximo": "एक बार में अधिकतम एसेट: {n}।",
+    "vacio_titulo": "तुलना के लिए एसेट चुनें",
+    "vacio_texto": "ऊपर के चयनकर्ता से कम से कम एक जोड़ें।",
+    "grafico_titulo": "उतार-चढ़ाव (आधार {base})",
+    "tabla_titulo": "हर सत्र में हर एसेट का मान (आधार {base})",
+    "resumen": "{desde} से {hasta} तक: {lista}।",
+    "serie_final": "{ticker} का अंत {valor} पर",
+    "metricas_titulo": "अवधि में रिटर्न और जोखिम",
+    "metricas_caption": "चुनी गई अवधि में हर एसेट के मीट्रिक",
+    "declaracion": "रिटर्न, वार्षिक अस्थिरता और बीटा आपके ब्राउज़र में चुनी गई अवधि के क्लोज़ से गणना किए जाते हैं; सहसंबंध डेटा मैट्रिक्स से है।",
+    "col_retorno": "अवधि का रिटर्न",
+    "col_vol": "वार्षिक अस्थिरता",
+    "col_beta": "{ref} के मुकाबले बीटा",
+    "corr_titulo": "चुने गए एसेट के बीच सहसंबंध",
+    "corr_caption": "चुने गए एसेट के बीच दैनिक रिटर्न का सहसंबंध",
+    "corr_minimo": "सहसंबंध देखने के लिए कम से कम दो एसेट चुनें।",
+    "anuncio_agregado": "{ticker} तुलना में जोड़ा गया।",
+    "anuncio_quitado": "{ticker} तुलना से हटाया गया।"
   }
 }

@@ -52,7 +52,9 @@
     "bloque_modelos": "모델",
     "bloque_cartera": "포트폴리오",
     "bloque_operacion": "거래",
-    "bloque_cuenta": "계정"
+    "bloque_cuenta": "계정",
+    "activo": "자산 상세",
+    "comparador": "비교"
   },
   "shell": {
     "datos": "데이터:",
@@ -204,7 +206,9 @@
     "seleccionado": "선택한 자산: {ticker}.",
     "rango_velas": "캔들({n}거래일)",
     "serie_cierre": "{ticker} 종가",
-    "rango_vacio_titulo": "이 범위에는 거래일이 없습니다"
+    "rango_vacio_titulo": "이 범위에는 거래일이 없습니다",
+    "col_detalle": "상세",
+    "ver_detalle": "{ticker} 상세 보기"
   },
   "a11y": {
     "titulo": "접근성 센터",
@@ -1173,5 +1177,58 @@
     "anuncio_zona": "시간대: {zona}",
     "anuncio_colores": "상승·하락 색을 바꿨습니다",
     "anuncio_numeros": "숫자를 바꿨습니다"
+  },
+  "activo": {
+    "titulo_pagina": "자산 상세 · Ernesto Investing AI",
+    "titulo": "자산 상세",
+    "sub": "한 자산의 가격, 거래량, 위험과 모델의 판단.",
+    "resumen_titulo": "자산 요약",
+    "cierre_de": "{fecha} 종가",
+    "operar": "거래하기",
+    "crear_alerta": "알림 만들기",
+    "comparar": "다른 자산과 비교",
+    "kpi_volumen": "최근 거래일 거래량",
+    "modelos_titulo": "모델의 판단",
+    "modelos_clasif": "분류: 상승인가 하락인가?",
+    "modelos_votos": "분류 모델 {n}개 중 {sube}개가 상승이라고 합니다. 평균 상승 확률: {prob}.",
+    "modelos_regr": "회귀: 예측 가격",
+    "modelos_mediana": "{fecha} 모델 중앙값: {precio}.",
+    "modelos_aviso": "예측력이 약한 추정치이며 매수나 매도 권유가 아닙니다.",
+    "modelos_sin_datos": "이 모드에는 이 자산에 대한 모델 예측이 없습니다.",
+    "ver_regresion": "{ticker} 회귀 보기",
+    "corr_titulo": "다른 자산과의 상관관계",
+    "corr_ayuda": "일간 수익률의 상관관계: 일에 가까우면 함께 움직이고, 영에 가까우면 관계가 없으며, 음수면 반대로 움직입니다.",
+    "corr_mas": "상관관계가 높은 자산",
+    "corr_menos": "상관관계가 낮은 자산",
+    "col_correlacion": "상관관계",
+    "corr_sin_datos": "이 모드에는 상관 행렬이 없습니다.",
+    "nota_titulo": "강의 자료의 참고 사항"
+  },
+  "comparador": {
+    "titulo_pagina": "자산 비교 · Ernesto Investing AI",
+    "titulo": "자산 비교",
+    "sub": "여러 자산의 흐름을 같은 척도로, 위험을 같은 기간으로 비교합니다.",
+    "activos_titulo": "비교 중인 자산",
+    "agregar": "자산 추가",
+    "agregar_boton": "추가",
+    "quitar_aria": "비교에서 {ticker} 제거",
+    "maximo": "한 번에 비교할 수 있는 최대 자산 수: {n}.",
+    "vacio_titulo": "비교할 자산을 선택하세요",
+    "vacio_texto": "위 선택 상자에서 하나 이상 추가하세요.",
+    "grafico_titulo": "흐름(기준 {base})",
+    "tabla_titulo": "거래일별 각 자산의 값(기준 {base})",
+    "resumen": "{desde}부터 {hasta}까지: {lista}.",
+    "serie_final": "{ticker} 최종 {valor}",
+    "metricas_titulo": "기간 수익과 위험",
+    "metricas_caption": "선택한 기간의 자산별 지표",
+    "declaracion": "수익률, 연간 변동성, 베타는 선택한 기간의 종가로 브라우저에서 계산하며, 상관관계는 데이터 행렬의 값입니다.",
+    "col_retorno": "기간 수익률",
+    "col_vol": "연간 변동성",
+    "col_beta": "{ref} 대비 베타",
+    "corr_titulo": "선택한 자산 간 상관관계",
+    "corr_caption": "선택한 자산 간 일간 수익률의 상관관계",
+    "corr_minimo": "상관관계를 보려면 자산을 두 개 이상 선택하세요.",
+    "anuncio_agregado": "{ticker}을(를) 비교에 추가했습니다.",
+    "anuncio_quitado": "{ticker}을(를) 비교에서 제거했습니다."
   }
 }

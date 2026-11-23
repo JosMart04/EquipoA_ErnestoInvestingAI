@@ -39,7 +39,7 @@
   /* Barra lateral (Spec W13 G.4): las páginas agrupadas por bloque. [archivo, clave i18n, id, icono, es módulo nuevo].
      PAGES se conserva tal cual por compatibilidad con la base; esta tabla agrega las páginas de soporte. */
   const NAVEGACION = [
-    ["mercado", [["index.html", "nav.dashboard", "dashboard", "dashboard"]]],
+    ["mercado", [["index.html", "nav.dashboard", "dashboard", "dashboard"], ["activo.html", "nav.activo", "activo", "activo"], ["comparador.html", "nav.comparador", "comparador", "comparar"]]],
     ["vigilancia", [["watchlist.html", "nav.watchlist", "watchlist", "estrella"]]],
     ["modelos", [["clasificacion.html", "nav.clasificacion", "clasificacion", "clasificacion", 1], ["regresion.html", "nav.regresion", "regresion", "regresion", 1]]],
     ["cartera", [["optimizador.html", "nav.optimizador", "optimizador", "optimizador", 1], ["portafolios.html", "nav.portafolios", "portafolios", "portafolios", 1],
@@ -702,6 +702,32 @@
       up: v("--up"), dn: v("--dn"), ac: v("--ac"), warn: v("--warn"),
       serie: [1, 2, 3, 4, 5, 6].map(i => v("--serie-" + i)),
       serieTexto: [1, 2, 3, 4, 5, 6].map(i => v("--serie-texto-" + i)) // texto sobre cada color de serie (≥ 4,5:1)
+    };
+  };
+  /** Opciones de ECharts para velas OHLC con el volumen en un segundo panel (Spec W13 G.4: «velas, volumen, rangos»),
+      o para la línea de cierres si la serie no tiene velas. La usan el Dashboard y el detalle de activo.
+      c = EIA.coloresGrafico(); s = serie de EIALib.mercado.serieActivo. */
+  EIA.ui.opcionesVelas = function (c, s, nombre) {
+    const t = EIA.t;
+    const eje = { type: "category", data: s.fechas, axisLabel: { color: c.mut, formatter: v => EIA.fmt.fecha(v) }, axisLine: { lineStyle: { color: c.bd } } };
+    const zoom = idx => [{ type: "inside", xAxisIndex: idx }, { type: "slider", xAxisIndex: idx, height: 18, bottom: 8, textStyle: { color: c.mut }, labelFormatter: (i, v) => EIA.fmt.fecha(v) }];
+    const ejeY = { scale: true, axisLabel: { color: c.mut }, splitLine: { lineStyle: { color: c.bd } } };
+    if (s.tipo !== "velas") {
+      return { textStyle: { color: c.fg }, tooltip: { trigger: "axis" }, grid: { left: 56, right: 16, top: 20, bottom: 56 }, xAxis: eje, yAxis: ejeY, dataZoom: zoom(0),
+        series: [{ type: "line", name: nombre, data: s.c, showSymbol: false, lineStyle: { width: 2, color: c.ac }, itemStyle: { color: c.ac } }] };
+    }
+    const volumen = t("dashboard.col_volumen");
+    return {
+      textStyle: { color: c.fg }, tooltip: { trigger: "axis", axisPointer: { type: "cross" } }, axisPointer: { link: [{ xAxisIndex: "all" }] },
+      grid: [{ left: 56, right: 16, top: 20, height: "58%" }, { left: 56, right: 16, top: "72%", height: "13%" }],
+      xAxis: [eje, Object.assign({}, eje, { gridIndex: 1, axisLabel: { show: false } })],
+      yAxis: [ejeY, { gridIndex: 1, scale: true, splitNumber: 2, axisLabel: { color: c.mut, formatter: v => EIA.fmt.compacto(v) }, splitLine: { show: false } }],
+      dataZoom: zoom([0, 1]),
+      series: [
+        { type: "candlestick", name: nombre, data: s.o.map((o, i) => [o, s.c[i], s.l[i], s.h[i]]), itemStyle: { color: c.up, color0: c.dn, borderColor: c.up, borderColor0: c.dn } },
+        // El volumen toma el color de la vela del día (la palabra y el valor están en la tabla y en el tooltip)
+        { type: "bar", name: volumen, xAxisIndex: 1, yAxisIndex: 1, data: s.v.map((v, i) => ({ value: v, itemStyle: { color: s.c[i] >= s.o[i] ? c.up : c.dn, opacity: 0.55 } })) }
+      ]
     };
   };
   EIA.movimientoReducido = () => document.documentElement.dataset.movimiento === "reducido"

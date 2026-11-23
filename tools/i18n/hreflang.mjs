@@ -6,7 +6,9 @@ import { resolve, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const PAGINAS = ["index", "watchlist", "trading", "leaderboard", "clasificacion", "regresion", "optimizador", "portafolios", "backtesting", "configuracion"].map(p => p + ".html");
+// Todas las páginas del sitio: las de la barra lateral (js/common.js, NAVEGACION)
+import comun from "../../js/common.js";
+const PAGINAS = comun.PAGINAS_NAV.map(p => p[0]);
 const tags = JSON.parse(readFileSync(join(RAIZ, "locales", "index.json"), "utf8")).idiomas.map(i => i.tag);
 for (const p of PAGINAS) {
   const f = join(RAIZ, p);
