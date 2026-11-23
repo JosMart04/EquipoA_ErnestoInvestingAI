@@ -604,3 +604,35 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-103-traducciones-guia`
 - **Contrato:** sin cambios
 - **Prioridad:** alta · **Para cuándo:** —
+
+### MSG-20261123-0450 · CC · INFO
+- **Asunto:** Traducciones extra: hebreo, chino, coreano, hindi, ruso, portugués, francés y alemán (T-104)
+- **Qué cambió:**
+  - **8 diccionarios nuevos al 100 %** (`locales/he-IL|zh-CN|ko-KR|hi-IN|ru-RU|pt-BR|fr-FR|de-DE.json`), todos en borrador con `_meta`, sin revisión de hablantes. Ya están los **13 idiomas** del plan en `locales/index.json`, con endónimo, escritura, dirección, voz y etiqueta «borrador» en su propio idioma.
+  - **Plurales:** las categorías exactas de `Intl.PluralRules`:
+    - he: one/two/other;
+    - ru: one/few/many/other;
+    - zh y ko: solo other;
+    - hi, pt, fr y de: one/other.
+  - **Señales:**
+    - he «עולה/יורד»;
+    - zh «上涨/下跌»;
+    - ko «상승/하락»;
+    - hi «बढ़त/गिरावट»;
+    - ru «РОСТ/ПАДЕНИЕ»;
+    - pt «SOBE/DESCE»;
+    - fr «HAUSSE/BAISSE»;
+    - de «STEIGT/FÄLLT».
+    
+    En ninguno aparece la palabra «mantener» del idioma; en coreano las posiciones son «포지션» para evitar 보유/유지.
+  - **Gramática de voz** (`voz.g_*`, `voz.m_*`) y **textos libres** de los JSON (`datos.textos`) traducidos en los 8 idiomas.
+  - **hreflang:** regenerado en las 10 páginas (13 idiomas + x-default).
+- **Medición B** (9 páginas × 8 idiomas × 375 y 1280 px = 144 mediciones):
+  - **0 truncados, 0 desbordes, ningún desplazamiento horizontal**; `lang` y `dir` correctos en las 144.
+  - «dinero_fijo» > 0 en zh-CN, ko-KR y hi-IN es un **falso positivo** de la heurística del ejercicio (`\$\d+\.\d{2}`): es la salida de `Intl.NumberFormat` para USD en esos idiomas («US$123.45», «$123.45»), no texto escrito a mano. Se explicará en la guía técnica (T-105).
+- **Pruebas y navegador:**
+  - 220 pruebas JS;
+  - Configuración en he-IL (RTL y franja de borrador) y Clasificación en zh-CN («rojo sube», sin claves faltantes y sin mensajes en consola).
+- **Archivos / PR:** rama `cc/T-104-traducciones-extra`
+- **Contrato:** sin cambios
+- **Prioridad:** alta · **Para cuándo:** —

@@ -4,9 +4,9 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-19 (Lima)
+- Fecha y hora: 2026-11-22 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/docs-cierre-pr1` (PR #1 cerrado; «♪ Escuchar el consenso» también oculto; informe regenerado con esa frase corregida)
+- Rama / último commit: `cc/T-104-traducciones-extra` (Lab 13: los 13 idiomas completos; falta T-105, medición y documentación)
 
 ## Hecho (con evidencia)
 
@@ -43,6 +43,12 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 | #31 | T-61 (parte) | **README profesional** (módulos, características, tecnologías con versiones, arquitectura, ejecución, pruebas, datos, accesibilidad, créditos) y «About» de GitHub (descripción, sitio, 20 temas) | Enlaces del README verificados |
 | #32 | T-90b | «Clic en …» por voz: por palabras, números dichos («tres meses» → 3M), opciones de listas y elección numerada entre botones repetidos (o «el segundo …») | 144/144; navegador: periodos del Dashboard, opción «ETF sectoriales», «Magníficas siete», «Elegir» ×3 con marcas, «el segundo», «cancelar» |
 | #34 | T-61, T-62, T-63 | **Entregables (autorizados por Josué el 18-nov; informe aprobado por él):** `docs/informe/S13_EquipoA_Informe.pdf` (+ `.docx` editable) con la carátula del equipo, `PROMPTS_USADOS.md` (21 entradas literales), `docs/guia-usuario/accesibilidad.md`, capturas en `docs/capturas/sitio` y `docs/capturas/figma`, generadores en `tools/` (`capturas.mjs`, `compilar_prompts.mjs`, `informe/`). Las capturas revelaron tres detalles visuales, corregidos: título del eje Y del Optimizador, etiquetas finales del Backtesting y casilla «Fuente legible» del Centro | 144/144; PDF de 10 páginas revisado página por página; copia literal de prompts comprobada (20/20) |
+| #35–#38 | — | PDF del informe aprobado; enlace de Figma verificado; «♪ Escuchar» y «♪ Escuchar el consenso» ocultos (sin función); regla global `[hidden] { display: none !important }` (arregla «Desde/Hasta» del Dashboard) | Navegador |
+| #39 | T-100 | **Lab 13, línea base «antes»:** etiqueta `i18n-antes`, `EIALib.i18nCalidad` (`medir()` del ejercicio 13.2, pseudolocalización, CSV) y `tools/i18n/medir_i18n.mjs` (Playwright, versión A/B) | CSV A de 72 filas en `docs/i18n/` |
+| #40 | T-101 | **Núcleo i18n:** `i18n/` → `locales/` + manifiesto `locales/index.json`; respaldo a es-PE; `lang`/`dir`; zona horaria (cierre 16:00 de Nueva York en la zona de la persona); Collator; pseudolocales `qps-ploc`/`qps-plocm`; fachada `I18N` del kit; selector por endónimo y franja de borrador; página **Configuración**; colores «rojo sube» para ja/zh/ko; hreflang | Pruebas JS; navegador |
+| #41 | T-102 | **RTL:** CSS lógico, ECharts espejado (`EIA.espejarGrafico`), flechas ← → invertidas (`EIA.teclaLogica`), fuentes por `:lang()`, bidi | RTL no agrega desbordes |
+| #42 | T-103 | **ar-EG, ja-JP (100 %) y qu-PE (parcial, 7 %)** + voz en cualquier escritura (normalización Unicode, CJK sin espacios, comando «idioma …») | 188 pruebas; 0 truncados y 0 desbordes (10 páginas × 4 idiomas × 375/1280) |
+| (este) | T-104 | **he-IL, zh-CN, ko-KR, hi-IN, ru-RU, pt-BR, fr-FR, de-DE** al 100 % (borradores con `_meta`), con su gramática de voz y los textos libres de los JSON | 220 pruebas; medición B de los 8 idiomas en el mensaje de la bitácora |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -65,9 +71,16 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 - El atajo `Alt+Shift+A` con una pulsación real (el evento sintético llega y abre el panel).
 
 ## En curso (estado exacto)
-- Nada a medias tras el PR #17. **Los nueve módulos usan `EIA.modulo` e i18n**; ya no queda ninguna página stub.
+- **Lab 13 (internacionalización, plan aprobado el 22-nov):** T-100…T-104 listos; falta **T-105**.
 
 ## Siguiente paso exacto
+0. **T-105 (Lab 13):**
+   - medición completa A/B (versión A desde un worktree de la etiqueta `i18n-antes` con el diccionario de cada idioma inyectado; versión B con los 13 idiomas), con y sin pseudo, a 375 y 1280 px, en `docs/i18n/ejercicio_13_2_auditoria_investing_ai_PRUEBA_TECNICA_BOT.csv`;
+   - capturas antes y después en `docs/capturas/i18n/`;
+   - el notebook del profesor (`.py`) con nuestro CSV;
+   - `docs/i18n/guia_tecnica.md` y `docs/i18n/glosario.md`, la sección «Idiomas» del README y D-25 en DECISIONES.
+   
+   La interfaz «ultra-realista», Perfil, Ayuda y Acerca de son de la **siguiente iteración**.
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
 2. **Informe aprobado por Josué (18-nov).** Si cambia algo del sitio o de las cifras antes de la entrega, se editan los textos en `tools/informe/generar_informe.cjs` y se regenera (ver «Cómo probar»). No editar el PDF a mano.
 3. **Pendientes humanos** (Josué ya comprobó el 18-nov que el archivo de Figma Make se abre sin iniciar sesión): pruebas por rol del Anexo A (T-80, incluidos lectores de pantalla); registrar los enlaces en la tabla del curso; video opcional (T-64).
@@ -103,7 +116,17 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 - **«Llevar a Trading»** vive en el núcleo (`EIA.ui.llevarATrading`): úsalo desde cualquier módulo con `{pesos, excluidos, nivel, origen, fuente}`; guarda `eia_elegido.aplicado`, que Trading muestra.
 - **A 390 px los puntos de NSGA-II y NSGA-III se superponen** (lo detectó CX en E2E): para elegir con el dedo hay que apagar series; con teclado o desde la tabla funciona. Mejora pendiente.
 - **Modo real hoy:** `data_real/` solo tiene `meta.json` y `cierres_historicos.json`. Cada módulo muestra «publicación parcial» y nombra el archivo que falta; es lo esperado hasta que CX publique 01–13.
-- **El navegador cachea `js/common.js` y los `i18n/*.json`** con `python -m http.server`: tras editarlos, recarga forzada (Ctrl+F5).
+- **El navegador cachea `js/common.js` y los `locales/*.json`** con `python -m http.server`: tras editarlos, recarga forzada (Ctrl+F5).
+- **Idiomas (Lab 13):**
+  - **Agregar un idioma** = `locales/<tag>.json` + una línea en `locales/index.json`. Después corre `node tools/i18n/revisar.mjs --escribir` (completitud) y `node tools/i18n/hreflang.mjs` (enlaces `hreflang` de las 10 páginas). Para armar un diccionario por lotes: `node tools/i18n/ensamblar.mjs <carpeta> <tag> [--parcial]`.
+  - **Las pruebas exigen:**
+    - las mismas claves que es-PE;
+    - los mismos `{parámetros}` (en las formas de plural, `{n}` es opcional);
+    - exactamente las categorías de plural de `Intl.PluralRules` (por ejemplo, he: one/two/other; ru: one/few/many/other; zh/ja/ko: solo other);
+    - ninguna cifra fuera de `datos.*`;
+    - `datos.senal` solo con SUBE/BAJA;
+    - ninguna palabra de «mantener» del idioma (lista en `nucleo.i18n.test.mjs`; en coreano se evitan 보유 y 유지, por eso las posiciones son «포지션»).
+  - **Para probar un idioma** en el navegador: `?lang=<tag>`. La preferencia se guarda en `eia_lang` como JSON (`"he-IL"`, con comillas).
 - **Remontar componentes:** `EIA.ui.tabla`, `segmentado` y `grafico` cancelan sus oyentes anteriores al montarse otra vez sobre el mismo nodo (`montar()` en `common.js`). Si creas un componente nuevo con `addEventListener` sobre `destino`, usa `montar(destino).control.signal`.
 - **Formato de `js/lib`:** cada archivo publica `EIALib.<nombre>` y `module.exports`; las dependencias se piden con `dep("nombre")`. En un Worker se cargan con `importScripts` **en orden de dependencia** (estadistica y simplex antes de markowitz; markowitz antes de nsga2, nsga3 y backtest).
 - **Las carteras de `09` del profesor no se reproducen** con `backtest.js` (su optimizador no está documentado); las referencias sí. No es un fallo: el recálculo solo existe en el Modo real. **Con los datos reales sí:** misma fecha final → EPU y 1/N idénticos al Python de CX; Moderado +17,05 % frente a +17,03 %.
