@@ -33,10 +33,40 @@ Requiere las dependencias de `tests/` (`npm ci --prefix tests --ignore-scripts`)
 
 ```powershell
 git worktree add ..\eia-i18n-antes i18n-antes
-node tools/i18n/medir_i18n.mjs --version A --raiz ..\eia-i18n-antes --locales es-PE,en-US --salida docs/i18n/ejercicio_13_2_auditoria_investing_ai_PRUEBA_TECNICA_BOT.csv
-node tools/i18n/medir_i18n.mjs --version B --anexar --salida docs/i18n/ejercicio_13_2_auditoria_investing_ai_PRUEBA_TECNICA_BOT.csv
+$L = "es-PE,en-US,ar-EG,he-IL,ja-JP,zh-CN,ko-KR,hi-IN,ru-RU,pt-BR,fr-FR,de-DE,qu-PE"
+node tools/i18n/medir_i18n.mjs --version A --raiz ..\eia-i18n-antes --dicc locales --locales $L --salida docs/i18n/ejercicio_13_2_auditoria_investing_ai_PRUEBA_TECNICA_BOT.csv
+node tools/i18n/medir_i18n.mjs --version B --locales $L --anexar --salida docs/i18n/ejercicio_13_2_auditoria_investing_ai_PRUEBA_TECNICA_BOT.csv
 ```
+
+`--dicc locales` le entrega a la versión A los diccionarios actuales de los 13 idiomas. La versión A no los tenía: así se mide cómo se habría visto la interfaz antigua con esos textos.
 
 Cada combinación (página × idioma × pseudolocalización × ancho) usa un contexto limpio de Chromium con `locale es-PE`, la zona `America/Lima` y movimiento reducido.
 
 > **PRUEBA_TECNICA_BOT:** estas filas las genera un robot para medir la interfaz. **No son datos de personas** (Spec W13, G.10.2).
+
+## Resultados
+
+Archivo completo: [`ejercicio_13_2_auditoria_investing_ai_PRUEBA_TECNICA_BOT.csv`](ejercicio_13_2_auditoria_investing_ai_PRUEBA_TECNICA_BOT.csv). Son 936 mediciones: 9 páginas × 13 idiomas × pseudolocalización sí y no × 375 y 1280 px, en cada versión.
+
+| Versión | Mediciones | Truncados | Desbordes | Con scroll horizontal | `lang` incorrecto | `dir` incorrecto |
+|---|---|---|---|---|---|---|
+| **A (antes)** | 468 | 26 | 45 | 45 | 432 | 72 |
+| **B (después)** | 468 | **0** | **0** | **0** | **0** | **0** |
+
+**En A:**
+- **Truncados:** el tramo angosto de la barra apilada de Backtesting a 375 px.
+- **Desbordes:** el aviso del pie con pseudolocalización a 375 px, en las 9 páginas, en es, ru, pt, fr y de.
+- **`lang`:** se queda en es-PE en los 12 idiomas que no son el español.
+- **`dir`:** falta `dir="rtl"` en árabe y hebreo.
+
+En B, todo eso está corregido.
+
+**`dinero_fijo` > 0 en B** (en-US, ja-JP, hi-IN, zh-CN y ko-KR) es un falso positivo de la heurística `\$\d+\.\d{2}`. Son montos que formatea `Intl` en USD («$123.45», «US$123.45»), no texto escrito a mano. En A sale 0 porque la versión antigua formateaba todo como es-PE («US$ 123.45»).
+
+**Figura del notebook del profesor** (`ejercicio_13_3_analisis_internacionalizacion.py`, ejecutado sin cambios con nuestro CSV; salida en [`notebook_13_3_salida_PRUEBA_TECNICA_BOT.txt`](notebook_13_3_salida_PRUEBA_TECNICA_BOT.txt)):
+
+![Truncados por idioma, A frente a B](figuras/S13_fig_truncados_AB.png)
+
+Hay **capturas antes y después** en [`docs/capturas/i18n/`](../capturas/i18n/):
+- Inicio y Clasificación en es-PE, ar-EG, ja-JP y de-DE a 1280 px;
+- Inicio y Backtesting en móvil (375 px) con pseudolocalización.

@@ -32,6 +32,7 @@ Proyecto del curso **Interacción Humano-Computador (IHC 2026-II)** · Facultad 
 - [Pruebas y calidad](#pruebas-y-calidad)
 - [Datos y procedencia](#datos-y-procedencia)
 - [Accesibilidad](#accesibilidad)
+- [Idiomas](#idiomas)
 - [Entregables](#entregables)
 - [Créditos y uso de IA](#créditos-y-uso-de-ia)
 - [Licencia](#licencia)
@@ -67,7 +68,7 @@ El sitio funciona con dos fuentes de datos intercambiables:
 
 - **Ninguna cifra escrita a mano:** todo se lee de los JSON o se deriva y se declara ([contrato de datos](docs/CONTRATO_DATOS.md)).
 - **Solo dos clases:** SUBE ▲ o BAJA ▼, siempre con palabra y símbolo, nunca solo con color.
-- **Bilingüe ES-PE / EN-US** sin recargar la página, con formatos de número y fecha de `Intl`.
+- **13 idiomas**, incluidos dos de derecha a izquierda (árabe y hebreo), sin recargar la página. Usa formatos, plurales y orden de `Intl`, la hora de cierre en tu zona horaria y pseudolocalización ([ver Idiomas](#idiomas)).
 - **Temas claro y oscuro** (también en los gráficos), alto contraste y diseño adaptable hasta 390 px.
 - **Recálculo en el navegador** en el Modo real: el backtesting y las fronteras se recalculan en Web Workers con otro periodo o ventana.
 - **Cortes históricos:** se puede ver cómo estaban los modelos al cierre de cada uno de los últimos 12 meses.
@@ -112,6 +113,7 @@ El sitio funciona con dos fuentes de datos intercambiables:
 ├── pipeline/                       descarga, entrenamiento de modelos, optimización y backtesting (Python)
 ├── tests/                          unit/ (Node), e2e/ y a11y/ (Playwright + axe), datos/ (Python)
 ├── tools/validar_contrato.py       validación del contrato de datos en ambos modos
+├── tools/i18n/                     medición A/B, revisión de completitud, armado de diccionarios y hreflang
 ├── figma-src/                      export de Figma Make, sin editar
 └── docs/                           contrato de datos, plan, coordinación, auditoría P08
 ```
@@ -130,7 +132,7 @@ python -m http.server 8000
 
 Abre <http://127.0.0.1:8000>. La cámara y la voz necesitan `localhost` o HTTPS.
 
-Parámetros útiles en la URL: `?modo=real`, `?lang=en-US`, `?t=NVDA` (activo) y `?nivel=Moderado` (Backtesting).
+Parámetros útiles en la URL: `?modo=real`, `?lang=en-US` (o cualquiera de los 13 idiomas, por ejemplo `?lang=ar-EG`), `?t=NVDA` (activo) y `?nivel=Moderado` (Backtesting).
 
 ### Regenerar los datos reales (opcional)
 
@@ -154,7 +156,7 @@ npm --prefix tests run test:e2e              # E2E y axe en ambos temas, modos y
 python tools/validar_contrato.py data --modo profesor
 ```
 
-- **144 pruebas unitarias** de JavaScript, **31 de Python** y **244 casos de navegador** (Playwright + axe sin violaciones *serious* o *critical*) al 17-nov-2026.
+- **220 pruebas unitarias** de JavaScript (22-nov-2026; validan los 13 diccionarios), **31 de Python** y **244 casos de navegador** (Playwright + axe sin violaciones *serious* o *critical*, 17-nov-2026).
 - Cada PR pasa por GitHub Actions: pruebas, escaneo de secretos con Gitleaks y la suite E2E. Solo se fusiona con todo en verde.
 - La [auditoría P08](docs/informe/auditoria_P08.md) revisa el sistema completo de forma independiente.
 
@@ -177,11 +179,45 @@ El sitio apunta a **WCAG 2.2 AA**. Hay un **Centro de accesibilidad** en la cabe
 | Cabeza | Puntero con la orientación de la cabeza (MediaPipe), calibración de 5 puntos y clic por permanencia, parpadeo largo o boca |
 | Manos | Puntero con la mano, pellizco para hacer clic, puño para pausar y «V» con dos dedos para desplazar |
 | Un interruptor | Barrido por grupos y elementos con Espacio o Enter |
-| Voz | «Ir a clasificación», «activo Apple», «tema oscuro», «clic en…», en español e inglés (`Alt+Shift+V`) |
+| Voz | «Ir a clasificación», «activo Apple», «tema oscuro», «clic en…», con gramática propia en 12 idiomas; el quechua reconoce en español (`Alt+Shift+V`) |
 
 La cámara y la voz piden consentimiento. La imagen de la cámara se procesa **solo en el navegador**. Para entender la voz, Chrome y Edge envían el audio a su propio servicio de reconocimiento.
 
 La guía paso a paso para usuarios está en [docs/guia-usuario/accesibilidad.md](docs/guia-usuario/accesibilidad.md).
+
+## Idiomas
+
+El sitio está internacionalizado (Lab 13 y Spec W13, G.5). Abre siempre en **español de Perú**; el idioma se cambia en la barra superior (por endónimo, sin banderas), en **⚙ Configuración** o con `?lang=<etiqueta>`.
+
+| Idioma | Escritura | Dirección | Estado |
+|---|---|---|---|
+| Español (Perú) · `es-PE` | latina | izquierda a derecha | fuente |
+| English (United States) · `en-US` | latina | izquierda a derecha | completo |
+| العربية (مصر) · `ar-EG` | árabe | **derecha a izquierda** | borrador |
+| עברית (ישראל) · `he-IL` | hebrea | **derecha a izquierda** | borrador |
+| 日本語（日本） · `ja-JP` | kanji y kana | izquierda a derecha | borrador |
+| 中文（中国） · `zh-CN` | han simplificado | izquierda a derecha | borrador |
+| 한국어(대한민국) · `ko-KR` | hangul | izquierda a derecha | borrador |
+| हिन्दी (भारत) · `hi-IN` | devanagari | izquierda a derecha | borrador |
+| Русский (Россия) · `ru-RU` | cirílica | izquierda a derecha | borrador |
+| Português (Brasil) · `pt-BR` | latina | izquierda a derecha | borrador |
+| Français (France) · `fr-FR` | latina | izquierda a derecha | borrador |
+| Deutsch (Deutschland) · `de-DE` | latina | izquierda a derecha | borrador |
+| Runasimi (Perú) · `qu-PE` | latina | izquierda a derecha | borrador parcial (el resto, en español) |
+
+- **Recursos:** un JSON por idioma en [`locales/`](locales/) y un manifiesto (`locales/index.json`). Agregar un idioma no requiere tocar código.
+- **`Intl`:** números, porcentajes, fechas y horas, tiempo relativo, listas, plurales CLDR, orden alfabético (`Collator`) y nombres de idiomas. Los montos siguen en **USD**: el idioma cambia el formato, no la divisa.
+- **RTL:** `lang` y `dir` en `<html>`, CSS lógico, gráficos espejados y flechas del teclado invertidas.
+- **Zona horaria:** el cierre de las 16:00 de Nueva York se muestra en la zona que elijas.
+- **Adaptación cultural:** en japonés, chino y coreano, el rojo indica alza (configurable). ▲ ▼ acompañan siempre al color.
+- **Calidad:**
+  - pseudolocalización `qps-ploc` / `qps-plocm`;
+  - auditoría de truncados y desbordes en Configuración;
+  - medición antes y después en [`docs/i18n/`](docs/i18n/README.md);
+  - `hreflang` en cada página.
+- **Borradores:** las traducciones distintas de es-PE y en-US se generaron con IA y **no las ha revisado ningún hablante**. El sitio lo indica en cada idioma.
+
+Más detalle en la [guía técnica](docs/i18n/guia_tecnica.md) y el [glosario](docs/i18n/glosario.md).
 
 ## Entregables
 
@@ -193,6 +229,7 @@ La guía paso a paso para usuarios está en [docs/guia-usuario/accesibilidad.md]
 | Auditoría P08 | [docs/informe/auditoria_P08.md](docs/informe/auditoria_P08.md) |
 | Diseño en Figma Make | [archivo](https://www.figma.com/make/BWA9B3JoRbAWZiVoPSyoBO) · [prototipo navegable](https://misty-umber-07813177.figma.site/) · export sin editar en [`figma-src/`](figma-src/) |
 | Capturas del sitio y de Figma | [docs/capturas/](docs/capturas/) |
+| Internacionalización (Lab 13): medición antes y después, guía técnica y glosario | [docs/i18n/](docs/i18n/README.md) · capturas en [docs/capturas/i18n/](docs/capturas/i18n/) |
 
 El informe se regenera con los scripts de [`tools/informe/`](tools/informe/): las cifras se leen de los JSON, no se escriben a mano.
 
