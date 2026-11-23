@@ -54,7 +54,8 @@
     "bloque_operacion": "交易",
     "bloque_cuenta": "账户",
     "activo": "资产详情",
-    "comparador": "比较"
+    "comparador": "比较",
+    "ordenes": "订单历史"
   },
   "shell": {
     "datos": "数据：",
@@ -82,7 +83,22 @@
     "actualizado": "数据生成于 {fecha_hora}（{hace}）",
     "menu_compacto": "紧凑菜单",
     "cuenta": "账户菜单",
-    "cuenta_demo": "演示账户：您的数据只保存在此浏览器中。"
+    "cuenta_demo": "演示账户：您的数据只保存在此浏览器中。",
+    "notificaciones": "通知",
+    "notif_sin_leer": {
+      "other": "通知：{n} 条未读"
+    },
+    "notif_nueva": "新：",
+    "notif_vacio": "您没有通知。",
+    "notif_marcar": "全部标为已读",
+    "notif_alerta": "提醒已触发：{condicion}",
+    "mercado_abierto": "市场开盘中 · 纽约时间 {cierre} 收盘（您的时间 {local}）",
+    "mercado_cerrado": "市场已收盘 · {dia} 纽约时间 {apertura} 开盘（您的时间 {local}）",
+    "mercado_ayuda": "纽约证券交易所交易时间：周一至周五，{apertura} 至 {cierre}（纽约时间）。不考虑节假日。",
+    "cinta": "资产范围的报价",
+    "cinta_pausar": "暂停报价滚动条",
+    "mercado_abierto_corto": "开盘中",
+    "mercado_cerrado_corto": "已收盘"
   },
   "aviso": {
     "profesor": {
@@ -467,7 +483,14 @@
     "aplicado_excluidos": "您已排除：{lista}。",
     "vacio_posiciones": "您的投资组合是空的",
     "vacio_ordenes": "历史为空",
-    "vacio_accion": "创建订单"
+    "vacio_accion": "创建订单",
+    "confirmar_titulo": "确认订单",
+    "confirmar_texto": "提交前请检查订单。这是模拟：不会动用真实资金。",
+    "confirmar_compra": "确认买入",
+    "confirmar_venta": "确认卖出",
+    "efectivo_despues": "下单后现金",
+    "orden_cancelada": "订单已取消；未提交任何内容。",
+    "ver_historial": "查看完整历史"
   },
   "leaderboard": {
     "titulo_pagina": "排行榜 · Ernesto Investing AI",
@@ -1230,5 +1253,25 @@
     "corr_minimo": "至少选择两项资产才能查看相关性。",
     "anuncio_agregado": "已将 {ticker} 加入比较。",
     "anuncio_quitado": "已将 {ticker} 移出比较。"
+  },
+  "ordenes": {
+    "titulo_pagina": "订单历史 · Ernesto Investing AI",
+    "titulo": "订单历史",
+    "sub": "您提交的所有模拟订单，时间按您的时区显示。",
+    "filtros": "筛选",
+    "lista_titulo": "订单",
+    "exportar": "导出为 CSV",
+    "exportado": {
+      "other": "已导出 {n} 个订单。"
+    },
+    "resumen": {
+      "other": "{n} 个订单 · 买入 {comprado} · 卖出 {vendido}"
+    },
+    "caption": "模拟订单，最新的在前",
+    "vacio_titulo": "还没有订单",
+    "vacio_texto": "在交易中买入或卖出后，订单会显示在这里。",
+    "vacio_accion": "前往交易",
+    "sin_resultados": "没有符合筛选条件的订单。",
+    "nota": "订单只保存在此浏览器中，每种数据模式分别保存。"
   }
 }

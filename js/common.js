@@ -40,7 +40,7 @@
      PAGES se conserva tal cual por compatibilidad con la base; esta tabla agrega las páginas de soporte. */
   const NAVEGACION = [
     ["mercado", [["index.html", "nav.dashboard", "dashboard", "dashboard"], ["activo.html", "nav.activo", "activo", "activo"], ["comparador.html", "nav.comparador", "comparador", "comparar"]]],
-    ["vigilancia", [["watchlist.html", "nav.watchlist", "watchlist", "estrella"]]],
+    ["vigilancia", [["watchlist.html", "nav.watchlist", "watchlist", "estrella"], ["ordenes.html", "nav.ordenes", "ordenes", "historial"]]],
     ["modelos", [["clasificacion.html", "nav.clasificacion", "clasificacion", "clasificacion", 1], ["regresion.html", "nav.regresion", "regresion", "regresion", 1]]],
     ["cartera", [["optimizador.html", "nav.optimizador", "optimizador", "optimizador", 1], ["portafolios.html", "nav.portafolios", "portafolios", "portafolios", 1],
       ["backtesting.html", "nav.backtesting", "backtesting", "backtesting", 1]]],
@@ -290,6 +290,67 @@
       return i < 0;
     }
   };
+  /* ───────────── Alertas y notificaciones (Spec W13 G.4, Vigilancia: «alertas con plural y hora local») ─────────────
+     Las alertas se guardan en eia_alertas (eia_alertas_real en el Modo real); las reglas son las del contrato (§2, archivo 11).
+     Se evalúan en el núcleo para que el centro de notificaciones avise en cualquier página, no solo en la Watchlist. */
+  EIA.alertas = {
+    clave: () => (EIA.modo() === "real" ? "eia_alertas_real" : "eia_alertas"),
+    /** Copia las alertas del archivo 11 con un identificador estable. */
+    iniciales: c11 => (c11.alertas || []).map((a, i) => ({ id: "a" + (i + 1), ticker: a.ticker, tipo: a.tipo, umbral: a.umbral, activa: !!a.activa })),
+    lista: c11 => EIA.estado.get(EIA.alertas.clave()) || EIA.alertas.iniciales(c11 || {}),
+    /** ¿La alerta está disparada? Una alerta inactiva nunca se dispara. */
+    disparada(alerta, activo) {
+      if (!alerta.activa || !activo) return false;
+      switch (alerta.tipo) {
+        case "precio_sobre": return activo.ultimo >= alerta.umbral;
+        case "precio_bajo": return activo.ultimo <= alerta.umbral;
+        case "var_1d_menor_a_pct": return activo.var_1d_pct <= alerta.umbral;
+        case "var_1d_mayor_a_pct": return activo.var_1d_pct >= alerta.umbral;
+        default: return false;
+      }
+    },
+    /** «NVDA: precio sobre USD 131.81» en el idioma activo. */
+    texto(a) {
+      const umbral = String(a.tipo).indexOf("precio") === 0 ? EIA.fmt.usd(a.umbral) : EIA.fmt.pct(a.umbral);
+      return EIA.t("watchlist.condicion", { ticker: a.ticker, tipo: EIA.nombre("alerta_tipo", a.tipo).toLowerCase(), umbral });
+    }
+  };
+  const MAX_NOTIF = 50;
+  /** Centro de notificaciones: guarda datos (no textos) para mostrarlos en el idioma del momento. */
+  EIA.notificaciones = {
+    clave: () => (EIA.modo() === "real" ? "eia_notif_real" : "eia_notif"),
+    lista: () => (EIA.estado.get(EIA.notificaciones.clave()) || []).slice(),
+    noLeidas: () => EIA.notificaciones.lista().filter(n => !n.leida).length,
+    /** Agrega una notificación {id?, tipo: "alerta" | "orden" | "lote", datos, fecha?}. Con id, no se repite. */
+    agregar(n) {
+      const l = EIA.notificaciones.lista();
+      if (n.id && l.some(x => x.id === n.id)) return false;
+      l.unshift(Object.assign({ fecha: new Date().toISOString(), leida: false }, n));
+      EIA.estado.set(EIA.notificaciones.clave(), l.slice(0, MAX_NOTIF));
+      if (hayDOM) pintarCampana();
+      return true;
+    },
+    marcarLeidas() {
+      EIA.estado.set(EIA.notificaciones.clave(), EIA.notificaciones.lista().map(n => Object.assign(n, { leida: true })));
+      if (hayDOM) pintarCampana();
+    }
+  };
+  /** Revisa las alertas con los precios del modo activo y avisa una sola vez por alerta y fecha de corte. */
+  async function revisarAlertas() {
+    try {
+      const mt = metaLista[EIA.modo()] || {};
+      if (EIA.modo() === "real" && !mt.disponible) return;
+      const [c10, c11] = await EIA.todos([EIA.universo(), EIA.datos("11_watchlist_alertas_portafolio_demo.json")]);
+      const cierre = mt.fecha_corte ? EIA.instanteCierre(mt.fecha_corte).toISOString() : new Date().toISOString();
+      for (const a of EIA.alertas.lista(c11)) {
+        if (EIA.alertas.disparada(a, c10.find(x => x.ticker === a.ticker))) {
+          EIA.notificaciones.agregar({ id: ["alerta", a.id, a.ticker, a.tipo, a.umbral, mt.fecha_corte || ""].join("|"), tipo: "alerta",
+            fecha: cierre, datos: { ticker: a.ticker, tipo: a.tipo, umbral: a.umbral } });
+        }
+      }
+    } catch (e) { /* sin datos de mercado no hay alertas que revisar */ }
+  }
+  EIA.revisarAlertas = revisarAlertas;
   EIA.activo = () => parametros().get("t") || EIA.estado.get("eia_activo");
   EIA.setActivo = function (t) {
     // Primero la URL y después el aviso: quien escuche "eia:estado" ya lee el activo nuevo con EIA.activo()
@@ -475,6 +536,7 @@
      La persona elige su zona en Configuración; por defecto, la de su dispositivo. Los días de sesión de los JSON se
      muestran como fechas (en UTC, sin correrse); la hora de cierre se calcula y se muestra en la zona elegida. */
   const ZONA_MERCADO = "America/New_York", HORA_CIERRE = 16; // la NYSE cierra a las 16:00 hora de Nueva York
+  const HORA_APERTURA = 9, MINUTO_APERTURA = 30;               // y abre a las 9:30 (lunes a viernes; sin feriados)
   EIA.ZONA_MERCADO = ZONA_MERCADO;
   const zonaValida = z => { try { new Intl.DateTimeFormat("en-US", { timeZone: z }); return true; } catch (e) { return false; } };
   EIA.zonaDispositivo = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"; } catch (e) { return "UTC"; } };
@@ -501,13 +563,33 @@
     return (Date.UTC(v("year"), v("month") - 1, v("day"), v("hour"), v("minute"), v("second")) - ms) / 60000;
   }
   /** Pura: instante del cierre de la sesión del día ISO (16:00 en Nueva York, con o sin horario de verano). */
-  EIA.instanteCierre = function (iso) {
+  /** Instante de una hora de Nueva York (hh:mm) en una fecha ISO. Dos pasadas: el desfase puede cambiar ese mismo día. */
+  function instanteNY(iso, h, mi) {
     const [a, m, d] = String(iso).slice(0, 10).split("-").map(Number);
-    const local = Date.UTC(a, m - 1, d, HORA_CIERRE, 0, 0);
+    const local = Date.UTC(a, m - 1, d, h, mi || 0, 0);
     let ms = local - desfase(ZONA_MERCADO, local) * 60000;
-    ms = local - desfase(ZONA_MERCADO, ms) * 60000; // segunda pasada: el desfase puede cambiar ese mismo día
+    ms = local - desfase(ZONA_MERCADO, ms) * 60000;
     return new Date(ms);
+  }
+  EIA.instanteCierre = iso => instanteNY(iso, HORA_CIERRE, 0);
+  /** Estado del mercado de Nueva York en un instante (por defecto, ahora): abierto de lunes a viernes de 9:30 a 16:00 ET.
+      No considera feriados (se declara en la interfaz). Devuelve {abierto, cierre} o {abierto: false, apertura}. */
+  EIA.mercado = function (ahora) {
+    const t = ahora instanceof Date ? ahora : new Date();
+    const partes = new Intl.DateTimeFormat("en-US", { timeZone: ZONA_MERCADO, year: "numeric", month: "2-digit", day: "2-digit", weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(t);
+    const p = k => (partes.find(x => x.type === k) || {}).value;
+    const iso = p("year") + "-" + p("month") + "-" + p("day");
+    const dia = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(p("weekday"));
+    const minuto = Number(p("hour")) * 60 + Number(p("minute")), abre = HORA_APERTURA * 60 + MINUTO_APERTURA, cierra = HORA_CIERRE * 60;
+    const habil = dia >= 1 && dia <= 5;
+    if (habil && minuto >= abre && minuto < cierra) return { abierto: true, cierre: instanteNY(iso, HORA_CIERRE, 0) };
+    // Próxima apertura: hoy si todavía no abre; si no, el siguiente día hábil
+    let fecha = new Date(Date.UTC(Number(p("year")), Number(p("month")) - 1, Number(p("day")))), d = dia;
+    if (!(habil && minuto < abre)) { do { fecha = new Date(fecha.getTime() + 86400000); d = (d + 1) % 7; } while (d === 0 || d === 6); }
+    return { abierto: false, apertura: instanteNY(fecha.toISOString().slice(0, 10), HORA_APERTURA, MINUTO_APERTURA) };
   };
+  /** Horario de referencia (apertura y cierre de un día cualquiera) para el texto de ayuda. */
+  EIA.horarioMercado = () => { const hoy = new Date().toISOString().slice(0, 10); return { apertura: instanteNY(hoy, HORA_APERTURA, MINUTO_APERTURA), cierre: instanteNY(hoy, HORA_CIERRE, 0) }; };
   /** «Cierre del 18 nov. 2026: 16:00 en Nueva York (15:00, hora de Perú)». */
   EIA.textoCierre = function (iso) {
     if (!ISO.test(String(iso))) return "";
@@ -549,6 +631,7 @@
     },
     /** Hora de un instante en la zona elegida (o en la indicada). */
     hora: (instante, zona) => dtf({ hour: "numeric", minute: "2-digit", timeZone: zona || EIA.zona() }).format(instante instanceof Date ? instante : new Date(instante)),
+    diaSemana: (instante, zona) => dtf({ weekday: "long", timeZone: zona || EIA.zona() }).format(instante instanceof Date ? instante : new Date(instante)),
     /** Fecha y hora de un instante (marca de tiempo ISO) en la zona elegida. */
     fechaHora: (instante, zona) => dtf({ dateStyle: "medium", timeStyle: "short", timeZone: zona || EIA.zona() }).format(instante instanceof Date ? instante : new Date(instante)),
     /** Nombre de la zona en el idioma activo («hora de Perú», «Peru Time»). */
@@ -806,7 +889,7 @@
   /* ───────────── Shell: barra lateral por bloques, barra superior y pie (Spec W13 G.4: navegación común) ─────────────
      Escritorio (≥ 1180 px): barra lateral fija, plegable a un riel de iconos (eia_lateral). Menos ancho: cajón que se
      abre con ☰ (#btn-modulos), con el foco atrapado; Esc, ✕ o el fondo lo cierran y el foco vuelve a ☰. */
-  let menuAbierto = false, cuentaAbierta = false;
+  let menuAbierto = false, cuentaAbierta = false, notifAbierta = false;
   const MEDIA_CAJON = "(max-width: 1179.98px)";
   const esCajon = () => !!(global.matchMedia && global.matchMedia(MEDIA_CAJON).matches);
   const plegado = () => EIA.estado.get("eia_lateral") === "plegado";
@@ -830,7 +913,7 @@
     return `<div class="bar">
   <button id="btn-modulos" type="button" class="solo-cajon ctl-ico" aria-expanded="${menuAbierto}" aria-controls="lateral" title="${esc(t("nav.modulos"))}">${I("menu")}<span class="sr">${esc(t("nav.modulos"))}</span></button>
   <span class="solo-cajon marca-bar">${marca()}</span>
-  <div id="bar-medio" class="bar-medio"></div>
+  <div id="bar-medio" class="bar-medio"><p id="estado-mercado" class="mercado"></p></div>
   <div class="controles">
     <div id="ctl-modo" class="seg" role="group" aria-label="${esc(t("shell.datos_grupo"))}">
       <span class="seg-rot" aria-hidden="true">${esc(t("shell.datos"))}</span>
@@ -841,6 +924,7 @@
     <button id="tema" type="button" class="ctl-ico" aria-pressed="${EIA.tema() === "dark"}" title="${esc(t("shell.tema_titulo"))}">${I("tema")}<span class="ctl-txt">${esc(t("shell.tema"))}</span></button>
     <button id="btn-a11y" type="button" class="ctl-ico" aria-haspopup="dialog" title="${esc(t("shell.accesibilidad_titulo"))}">${I("accesibilidad")}<span class="ctl-txt">${esc(t("shell.accesibilidad"))}</span></button>
   </div>
+  <div class="notif">${plantillaCampana()}</div>
   <div class="cuenta">
       <button id="btn-cuenta" type="button" aria-expanded="${cuentaAbierta}" aria-controls="menu-cuenta" title="${esc(t("shell.cuenta"))}"><span class="avatar" aria-hidden="true">${I("usuario")}</span><span class="sr">${esc(t("shell.cuenta"))}</span>${I("abajo", "ico-chev")}</button>
       <div id="menu-cuenta" class="menu-cuenta"${cuentaAbierta ? "" : " hidden"}>
@@ -881,6 +965,70 @@
 ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].filter(Boolean).join(" · "))}</p>` : ""}
 <p class="pie-creditos">${esc(t("shell.pie_creditos"))}</p>`;
   }
+  /* Estado del mercado (barra superior): punto + texto, nunca solo color; se actualiza cada minuto */
+  function pintarMercado() {
+    const el = $("#estado-mercado"); if (!el) return;
+    const t = EIA.t, m = EIA.mercado(), h = EIA.horarioMercado();
+    const texto = m.abierto
+      ? t("shell.mercado_abierto", { cierre: EIA.fmt.hora(m.cierre, ZONA_MERCADO), local: EIA.fmt.hora(m.cierre) })
+      : t("shell.mercado_cerrado", { dia: EIA.fmt.diaSemana(m.apertura), apertura: EIA.fmt.hora(m.apertura, ZONA_MERCADO), local: EIA.fmt.hora(m.apertura) });
+    const ayuda = t("shell.mercado_ayuda", { apertura: EIA.fmt.hora(h.apertura, ZONA_MERCADO), cierre: EIA.fmt.hora(h.cierre, ZONA_MERCADO) });
+    el.className = "mercado " + (m.abierto ? "mercado-abierto" : "mercado-cerrado");
+    // Visible, el estado corto; el detalle (hora en Nueva York y en tu zona) va al texto accesible y a la ayuda emergente
+    el.innerHTML = `<span class="mercado-punto" aria-hidden="true"></span><span aria-hidden="true">${esc(t(m.abierto ? "shell.mercado_abierto_corto" : "shell.mercado_cerrado_corto"))}</span><span class="sr">${esc(texto)}</span>`;
+    el.title = texto + ". " + ayuda;
+  }
+  /* Campanita: botón con el número de no leídas (texto accesible con plural) y panel de divulgación */
+  function plantillaCampana() {
+    const t = EIA.t, n = EIA.notificaciones.noLeidas();
+    return `<button id="btn-notif" type="button" class="ctl-ico" aria-expanded="${notifAbierta}" aria-controls="panel-notif" title="${esc(t("shell.notificaciones"))}">${EIA.ui.icono("campana")}<span class="sr">${esc(n ? t("shell.notif_sin_leer", { n }) : t("shell.notificaciones"))}</span>${
+      n ? `<span class="insignia-notif" aria-hidden="true">${esc(EIA.fmt.ent(Math.min(n, 99)))}</span>` : ""}</button>
+<div id="panel-notif" class="panel-notif"${notifAbierta ? "" : " hidden"}></div>`;
+  }
+  function pintarCampana() {
+    const c = $(".notif"); if (!c) return;
+    const foco = document.activeElement && document.activeElement.id === "btn-notif";
+    c.innerHTML = plantillaCampana();
+    if (notifAbierta) pintarPanelNotif();
+    if (foco) $("#btn-notif").focus();
+  }
+  function pintarPanelNotif() {
+    const p = $("#panel-notif"); if (!p) return;
+    const t = EIA.t, I = EIA.ui.icono, l = EIA.notificaciones.lista();
+    const item = n => {
+      const d = n.datos || {};
+      const [ico, texto, href] = n.tipo === "alerta" ? ["alerta", t("shell.notif_alerta", { condicion: EIA.alertas.texto(d) }), "watchlist.html"]
+        : n.tipo === "lote" ? ["cartera", t("llevar.hecho", { n: d.n, total: EIA.fmt.usd(d.total) }), "ordenes.html"]
+          : ["trading", t(d.lado === "C" ? "trading.ejecutada_compra" : "trading.ejecutada_venta", { n: d.n, ticker: d.ticker, precio: EIA.fmt.usd(d.precio) }), "ordenes.html"];
+      return `<li${n.leida ? "" : ' class="no-leida"'}><a href="${href}">${I(ico, "notif-ico")}<span class="notif-cuerpo"><span class="notif-txt">${n.leida ? "" : `<span class="sr">${esc(t("shell.notif_nueva"))} </span>`}${esc(texto)}</span><time datetime="${esc(n.fecha)}" title="${esc(EIA.fmt.fechaHora(n.fecha))}">${esc(EIA.fmt.hace(n.fecha))}</time></span></a></li>`;
+    };
+    p.innerHTML = `<div class="panel-cab"><p class="panel-titulo">${esc(t("shell.notificaciones"))}</p>${
+      l.some(n => !n.leida) ? `<button type="button" class="enlace" id="notif-leidas">${esc(t("shell.notif_marcar"))}</button>` : ""}</div>${
+      l.length ? `<ul class="lista-notif">${l.map(item).join("")}</ul>` : `<p class="mut notif-vacio">${esc(t("shell.notif_vacio"))}</p>`}`;
+  }
+  function alternarNotif(abrir, devolverFoco) {
+    notifAbierta = abrir === undefined ? !notifAbierta : abrir;
+    if (notifAbierta && cuentaAbierta) alternarCuenta(false);
+    const b = $("#btn-notif"), p = $("#panel-notif");
+    if (b) b.setAttribute("aria-expanded", String(notifAbierta));
+    if (p) { p.hidden = !notifAbierta; if (notifAbierta) { pintarPanelNotif(); const f = $("a,button", p); if (f) f.focus(); } }
+    if (!notifAbierta && devolverFoco && b) b.focus();
+  }
+  /* Cinta de cotizaciones (los activos de 10): se pausa con su botón (WCAG 2.2.2), al pasar el puntero o al enfocarla,
+     y queda quieta con «reducir movimiento». La segunda copia, que cierra el bucle, se oculta a los lectores de pantalla. */
+  async function pintarCinta() {
+    const caja = $("#cinta"); if (!caja) return;
+    let c10 = null;
+    try { c10 = await EIA.universo(); } catch (e) { c10 = null; }
+    if (!c10 || !c10.length) { caja.hidden = true; return; }
+    const t = EIA.t, pausada = EIA.estado.get("eia_cinta") === "pausada";
+    const items = c10.map(a => `<li><bdi class="cinta-tk">${esc(a.ticker)}</bdi> <span class="cifra">${esc(EIA.fmt.num(a.ultimo))}</span> ${EIA.ui.variacion(a.var_1d_pct)}</li>`).join("");
+    caja.hidden = false;
+    caja.classList.toggle("pausada", pausada);
+    caja.setAttribute("aria-label", t("shell.cinta"));
+    caja.innerHTML = `<button type="button" id="cinta-pausa" class="cinta-pausa" aria-pressed="${pausada}" title="${esc(t("shell.cinta_pausar"))}">${EIA.ui.icono(pausada ? "reproducir" : "pausa")}<span class="sr">${esc(t("shell.cinta_pausar"))}</span></button>
+<div class="cinta-ventana" data-marquesina><ul class="cinta-pista">${items}</ul><ul class="cinta-pista cinta-copia" aria-hidden="true">${items}</ul></div>`;
+  }
   /** Repinta los textos del shell (idioma, modo, fecha de corte) conservando el foco. */
   function pintarShell() {
     const cab = $("header.top"), lat = $("#lateral"), pie = $("footer.pie");
@@ -893,6 +1041,7 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     pie.innerHTML = plantillaPie();
     const salto = $("a.skip"); if (salto) salto.textContent = EIA.t("comun.saltar");
     pintarMigas();
+    pintarMercado();
     if (selectorFoco) { const n = $(selectorFoco, zona); if (n) n.focus(); }
   }
   /** Página del sitio por id, en la barra lateral o en la lista de la base. */
@@ -980,6 +1129,7 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
   /** Menú de la cuenta (patrón de divulgación: botón con aria-expanded y una lista de enlaces). */
   function alternarCuenta(abrir, devolverFoco) {
     cuentaAbierta = abrir === undefined ? !cuentaAbierta : abrir;
+    if (cuentaAbierta && notifAbierta) alternarNotif(false);
     const b = $("#btn-cuenta"), m = $("#menu-cuenta");
     if (b) b.setAttribute("aria-expanded", String(cuentaAbierta));
     if (m) m.hidden = !cuentaAbierta;
@@ -1003,7 +1153,7 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     if ($("header.top")) return;
     aplicarLateral();
     document.body.classList.add("con-lateral");
-    document.body.insertAdjacentHTML("afterbegin", '<a class="skip" href="#contenido"></a><nav class="lateral" id="lateral"></nav><div class="lat-fondo" hidden></div><header class="top"></header>');
+    document.body.insertAdjacentHTML("afterbegin", '<a class="skip" href="#contenido"></a><nav class="lateral" id="lateral"></nav><div class="lat-fondo" hidden></div><header class="top"></header><div id="cinta" class="cinta" role="region" hidden></div>');
     const main = $("main");
     if (main) { main.id = "contenido"; main.setAttribute("tabindex", "-1"); }
     prepararMigas();
@@ -1020,7 +1170,15 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
       else if (b.id === "btn-modulos") alternarMenu();
       else if (b.id === "btn-a11y") EIA.abrirAccesibilidad();
       else if (b.id === "btn-cuenta") alternarCuenta();
+      else if (b.id === "btn-notif") alternarNotif();
+      else if (b.id === "notif-leidas") { EIA.notificaciones.marcarLeidas(); const x = $("#btn-notif"); if (x) x.focus(); }
     });
+    $("#cinta").addEventListener("click", e => {
+      if (!e.target.closest("#cinta-pausa")) return;
+      EIA.estado.set("eia_cinta", EIA.estado.get("eia_cinta") === "pausada" ? null : "pausada");
+      pintarCinta().then(() => { const x = $("#cinta-pausa"); if (x) x.focus(); });
+    });
+    global.setInterval(pintarMercado, 60000);
     cab.addEventListener("change", e => { if (e.target.id === "ctl-idioma") EIA.setIdioma(e.target.value); });
     lat.addEventListener("click", e => {
       const b = e.target.closest("button");
@@ -1029,7 +1187,10 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     });
     $(".lat-fondo").addEventListener("click", () => alternarMenu(false, true));
     // El menú de la cuenta se cierra al hacer clic fuera o al salir con el foco
-    document.addEventListener("click", e => { if (cuentaAbierta && !e.target.closest(".cuenta")) alternarCuenta(false); });
+    document.addEventListener("click", e => {
+      if (cuentaAbierta && !e.target.closest(".cuenta")) alternarCuenta(false);
+      if (notifAbierta && !e.target.closest(".notif")) alternarNotif(false);
+    });
     cab.addEventListener("focusout", e => { if (cuentaAbierta && !(e.relatedTarget && e.relatedTarget.closest(".cuenta")) && e.relatedTarget) alternarCuenta(false); });
     // Al pasar a escritorio, el cajón deja de ser un cajón
     if (global.matchMedia) {
@@ -1039,6 +1200,7 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     }
     document.addEventListener("keydown", e => {
       if (e.key === "Escape" && cuentaAbierta) { alternarCuenta(false, true); return; }
+      if (e.key === "Escape" && notifAbierta) { alternarNotif(false, true); return; }
       if (e.key === "Escape" && menuAbierto) alternarMenu(false, true);
       // Foco atrapado en el cajón abierto (pantallas angostas)
       if (e.key === "Tab" && menuAbierto && esCajon()) {
@@ -1081,12 +1243,14 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     setTimeout(() => { el.textContent = texto; }, 40);
   };
   /** Notificación breve y visible (role="status"). tipo: "info" | "ok" | "error". */
-  EIA.ui.notificar = function (texto, tipo) {
+  EIA.ui.notificar = function (texto, tipo, enlace) {
     const caja = $("#eia-notas"); if (!caja) return;
     const n = document.createElement("div");
     n.className = "nota nota-" + (tipo || "info"); n.setAttribute("role", "status"); n.textContent = texto;
+    // Con enlace (p. ej. «Ver el historial completo») la nota dura más, para que dé tiempo de usarlo (WCAG 2.2.1)
+    if (enlace && enlace.href) { const a = document.createElement("a"); a.href = enlace.href; a.textContent = enlace.texto; a.className = "nota-enlace"; n.appendChild(document.createTextNode(" ")); n.appendChild(a); }
     caja.appendChild(n);
-    setTimeout(() => n.remove(), 6000);
+    setTimeout(() => n.remove(), enlace ? 12000 : 6000);
   };
 
   /** Aviso de simulación o de datos reales del módulo, según el modo (R-INT-08). Se inserta tras el título. */
@@ -1701,7 +1865,8 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
       EIA.estado.set("eia_elegido", { modo: EIA.modo(), nivel: cfg.nivel || null, origen: cfg.origen, fuente: cfg.fuente, pesos: cfg.pesos, excluidos, llevado_a_trading: true,
         aplicado: { nivel: cfg.nivel || null, origen: cfg.origen, fuente: cfg.fuente, excluidos } });
       const texto = t("llevar.hecho", { n: compradas, total: usd(gastado) });
-      EIA.ui.notificar(texto, "ok"); EIA.ui.anunciar(texto);
+      if (compradas) EIA.notificaciones.agregar({ tipo: "lote", datos: { n: compradas, total: gastado } });
+      EIA.ui.notificar(texto, "ok", { href: "ordenes.html", texto: t("trading.ver_historial") }); EIA.ui.anunciar(texto);
       if (cfg.alTerminar) cfg.alTerminar();
     }
 
@@ -1776,10 +1941,14 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     EIA.on("eia:corte", () => { if (_modulo) correr(true); else global.location.reload(); });
     EIA.on("eia:idioma", () => { if (_modulo) correr(false); else global.location.reload(); });
     EIA.on("eia:zona", () => { if (_modulo) correr(false); });
+    EIA.on("eia:modo", () => { pintarCinta(); revisarAlertas().then(pintarCampana); });
+    EIA.on("eia:idioma", () => pintarCinta());
     _listo = true;
     EIA.emit("eia:listo");
     await EIA.meta();
     pintarShell();
+    pintarCinta();
+    revisarAlertas().then(pintarCampana);
     if (_modulo) await correr(true);
     else {
       // Páginas de la base que aún usan window.init

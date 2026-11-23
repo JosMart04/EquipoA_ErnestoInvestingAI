@@ -54,7 +54,8 @@
     "bloque_operacion": "Handel",
     "bloque_cuenta": "Konto",
     "activo": "Wertpapierdetails",
-    "comparador": "Vergleich"
+    "comparador": "Vergleich",
+    "ordenes": "Orderhistorie"
   },
   "shell": {
     "datos": "Daten:",
@@ -82,7 +83,23 @@
     "actualizado": "Daten erzeugt am {fecha_hora} ({hace})",
     "menu_compacto": "Kompaktes Menü",
     "cuenta": "Kontomenü",
-    "cuenta_demo": "Demokonto: Ihre Daten werden nur in diesem Browser gespeichert."
+    "cuenta_demo": "Demokonto: Ihre Daten werden nur in diesem Browser gespeichert.",
+    "notificaciones": "Benachrichtigungen",
+    "notif_sin_leer": {
+      "one": "Benachrichtigungen: {n} ungelesen",
+      "other": "Benachrichtigungen: {n} ungelesen"
+    },
+    "notif_nueva": "Neu:",
+    "notif_vacio": "Sie haben keine Benachrichtigungen.",
+    "notif_marcar": "Alle als gelesen markieren",
+    "notif_alerta": "Alarm ausgelöst: {condicion}",
+    "mercado_abierto": "Markt geöffnet · schließt um {cierre} New Yorker Zeit ({local} bei Ihnen)",
+    "mercado_cerrado": "Markt geschlossen · öffnet am {dia} um {apertura} New Yorker Zeit ({local} bei Ihnen)",
+    "mercado_ayuda": "Handelszeiten der New Yorker Börse: Montag bis Freitag, {apertura} bis {cierre} (New Yorker Zeit). Feiertage werden nicht berücksichtigt.",
+    "cinta": "Kurse des Wertpapieruniversums",
+    "cinta_pausar": "Kurslaufband anhalten",
+    "mercado_abierto_corto": "Markt geöffnet",
+    "mercado_cerrado_corto": "Markt geschlossen"
   },
   "aviso": {
     "profesor": {
@@ -478,7 +495,14 @@
     "aplicado_excluidos": "Sie haben ausgeschlossen: {lista}.",
     "vacio_posiciones": "Ihr Portfolio ist leer",
     "vacio_ordenes": "Leere Historie",
-    "vacio_accion": "Order erstellen"
+    "vacio_accion": "Order erstellen",
+    "confirmar_titulo": "Order bestätigen",
+    "confirmar_texto": "Prüfen Sie die Order vor dem Senden. Es ist eine Simulation: Es wird kein echtes Geld bewegt.",
+    "confirmar_compra": "Kauf bestätigen",
+    "confirmar_venta": "Verkauf bestätigen",
+    "efectivo_despues": "Bargeld nach der Order",
+    "orden_cancelada": "Order abgebrochen; nichts wurde gesendet.",
+    "ver_historial": "Vollständige Historie ansehen"
   },
   "leaderboard": {
     "titulo_pagina": "Rangliste · Ernesto Investing AI",
@@ -1253,5 +1277,27 @@
     "corr_minimo": "Wählen Sie mindestens zwei Wertpapiere, um ihre Korrelation zu sehen.",
     "anuncio_agregado": "{ticker} zum Vergleich hinzugefügt.",
     "anuncio_quitado": "{ticker} aus dem Vergleich entfernt."
+  },
+  "ordenes": {
+    "titulo_pagina": "Orderhistorie · Ernesto Investing AI",
+    "titulo": "Orderhistorie",
+    "sub": "Alle simulierten Orders, die Sie gesendet haben, mit der Uhrzeit in Ihrer Zeitzone.",
+    "filtros": "Filter",
+    "lista_titulo": "Orders",
+    "exportar": "Als CSV exportieren",
+    "exportado": {
+      "one": "{n} Order exportiert.",
+      "other": "{n} Orders exportiert."
+    },
+    "resumen": {
+      "one": "{n} Order · gekauft {comprado} · verkauft {vendido}",
+      "other": "{n} Orders · gekauft {comprado} · verkauft {vendido}"
+    },
+    "caption": "Simulierte Orders, die neueste zuerst",
+    "vacio_titulo": "Noch keine Orders",
+    "vacio_texto": "Wenn Sie im Handel kaufen oder verkaufen, erscheinen Ihre Orders hier.",
+    "vacio_accion": "Zum Handel",
+    "sin_resultados": "Keine Order entspricht den Filtern.",
+    "nota": "Orders werden nur in diesem Browser gespeichert, getrennt für jeden Datenmodus."
   }
 }

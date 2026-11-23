@@ -54,7 +54,8 @@
     "bloque_operacion": "거래",
     "bloque_cuenta": "계정",
     "activo": "자산 상세",
-    "comparador": "비교"
+    "comparador": "비교",
+    "ordenes": "주문 내역"
   },
   "shell": {
     "datos": "데이터:",
@@ -82,7 +83,22 @@
     "actualizado": "데이터 생성: {fecha_hora}({hace})",
     "menu_compacto": "간단한 메뉴",
     "cuenta": "계정 메뉴",
-    "cuenta_demo": "데모 계정: 데이터는 이 브라우저에만 저장됩니다."
+    "cuenta_demo": "데모 계정: 데이터는 이 브라우저에만 저장됩니다.",
+    "notificaciones": "알림",
+    "notif_sin_leer": {
+      "other": "알림: 읽지 않음 {n}개"
+    },
+    "notif_nueva": "새 알림:",
+    "notif_vacio": "알림이 없습니다.",
+    "notif_marcar": "모두 읽음으로 표시",
+    "notif_alerta": "알림 발생: {condicion}",
+    "mercado_abierto": "장 운영 중 · 뉴욕 시간 {cierre} 마감(내 시간 {local})",
+    "mercado_cerrado": "장 마감 · {dia} 뉴욕 시간 {apertura} 개장(내 시간 {local})",
+    "mercado_ayuda": "뉴욕증권거래소 거래 시간: 월요일부터 금요일, {apertura}부터 {cierre}까지(뉴욕 시간). 휴장일은 반영하지 않습니다.",
+    "cinta": "대상 자산 시세",
+    "cinta_pausar": "시세 띠 일시 정지",
+    "mercado_abierto_corto": "장 운영 중",
+    "mercado_cerrado_corto": "장 마감"
   },
   "aviso": {
     "profesor": {
@@ -467,7 +483,14 @@
     "aplicado_excluidos": "제외한 자산: {lista}.",
     "vacio_posiciones": "포트폴리오가 비어 있습니다",
     "vacio_ordenes": "내역이 없습니다",
-    "vacio_accion": "주문 만들기"
+    "vacio_accion": "주문 만들기",
+    "confirmar_titulo": "주문 확인",
+    "confirmar_texto": "보내기 전에 주문을 확인하세요. 시뮬레이션이라 실제 돈은 움직이지 않습니다.",
+    "confirmar_compra": "매수 확인",
+    "confirmar_venta": "매도 확인",
+    "efectivo_despues": "주문 후 현금",
+    "orden_cancelada": "주문을 취소했습니다. 아무것도 보내지 않았습니다.",
+    "ver_historial": "전체 내역 보기"
   },
   "leaderboard": {
     "titulo_pagina": "순위표 · Ernesto Investing AI",
@@ -1230,5 +1253,25 @@
     "corr_minimo": "상관관계를 보려면 자산을 두 개 이상 선택하세요.",
     "anuncio_agregado": "{ticker}을(를) 비교에 추가했습니다.",
     "anuncio_quitado": "{ticker}을(를) 비교에서 제거했습니다."
+  },
+  "ordenes": {
+    "titulo_pagina": "주문 내역 · Ernesto Investing AI",
+    "titulo": "주문 내역",
+    "sub": "보낸 모든 모의 주문을 내 시간대의 시각으로 보여 줍니다.",
+    "filtros": "필터",
+    "lista_titulo": "주문",
+    "exportar": "CSV로 내보내기",
+    "exportado": {
+      "other": "주문 {n}개를 내보냈습니다."
+    },
+    "resumen": {
+      "other": "주문 {n}개 · 매수 {comprado} · 매도 {vendido}"
+    },
+    "caption": "모의 주문, 최신순",
+    "vacio_titulo": "아직 주문이 없습니다",
+    "vacio_texto": "모의 거래에서 사거나 팔면 주문이 여기에 표시됩니다.",
+    "vacio_accion": "거래로 이동",
+    "sin_resultados": "필터에 맞는 주문이 없습니다.",
+    "nota": "주문은 이 브라우저에만, 데이터 모드별로 따로 저장됩니다."
   }
 }

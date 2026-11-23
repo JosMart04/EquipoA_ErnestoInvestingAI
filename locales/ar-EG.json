@@ -54,7 +54,8 @@
     "bloque_operacion": "العمليات",
     "bloque_cuenta": "الحساب",
     "activo": "تفاصيل الأصل",
-    "comparador": "المقارنة"
+    "comparador": "المقارنة",
+    "ordenes": "سجل الأوامر"
   },
   "shell": {
     "datos": "البيانات:",
@@ -82,7 +83,27 @@
     "actualizado": "أُنشئت البيانات في {fecha_hora} ({hace})",
     "menu_compacto": "قائمة مضغوطة",
     "cuenta": "قائمة الحساب",
-    "cuenta_demo": "حساب تجريبي: تُحفظ بياناتك في هذا المتصفح فقط."
+    "cuenta_demo": "حساب تجريبي: تُحفظ بياناتك في هذا المتصفح فقط.",
+    "notificaciones": "الإشعارات",
+    "notif_sin_leer": {
+      "zero": "الإشعارات: لا شيء غير مقروء",
+      "one": "الإشعارات: إشعار واحد غير مقروء",
+      "two": "الإشعارات: إشعاران غير مقروءين",
+      "few": "الإشعارات: {n} إشعارات غير مقروءة",
+      "many": "الإشعارات: {n} إشعارًا غير مقروء",
+      "other": "الإشعارات: {n} إشعار غير مقروء"
+    },
+    "notif_nueva": "جديد:",
+    "notif_vacio": "ليست لديك إشعارات.",
+    "notif_marcar": "تعليم الكل كمقروء",
+    "notif_alerta": "تنبيه مُفعَّل: {condicion}",
+    "mercado_abierto": "السوق مفتوحة · تُغلق في {cierre} بتوقيت نيويورك ({local} بتوقيتك)",
+    "mercado_cerrado": "السوق مغلقة · تفتح يوم {dia} في {apertura} بتوقيت نيويورك ({local} بتوقيتك)",
+    "mercado_ayuda": "مواعيد بورصة نيويورك: من الاثنين إلى الجمعة، من {apertura} إلى {cierre} (بتوقيت نيويورك). لا تُحتسب العطلات.",
+    "cinta": "أسعار أصول المجموعة",
+    "cinta_pausar": "إيقاف شريط الأسعار مؤقتًا",
+    "mercado_abierto_corto": "السوق مفتوحة",
+    "mercado_cerrado_corto": "السوق مغلقة"
   },
   "aviso": {
     "profesor": {
@@ -522,7 +543,14 @@
     "aplicado_excluidos": "استبعدت: {lista}.",
     "vacio_posiciones": "محفظتك فارغة",
     "vacio_ordenes": "السجل فارغ",
-    "vacio_accion": "إنشاء أمر"
+    "vacio_accion": "إنشاء أمر",
+    "confirmar_titulo": "تأكيد الأمر",
+    "confirmar_texto": "راجع الأمر قبل إرساله. إنها محاكاة: لا تتحرك أموال حقيقية.",
+    "confirmar_compra": "تأكيد الشراء",
+    "confirmar_venta": "تأكيد البيع",
+    "efectivo_despues": "النقد بعد الأمر",
+    "orden_cancelada": "أُلغي الأمر؛ لم يُرسل شيء.",
+    "ver_historial": "عرض السجل الكامل"
   },
   "leaderboard": {
     "titulo_pagina": "لوحة الصدارة · Ernesto Investing AI",
@@ -1345,5 +1373,35 @@
     "corr_minimo": "اختر أصلين على الأقل لرؤية ارتباطهما.",
     "anuncio_agregado": "أُضيف {ticker} إلى المقارنة.",
     "anuncio_quitado": "أُزيل {ticker} من المقارنة."
+  },
+  "ordenes": {
+    "titulo_pagina": "سجل الأوامر · Ernesto Investing AI",
+    "titulo": "سجل الأوامر",
+    "sub": "كل الأوامر المحاكاة التي أرسلتها، بوقتها في منطقتك الزمنية.",
+    "filtros": "عوامل التصفية",
+    "lista_titulo": "الأوامر",
+    "exportar": "تصدير إلى CSV",
+    "exportado": {
+      "zero": "لم يُصدَّر أي أمر.",
+      "one": "صُدِّر أمر واحد.",
+      "two": "صُدِّر أمران.",
+      "few": "صُدِّرت {n} أوامر.",
+      "many": "صُدِّر {n} أمرًا.",
+      "other": "صُدِّر {n} أمر."
+    },
+    "resumen": {
+      "zero": "لا أوامر · شراء {comprado} · بيع {vendido}",
+      "one": "أمر واحد · شراء {comprado} · بيع {vendido}",
+      "two": "أمران · شراء {comprado} · بيع {vendido}",
+      "few": "{n} أوامر · شراء {comprado} · بيع {vendido}",
+      "many": "{n} أمرًا · شراء {comprado} · بيع {vendido}",
+      "other": "{n} أمر · شراء {comprado} · بيع {vendido}"
+    },
+    "caption": "الأوامر المحاكاة، الأحدث أولًا",
+    "vacio_titulo": "لا توجد أوامر بعد",
+    "vacio_texto": "عندما تشتري أو تبيع في التداول، ستظهر أوامرك هنا.",
+    "vacio_accion": "الذهاب إلى التداول",
+    "sin_resultados": "لا يوجد أمر يطابق عوامل التصفية.",
+    "nota": "تُحفظ الأوامر في هذا المتصفح فقط، وبشكل منفصل لكل وضع بيانات."
   }
 }

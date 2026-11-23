@@ -652,3 +652,48 @@ bdi, .ltr { unicode-bidi: isolate; }
 .mt-0 { border-top: 3px solid var(--serie-1); } .mt-1 { border-top: 3px dashed var(--serie-2); } .mt-2 { border-top: 3px dotted var(--serie-3); }
 .mt-3 { border-top: 3px solid var(--serie-4); } .mt-4 { border-top: 3px dashed var(--serie-5); }
 table.corr th, table.corr td { text-align: center; position: static; }
+
+/* ───────────── Operación y vigilancia (T-112): mercado, notificaciones, cinta e historial de órdenes ───────────── */
+/* Estado del mercado: punto + texto (nunca solo color) */
+.mercado { display: inline-flex; align-items: center; gap: .45rem; margin: 0; font-size: .85rem; color: var(--mut); min-width: 0; }
+.mercado-punto { width: .6rem; height: .6rem; border-radius: 50%; flex: none; border: 2px solid var(--mut); }
+.mercado-abierto .mercado-punto { background: var(--up); border-color: var(--up); }
+.mercado-cerrado .mercado-punto { background: transparent; }
+@media (max-width: 899.98px) { .mercado { display: none; } }
+/* Campanita y panel de notificaciones */
+.notif { position: relative; }
+#btn-notif { position: relative; }
+#btn-notif[aria-expanded="true"] { background: var(--hl); }
+.insignia-notif { position: absolute; top: -.35rem; inset-inline-end: -.35rem; min-width: 1.15rem; height: 1.15rem; padding: 0 .3rem; border-radius: 999px; background: var(--dn); color: var(--panel); font-size: .7rem; font-weight: 700; line-height: 1.15rem; text-align: center; }
+.panel-notif { position: absolute; inset-inline-end: 0; top: calc(100% + .4rem); width: min(24rem, calc(100vw - 2rem)); max-height: min(28rem, 70vh); overflow-y: auto; background: var(--panel); border: 1px solid var(--bd); border-radius: var(--r-2); box-shadow: var(--sombra-3); z-index: 40; }
+.panel-cab { display: flex; justify-content: space-between; align-items: center; gap: .5rem; padding: .6rem .8rem; border-bottom: 1px solid var(--bd); position: sticky; top: 0; background: var(--panel); }
+.panel-titulo { margin: 0; font-weight: 700; }
+.lista-notif { list-style: none; margin: 0; padding: .3rem; }
+.lista-notif a { display: flex; gap: .6rem; align-items: flex-start; padding: .55rem .6rem; border-radius: var(--r-1); color: var(--fg); text-decoration: none; }
+.lista-notif a:hover { background: var(--hl); }
+.lista-notif .no-leida a { font-weight: 600; box-shadow: inset calc(3px * var(--sentido)) 0 0 var(--ac); }
+.notif-ico { margin-top: .15rem; color: var(--mut); }
+.notif-cuerpo { display: grid; gap: .1rem; min-width: 0; }
+.notif-cuerpo time { font-size: .8rem; color: var(--mut); font-weight: 400; }
+.notif-vacio { margin: 0; padding: 1rem .8rem; }
+.nota-enlace { color: var(--ac); font-weight: 600; }
+/* Cinta de cotizaciones: se pausa al pasar el puntero, al enfocarla o con su botón; quieta con «reducir movimiento» */
+.cinta { display: flex; align-items: center; gap: .5rem; background: var(--panel-2); border-bottom: 1px solid var(--bd); font-size: .85rem; padding-inline-start: .5rem; }
+.cinta-pausa { flex: none; min-height: 1.9rem; min-width: 1.9rem; padding: 0; border-color: transparent; background: transparent; display: inline-grid; place-items: center; }
+.cinta-pausa > .ico:first-child { margin: 0; width: 1rem; height: 1rem; }
+.cinta-ventana { display: flex; overflow: hidden; min-width: 0; flex: 1 1 auto; }
+.cinta-pista { list-style: none; margin: 0; padding: .35rem 0; padding-inline-end: 2rem; display: flex; gap: 2rem; flex: none; white-space: nowrap; animation: eia-cinta 90s linear infinite; }
+.cinta-pista li { display: inline-flex; align-items: baseline; gap: .35rem; }
+.cinta-tk { font-weight: 700; }
+.cinta-ventana:hover .cinta-pista, .cinta:focus-within .cinta-pista, .cinta.pausada .cinta-pista { animation-play-state: paused; }
+@keyframes eia-cinta { from { transform: translateX(0); } to { transform: translateX(calc(-100% * var(--sentido))); } }
+[data-movimiento="reducido"] .cinta-pista { animation: none !important; }
+[data-movimiento="reducido"] .cinta-copia { display: none; }
+[data-movimiento="reducido"] .cinta-ventana { overflow-x: auto; }
+@media (prefers-reduced-motion: reduce) { .cinta-pista { animation: none !important; } .cinta-copia { display: none; } .cinta-ventana { overflow-x: auto; } }
+/* Confirmación de la orden e historial */
+.resumen-orden { margin-top: .5rem; }
+.resumen-orden th, .resumen-orden td { position: static; }
+.resumen-orden th { background: transparent; font-weight: 400; color: var(--mut); }
+.resumen-ordenes { font-weight: 600; }
+.lado { font-weight: 600; }

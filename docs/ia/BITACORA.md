@@ -711,3 +711,35 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
   - navegador en es-PE y ar-EG a 375 px.
 - **Archivos / PR:** rama `cc/T-111-mercado` (sale de T-110)
 - **Contrato:** sin cambios
+
+### MSG-20261123-1800 · CC · INFO
+- **Asunto:** Operación y vigilancia: confirmación de orden, historial, notificaciones, mercado y cinta (T-112)
+- **Qué cambió:**
+  - **Trading:**
+    - la orden ya no se ejecuta al enviar: se abre un **diálogo de confirmación** con activo, operación, cantidad, precio, total y efectivo después;
+    - al confirmar, un aviso con enlace al historial;
+    - al cancelar, se anuncia que no se envió nada.
+  - **`ordenes.html` · Historial de órdenes** (bloque Vigilancia):
+    - filtros por activo, operación y fechas;
+    - resumen con plural (órdenes, comprado, vendido) y hora en la zona elegida;
+    - exportación a CSV generada en el navegador;
+    - estado vacío con enlace a Trading.
+  - **Centro de notificaciones (🔔):**
+    - `EIA.alertas` pasa al núcleo (la Watchlist lo usa) y se evalúa en todas las páginas, una vez por alerta y fecha de corte;
+    - las órdenes y «Llevar a Trading» también avisan;
+    - se guardan datos, no textos, así que se ven en el idioma del momento;
+    - panel con hora relativa y «Marcar todo como leído»; el contador accesible usa plural.
+  - **Estado del mercado:** abierto o cerrado según la hora actual de Nueva York, de lunes a viernes de 9:30 a 16:00 ET. Muestra punto y texto, y el detalle accesible con la hora en Nueva York y en tu zona; no considera feriados y lo declara. Lo calcula `EIA.mercado`, con el mismo cálculo de dos pasadas que el cierre.
+  - **Cinta de cotizaciones** (26 activos de 10):
+    - botón de pausa (WCAG 2.2.2); se pausa también al pasar el puntero o al enfocarla;
+    - quieta con «reducir movimiento»;
+    - copia del bucle oculta a los lectores de pantalla;
+    - `medir()` no la cuenta como texto truncado (`data-marquesina`, declarado).
+  - **i18n:** 38 claves en 12 idiomas, con las categorías de plural de cada uno.
+- **Pruebas:**
+  - 238 pruebas JS (`operacion.test.mjs`: mercado con horario de verano, alertas, notificaciones, historial, cinta y orden de la confirmación);
+  - axe local sin violaciones en Historial, Trading, Watchlist y Detalle × 1280/390 × claro/oscuro × profesor/real;
+  - navegador: orden → confirmación → aviso, 🔔 e historial; ar-EG en RTL.
+- **PR:** el #45 (T-110) se fusionó con la CI en verde. GitHub cerró el #46 al borrarse su rama base, así que T-111 sigue en el **#47**.
+- **Archivos / PR:** rama `cc/T-112-operacion` (sale de T-111)
+- **Contrato:** sin cambios

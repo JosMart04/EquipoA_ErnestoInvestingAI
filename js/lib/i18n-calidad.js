@@ -54,7 +54,7 @@
       dentroDeRecorte.set(el, r);
       return r;
     }
-    const aProposito = el => !!el.closest(".sr, .skip, [aria-hidden='true'] canvas") || cs(el).clipPath === "inset(50%)";
+    const aProposito = el => !!el.closest(".sr, .skip, [data-marquesina], [aria-hidden='true'] canvas") || cs(el).clipPath === "inset(50%)";
     const visible = el => { const s = cs(el); if (s.display === "none" || s.visibility === "hidden") return false; const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
     const nombre = el => el.tagName.toLowerCase() + (el.id ? "#" + el.id : "") + (typeof el.className === "string" && el.className.trim() ? "." + el.className.trim().split(/\s+/).slice(0, 2).join(".") : "");
 

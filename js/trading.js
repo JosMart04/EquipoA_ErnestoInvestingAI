@@ -117,12 +117,27 @@
     const err = EIA.cartera.validar(c, o, p);
     mostrarErrores(err);
     if (Object.keys(err).length) return;
-    EIA.estado.set(EIA.cartera.clave(), EIA.cartera.ejecutar(c, o, p));
-    const l = ordenes(); l.push({ fecha: new Date().toISOString(), ticker: o.ticker, lado: o.lado, cantidad: Number(o.cantidad), precio: p });
-    EIA.estado.set(EIA.cartera.claveOrdenes(), l);
-    const texto = t(o.lado === "C" ? "trading.ejecutada_compra" : "trading.ejecutada_venta", { n: Number(o.cantidad), ticker: o.ticker, precio: usd(p) });
-    EIA.ui.notificar(texto, "ok"); EIA.ui.anunciar(texto);
-    pintarResumen(); pintarPosiciones(); pintarHistorial(); actualizarVista();
+    // Confirmación con el resumen de la orden (Spec W13 G.4, Operación: «orden simulada, confirmación»)
+    const n = Number(o.cantidad), total = n * p, despues = o.lado === "C" ? c.efectivo - total : c.efectivo + total;
+    const fila = (k, v) => `<tr><th scope="row" class="l">${esc(k)}</th><td>${v}</td></tr>`;
+    EIA.ui.confirmar({
+      titulo: t("trading.confirmar_titulo"),
+      contenido: `<p>${esc(t("trading.confirmar_texto"))}</p><table class="resumen-orden"><caption class="sr">${esc(t("trading.confirmar_titulo"))}</caption><tbody>
+${fila(t("trading.col_activo"), `<bdi>${esc(o.ticker)}</bdi>`)}${fila(t("trading.col_lado"), esc(t(o.lado === "C" ? "trading.compra" : "trading.venta")))}
+${fila(t("trading.col_cantidad"), esc(EIA.fmt.ent(n)))}${fila(t("trading.col_precio"), esc(usd(p)))}
+${fila(t("trading.col_total"), `<strong>${esc(usd(total))}</strong>`)}${fila(t("trading.efectivo_despues"), esc(usd(despues)))}</tbody></table>`,
+      aceptar: t(o.lado === "C" ? "trading.confirmar_compra" : "trading.confirmar_venta"),
+      cancelar: t("trading.cancelar")
+    }).then(si => {
+      if (!si) { EIA.ui.anunciar(t("trading.orden_cancelada")); return; }
+      EIA.estado.set(EIA.cartera.clave(), EIA.cartera.ejecutar(cartera(), o, p));
+      const l = ordenes(); l.push({ fecha: new Date().toISOString(), ticker: o.ticker, lado: o.lado, cantidad: n, precio: p });
+      EIA.estado.set(EIA.cartera.claveOrdenes(), l);
+      EIA.notificaciones.agregar({ tipo: "orden", datos: { lado: o.lado, ticker: o.ticker, n, precio: p } });
+      const texto = t(o.lado === "C" ? "trading.ejecutada_compra" : "trading.ejecutada_venta", { n, ticker: o.ticker, precio: usd(p) });
+      EIA.ui.notificar(texto, "ok", { href: "ordenes.html", texto: t("trading.ver_historial") }); EIA.ui.anunciar(texto);
+      pintarResumen(); pintarPosiciones(); pintarHistorial(); actualizarVista();
+    });
   }
 
   function reiniciar() {

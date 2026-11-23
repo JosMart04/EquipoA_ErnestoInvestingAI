@@ -54,7 +54,8 @@
     "bloque_operacion": "פעילות",
     "bloque_cuenta": "חשבון",
     "activo": "פרטי נכס",
-    "comparador": "השוואה"
+    "comparador": "השוואה",
+    "ordenes": "היסטוריית הוראות"
   },
   "shell": {
     "datos": "נתונים:",
@@ -82,7 +83,24 @@
     "actualizado": "הנתונים נוצרו ב־{fecha_hora} ({hace})",
     "menu_compacto": "תפריט מצומצם",
     "cuenta": "תפריט החשבון",
-    "cuenta_demo": "חשבון הדגמה: הנתונים שלך נשמרים רק בדפדפן הזה."
+    "cuenta_demo": "חשבון הדגמה: הנתונים שלך נשמרים רק בדפדפן הזה.",
+    "notificaciones": "התראות",
+    "notif_sin_leer": {
+      "one": "התראות: אחת שלא נקראה",
+      "two": "התראות: שתיים שלא נקראו",
+      "other": "התראות: {n} שלא נקראו"
+    },
+    "notif_nueva": "חדש:",
+    "notif_vacio": "אין לך התראות.",
+    "notif_marcar": "סימון הכול כנקרא",
+    "notif_alerta": "התראה הופעלה: {condicion}",
+    "mercado_abierto": "השוק פתוח · נסגר ב־{cierre} שעון ניו יורק ({local} אצלך)",
+    "mercado_cerrado": "השוק סגור · נפתח ביום {dia} ב־{apertura} שעון ניו יורק ({local} אצלך)",
+    "mercado_ayuda": "שעות הבורסה של ניו יורק: שני עד שישי, מ־{apertura} עד {cierre} (שעון ניו יורק). לא כולל חגים.",
+    "cinta": "שערי נכסי היקום",
+    "cinta_pausar": "השהיית סרט השערים",
+    "mercado_abierto_corto": "השוק פתוח",
+    "mercado_cerrado_corto": "השוק סגור"
   },
   "aviso": {
     "profesor": {
@@ -489,7 +507,14 @@
     "aplicado_excluidos": "החרגת: {lista}.",
     "vacio_posiciones": "התיק שלך ריק",
     "vacio_ordenes": "ההיסטוריה ריקה",
-    "vacio_accion": "יצירת הוראה"
+    "vacio_accion": "יצירת הוראה",
+    "confirmar_titulo": "אישור ההוראה",
+    "confirmar_texto": "בדקו את ההוראה לפני השליחה. זו הדמיה: לא זז כסף אמיתי.",
+    "confirmar_compra": "אישור הקנייה",
+    "confirmar_venta": "אישור המכירה",
+    "efectivo_despues": "מזומן אחרי ההוראה",
+    "orden_cancelada": "ההוראה בוטלה; לא נשלח דבר.",
+    "ver_historial": "צפייה בהיסטוריה המלאה"
   },
   "leaderboard": {
     "titulo_pagina": "טבלת דירוג · Ernesto Investing AI",
@@ -1276,5 +1301,29 @@
     "corr_minimo": "בחרו לפחות שני נכסים כדי לראות את המתאם ביניהם.",
     "anuncio_agregado": "{ticker} נוסף להשוואה.",
     "anuncio_quitado": "{ticker} הוסר מההשוואה."
+  },
+  "ordenes": {
+    "titulo_pagina": "היסטוריית הוראות · Ernesto Investing AI",
+    "titulo": "היסטוריית הוראות",
+    "sub": "כל ההוראות המדומות ששלחת, עם השעה באזור הזמן שלך.",
+    "filtros": "מסננים",
+    "lista_titulo": "הוראות",
+    "exportar": "ייצוא ל־CSV",
+    "exportado": {
+      "one": "יוצאה הוראה אחת.",
+      "two": "יוצאו שתי הוראות.",
+      "other": "יוצאו {n} הוראות."
+    },
+    "resumen": {
+      "one": "הוראה אחת · נקנה {comprado} · נמכר {vendido}",
+      "two": "שתי הוראות · נקנה {comprado} · נמכר {vendido}",
+      "other": "{n} הוראות · נקנה {comprado} · נמכר {vendido}"
+    },
+    "caption": "הוראות מדומות, החדשה ביותר ראשונה",
+    "vacio_titulo": "עדיין אין הוראות",
+    "vacio_texto": "כשתקנו או תמכרו במסחר, ההוראות שלכם יופיעו כאן.",
+    "vacio_accion": "מעבר למסחר",
+    "sin_resultados": "אף הוראה אינה תואמת את המסננים.",
+    "nota": "ההוראות נשמרות רק בדפדפן הזה, בנפרד לכל מצב נתונים."
   }
 }
