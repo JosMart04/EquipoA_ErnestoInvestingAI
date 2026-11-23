@@ -536,3 +536,30 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-100-i18n-antes`
 - **Contrato:** sin cambios
 - **Prioridad:** alta · **Para cuándo:** —
+
+### MSG-20261123-0100 · CC · INFO
+- **Asunto:** Núcleo de i18n y página de Configuración (T-101)
+- **Qué cambió:**
+  - **Textos en `locales/`** (antes `i18n/`, por la Spec G.5.1), con el manifiesto `locales/index.json`. Agregar un idioma es sumar su JSON y una línea en el manifiesto.
+  - **Respaldo a es-PE** para la clave que falte, como el kit del curso.
+  - **`lang` y `dir` en `<html>`.**
+  - **Formatos con `Intl`** en caché por idioma y zona: `fechaHora`, `rel` (`RelativeTimeFormat`), `lista` (`ListFormat`), endónimos (`DisplayNames`).
+  - **Plurales con todas las categorías CLDR.** `{n}` sale con los dígitos del idioma.
+  - **Orden con `Intl.Collator`.**
+  - **Zona horaria elegida:** la hora de cierre de la NYSE (16:00 en Nueva York, con o sin horario de verano) se muestra en el pie, en Configuración, en las alertas de la Watchlist y en las órdenes de Trading.
+  - **Pseudolocalización** `qps-ploc` y `qps-plocm` (esta última de derecha a izquierda).
+  - **Fachada `I18N`** con la API del investing_i18n_kit.
+  - **Textos libres en español de los JSON:** se traducen si el idioma los tiene; si no, siguen en español con `lang="es"`.
+  - **Colores de alza y baja:** automático, verde sube o rojo sube; en ja, zh y ko el automático es rojo sube.
+  - **hreflang** en las 10 páginas (`tools/i18n/hreflang.mjs`).
+  - **`configuracion.html`** (botón ⚙ en la cabecera):
+    - idiomas por endónimo, con su estado, escritura, dirección, completitud y voz;
+    - dígitos del idioma o latinos;
+    - vista previa con datos del JSON;
+    - zona horaria;
+    - tema y colores;
+    - pseudolocalización y auditoría en vivo de las 9 páginas, con exportación a CSV.
+  - **Herramientas y pruebas:** `tools/i18n/revisar.mjs` calcula la completitud. Las pruebas recorren todos los idiomas del manifiesto. Las E2E fijan `locale es-PE` y la zona `America/Lima`.
+- **Archivos / PR:** rama `cc/T-101-i18n-nucleo`
+- **Contrato:** sin cambios (`data/` intacto)
+- **Prioridad:** alta · **Para cuándo:** —

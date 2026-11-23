@@ -53,3 +53,28 @@ test("data/ está byte a byte como lo entregó el profesor (SHA-256 del Anexo B.
     assert.equal(createHash("sha256").update(readFileSync(ruta("data", a))).digest("hex"), esperado[a], a);
   }
 });
+
+test("configuracion.html (Spec W13 G.4): misma estructura que las demás páginas y se abre desde la cabecera", () => {
+  const h = leer("configuracion.html");
+  assert.match(h, /<html lang="es-PE">/);
+  assert.equal(contar(h, /<h1[\s>]/g), 1, "h1");
+  assert.equal(contar(h, /src="js\/common\.js"/g), 1, "common.js");
+  assert.match(h, /<body data-page="configuracion"/);
+  assert.match(leer("js", "common.js"), /href="configuracion\.html"/, "botón ⚙ Configuración en la cabecera");
+});
+
+test("cada página carga la herramienta de calidad i18n antes del núcleo (pseudolocalización y auditoría)", () => {
+  for (const p of [...PAGINAS, "configuracion.html"]) {
+    const h = leer(p), i = h.indexOf('src="js/lib/i18n-calidad.js"'), j = h.indexOf('src="js/common.js"');
+    assert.ok(i > 0 && i < j, p);
+  }
+});
+
+test("hreflang: cada página enlaza su versión en cada idioma del manifiesto y x-default (Lab 13, auditoría de 14 sitios)", () => {
+  const tags = JSON.parse(leer("locales", "index.json")).idiomas.map(i => i.tag);
+  for (const p of [...PAGINAS, "configuracion.html"]) {
+    const h = leer(p), enlazados = [...h.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">/g)];
+    assert.deepEqual(enlazados.map(m => m[1]).sort(), [...tags, "x-default"].sort(), p);
+    for (const [, tag, href] of enlazados) assert.equal(href, tag === "x-default" ? p : p + "?lang=" + tag, p + " · " + tag);
+  }
+});

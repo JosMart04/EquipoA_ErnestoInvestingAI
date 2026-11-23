@@ -28,6 +28,19 @@ export function listar(carpeta, filtro) {
 export const PAGINAS = ["index.html", "watchlist.html", "trading.html", "leaderboard.html", "clasificacion.html",
   "regresion.html", "optimizador.html", "portafolios.html", "backtesting.html"];
 
+/** Todas las páginas: las 9 de la barra más Configuración (Spec W13 G.4, se abre desde la cabecera). */
+export const PAGINAS_SITIO = [...PAGINAS, "configuracion.html"];
+
+/** Manifiesto de idiomas y diccionario de cada uno (locales/). */
+export const manifiesto = () => leerJSON("locales", "index.json");
+export const diccionario = tag => leerJSON("locales", tag + ".json");
+/** Categorías de plural que exige un idioma. En es, fr, pt, it y ca la categoría «many» solo aplica a millones exactos
+    y notación compacta (CLDR); ahí basta «other». */
+export function categoriasPlural(tag) {
+  const c = new Intl.PluralRules(tag).resolvedOptions().pluralCategories;
+  return ["es", "fr", "pt", "it", "ca"].includes(tag.split("-")[0]) ? c.filter(x => x !== "many") : c;
+}
+
 /** Aplana un diccionario i18n: {"a.b": "texto"}. Los plurales {one, other} quedan como "a.b#one". */
 export function aplanar(obj, prefijo = "", salida = {}) {
   for (const [k, v] of Object.entries(obj)) {

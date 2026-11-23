@@ -11,7 +11,7 @@ for (const idioma of ['es-PE', 'en-US']) {
   ]) {
     test(pagina + ': publicación real parcial (' + idioma + ')' + (aislar09 ? ' — 13 disponible, falta 09' : ''), async ({ page, registro }) => {
       const meta = await leerJSON('data_real/meta.json');
-      const diccionario = await leerJSON('i18n/' + idioma + '.json');
+      const diccionario = await leerJSON('locales/' + idioma + '.json');
       const fecha = new Intl.DateTimeFormat(idioma, { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
         .format(new Date(meta.fecha_corte + 'T12:00:00Z'));
       const aviso = diccionario.aviso.real.parcial.replace('{fecha}', fecha);

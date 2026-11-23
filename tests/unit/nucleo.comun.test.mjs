@@ -5,7 +5,7 @@ import comun from "../../js/common.js";
 import { leerJSON } from "./_util.mjs";
 
 const { EIA, PAGES, fmt, store } = comun;
-const ES = leerJSON("i18n", "es-PE.json"), EN = leerJSON("i18n", "en-US.json");
+const ES = leerJSON("locales", "es-PE.json"), EN = leerJSON("locales", "en-US.json");
 
 test("compatibilidad con la base: se conservan $, fmt, loadJSON, store, PAGES, buildShell y showError", () => {
   for (const n of ["$", "$$", "fmt", "loadJSON", "store", "applyTheme", "buildShell", "showError", "PAGES", "EIA"]) assert.ok(n in comun, "falta " + n);

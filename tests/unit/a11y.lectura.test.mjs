@@ -7,7 +7,7 @@ import barrido from "../../js/a11y/barrido.js";
 import { leer, leerJSON } from "./_util.mjs";
 
 const { EIA } = comun;
-EIA.usarDiccionario(leerJSON("i18n", "es-PE.json"), "es-PE");
+EIA.usarDiccionario(leerJSON("locales", "es-PE.json"), "es-PE");
 
 test("exploración punto a punto: flechas, Inicio/Fin y saltos de página sin salirse de la serie", () => {
   const n = 120;

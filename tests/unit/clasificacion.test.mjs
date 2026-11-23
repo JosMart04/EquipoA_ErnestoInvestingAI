@@ -117,7 +117,7 @@ test("P08 H-02: observaciones no son días; la comparación con «siempre SUBE»
   assert.deepEqual([r.fechasPrueba, r.superanBase, r.bajoMitad], [252, 0, 1]);
   real.modelos[1].exactitud = 0.6;
   assert.equal(C.resumen(real).superanBase, 1);
-  const es = leerJSON("i18n", "es-PE.json").clasificacion, en = leerJSON("i18n", "en-US.json").clasificacion;
+  const es = leerJSON("locales", "es-PE.json").clasificacion, en = leerJSON("locales", "en-US.json").clasificacion;
   for (const k of ["ficha_que_tan_bien", "metricas_caption", "honestidad_p2"]) {
     assert.ok(!/días|moneda/.test(es[k]), "es-PE " + k + " ya no dice «días» ni «moneda»");
     assert.ok(!/days|coin/.test(en[k]), "en-US " + k);

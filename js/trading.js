@@ -85,7 +85,7 @@
   function pintarHistorial() {
     const l = ordenes().slice(-MAX_HISTORIAL).reverse();
     if (!l.length) { $("#historial").innerHTML = `<p>${esc(t("trading.sin_ordenes"))}</p>`; return; }
-    const hora = iso => new Intl.DateTimeFormat(EIA.idioma(), { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
+    const hora = iso => EIA.fmt.fechaHora(iso); // en la zona horaria elegida en Configuración (Spec G.5.4)
     EIA.ui.tabla($("#historial"), {
       id: "tabla-historial", titulo: t("trading.historial_caption"),
       columnas: [

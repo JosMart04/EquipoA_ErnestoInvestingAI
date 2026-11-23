@@ -113,7 +113,7 @@
     if (pm) {
       const tope = n => pctS(pm.perfiles[n].tope * 100, 0);
       $("#metodo").textContent = t("backtesting.metodo_navegador", { paso: pm.paso, ventana: pm.ventana, momentum: pm.momentum, comision: pm.comisionPb, tc: tope("Conservador"), tm: tope("Moderado"), ta: tope("Agresivo") });
-    } else $("#metodo").innerHTML = `${esc(t("backtesting.metodo"))} <span lang="es">${esc(D.c09.metodo)}</span>`;
+    } else $("#metodo").innerHTML = `${esc(t("backtesting.metodo"))} ${EIA.textoDatos(D.c09.metodo)}`;
   }
 
   /** Estilo de cada serie: carteras con línea gruesa continua, discontinua o de punto y raya; referencias punteadas y finas.

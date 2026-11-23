@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import V from "../../js/a11y/voz.js";
 import { dato, leerJSON, leer } from "./_util.mjs";
 
-const gram = idioma => leerJSON("i18n", idioma + ".json").voz;
+const gram = idioma => leerJSON("locales", idioma + ".json").voz;
 const ES = gram("es-PE"), EN = gram("en-US");
 const activos = dato("10_dashboard_mercado.json").map(a => ({ ticker: a.ticker, nombre: a.nombre }));
 const di = (frase, G = ES) => V.interpretar(frase, G, activos);
