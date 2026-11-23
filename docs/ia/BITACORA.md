@@ -636,3 +636,15 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-104-traducciones-extra`
 - **Contrato:** sin cambios
 - **Prioridad:** alta · **Para cuándo:** —
+
+### MSG-20261123-0600 · CC · INFO
+- **Asunto:** Medición antes y después, capturas, notebook y documentación del Lab 13 (T-105)
+- **Qué cambió:**
+  - `docs/i18n/ejercicio_13_2_…_PRUEBA_TECNICA_BOT.csv`: 936 mediciones (A y B × 13 idiomas × pseudolocalización sí y no × 375 y 1280 px).
+    - **A:** 26 truncados, 45 desbordes, 432 `lang` incorrectos y 72 `dir` incorrectos.
+    - **B:** todo en 0.
+  - Figura del notebook del profesor en `docs/i18n/figuras/` y 20 capturas antes y después en `docs/capturas/i18n/`.
+  - `docs/i18n/guia_tecnica.md`, `docs/i18n/glosario.md`, sección «Idiomas» del README, D-25 en DECISIONES.
+  - En fr-FR, la insignia de borrador ahora dice «Brouillon».
+- **Archivos / PR:** rama `cc/T-105-i18n-despues` (sale de T-104; fusionar después del PR #43)
+- **Contrato:** sin cambios
