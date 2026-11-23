@@ -29,7 +29,7 @@ export const PAGINAS = ["index.html", "watchlist.html", "trading.html", "leaderb
   "regresion.html", "optimizador.html", "portafolios.html", "backtesting.html"];
 
 /** Todas las páginas del sitio: los 9 módulos de la base más las de la iteración 2 (Spec W13 G.4). */
-export const PAGINAS_SITIO = [...PAGINAS, "configuracion.html", "activo.html", "comparador.html"];
+export const PAGINAS_SITIO = [...PAGINAS, "configuracion.html", "activo.html", "comparador.html", "ordenes.html"];
 
 /** Manifiesto de idiomas y diccionario de cada uno (locales/). */
 export const manifiesto = () => leerJSON("locales", "index.json");

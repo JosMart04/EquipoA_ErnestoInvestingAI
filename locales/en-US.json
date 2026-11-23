@@ -46,7 +46,8 @@
     "bloque_operacion": "Operations",
     "bloque_cuenta": "Account",
     "activo": "Asset detail",
-    "comparador": "Comparison"
+    "comparador": "Comparison",
+    "ordenes": "Order history"
   },
   "shell": {
     "datos": "Data:",
@@ -74,7 +75,23 @@
     "actualizado": "Data generated {fecha_hora} ({hace})",
     "menu_compacto": "Compact menu",
     "cuenta": "Account menu",
-    "cuenta_demo": "Demo account: your data is saved only in this browser."
+    "cuenta_demo": "Demo account: your data is saved only in this browser.",
+    "notificaciones": "Notifications",
+    "notif_sin_leer": {
+      "one": "Notifications: {n} unread",
+      "other": "Notifications: {n} unread"
+    },
+    "notif_nueva": "New:",
+    "notif_vacio": "You have no notifications.",
+    "notif_marcar": "Mark all as read",
+    "notif_alerta": "Alert triggered: {condicion}",
+    "mercado_abierto": "Market open · closes at {cierre} New York time ({local} your time)",
+    "mercado_cerrado": "Market closed · opens {dia} at {apertura} New York time ({local} your time)",
+    "mercado_ayuda": "New York Stock Exchange hours: Monday to Friday, {apertura} to {cierre} (New York time). Holidays are not considered.",
+    "cinta": "Quotes for the asset universe",
+    "cinta_pausar": "Pause the quote ticker",
+    "mercado_abierto_corto": "Market open",
+    "mercado_cerrado_corto": "Market closed"
   },
   "aviso": {
     "profesor": {
@@ -470,7 +487,14 @@
     "aplicado_excluidos": "You excluded: {lista}.",
     "vacio_posiciones": "Your portfolio is empty",
     "vacio_ordenes": "Empty history",
-    "vacio_accion": "Create an order"
+    "vacio_accion": "Create an order",
+    "confirmar_titulo": "Confirm the order",
+    "confirmar_texto": "Check the order before sending it. It is a simulation: no real money moves.",
+    "confirmar_compra": "Confirm purchase",
+    "confirmar_venta": "Confirm sale",
+    "efectivo_despues": "Cash after the order",
+    "orden_cancelada": "Order cancelled; nothing was sent.",
+    "ver_historial": "See the full history"
   },
   "leaderboard": {
     "titulo_pagina": "Leaderboard · Ernesto Investing AI",
@@ -1245,5 +1269,27 @@
     "corr_minimo": "Pick at least two assets to see their correlation.",
     "anuncio_agregado": "{ticker} added to the comparison.",
     "anuncio_quitado": "{ticker} removed from the comparison."
+  },
+  "ordenes": {
+    "titulo_pagina": "Order history · Ernesto Investing AI",
+    "titulo": "Order history",
+    "sub": "Every simulated order you sent, with its time in your time zone.",
+    "filtros": "Filters",
+    "lista_titulo": "Orders",
+    "exportar": "Export to CSV",
+    "exportado": {
+      "one": "{n} order exported.",
+      "other": "{n} orders exported."
+    },
+    "resumen": {
+      "one": "{n} order · bought {comprado} · sold {vendido}",
+      "other": "{n} orders · bought {comprado} · sold {vendido}"
+    },
+    "caption": "Simulated orders, most recent first",
+    "vacio_titulo": "No orders yet",
+    "vacio_texto": "When you buy or sell in Trading, your orders will show up here.",
+    "vacio_accion": "Go to Trading",
+    "sin_resultados": "No order matches the filters.",
+    "nota": "Orders are saved only in this browser, separately for each data mode."
   }
 }

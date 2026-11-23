@@ -13,20 +13,9 @@
 
   /* ═════════════ Modelo de vista (puro) ═════════════ */
 
-  /** ¿La alerta está disparada? Reglas del contrato (§2, archivo 11). Una alerta inactiva nunca se dispara. */
-  function alertaDisparada(alerta, activo) {
-    if (!alerta.activa || !activo) return false;
-    switch (alerta.tipo) {
-      case "precio_sobre": return activo.ultimo >= alerta.umbral;
-      case "precio_bajo": return activo.ultimo <= alerta.umbral;
-      case "var_1d_menor_a_pct": return activo.var_1d_pct <= alerta.umbral;
-      case "var_1d_mayor_a_pct": return activo.var_1d_pct >= alerta.umbral;
-      default: return false;
-    }
-  }
-  /** Copia las alertas del archivo 11 con un identificador estable. */
-  const alertasIniciales = c11 => (c11.alertas || []).map((a, i) => ({ id: "a" + (i + 1), ticker: a.ticker, tipo: a.tipo, umbral: a.umbral, activa: !!a.activa }));
-  /** Errores de una alerta nueva o editada: {campo: código}. */
+  // Reglas y alertas iniciales: en el núcleo (EIA.alertas), para que el centro de notificaciones avise en cualquier página
+  const alertaDisparada = (a, activo) => EIA.alertas.disparada(a, activo);
+  const alertasIniciales = c11 => EIA.alertas.iniciales(c11);
   function validarAlerta(a, tickers) {
     const e = {};
     if (!tickers.includes(a.ticker)) e.ticker = "ticker";
@@ -59,12 +48,11 @@
   /* ═════════════ Pintado (DOM) ═════════════ */
   const { $, $$ } = comun, esc = EIA.esc, t = (k, p) => EIA.t(k, p);
   let D = null, enlazado = false, anunciado = false;
-  const claveAlertas = () => (EIA.modo() === "real" ? "eia_alertas_real" : "eia_alertas");
+  const claveAlertas = () => EIA.alertas.clave();
   const alertas = () => EIA.estado.get(claveAlertas()) || alertasIniciales(D.c11);
   const guardarAlertas = l => EIA.estado.set(claveAlertas(), l);
   const activo = tk => D.c10.find(a => a.ticker === tk);
-  const umbralTexto = a => (a.tipo.indexOf("precio") === 0 ? EIA.fmt.usd(a.umbral) : EIA.fmt.pct(a.umbral));
-  const condicion = a => t("watchlist.condicion", { ticker: a.ticker, tipo: EIA.nombre("alerta_tipo", a.tipo).toLowerCase(), umbral: umbralTexto(a) });
+  const condicion = a => EIA.alertas.texto(a);
   const insignia = () => `<span class="insignia-disparada"><span aria-hidden="true">⚠</span> ${esc(t("watchlist.disparada"))}</span>`;
 
   function svgMini(tk) {

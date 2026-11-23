@@ -54,7 +54,8 @@
     "bloque_operacion": "取引",
     "bloque_cuenta": "アカウント",
     "activo": "銘柄の詳細",
-    "comparador": "比較"
+    "comparador": "比較",
+    "ordenes": "注文履歴"
   },
   "shell": {
     "datos": "データ：",
@@ -82,7 +83,22 @@
     "actualizado": "データ生成：{fecha_hora}（{hace}）",
     "menu_compacto": "コンパクトメニュー",
     "cuenta": "アカウントメニュー",
-    "cuenta_demo": "デモアカウント：データはこのブラウザーにのみ保存されます。"
+    "cuenta_demo": "デモアカウント：データはこのブラウザーにのみ保存されます。",
+    "notificaciones": "通知",
+    "notif_sin_leer": {
+      "other": "通知：未読 {n} 件"
+    },
+    "notif_nueva": "新着：",
+    "notif_vacio": "通知はありません。",
+    "notif_marcar": "すべて既読にする",
+    "notif_alerta": "アラート発生：{condicion}",
+    "mercado_abierto": "市場は開いています · ニューヨーク時間 {cierre} に終了（あなたの時間で {local}）",
+    "mercado_cerrado": "市場は閉まっています · {dia} のニューヨーク時間 {apertura} に開始（あなたの時間で {local}）",
+    "mercado_ayuda": "ニューヨーク証券取引所の取引時間：月曜から金曜、{apertura}～{cierre}（ニューヨーク時間）。祝日は考慮していません。",
+    "cinta": "銘柄ユニバースの相場",
+    "cinta_pausar": "相場テロップを一時停止",
+    "mercado_abierto_corto": "取引時間中",
+    "mercado_cerrado_corto": "取引時間外"
   },
   "aviso": {
     "profesor": {
@@ -467,7 +483,14 @@
     "aplicado_excluidos": "除外した銘柄：{lista}。",
     "vacio_posiciones": "ポートフォリオは空です",
     "vacio_ordenes": "履歴はありません",
-    "vacio_accion": "注文を作成"
+    "vacio_accion": "注文を作成",
+    "confirmar_titulo": "注文の確認",
+    "confirmar_texto": "送信前に注文を確認してください。これはシミュレーションで、実際のお金は動きません。",
+    "confirmar_compra": "購入を確定",
+    "confirmar_venta": "売却を確定",
+    "efectivo_despues": "注文後の現金",
+    "orden_cancelada": "注文を取り消しました。何も送信されていません。",
+    "ver_historial": "すべての履歴を見る"
   },
   "leaderboard": {
     "titulo_pagina": "ランキング · Ernesto Investing AI",
@@ -1230,5 +1253,25 @@
     "corr_minimo": "相関を見るには銘柄を二つ以上選んでください。",
     "anuncio_agregado": "{ticker}を比較に追加しました。",
     "anuncio_quitado": "{ticker}を比較から外しました。"
+  },
+  "ordenes": {
+    "titulo_pagina": "注文履歴 · Ernesto Investing AI",
+    "titulo": "注文履歴",
+    "sub": "送信したすべての模擬注文を、あなたのタイムゾーンの時刻で表示します。",
+    "filtros": "絞り込み",
+    "lista_titulo": "注文",
+    "exportar": "CSV に書き出す",
+    "exportado": {
+      "other": "{n} 件の注文を書き出しました。"
+    },
+    "resumen": {
+      "other": "注文 {n} 件 · 購入 {comprado} · 売却 {vendido}"
+    },
+    "caption": "模擬注文（新しい順）",
+    "vacio_titulo": "まだ注文はありません",
+    "vacio_texto": "模擬取引で売買すると、ここに注文が表示されます。",
+    "vacio_accion": "模擬取引へ",
+    "sin_resultados": "条件に合う注文はありません。",
+    "nota": "注文はこのブラウザーにのみ、データモードごとに別々に保存されます。"
   }
 }

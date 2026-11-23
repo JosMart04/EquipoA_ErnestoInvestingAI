@@ -54,7 +54,8 @@
     "bloque_operacion": "संचालन",
     "bloque_cuenta": "खाता",
     "activo": "एसेट का विवरण",
-    "comparador": "तुलना"
+    "comparador": "तुलना",
+    "ordenes": "ऑर्डर इतिहास"
   },
   "shell": {
     "datos": "डेटा:",
@@ -82,7 +83,23 @@
     "actualizado": "डेटा बनाया गया {fecha_hora} ({hace})",
     "menu_compacto": "संक्षिप्त मेनू",
     "cuenta": "खाता मेनू",
-    "cuenta_demo": "डेमो खाता: आपका डेटा केवल इसी ब्राउज़र में सहेजा जाता है।"
+    "cuenta_demo": "डेमो खाता: आपका डेटा केवल इसी ब्राउज़र में सहेजा जाता है।",
+    "notificaciones": "सूचनाएँ",
+    "notif_sin_leer": {
+      "one": "सूचनाएँ: {n} अपठित",
+      "other": "सूचनाएँ: {n} अपठित"
+    },
+    "notif_nueva": "नई:",
+    "notif_vacio": "आपके लिए कोई सूचना नहीं है।",
+    "notif_marcar": "सभी को पढ़ा हुआ चिह्नित करें",
+    "notif_alerta": "अलर्ट सक्रिय: {condicion}",
+    "mercado_abierto": "बाज़ार खुला · न्यूयॉर्क समय {cierre} पर बंद होगा (आपके समय {local})",
+    "mercado_cerrado": "बाज़ार बंद · {dia} को न्यूयॉर्क समय {apertura} पर खुलेगा (आपके समय {local})",
+    "mercado_ayuda": "न्यूयॉर्क स्टॉक एक्सचेंज का समय: सोमवार से शुक्रवार, {apertura} से {cierre} (न्यूयॉर्क समय)। छुट्टियाँ शामिल नहीं हैं।",
+    "cinta": "एसेट दायरे के भाव",
+    "cinta_pausar": "भाव पट्टी रोकें",
+    "mercado_abierto_corto": "बाज़ार खुला",
+    "mercado_cerrado_corto": "बाज़ार बंद"
   },
   "aviso": {
     "profesor": {
@@ -478,7 +495,14 @@
     "aplicado_excluidos": "आपने बाहर रखा: {lista}।",
     "vacio_posiciones": "आपका पोर्टफ़ोलियो खाली है",
     "vacio_ordenes": "इतिहास खाली है",
-    "vacio_accion": "ऑर्डर बनाएँ"
+    "vacio_accion": "ऑर्डर बनाएँ",
+    "confirmar_titulo": "ऑर्डर की पुष्टि करें",
+    "confirmar_texto": "भेजने से पहले ऑर्डर जाँचें। यह सिम्युलेशन है: असली पैसा नहीं लगता।",
+    "confirmar_compra": "खरीद की पुष्टि करें",
+    "confirmar_venta": "बिक्री की पुष्टि करें",
+    "efectivo_despues": "ऑर्डर के बाद नकद",
+    "orden_cancelada": "ऑर्डर रद्द; कुछ नहीं भेजा गया।",
+    "ver_historial": "पूरा इतिहास देखें"
   },
   "leaderboard": {
     "titulo_pagina": "लीडरबोर्ड · Ernesto Investing AI",
@@ -1253,5 +1277,27 @@
     "corr_minimo": "सहसंबंध देखने के लिए कम से कम दो एसेट चुनें।",
     "anuncio_agregado": "{ticker} तुलना में जोड़ा गया।",
     "anuncio_quitado": "{ticker} तुलना से हटाया गया।"
+  },
+  "ordenes": {
+    "titulo_pagina": "ऑर्डर इतिहास · Ernesto Investing AI",
+    "titulo": "ऑर्डर इतिहास",
+    "sub": "आपके भेजे सभी सिम्युलेटेड ऑर्डर, आपके समय क्षेत्र के समय के साथ।",
+    "filtros": "फ़िल्टर",
+    "lista_titulo": "ऑर्डर",
+    "exportar": "CSV में निर्यात करें",
+    "exportado": {
+      "one": "{n} ऑर्डर निर्यात किया गया।",
+      "other": "{n} ऑर्डर निर्यात किए गए।"
+    },
+    "resumen": {
+      "one": "{n} ऑर्डर · खरीदा {comprado} · बेचा {vendido}",
+      "other": "{n} ऑर्डर · खरीदा {comprado} · बेचा {vendido}"
+    },
+    "caption": "सिम्युलेटेड ऑर्डर, सबसे नया पहले",
+    "vacio_titulo": "अभी कोई ऑर्डर नहीं",
+    "vacio_texto": "जब आप ट्रेडिंग में खरीदेंगे या बेचेंगे, आपके ऑर्डर यहाँ दिखेंगे।",
+    "vacio_accion": "ट्रेडिंग पर जाएँ",
+    "sin_resultados": "कोई ऑर्डर फ़िल्टर से मेल नहीं खाता।",
+    "nota": "ऑर्डर केवल इसी ब्राउज़र में, हर डेटा मोड के लिए अलग सहेजे जाते हैं।"
   }
 }

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es-PE"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-i18n="ordenes.titulo_pagina">Historial de órdenes · Ernesto Investing AI</title><link rel="stylesheet" href="css/styles.css">
+<link rel="alternate" hreflang="es-PE" href="ordenes.html?lang=es-PE">
+<link rel="alternate" hreflang="en-US" href="ordenes.html?lang=en-US">
+<link rel="alternate" hreflang="ar-EG" href="ordenes.html?lang=ar-EG">
+<link rel="alternate" hreflang="he-IL" href="ordenes.html?lang=he-IL">
+<link rel="alternate" hreflang="ja-JP" href="ordenes.html?lang=ja-JP">
+<link rel="alternate" hreflang="zh-CN" href="ordenes.html?lang=zh-CN">
+<link rel="alternate" hreflang="ko-KR" href="ordenes.html?lang=ko-KR">
+<link rel="alternate" hreflang="hi-IN" href="ordenes.html?lang=hi-IN">
+<link rel="alternate" hreflang="ru-RU" href="ordenes.html?lang=ru-RU">
+<link rel="alternate" hreflang="pt-BR" href="ordenes.html?lang=pt-BR">
+<link rel="alternate" hreflang="fr-FR" href="ordenes.html?lang=fr-FR">
+<link rel="alternate" hreflang="de-DE" href="ordenes.html?lang=de-DE">
+<link rel="alternate" hreflang="qu-PE" href="ordenes.html?lang=qu-PE">
+<link rel="alternate" hreflang="x-default" href="ordenes.html">
+</head>
+<body data-page="ordenes"><main data-esqueleto="tabla">
+<h1 data-i18n="ordenes.titulo">Historial de órdenes</h1>
+<p class="sub" data-i18n="ordenes.sub">Todas las órdenes simuladas que enviaste, con su hora en tu zona horaria.</p>
+<!-- El aviso de simulación lo inserta js/common.js aquí, según el modo de datos -->
+<section class="card" aria-labelledby="h-filtros">
+  <h2 id="h-filtros" data-i18n="ordenes.filtros">Filtros</h2>
+  <div class="row">
+    <div><label for="f-activo" data-i18n="comun.activo">Activo</label><select id="f-activo"></select></div>
+    <div><span class="rotulo" data-i18n="trading.lado">Lado</span><div id="f-lado"></div></div>
+    <div><label for="f-desde" data-i18n="dashboard.desde">Desde</label><input type="date" id="f-desde"></div>
+    <div><label for="f-hasta" data-i18n="dashboard.hasta">Hasta</label><input type="date" id="f-hasta"></div>
+  </div>
+</section>
+<section class="card" aria-labelledby="h-lista">
+  <div class="graf-cab"><h2 id="h-lista" data-i18n="ordenes.lista_titulo">Órdenes</h2><button type="button" id="exportar"></button></div>
+  <p id="resumen" class="resumen-ordenes" role="status"></p>
+  <div id="tabla"></div>
+  <p class="mut" data-i18n="ordenes.nota">Las órdenes se guardan solo en este navegador y por separado en cada modo de datos.</p>
+</section>
+<script src="js/lib/i18n-calidad.js"></script>
+<script src="js/common.js"></script>
+<script src="js/ordenes.js"></script>
+</main></body></html>

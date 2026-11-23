@@ -54,7 +54,8 @@
     "bloque_operacion": "Opérations",
     "bloque_cuenta": "Compte",
     "activo": "Fiche de l’actif",
-    "comparador": "Comparateur"
+    "comparador": "Comparateur",
+    "ordenes": "Historique des ordres"
   },
   "shell": {
     "datos": "Données :",
@@ -82,7 +83,23 @@
     "actualizado": "Données générées le {fecha_hora} ({hace})",
     "menu_compacto": "Menu compact",
     "cuenta": "Menu du compte",
-    "cuenta_demo": "Compte de démonstration : vos données ne sont enregistrées que dans ce navigateur."
+    "cuenta_demo": "Compte de démonstration : vos données ne sont enregistrées que dans ce navigateur.",
+    "notificaciones": "Notifications",
+    "notif_sin_leer": {
+      "one": "Notifications : {n} non lue",
+      "other": "Notifications : {n} non lues"
+    },
+    "notif_nueva": "Nouveau :",
+    "notif_vacio": "Vous n’avez aucune notification.",
+    "notif_marcar": "Tout marquer comme lu",
+    "notif_alerta": "Alerte déclenchée : {condicion}",
+    "mercado_abierto": "Marché ouvert · clôture à {cierre}, heure de New York ({local} chez vous)",
+    "mercado_cerrado": "Marché fermé · ouverture {dia} à {apertura}, heure de New York ({local} chez vous)",
+    "mercado_ayuda": "Horaires de la Bourse de New York : du lundi au vendredi, de {apertura} à {cierre} (heure de New York). Les jours fériés ne sont pas pris en compte.",
+    "cinta": "Cotations de l’univers d’actifs",
+    "cinta_pausar": "Mettre en pause le bandeau de cotations",
+    "mercado_abierto_corto": "Marché ouvert",
+    "mercado_cerrado_corto": "Marché fermé"
   },
   "aviso": {
     "profesor": {
@@ -478,7 +495,14 @@
     "aplicado_excluidos": "Vous avez exclu : {lista}.",
     "vacio_posiciones": "Votre portefeuille est vide",
     "vacio_ordenes": "Historique vide",
-    "vacio_accion": "Créer un ordre"
+    "vacio_accion": "Créer un ordre",
+    "confirmar_titulo": "Confirmer l’ordre",
+    "confirmar_texto": "Vérifiez l’ordre avant de l’envoyer. C’est une simulation : aucun argent réel ne bouge.",
+    "confirmar_compra": "Confirmer l’achat",
+    "confirmar_venta": "Confirmer la vente",
+    "efectivo_despues": "Liquidités après l’ordre",
+    "orden_cancelada": "Ordre annulé ; rien n’a été envoyé.",
+    "ver_historial": "Voir l’historique complet"
   },
   "leaderboard": {
     "titulo_pagina": "Classement · Ernesto Investing AI",
@@ -1253,5 +1277,27 @@
     "corr_minimo": "Choisissez au moins deux actifs pour voir leur corrélation.",
     "anuncio_agregado": "{ticker} ajouté à la comparaison.",
     "anuncio_quitado": "{ticker} retiré de la comparaison."
+  },
+  "ordenes": {
+    "titulo_pagina": "Historique des ordres · Ernesto Investing AI",
+    "titulo": "Historique des ordres",
+    "sub": "Tous les ordres simulés que vous avez envoyés, avec l’heure dans votre fuseau.",
+    "filtros": "Filtres",
+    "lista_titulo": "Ordres",
+    "exportar": "Exporter en CSV",
+    "exportado": {
+      "one": "{n} ordre exporté.",
+      "other": "{n} ordres exportés."
+    },
+    "resumen": {
+      "one": "{n} ordre · acheté {comprado} · vendu {vendido}",
+      "other": "{n} ordres · acheté {comprado} · vendu {vendido}"
+    },
+    "caption": "Ordres simulés, du plus récent au plus ancien",
+    "vacio_titulo": "Aucun ordre pour l’instant",
+    "vacio_texto": "Quand vous achèterez ou vendrez dans le Trading, vos ordres apparaîtront ici.",
+    "vacio_accion": "Aller au Trading",
+    "sin_resultados": "Aucun ordre ne correspond aux filtres.",
+    "nota": "Les ordres sont enregistrés uniquement dans ce navigateur, séparément pour chaque mode de données."
   }
 }
