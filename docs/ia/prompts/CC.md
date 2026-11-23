@@ -294,3 +294,22 @@ El botón «♪ Escuchar el consenso» de Clasificación también ocultalo
 ```text
 Sí, corrige lo de las fechas del Dashboard
 ```
+
+## 2026-11-22 · Claude Code · Claude Opus 5.5 (modo Plan)
+
+Mensaje de Josué (adjuntó `26.11.20.v3[print].Guia_Lab_13_Internacionalizacion_Localizacion (1).docx` y `26.11.20.v2P.Spec_Trabajo_Grupal_W13_Investing_AI_Internacionalizado.docx`):
+
+```text
+Ahora te adjunto la guía del lab 13 grupal. Para el proyecto, es decir el siguiente avance. También te adjunto la otra guía, los dos hablan de internacionalización, hay rubrica. No hagas caso a G2. Entrarás en modo plan por los cambios que realizarás, realiza la internacionalización a todos los idiomas que se te hagan posibles, ve más allá. Analiza los dos documentos a profundidad, si necesitas otros documentos o si tienes preguntas hazmelas saber antes de que empieces a generar el plan. Este es el repositorio que nos pasó el profesor: https://github.com/mbaernestocr-tech/ihc-internacionalizacion-i18n-lab13.git. Solo es de referencia,no quiere decir que vayas a copiar tal cual la interfaz, mantengamos la que tenemos. Primero entrarás en modo plan para el desarrollo de la internacionalización, luego en otra iteración se mejorará la interfaz y otros aspectos.
+```
+
+Respuestas de Josué a las preguntas del plan:
+
+```text
+¿Qué es G2? → Sección G.2: Qué NO se pide
+Idiomas → 13 idiomas (Recommended)
+Pantallas → Solo Configuración ahora (Recommended)
+Autodetectar → No: siempre es-PE (Recommended)
+```
+
+Josué aprobó el plan («Internacionalización de Ernesto Investing AI a 13 idiomas»).

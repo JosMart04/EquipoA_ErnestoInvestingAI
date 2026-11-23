@@ -59,3 +59,9 @@ Las tareas de CC (T-01 a T-29) se detallan en `docs/plan/PLAN_IMPLEMENTACION.md`
 | T-71 | Compartir Figma (solo lectura) + figma-src/ sin editar | JM | hecho | main | R-FLU-02, R-ENT-01 | |
 | T-80 | Pruebas humanas por rol | HUM | pendiente | issues | §11, Anexo A | |
 | T-90 | Comandos de voz (última fase) | CC-O | hecho | PR #30 y PR #32 | D-07 (b) | Josué la validó con su micrófono el 17-nov. PR #32: «clic en» por palabras, con números dichos, opciones de listas y elección numerada entre botones repetidos. **Josué validó también estas mejoras con su micrófono** |
+| T-100 | i18n: etiqueta «antes» y medición de truncados y desbordes (versión A) | CC-O | en revisión | cc/T-100-i18n-antes | Lab 13 L.4 pasos 2-3; Spec G.5.5 | Etiqueta `i18n-antes`; `js/lib/i18n-calidad.js` (medir() y pseudolocalización del kit); `tools/i18n/medir_i18n.mjs`; CSV A es-PE/en-US |
+| T-101 | i18n: núcleo (locales/ y manifiesto, respaldo, dir, zona horaria, Collator, pseudolocalización, fachada I18N), selector por endónimo, Configuración, colores, hreflang | CC-O | pendiente | | Spec G.5.1-6; Lab L.5 | |
+| T-102 | i18n: RTL (CSS lógico, ECharts espejado, teclado, fuentes, flechas, bidi) | CC-O | pendiente | | Spec G.5.2 | |
+| T-103 | Traducciones de la guía: ar-EG, ja-JP, qu-PE (borradores) + voz | CC-O | pendiente | | Spec G.1.3, G.5.7 | |
+| T-104 | Traducciones extra: he-IL, zh-CN, ko-KR, hi-IN, ru-RU, pt-BR, fr-FR, de-DE (borradores) | CC-O | pendiente | | D-25 | |
+| T-105 | i18n: medición B, capturas antes/después, notebook, guía técnica, README | CC-O | pendiente | | Lab L.6-7; Spec G.9 | |
