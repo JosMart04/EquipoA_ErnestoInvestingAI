@@ -70,3 +70,26 @@ En B, todo eso está corregido.
 Hay **capturas antes y después** en [`docs/capturas/i18n/`](../capturas/i18n/):
 - Inicio y Clasificación en es-PE, ar-EG, ja-JP y de-DE a 1280 px;
 - Inicio y Backtesting en móvil (375 px) con pseudolocalización.
+
+## Iteración 2: las 16 páginas (23-nov-2026)
+
+La interfaz nueva (D-26) agregó siete páginas a la barra lateral: Detalle de activo, Comparador, Historial de órdenes, Perfil, Configuración, Ayuda y Acerca de. Además sumó un shell con barra lateral, cinta y notificaciones. Por eso se repitió la medición de la versión B sobre **todas las páginas de `PAGINAS_NAV`**, que ahora es la lista por defecto de `medir_i18n.mjs`.
+
+```powershell
+$L = "es-PE,en-US,ar-EG,he-IL,ja-JP,zh-CN,ko-KR,hi-IN,ru-RU,pt-BR,fr-FR,de-DE,qu-PE"
+node tools/i18n/medir_i18n.mjs --version B --locales $L --salida docs/i18n/iteracion2_16_paginas_PRUEBA_TECNICA_BOT.csv
+```
+
+Archivo: [`iteracion2_16_paginas_PRUEBA_TECNICA_BOT.csv`](iteracion2_16_paginas_PRUEBA_TECNICA_BOT.csv). Son 832 mediciones: 16 páginas × 13 idiomas × pseudolocalización sí y no × 375 y 1280 px. Se corrieron en cuatro procesos de cuatro páginas cada uno y se unieron en un solo CSV.
+
+| Mediciones | Truncados | Desbordes | Con scroll horizontal | `lang` incorrecto | `dir` incorrecto |
+|---|---|---|---|---|---|
+| 832 | **0** | **0** | **0** | **0** | **0** |
+
+- La cinta de cotizaciones lleva `data-marquesina`: `medir()` no la cuenta como texto truncado, porque se desplaza a propósito. Lo mismo vale para el ejercicio 13.2.
+- **`dinero_fijo` > 0** solo en en-US, ja-JP, zh-CN, ko-KR y hi-IN. Es el mismo falso positivo descrito arriba: montos en USD formateados por `Intl`. Crece frente al Lab 13 porque hay más páginas con montos (Detalle de activo, Comparador y la cinta).
+- **`fechas_fijas`:** 0 en todas las filas.
+
+> **PRUEBA_TECNICA_BOT:** también estas filas las genera un robot. **No son datos de personas** (Spec W13, G.10.2).
+
+Las capturas antes y después de la interfaz están en [`docs/capturas/ui/`](../capturas/ui/README.md).

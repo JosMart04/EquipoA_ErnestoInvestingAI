@@ -9,7 +9,7 @@ Proyecto del curso **Interacción Humano-Computador (IHC 2026-II)** · Facultad 
 [![Sitio en GitHub Pages](https://img.shields.io/badge/demo-GitHub%20Pages-2ea44f?logo=github)](https://josmart04.github.io/EquipoA_ErnestoInvestingAI/)
 [![QA](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/actions/workflows/qa.yml/badge.svg)](https://github.com/JosMart04/EquipoA_ErnestoInvestingAI/actions/workflows/qa.yml)
 [![WCAG 2.2 AA](https://img.shields.io/badge/accesibilidad-WCAG%202.2%20AA-005a9c)](#accesibilidad)
-[![i18n](https://img.shields.io/badge/idiomas-ES--PE%20%7C%20EN--US-6f42c1)](#características)
+[![i18n](https://img.shields.io/badge/idiomas-13-6f42c1)](#idiomas)
 [![Licencia](https://img.shields.io/badge/licencia-CC%20BY%204.0-lightgrey)](LICENSE)
 
 **[Abrir el sitio](https://josmart04.github.io/EquipoA_ErnestoInvestingAI/)**
@@ -41,6 +41,8 @@ Proyecto del curso **Interacción Humano-Computador (IHC 2026-II)** · Facultad 
 
 **Ernesto Investing AI** reúne en un solo sitio web los **9 módulos** del sistema propuesto en el curso. Hay 4 heredados del material base: Dashboard, Watchlist, Trading y Leaderboard. Los otros 5 son nuevos: Clasificación, Regresión, Optimizador, Portafolios y Backtesting.
 
+Además tiene **7 pantallas de apoyo**: Detalle de activo, Comparador, Historial de órdenes, Perfil, Configuración, Ayuda y Acerca de. En total son **16 páginas**, agrupadas en la barra lateral por los bloques de la Spec W13 (G.4): Mercado, Vigilancia, Modelos, Cartera, Operación y Cuenta.
+
 El objetivo de IHC es que una persona sin formación financiera **entienda qué hace cada modelo, qué tan bien lo hace y por qué dice lo que dice**. Por eso cada módulo trae una ficha de la IA, verificaciones visibles y resultados publicados **tal como salen**, aunque sean desfavorables. La accesibilidad cubre teclado, lector de pantalla, sonido, cámara (cabeza o manos), un interruptor y voz.
 
 El sitio funciona con dos fuentes de datos intercambiables:
@@ -64,12 +66,34 @@ El sitio funciona con dos fuentes de datos intercambiables:
 | **Portafolios** | Tres niveles de riesgo con la razón de cada activo. Se pueden excluir activos y llevar la cartera a Trading. |
 | **Backtesting** | Curvas de capital y caídas de las carteras frente a SPY, QQQ, EPU y 1/N, con línea de tiempo de rebalanceos e interpretación generada a partir de las cifras. |
 
+### Pantallas de apoyo
+
+| Pantalla | Bloque | Qué hace |
+|---|---|---|
+| **Detalle de activo** | Mercado | Precio, variación y KPI de un activo. Incluye velas con volumen, qué dicen los modelos (consenso SUBE/BAJA y banda de regresión), los activos más y menos correlacionados y acciones: watchlist, alerta, operar y comparar. |
+| **Comparador** | Mercado | Hasta 5 activos en base 100 por periodo, con retorno, volatilidad, beta y correlación por pares. La selección queda en la URL. |
+| **Historial de órdenes** | Vigilancia | Órdenes simuladas con filtros, resumen, hora en tu zona y exportación a CSV. |
+| **Perfil** | Cuenta | Alias local, actividad y un **perfil de riesgo orientativo** que sugiere un nivel de Portafolios. Permite borrar los datos locales. |
+| **Configuración** | Cuenta | Idioma, zona horaria, formatos, convención de color y auditoría i18n. |
+| **Ayuda** | Cuenta | Primeros pasos, qué hay en cada página, atajos, comandos de voz, glosario y preguntas frecuentes, con un buscador. |
+| **Acerca de** | Cuenta | Qué es real y qué es sintético, fecha de corte, modelos, uso de IA declarado y tecnologías con su licencia. |
+
+Capturas antes y después de la interfaz en [docs/capturas/ui/](docs/capturas/ui/README.md).
+
 ## Características
 
 - **Ninguna cifra escrita a mano:** todo se lee de los JSON o se deriva y se declara ([contrato de datos](docs/CONTRATO_DATOS.md)).
 - **Solo dos clases:** SUBE ▲ o BAJA ▼, siempre con palabra y símbolo, nunca solo con color.
 - **13 idiomas**, incluidos dos de derecha a izquierda (árabe y hebreo), sin recargar la página. Usa formatos, plurales y orden de `Intl`, la hora de cierre en tu zona horaria y pseudolocalización ([ver Idiomas](#idiomas)).
-- **Temas claro y oscuro** (también en los gráficos), alto contraste y diseño adaptable hasta 390 px.
+- **Interfaz de plataforma real:**
+  - barra lateral por bloques, plegable, que en el celular se vuelve cajón;
+  - buscador global (`Ctrl+K` o `/`);
+  - estado del mercado de Nueva York y cinta de cotizaciones pausable;
+  - centro de notificaciones (alertas disparadas y órdenes);
+  - **confirmación antes de cada orden**;
+  - estados de carga, vacío y error;
+  - recorrido guiado opcional.
+- **Temas claro y oscuro** (también en los gráficos), alto contraste y diseño adaptable hasta 375 px.
 - **Recálculo en el navegador** en el Modo real: el backtesting y las fronteras se recalculan en Web Workers con otro periodo o ventana.
 - **Cortes históricos:** se puede ver cómo estaban los modelos al cierre de cada uno de los últimos 12 meses.
 - **Estado compartido** entre módulos: la watchlist, la cartera elegida, «Llevar a Trading» y las migas de pan.
@@ -99,7 +123,8 @@ El sitio funciona con dos fuentes de datos intercambiables:
 ## Arquitectura
 
 ```text
-├── index.html … backtesting.html   9 páginas, una por módulo (contenedores vacíos + data-i18n)
+├── index.html … acerca.html        16 páginas: 9 módulos y 7 de apoyo (contenedores vacíos + data-i18n)
+├── assets/iconos.svg               iconos propios (sprite SVG) de la barra lateral y la barra superior
 ├── css/styles.css                  única hoja de estilos (temas, alto contraste, componentes)
 ├── js/
 │   ├── common.js                   núcleo EIA: datos, modos, i18n, formatos, componentes, ciclo de vida
@@ -132,7 +157,7 @@ python -m http.server 8000
 
 Abre <http://127.0.0.1:8000>. La cámara y la voz necesitan `localhost` o HTTPS.
 
-Parámetros útiles en la URL: `?modo=real`, `?lang=en-US` (o cualquiera de los 13 idiomas, por ejemplo `?lang=ar-EG`), `?t=NVDA` (activo) y `?nivel=Moderado` (Backtesting).
+Parámetros útiles en la URL: `?modo=real`, `?lang=en-US` (o cualquiera de los 13 idiomas, por ejemplo `?lang=ar-EG`), `?t=NVDA` (activo), `?nivel=Moderado` (Portafolios y Backtesting) y `?activos=NVDA,AAPL` (Comparador).
 
 ### Regenerar los datos reales (opcional)
 
@@ -156,7 +181,7 @@ npm --prefix tests run test:e2e              # E2E y axe en ambos temas, modos y
 python tools/validar_contrato.py data --modo profesor
 ```
 
-- **220 pruebas unitarias** de JavaScript (22-nov-2026; validan los 13 diccionarios), **31 de Python** y **244 casos de navegador** (Playwright + axe sin violaciones *serious* o *critical*, 17-nov-2026).
+- **252 pruebas unitarias** de JavaScript (23-nov-2026; validan los 13 diccionarios), **31 de Python** y la suite de navegador (Playwright + axe sin violaciones *serious* o *critical* en las 16 páginas, ambos temas, modos y anchos).
 - Cada PR pasa por GitHub Actions: pruebas, escaneo de secretos con Gitleaks y la suite E2E. Solo se fusiona con todo en verde.
 - La [auditoría P08](docs/informe/auditoria_P08.md) revisa el sistema completo de forma independiente.
 
@@ -225,7 +250,9 @@ Más detalle en la [guía técnica](docs/i18n/guia_tecnica.md) y el [glosario](d
 |---|---|
 | Informe (PDF, 10 páginas con carátula) | [docs/informe/S13_EquipoA_Informe.pdf](docs/informe/S13_EquipoA_Informe.pdf) · editable en [.docx](docs/informe/S13_EquipoA_Informe.docx) |
 | Prompts literales usados | [PROMPTS_USADOS.md](PROMPTS_USADOS.md) |
+| Guía de uso del sistema | [docs/guia-usuario/uso.md](docs/guia-usuario/uso.md) |
 | Guía de accesibilidad para usuarios | [docs/guia-usuario/accesibilidad.md](docs/guia-usuario/accesibilidad.md) |
+| Interfaz (iteración 2): capturas antes y después | [docs/capturas/ui/](docs/capturas/ui/README.md) |
 | Auditoría P08 | [docs/informe/auditoria_P08.md](docs/informe/auditoria_P08.md) |
 | Diseño en Figma Make | [archivo](https://www.figma.com/make/BWA9B3JoRbAWZiVoPSyoBO) · [prototipo navegable](https://misty-umber-07813177.figma.site/) · export sin editar en [`figma-src/`](figma-src/) |
 | Capturas del sitio y de Figma | [docs/capturas/](docs/capturas/) |

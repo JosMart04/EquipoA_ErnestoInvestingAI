@@ -1304,7 +1304,9 @@
       "Tope {#} % por activo; solo elegibles declarados": "حد {#}٪ لكل أصل؛ الأصول المؤهلة المعلنة فقط",
       "Mayor Sharpe del frente": "أعلى شارب في الجبهة",
       "Mayor retorno esperado del frente": "أعلى عائد متوقع في الجبهة",
-      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "بيانات حقيقية معدّلة من Yahoo Finance. اختبار متقدم كل {#} جلسة؛ نافذة {#}؛ زخم {#}؛ عمولة {#} نقطة أساس على حجم التداول مقارنةً بأوزان تنجرف مع الأسعار. القرار عند الإغلاق والتنفيذ في الجلسة التالية. المتحفظ أدنى تباين والمعتدل أقصى شارب، بحد {#}٪؛ الجريء أقصى عائد، بحد {#}٪. مراجع الشراء والاحتفاظ و{#}/N يومي دون عمولة. لا تُستخدم توقعات مستقبلية. النتائج غير معدّلة لتحقيق الربح."
+      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "بيانات حقيقية معدّلة من Yahoo Finance. اختبار متقدم كل {#} جلسة؛ نافذة {#}؛ زخم {#}؛ عمولة {#} نقطة أساس على حجم التداول مقارنةً بأوزان تنجرف مع الأسعار. القرار عند الإغلاق والتنفيذ في الجلسة التالية. المتحفظ أدنى تباين والمعتدل أقصى شارب، بحد {#}٪؛ الجريء أقصى عائد، بحد {#}٪. مراجع الشراء والاحتفاظ و{#}/N يومي دون عمولة. لا تُستخدم توقعات مستقبلية. النتائج غير معدّلة لتحقيق الربح.",
+      "Solo el ultimo precio de cada ticker y las estimaciones de volatilidad anual, beta y correlacion de las ultimas {#} sesiones.": "آخر سعر لكل رمز فقط، وتقديرات التقلب السنوي وبيتا والارتباط لآخر {#} جلسة.",
+      "Toda la historia de {#} sesiones, el OHLCV, las probabilidades de los clasificadores, los {#} precios futuros de cada regresor, los frentes de Markowitz/NSGA-II/NSGA-III, las carteras y el backtesting.": "كامل تاريخ الجلسات البالغة {#} جلسة، وبيانات OHLCV، واحتمالات المصنِّفات، والأسعار المستقبلية لكل نموذج انحدار (عددها {#})، وجبهات Markowitz/NSGA-II/NSGA-III، والمحافظ، والاختبار التاريخي."
     }
   },
   "config": {
@@ -1477,7 +1479,6 @@
     "act_ordenes": "الأوامر المنفّذة",
     "act_alertas": "التنبيهات النشطة",
     "act_watch": "الأصول في قائمة المراقبة",
-    "ver": "عرض",
     "riesgo_titulo": "ملف المخاطر",
     "riesgo_intro": "بضعة أسئلة قصيرة توجّهك إلى أحد مستويات المحافظ.",
     "calcular": "اعرض ملفي",

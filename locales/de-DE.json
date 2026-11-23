@@ -1208,7 +1208,9 @@
       "Tope {#} % por activo; solo elegibles declarados": "Obergrenze {#} % je Wertpapier; nur angegebene zulässige Wertpapiere",
       "Mayor Sharpe del frente": "Höchster Sharpe der Front",
       "Mayor retorno esperado del frente": "Höchste erwartete Rendite der Front",
-      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Bereinigte reale Daten von Yahoo Finance. Walk-forward alle {#} Handelstage; Fenster {#}; Momentum {#}; Provision {#} Bp auf den Umschlag gegenüber Gewichten, die mit den Preisen driften. Entscheidung zum Schlusskurs, Ausführung am folgenden Handelstag. Vorsichtig minimale Varianz und Moderat maximaler Sharpe, Obergrenze {#} %; Dynamisch maximale Rendite, Obergrenze {#} %. Referenzen Kaufen-und-Halten und {#}/N täglich ohne Provision. Es werden keine zukünftigen Vorhersagen genutzt. Ergebnisse nicht zum Gewinnen angepasst."
+      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Bereinigte reale Daten von Yahoo Finance. Walk-forward alle {#} Handelstage; Fenster {#}; Momentum {#}; Provision {#} Bp auf den Umschlag gegenüber Gewichten, die mit den Preisen driften. Entscheidung zum Schlusskurs, Ausführung am folgenden Handelstag. Vorsichtig minimale Varianz und Moderat maximaler Sharpe, Obergrenze {#} %; Dynamisch maximale Rendite, Obergrenze {#} %. Referenzen Kaufen-und-Halten und {#}/N täglich ohne Provision. Es werden keine zukünftigen Vorhersagen genutzt. Ergebnisse nicht zum Gewinnen angepasst.",
+      "Solo el ultimo precio de cada ticker y las estimaciones de volatilidad anual, beta y correlacion de las ultimas {#} sesiones.": "Nur der letzte Kurs jedes Tickers sowie die Schätzungen von Jahresvolatilität, Beta und Korrelation der letzten {#} Handelstage.",
+      "Toda la historia de {#} sesiones, el OHLCV, las probabilidades de los clasificadores, los {#} precios futuros de cada regresor, los frentes de Markowitz/NSGA-II/NSGA-III, las carteras y el backtesting.": "Die gesamte Historie von {#} Handelstagen, die OHLCV-Daten, die Wahrscheinlichkeiten der Klassifikatoren, die {#} künftigen Kurse jedes Regressors, die Markowitz-/NSGA-II-/NSGA-III-Fronten, die Portfolios und das Backtesting."
     }
   },
   "config": {
@@ -1369,7 +1371,6 @@
     "act_ordenes": "Ausgeführte Orders",
     "act_alertas": "Aktive Alarme",
     "act_watch": "Wertpapiere auf der Beobachtungsliste",
-    "ver": "Anzeigen",
     "riesgo_titulo": "Risikoprofil",
     "riesgo_intro": "Ein paar kurze Fragen zeigen Ihnen, welche Portfoliostufe unter Portfolios passt.",
     "calcular": "Mein Profil anzeigen",

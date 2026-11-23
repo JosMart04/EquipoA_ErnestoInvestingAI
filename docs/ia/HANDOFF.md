@@ -6,7 +6,7 @@
 ## Última actualización
 - Fecha y hora: 2026-11-23 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-113-cuenta` (iteración 2: Perfil, Ayuda, Acerca de, buscador y recorrido)
+- Rama / último commit: `cc/T-114-evidencia` (iteración 2: capturas antes/después, medición i18n de 16 páginas y documentación)
 
 ## Hecho (con evidencia)
 
@@ -75,15 +75,20 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 - **Lab 13 (internacionalización):** terminado y fusionado (PR #39…#44).
 - **Iteración 2 · interfaz «ultra-realista» (plan aprobado el 23-nov; Spec W13 G.1, G.4 y G.9):**
   - En `main`: **T-110** (PR #45: barra lateral, barra superior, cajón móvil, tokens, iconos y estados), **T-111** (PR #47: detalle de activo, comparador y volumen) y **T-112** (PR #48: confirmación de orden, historial, notificaciones, estado del mercado y cinta).
-  - **T-113** está en revisión en `cc/T-113-cuenta`: Perfil con perfil de riesgo, Ayuda, Acerca de, buscador Ctrl+K y recorrido guiado.
-  - Falta **T-114** (evidencia: capturas antes/después, medición i18n de 16 páginas, README, guía de usuario, D-26).
+  - **T-113** (PR #49): Perfil con perfil de riesgo, Ayuda, Acerca de, buscador Ctrl+K y recorrido guiado.
+  - **T-114** está en revisión en `cc/T-114-evidencia`:
+    - capturas antes/después en `docs/capturas/ui/` (`tools/capturas_ui.mjs`);
+    - medición i18n de las 16 páginas en `docs/i18n/`;
+    - README, guía de uso (`docs/guia-usuario/uso.md`) y D-26.
+  - Con T-114 se cierra la iteración 2.
   - El plan completo está en `C:\Users\JosueMart\.claude\plans\mensaje-para-cc-snazzy-creek.md`.
 
 ## Siguiente paso exacto
 0. **Iteración 2:**
-   - fusionar T-113 con la CI en verde y hacer T-114 (en `tools/i18n/medir_i18n.mjs` y `tools/capturas.mjs`, la lista de páginas debe salir de `PAGINAS_NAV`);
-   - cada PR trae sus claves en los 13 idiomas (`node tools/i18n/fusionar.mjs <lote.json>`);
-   - la etiqueta `ui-antes` marca la interfaz anterior, para las capturas de antes.
+   - fusionar T-114 con la CI en verde;
+   - si cambia algo visible: `node tools/capturas_ui.mjs <nombre>` (la etiqueta `ui-antes` es la interfaz anterior) y, si afecta al informe, `node tools/capturas.mjs <nombre>`;
+   - `tools/i18n/medir_i18n.mjs` (versión B) ya mide por defecto todas las páginas de `PAGINAS_NAV`;
+   - cada cambio de textos trae sus claves en los 13 idiomas (`node tools/i18n/fusionar.mjs <lote.json>`).
 
    El experimento 13.3 con personas y la revisión de los borradores por hablantes son tareas del equipo. Para repetir la medición i18n o el notebook, sigue `docs/i18n/README.md`; el notebook necesita pandas y matplotlib, que no están instalados en el sistema (usa un venv).
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
@@ -183,3 +188,5 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
   3. `NODE_PATH=<carpeta>/node_modules node tools/informe/generar_informe.cjs <carpeta>/img <carpeta>/cuerpo.docx`.
   4. `powershell -File tools/informe/unir_caratula.ps1 -Caratula caratula-proyecto.docx -Cuerpo <carpeta>/cuerpo.docx -Salida docs/informe/S13_EquipoA_Informe`.
 - `PROMPTS_USADOS.md`: `node tools/compilar_prompts.mjs` (lo arma desde `docs/ia/prompts/*.md`).
+- **Capturas de la interfaz, antes y después:** `node tools/capturas_ui.mjs [nombre…]`. Crea y borra un worktree temporal de `ui-antes`, sirve las dos versiones y fija la hora. Las acciones (orden confirmada, buscador, cajón…) se hacen con los controles reales.
+- **Medición i18n de todas las páginas:** `node tools/i18n/medir_i18n.mjs --version B --locales <13 idiomas> --salida docs/i18n/iteracion2_16_paginas_PRUEBA_TECNICA_BOT.csv`. Son 832 mediciones. Repartidas en 4 procesos paralelos de 4 páginas (`--paginas`, un CSV por proceso, unidos después) tardan unos 10 minutos.

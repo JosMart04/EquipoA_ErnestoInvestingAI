@@ -1184,7 +1184,9 @@
       "Tope {#} % por activo; solo elegibles declarados": "每项资产上限 {#} %；仅限声明的合格资产",
       "Mayor Sharpe del frente": "前沿中 Sharpe 最高",
       "Mayor retorno esperado del frente": "前沿中预期收益最高",
-      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Yahoo Finance 复权真实数据。每 {#} 个交易日滚动前推；窗口 {#}；动量 {#}；相对于随价格漂移的权重，按换手收取 {#} 个基点佣金。收盘时决策，下一个交易日执行。稳健为最小方差、平衡为最大 Sharpe，上限 {#} %；进取为最大收益，上限 {#} %。基准为买入并长期不动及每日 {#}/N，不收佣金。不使用未来预测。结果未经为求获胜而调整。"
+      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Yahoo Finance 复权真实数据。每 {#} 个交易日滚动前推；窗口 {#}；动量 {#}；相对于随价格漂移的权重，按换手收取 {#} 个基点佣金。收盘时决策，下一个交易日执行。稳健为最小方差、平衡为最大 Sharpe，上限 {#} %；进取为最大收益，上限 {#} %。基准为买入并长期不动及每日 {#}/N，不收佣金。不使用未来预测。结果未经为求获胜而调整。",
+      "Solo el ultimo precio de cada ticker y las estimaciones de volatilidad anual, beta y correlacion de las ultimas {#} sesiones.": "仅每个代码的最新价格，以及最近 {#} 个交易日的年化波动率、贝塔和相关性估计。",
+      "Toda la historia de {#} sesiones, el OHLCV, las probabilidades de los clasificadores, los {#} precios futuros de cada regresor, los frentes de Markowitz/NSGA-II/NSGA-III, las carteras y el backtesting.": "全部 {#} 个交易日的历史、OHLCV、分类器的概率、每个回归模型的 {#} 个未来价格、Markowitz/NSGA-II/NSGA-III 前沿、投资组合和回测。"
     }
   },
   "config": {
@@ -1342,7 +1344,6 @@
     "act_ordenes": "已执行的订单",
     "act_alertas": "生效的提醒",
     "act_watch": "自选列表中的资产",
-    "ver": "查看",
     "riesgo_titulo": "风险画像",
     "riesgo_intro": "几个简短的问题帮你找到适合的投资组合水平。",
     "calcular": "查看我的画像",

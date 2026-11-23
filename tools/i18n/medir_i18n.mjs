@@ -31,7 +31,10 @@ const DICC = resolve(arg("dicc", VERSION === "A" ? join(RAIZ, "i18n") : join(RAI
 const LOCALES = arg("locales", "es-PE,en-US").split(",");
 const PSEUDO = arg("pseudo", "no,si").split(",");
 const ANCHOS = arg("anchos", "375,1280").split(",").map(Number);
-const PAGINAS = arg("paginas", "index,watchlist,trading,leaderboard,clasificacion,regresion,optimizador,portafolios,backtesting").split(",");
+// La versión A (i18n-antes) solo tiene los 9 módulos; la B mide todas las páginas de la barra lateral (PAGINAS_NAV)
+const PAGINAS_A = "index,watchlist,trading,leaderboard,clasificacion,regresion,optimizador,portafolios,backtesting";
+const PAGINAS_B = () => require(join(REPO, "js", "common.js")).PAGINAS_NAV.map(p => p[0].replace(/\.html$/, "")).join(",");
+const PAGINAS = arg("paginas", VERSION === "A" ? PAGINAS_A : PAGINAS_B()).split(",");
 const SALIDA = resolve(arg("salida", join(REPO, "docs", "i18n", "medicion_i18n_PRUEBA_TECNICA_BOT.csv")));
 const CAPTURAS = arg("capturas", null);
 

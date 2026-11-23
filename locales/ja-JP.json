@@ -1184,7 +1184,9 @@
       "Tope {#} % por activo; solo elegibles declarados": "1 銘柄あたり上限 {#}%、明示された対象銘柄のみ",
       "Mayor Sharpe del frente": "フロントで最大のシャープ",
       "Mayor retorno esperado del frente": "フロントで最大の期待リターン",
-      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Yahoo Finance の調整済み実データ。{#} 取引日ごとのウォークフォワード、推定期間 {#}、モメンタム {#}、価格とともに変動する比率に対する売買高に {#} bp の手数料。終値で判断し、次の取引日に反映。保守型は最小分散、中庸型は最大シャープ（上限 {#}%）、積極型は最大リターン（上限 {#}%）。参照はバイ・アンド・ホールドと手数料なしの日次 {#}/N。将来の予測は使いません。勝つための調整は行っていません。"
+      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Yahoo Finance の調整済み実データ。{#} 取引日ごとのウォークフォワード、推定期間 {#}、モメンタム {#}、価格とともに変動する比率に対する売買高に {#} bp の手数料。終値で判断し、次の取引日に反映。保守型は最小分散、中庸型は最大シャープ（上限 {#}%）、積極型は最大リターン（上限 {#}%）。参照はバイ・アンド・ホールドと手数料なしの日次 {#}/N。将来の予測は使いません。勝つための調整は行っていません。",
+      "Solo el ultimo precio de cada ticker y las estimaciones de volatilidad anual, beta y correlacion de las ultimas {#} sesiones.": "各銘柄の最新価格と、直近 {#} 営業日の年率ボラティリティ、ベータ、相関の推定値のみ。",
+      "Toda la historia de {#} sesiones, el OHLCV, las probabilidades de los clasificadores, los {#} precios futuros de cada regresor, los frentes de Markowitz/NSGA-II/NSGA-III, las carteras y el backtesting.": "{#} 営業日分の全履歴、OHLCV、分類器の確率、各回帰モデルの将来 {#} 日分の価格、Markowitz/NSGA-II/NSGA-III のフロンティア、ポートフォリオ、バックテスト。"
     }
   },
   "config": {
@@ -1342,7 +1344,6 @@
     "act_ordenes": "約定した注文",
     "act_alertas": "有効なアラート",
     "act_watch": "ウォッチリストの銘柄",
-    "ver": "表示",
     "riesgo_titulo": "リスクプロファイル",
     "riesgo_intro": "いくつかの短い質問で、ポートフォリオのどの水準が合うかの目安を示します。",
     "calcular": "プロフィールを見る",
