@@ -304,7 +304,8 @@ th { background: var(--hl); position: sticky; top: 0; z-index: 1; font-weight: 6
 tbody tr:hover { background: var(--panel-2); }
 tbody th { position: static; background: var(--panel); font-weight: 600; }
 tr.elegida > * { background: var(--hl); }
-.tw { overflow: auto; max-height: 28rem; border: 1px solid var(--bd); border-radius: var(--r-2); }
+/* position: relative contiene los textos .sr (absolutos) de las celdas: sin él quedaban fuera de la página a 390 px */
+.tw { overflow: auto; max-height: 28rem; border: 1px solid var(--bd); border-radius: var(--r-2); position: relative; }
 th button.orden { border: 0; background: none; padding: 0; min-height: 1.75rem; font-weight: 600; color: inherit; display: inline-flex; align-items: center; gap: .25rem; }
 th button.orden:hover { background: none; text-decoration: underline; }
 th[aria-sort="ascending"] button.orden, th[aria-sort="descending"] button.orden { color: var(--ac); }

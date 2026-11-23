@@ -1102,14 +1102,14 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
         const av = $(":scope > .aviso", main); if (av) EIA.ui.aviso(av.dataset.aviso);
         const pie = $("footer.pie"); if (pie) pie.innerHTML = plantillaPie();
       }
-      caja.innerHTML = `<h2>${I("alerta", "estado-ico")}${esc(t("error.sin_reales_titulo"))}</h2><p>${esc(t("error.sin_reales_texto", { archivo: e.archivo }))}</p><p class="acciones"><button type="button" class="primary" data-volver>${esc(t("error.volver_profesor"))}</button></p>`;
+      caja.innerHTML = `<h2>${I("alerta", "estado-ico")}${esc(t("error.sin_reales_titulo"))}</h2><p>${esc(t("error.sin_reales_texto", { archivo: e.archivo }))}</p><div class="acciones"><button type="button" class="primary" data-volver>${esc(t("error.volver_profesor"))}</button></div>`;
       $("[data-volver]", caja).addEventListener("click", () => EIA.setModo("profesor"));
     } else {
       const msj = e && e.codigo === "http" ? t("error.http", { archivo: e.archivo, estado: e.estado })
         : e && e.codigo === "json" ? t("error.json", { archivo: e.archivo }) : String((e && e.message) || e);
       caja.innerHTML = `<h2>${I("alerta", "estado-ico")}${esc(t("error.titulo"))}</h2><p>${esc(msj)}</p><p class="mut">${esc(t("error.servidor"))}</p>
-<p class="acciones"><button type="button" class="primary" data-reintentar>${I("reintentar")}${esc(t("comun.reintentar"))}</button>${
-        EIA.modo() === "real" ? `<button type="button" data-volver>${esc(t("error.volver_profesor"))}</button>` : ""}</p>`;
+<div class="acciones"><button type="button" class="primary" data-reintentar>${I("reintentar")}${esc(t("comun.reintentar"))}</button>${
+        EIA.modo() === "real" ? `<button type="button" data-volver>${esc(t("error.volver_profesor"))}</button>` : ""}</div>`;
       $("[data-reintentar]", caja).addEventListener("click", () => (_modulo ? correr(true) : global.location.reload()));
       const v = $("[data-volver]", caja); if (v) v.addEventListener("click", () => EIA.setModo("profesor"));
       if (global.console) console.error(e);
