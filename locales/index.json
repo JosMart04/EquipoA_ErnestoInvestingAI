@@ -2,7 +2,54 @@
   "_nota": "Manifiesto de idiomas (Lab 13 · Spec W13 G.5). Agregar un idioma = su archivo <tag>.json + una línea aquí. estado: fuente | completo | borrador. Los borradores son traducciones generadas con IA sin revisión de hablantes competentes (Spec G.10.4). completitud la calcula tools/i18n/revisar.mjs.",
   "fuente": "es-PE",
   "idiomas": [
-    { "tag": "es-PE", "endonimo": "Español (Perú)", "dir": "ltr", "escritura": "Latn", "estado": "fuente", "voz": "es-PE", "completitud": 100 },
-    { "tag": "en-US", "endonimo": "English (United States)", "dir": "ltr", "escritura": "Latn", "estado": "completo", "voz": "en-US", "completitud": 100 }
+    {
+      "tag": "es-PE",
+      "endonimo": "Español (Perú)",
+      "dir": "ltr",
+      "escritura": "Latn",
+      "estado": "fuente",
+      "voz": "es-PE",
+      "completitud": 100
+    },
+    {
+      "tag": "en-US",
+      "endonimo": "English (United States)",
+      "dir": "ltr",
+      "escritura": "Latn",
+      "estado": "completo",
+      "voz": "en-US",
+      "completitud": 100
+    },
+    {
+      "tag": "ar-EG",
+      "endonimo": "العربية (مصر)",
+      "dir": "rtl",
+      "escritura": "Arab",
+      "estado": "borrador",
+      "voz": "ar-EG",
+      "etiqueta_borrador": "مسودة",
+      "completitud": 100
+    },
+    {
+      "tag": "ja-JP",
+      "endonimo": "日本語（日本）",
+      "dir": "ltr",
+      "escritura": "Jpan",
+      "estado": "borrador",
+      "voz": "ja-JP",
+      "etiqueta_borrador": "下書き",
+      "completitud": 100
+    },
+    {
+      "tag": "qu-PE",
+      "endonimo": "Runasimi (Perú)",
+      "dir": "ltr",
+      "escritura": "Latn",
+      "estado": "borrador",
+      "parcial": true,
+      "voz": "es-PE",
+      "etiqueta_borrador": "ñawpaq qillqa",
+      "completitud": 7
+    }
   ]
 }

@@ -351,10 +351,12 @@
       if (!avisados.has(clave) && global.console) { avisados.add(clave); console.warn("i18n: falta la clave " + clave); }
       return "⟦" + clave + "⟧";
     }
-    // {n} es el conteo del plural: si llega como número, sale con los dígitos y separadores del idioma (١٢ en árabe).
+    // {n} y los demás enteros salen con los dígitos y separadores del idioma (١٢ en árabe).
     // En RTL cada valor se aísla (U+2068…U+2069, algoritmo bidireccional): un ticker o una cifra no desordena la frase.
     const aislar = EIA.dir() === "rtl" ? x => "⁨" + x + "⁩" : x => x;
-    return params ? v.replace(/\{(\w+)\}/g, (m, k) => (!(k in params) ? m : aislar(k === "n" && typeof params.n === "number" && Number.isInteger(params.n) ? EIA.fmt.ent(params.n) : String(params[k])))) : v;
+    // Todo entero que llega como número (conteos, posiciones, totales) sale con los dígitos del idioma
+    const valor = x => (typeof x === "number" && Number.isInteger(x) ? EIA.fmt.ent(x) : String(x));
+    return params ? v.replace(/\{(\w+)\}/g, (m, k) => (!(k in params) ? m : aislar(valor(params[k])))) : v;
   };
   /** Nombre de presentación de un valor del JSON (grupo, modelo, sector…). Si no está en el mapa, devuelve el valor tal cual. */
   EIA.nombre = function (categoria, valor) {

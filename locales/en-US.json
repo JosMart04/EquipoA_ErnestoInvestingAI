@@ -973,7 +973,8 @@
       "one": "There is only {n} option.",
       "other": "That number is not there: there are {n} options."
     },
-    "ok_opcion": "Chose “{opcion}” in {campo}"
+    "ok_opcion": "Chose “{opcion}” in {campo}",
+    "g_idioma": "language|switch language to|switch to|change language to"
   },
   "datos": {
     "senal": {

@@ -973,7 +973,8 @@
       "one": "Solo hay {n} opción.",
       "other": "Ese número no está: hay {n} opciones."
     },
-    "ok_opcion": "Elegido «{opcion}» en {campo}"
+    "ok_opcion": "Elegido «{opcion}» en {campo}",
+    "g_idioma": "idioma|cambiar idioma a|cambiar a|poner en"
   },
   "datos": {
     "senal": {
