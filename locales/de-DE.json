@@ -52,7 +52,9 @@
     "bloque_modelos": "Modelle",
     "bloque_cartera": "Portfolio",
     "bloque_operacion": "Handel",
-    "bloque_cuenta": "Konto"
+    "bloque_cuenta": "Konto",
+    "activo": "Wertpapierdetails",
+    "comparador": "Vergleich"
   },
   "shell": {
     "datos": "Daten:",
@@ -209,7 +211,9 @@
     "seleccionado": "Ausgewähltes Wertpapier: {ticker}.",
     "rango_velas": "Kerzen ({n} Handelstage)",
     "serie_cierre": "Schlusskurs von {ticker}",
-    "rango_vacio_titulo": "Keine Handelstage in diesem Zeitraum"
+    "rango_vacio_titulo": "Keine Handelstage in diesem Zeitraum",
+    "col_detalle": "Details",
+    "ver_detalle": "Details zu {ticker} ansehen"
   },
   "a11y": {
     "titulo": "Barrierefreiheitszentrum",
@@ -1196,5 +1200,58 @@
     "anuncio_zona": "Zeitzone: {zona}",
     "anuncio_colores": "Farben für Anstieg und Rückgang aktualisiert",
     "anuncio_numeros": "Ziffern aktualisiert"
+  },
+  "activo": {
+    "titulo_pagina": "Wertpapierdetails · Ernesto Investing AI",
+    "titulo": "Wertpapierdetails",
+    "sub": "Preis, Volumen, Risiko und was die Modelle über ein Wertpapier sagen.",
+    "resumen_titulo": "Überblick über das Wertpapier",
+    "cierre_de": "Schlusskurs vom {fecha}",
+    "operar": "Handeln",
+    "crear_alerta": "Alarm erstellen",
+    "comparar": "Mit anderen vergleichen",
+    "kpi_volumen": "Volumen des letzten Handelstags",
+    "modelos_titulo": "Was die Modelle sagen",
+    "modelos_clasif": "Klassifikation: steigt oder fällt?",
+    "modelos_votos": "{sube} von {n} Klassifikatoren sagen STEIGT; mittlere Wahrscheinlichkeit eines Anstiegs: {prob}.",
+    "modelos_regr": "Regression: projizierter Preis",
+    "modelos_mediana": "Median der Modelle am {fecha}: {precio}.",
+    "modelos_aviso": "Das sind Schätzungen mit geringer Vorhersagekraft: keine Empfehlung zum Kauf oder Verkauf.",
+    "modelos_sin_datos": "In diesem Modus gibt es keine Modellprognosen für das Wertpapier.",
+    "ver_regresion": "Regression von {ticker} ansehen",
+    "corr_titulo": "Korrelation mit anderen Wertpapieren",
+    "corr_ayuda": "Korrelation der täglichen Renditen: nahe eins bewegen sie sich gemeinsam, nahe null ohne Zusammenhang, negativ in entgegengesetzte Richtungen.",
+    "corr_mas": "Am stärksten korreliert",
+    "corr_menos": "Am schwächsten korreliert",
+    "col_correlacion": "Korrelation",
+    "corr_sin_datos": "In diesem Modus gibt es keine Korrelationsmatrix.",
+    "nota_titulo": "Hinweis aus dem Kursmaterial"
+  },
+  "comparador": {
+    "titulo_pagina": "Wertpapiervergleich · Ernesto Investing AI",
+    "titulo": "Wertpapiervergleich",
+    "sub": "Vergleichen Sie die Entwicklung mehrerer Wertpapiere auf derselben Skala und ihr Risiko im selben Zeitraum.",
+    "activos_titulo": "Verglichene Wertpapiere",
+    "agregar": "Wertpapier hinzufügen",
+    "agregar_boton": "Hinzufügen",
+    "quitar_aria": "{ticker} aus dem Vergleich entfernen",
+    "maximo": "Höchstzahl gleichzeitiger Wertpapiere: {n}.",
+    "vacio_titulo": "Wählen Sie Wertpapiere zum Vergleich",
+    "vacio_texto": "Fügen Sie mit der Auswahl oben mindestens eines hinzu.",
+    "grafico_titulo": "Entwicklung (Basis {base})",
+    "tabla_titulo": "Wert jedes Wertpapiers je Handelstag (Basis {base})",
+    "resumen": "Vom {desde} bis {hasta}: {lista}.",
+    "serie_final": "{ticker} endet bei {valor}",
+    "metricas_titulo": "Rendite und Risiko im Zeitraum",
+    "metricas_caption": "Kennzahlen jedes Wertpapiers im gewählten Zeitraum",
+    "declaracion": "Rendite, annualisierte Volatilität und Beta werden in Ihrem Browser aus den Schlusskursen des gewählten Zeitraums berechnet; die Korrelation stammt aus der Datenmatrix.",
+    "col_retorno": "Rendite im Zeitraum",
+    "col_vol": "Annualisierte Volatilität",
+    "col_beta": "Beta gegenüber {ref}",
+    "corr_titulo": "Korrelation zwischen den gewählten Wertpapieren",
+    "corr_caption": "Korrelation der täglichen Renditen zwischen den gewählten Wertpapieren",
+    "corr_minimo": "Wählen Sie mindestens zwei Wertpapiere, um ihre Korrelation zu sehen.",
+    "anuncio_agregado": "{ticker} zum Vergleich hinzugefügt.",
+    "anuncio_quitado": "{ticker} aus dem Vergleich entfernt."
   }
 }

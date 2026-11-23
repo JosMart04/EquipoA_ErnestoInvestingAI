@@ -1,8 +1,8 @@
 import AxeBuilder from '@axe-core/playwright';
-import { test, expect, paginas } from '../e2e/soporte.mjs';
+import { test, expect, paginas, paginasSoporte } from '../e2e/soporte.mjs';
 
 // Se ejecuta en ambos temas y anchos definidos en Playwright. Sin exclusiones.
-for (const modo of ['profesor', 'real']) for (const pagina of paginas) {
+for (const modo of ['profesor', 'real']) for (const pagina of [...paginas, ...paginasSoporte]) {
   test('axe WCAG 2.2 AA: ' + pagina + ' / ' + modo, async ({ page }, testInfo) => {
     await page.goto('/' + pagina + '.html?modo=' + modo + '&lang=es-PE');
     await page.waitForFunction(() => document.querySelector('.estado-error') || (window.EIA && document.querySelector('main .card')));

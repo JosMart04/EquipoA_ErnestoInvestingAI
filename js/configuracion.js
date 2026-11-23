@@ -124,7 +124,7 @@
   /** Auditoría del ejercicio 13.2 en las páginas del sitio: cada una se abre en un marco oculto del ancho actual. */
   async function auditar() {
     const boton = $("#auditar"), estado = $("#auditoria-estado"), calidad = global.EIALib.i18nCalidad;
-    const paginas = (comun.PAGES || []).map(p => ({ archivo: p[0], nombre: t(p[1]), id: p[2] }));
+    const paginas = (comun.PAGINAS_NAV || comun.PAGES || []).map(p => ({ archivo: p[0], nombre: t(p[1]), id: p[2] }));
     boton.disabled = true; $("#exportar").disabled = true; auditoria = [];
     const ancho = document.documentElement.clientWidth;
     for (let i = 0; i < paginas.length; i++) {

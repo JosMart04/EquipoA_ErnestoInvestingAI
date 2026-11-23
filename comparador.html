@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es-PE"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-i18n="comparador.titulo_pagina">Comparador de activos · Ernesto Investing AI</title><link rel="stylesheet" href="css/styles.css">
+<link rel="alternate" hreflang="es-PE" href="comparador.html?lang=es-PE">
+<link rel="alternate" hreflang="en-US" href="comparador.html?lang=en-US">
+<link rel="alternate" hreflang="ar-EG" href="comparador.html?lang=ar-EG">
+<link rel="alternate" hreflang="he-IL" href="comparador.html?lang=he-IL">
+<link rel="alternate" hreflang="ja-JP" href="comparador.html?lang=ja-JP">
+<link rel="alternate" hreflang="zh-CN" href="comparador.html?lang=zh-CN">
+<link rel="alternate" hreflang="ko-KR" href="comparador.html?lang=ko-KR">
+<link rel="alternate" hreflang="hi-IN" href="comparador.html?lang=hi-IN">
+<link rel="alternate" hreflang="ru-RU" href="comparador.html?lang=ru-RU">
+<link rel="alternate" hreflang="pt-BR" href="comparador.html?lang=pt-BR">
+<link rel="alternate" hreflang="fr-FR" href="comparador.html?lang=fr-FR">
+<link rel="alternate" hreflang="de-DE" href="comparador.html?lang=de-DE">
+<link rel="alternate" hreflang="qu-PE" href="comparador.html?lang=qu-PE">
+<link rel="alternate" hreflang="x-default" href="comparador.html">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script></head>
+<body data-page="comparador"><main data-esqueleto="grafico,tabla">
+<h1 data-i18n="comparador.titulo">Comparador de activos</h1>
+<p class="sub" data-i18n="comparador.sub">Compara la evolución de varios activos en la misma escala y su riesgo en el mismo periodo.</p>
+<!-- El aviso de simulación lo inserta js/common.js aquí, según el modo de datos -->
+<section class="card" aria-labelledby="h-seleccion">
+  <h2 id="h-seleccion" data-i18n="comparador.activos_titulo">Activos comparados</h2>
+  <ul id="seleccion" class="seleccion"></ul>
+  <form id="form-agregar" class="row" novalidate>
+    <div><label for="agregar-activo" data-i18n="comparador.agregar">Agregar un activo</label><select id="agregar-activo"></select></div>
+    <div><button type="submit" id="btn-agregar" data-i18n="comparador.agregar_boton">Agregar</button></div>
+    <div><span class="rotulo" data-i18n="dashboard.rango">Periodo</span><div id="periodo"></div></div>
+  </form>
+  <p id="aviso-maximo" class="mut" role="status"></p>
+</section>
+<div id="grafico"></div>
+<section class="card" aria-labelledby="h-metricas">
+  <h2 id="h-metricas" data-i18n="comparador.metricas_titulo">Rendimiento y riesgo en el periodo</h2>
+  <p class="mut" data-i18n="comparador.declaracion">Calculado de los cierres del periodo elegido.</p>
+  <div id="metricas"></div>
+</section>
+<section class="card" aria-labelledby="h-corr">
+  <h2 id="h-corr" data-i18n="comparador.corr_titulo">Correlación entre los activos elegidos</h2>
+  <div id="correlacion"></div>
+</section>
+<script src="js/lib/i18n-calidad.js"></script>
+<script src="js/lib/estadistica.js"></script>
+<script src="js/lib/mercado.js"></script>
+<script src="js/common.js"></script>
+<script src="js/comparador.js"></script>
+</main></body></html>

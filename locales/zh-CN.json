@@ -52,7 +52,9 @@
     "bloque_modelos": "模型",
     "bloque_cartera": "投资组合",
     "bloque_operacion": "交易",
-    "bloque_cuenta": "账户"
+    "bloque_cuenta": "账户",
+    "activo": "资产详情",
+    "comparador": "比较"
   },
   "shell": {
     "datos": "数据：",
@@ -204,7 +206,9 @@
     "seleccionado": "已选资产：{ticker}。",
     "rango_velas": "K 线（{n} 个交易日）",
     "serie_cierre": "{ticker} 收盘价",
-    "rango_vacio_titulo": "该范围内没有交易日"
+    "rango_vacio_titulo": "该范围内没有交易日",
+    "col_detalle": "详情",
+    "ver_detalle": "查看 {ticker} 详情"
   },
   "a11y": {
     "titulo": "无障碍中心",
@@ -1173,5 +1177,58 @@
     "anuncio_zona": "时区：{zona}",
     "anuncio_colores": "涨跌颜色已更新",
     "anuncio_numeros": "数字已更新"
+  },
+  "activo": {
+    "titulo_pagina": "资产详情 · Ernesto Investing AI",
+    "titulo": "资产详情",
+    "sub": "单项资产的价格、成交量、风险以及模型的看法。",
+    "resumen_titulo": "资产概览",
+    "cierre_de": "{fecha} 收盘",
+    "operar": "去交易",
+    "crear_alerta": "创建提醒",
+    "comparar": "与其他资产比较",
+    "kpi_volumen": "最近一个交易日的成交量",
+    "modelos_titulo": "模型怎么看",
+    "modelos_clasif": "分类：上涨还是下跌？",
+    "modelos_votos": "{n} 个分类器中有 {sube} 个判断上涨；平均上涨概率：{prob}。",
+    "modelos_regr": "回归：预测价格",
+    "modelos_mediana": "模型中位数（{fecha}）：{precio}。",
+    "modelos_aviso": "这些估计的预测能力较弱：不构成买入或卖出的建议。",
+    "modelos_sin_datos": "此模式下没有该资产的模型预测。",
+    "ver_regresion": "查看 {ticker} 的回归",
+    "corr_titulo": "与其他资产的相关性",
+    "corr_ayuda": "日收益率的相关性：接近一表示同向变动，接近零表示无关，为负表示反向变动。",
+    "corr_mas": "相关性最高",
+    "corr_menos": "相关性最低",
+    "col_correlacion": "相关性",
+    "corr_sin_datos": "此模式下没有相关矩阵。",
+    "nota_titulo": "课程材料中的说明"
+  },
+  "comparador": {
+    "titulo_pagina": "资产比较 · Ernesto Investing AI",
+    "titulo": "资产比较",
+    "sub": "在同一尺度上比较多项资产的走势，并比较同一期间的风险。",
+    "activos_titulo": "比较中的资产",
+    "agregar": "添加资产",
+    "agregar_boton": "添加",
+    "quitar_aria": "将 {ticker} 移出比较",
+    "maximo": "一次最多比较的资产数：{n}。",
+    "vacio_titulo": "选择要比较的资产",
+    "vacio_texto": "请用上方的选择框至少添加一项。",
+    "grafico_titulo": "走势（基数 {base}）",
+    "tabla_titulo": "各资产每个交易日的数值（基数 {base}）",
+    "resumen": "{desde} 至 {hasta}：{lista}。",
+    "serie_final": "{ticker} 收于 {valor}",
+    "metricas_titulo": "期间收益与风险",
+    "metricas_caption": "所选期间各资产的指标",
+    "declaracion": "收益、年化波动率和贝塔在您的浏览器中根据所选期间的收盘价计算；相关性来自数据矩阵。",
+    "col_retorno": "期间收益",
+    "col_vol": "年化波动率",
+    "col_beta": "相对 {ref} 的贝塔",
+    "corr_titulo": "所选资产之间的相关性",
+    "corr_caption": "所选资产之间日收益率的相关性",
+    "corr_minimo": "至少选择两项资产才能查看相关性。",
+    "anuncio_agregado": "已将 {ticker} 加入比较。",
+    "anuncio_quitado": "已将 {ticker} 移出比较。"
   }
 }

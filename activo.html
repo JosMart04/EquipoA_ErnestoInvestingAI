@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es-PE"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-i18n="activo.titulo_pagina">Detalle de activo · Ernesto Investing AI</title><link rel="stylesheet" href="css/styles.css">
+<link rel="alternate" hreflang="es-PE" href="activo.html?lang=es-PE">
+<link rel="alternate" hreflang="en-US" href="activo.html?lang=en-US">
+<link rel="alternate" hreflang="ar-EG" href="activo.html?lang=ar-EG">
+<link rel="alternate" hreflang="he-IL" href="activo.html?lang=he-IL">
+<link rel="alternate" hreflang="ja-JP" href="activo.html?lang=ja-JP">
+<link rel="alternate" hreflang="zh-CN" href="activo.html?lang=zh-CN">
+<link rel="alternate" hreflang="ko-KR" href="activo.html?lang=ko-KR">
+<link rel="alternate" hreflang="hi-IN" href="activo.html?lang=hi-IN">
+<link rel="alternate" hreflang="ru-RU" href="activo.html?lang=ru-RU">
+<link rel="alternate" hreflang="pt-BR" href="activo.html?lang=pt-BR">
+<link rel="alternate" hreflang="fr-FR" href="activo.html?lang=fr-FR">
+<link rel="alternate" hreflang="de-DE" href="activo.html?lang=de-DE">
+<link rel="alternate" hreflang="qu-PE" href="activo.html?lang=qu-PE">
+<link rel="alternate" hreflang="x-default" href="activo.html">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script></head>
+<body data-page="activo"><main data-esqueleto="kpis,grafico,tabla">
+<h1 data-i18n="activo.titulo">Detalle de activo</h1>
+<p class="sub" data-i18n="activo.sub">Precio, volumen, riesgo y lo que dicen los modelos sobre un activo.</p>
+<!-- El aviso de simulación lo inserta js/common.js aquí, según el modo de datos -->
+<section class="card activo-cab" aria-labelledby="h-activo">
+  <h2 id="h-activo" class="sr" data-i18n="activo.resumen_titulo">Resumen del activo</h2>
+  <div class="row">
+    <div><label for="sel-activo" data-i18n="comun.activo">Activo</label><select id="sel-activo"></select></div>
+    <div><span class="rotulo" data-i18n="dashboard.rango">Periodo</span><div id="rango"></div></div>
+  </div>
+  <div id="cabecera"></div>
+</section>
+<div class="grid kpis-activo" id="kpis"></div>
+<div id="grafico"></div>
+<div class="dos-col">
+  <section class="card" aria-labelledby="h-modelos">
+    <h2 id="h-modelos" data-i18n="activo.modelos_titulo">Qué dicen los modelos</h2>
+    <div id="modelos"></div>
+  </section>
+  <section class="card" aria-labelledby="h-corr">
+    <h2 id="h-corr" data-i18n="activo.corr_titulo">Correlación con otros activos</h2>
+    <p class="mut" data-i18n="activo.corr_ayuda">Correlación de los retornos diarios.</p>
+    <div id="correlaciones"></div>
+  </section>
+</div>
+<section class="card" id="sec-nota" aria-labelledby="h-nota" hidden>
+  <h2 id="h-nota" data-i18n="activo.nota_titulo">Nota del material del curso</h2>
+  <p id="nota"></p>
+</section>
+<script src="js/lib/i18n-calidad.js"></script>
+<script src="js/lib/estadistica.js"></script>
+<script src="js/lib/mercado.js"></script>
+<script src="js/common.js"></script>
+<script src="js/activo.js"></script>
+</main></body></html>

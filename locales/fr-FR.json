@@ -52,7 +52,9 @@
     "bloque_modelos": "Modèles",
     "bloque_cartera": "Portefeuille",
     "bloque_operacion": "Opérations",
-    "bloque_cuenta": "Compte"
+    "bloque_cuenta": "Compte",
+    "activo": "Fiche de l’actif",
+    "comparador": "Comparateur"
   },
   "shell": {
     "datos": "Données :",
@@ -209,7 +211,9 @@
     "seleccionado": "Actif sélectionné : {ticker}.",
     "rango_velas": "Chandeliers ({n} séances)",
     "serie_cierre": "Clôture de {ticker}",
-    "rango_vacio_titulo": "Aucune séance sur cette période"
+    "rango_vacio_titulo": "Aucune séance sur cette période",
+    "col_detalle": "Fiche",
+    "ver_detalle": "Voir la fiche de {ticker}"
   },
   "a11y": {
     "titulo": "Centre d’accessibilité",
@@ -1196,5 +1200,58 @@
     "anuncio_zona": "Fuseau horaire : {zona}",
     "anuncio_colores": "Couleurs de hausse et de baisse mises à jour",
     "anuncio_numeros": "Chiffres mis à jour"
+  },
+  "activo": {
+    "titulo_pagina": "Fiche de l’actif · Ernesto Investing AI",
+    "titulo": "Fiche de l’actif",
+    "sub": "Prix, volume, risque et avis des modèles sur un actif.",
+    "resumen_titulo": "Résumé de l’actif",
+    "cierre_de": "Clôture du {fecha}",
+    "operar": "Négocier",
+    "crear_alerta": "Créer une alerte",
+    "comparar": "Comparer avec d’autres",
+    "kpi_volumen": "Volume de la dernière séance",
+    "modelos_titulo": "Ce que disent les modèles",
+    "modelos_clasif": "Classification : hausse ou baisse ?",
+    "modelos_votos": "{sube} classifieurs sur {n} disent HAUSSE ; probabilité moyenne de hausse : {prob}.",
+    "modelos_regr": "Régression : prix projeté",
+    "modelos_mediana": "Médiane des modèles au {fecha} : {precio}.",
+    "modelos_aviso": "Ce sont des estimations au faible pouvoir prédictif : ce n’est pas une recommandation d’achat ou de vente.",
+    "modelos_sin_datos": "Dans ce mode, il n’y a pas de prévisions des modèles pour cet actif.",
+    "ver_regresion": "Voir la régression de {ticker}",
+    "corr_titulo": "Corrélation avec d’autres actifs",
+    "corr_ayuda": "Corrélation des rendements quotidiens : proche de un, ils évoluent ensemble ; proche de zéro, sans lien ; négative, en sens inverse.",
+    "corr_mas": "Les plus corrélés",
+    "corr_menos": "Les moins corrélés",
+    "col_correlacion": "Corrélation",
+    "corr_sin_datos": "Dans ce mode, il n’y a pas de matrice de corrélation.",
+    "nota_titulo": "Note du matériel du cours"
+  },
+  "comparador": {
+    "titulo_pagina": "Comparateur d’actifs · Ernesto Investing AI",
+    "titulo": "Comparateur d’actifs",
+    "sub": "Comparez l’évolution de plusieurs actifs sur la même échelle et leur risque sur la même période.",
+    "activos_titulo": "Actifs comparés",
+    "agregar": "Ajouter un actif",
+    "agregar_boton": "Ajouter",
+    "quitar_aria": "Retirer {ticker} de la comparaison",
+    "maximo": "Nombre maximal d’actifs à la fois : {n}.",
+    "vacio_titulo": "Choisissez des actifs à comparer",
+    "vacio_texto": "Ajoutez-en au moins un avec le sélecteur ci-dessus.",
+    "grafico_titulo": "Évolution en base {base}",
+    "tabla_titulo": "Valeur de chaque actif par séance en base {base}",
+    "resumen": "Du {desde} au {hasta} : {lista}.",
+    "serie_final": "{ticker} termine à {valor}",
+    "metricas_titulo": "Rendement et risque sur la période",
+    "metricas_caption": "Indicateurs de chaque actif sur la période choisie",
+    "declaracion": "Le rendement, la volatilité annualisée et le bêta sont calculés dans votre navigateur à partir des clôtures de la période choisie ; la corrélation provient de la matrice de données.",
+    "col_retorno": "Rendement de la période",
+    "col_vol": "Volatilité annualisée",
+    "col_beta": "Bêta par rapport à {ref}",
+    "corr_titulo": "Corrélation entre les actifs choisis",
+    "corr_caption": "Corrélation des rendements quotidiens entre les actifs choisis",
+    "corr_minimo": "Choisissez au moins deux actifs pour voir leur corrélation.",
+    "anuncio_agregado": "{ticker} ajouté à la comparaison.",
+    "anuncio_quitado": "{ticker} retiré de la comparaison."
   }
 }

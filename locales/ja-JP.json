@@ -52,7 +52,9 @@
     "bloque_modelos": "モデル",
     "bloque_cartera": "ポートフォリオ",
     "bloque_operacion": "取引",
-    "bloque_cuenta": "アカウント"
+    "bloque_cuenta": "アカウント",
+    "activo": "銘柄の詳細",
+    "comparador": "比較"
   },
   "shell": {
     "datos": "データ：",
@@ -204,7 +206,9 @@
     "seleccionado": "選択中の銘柄：{ticker}。",
     "rango_velas": "ローソク足（{n} 取引日）",
     "serie_cierre": "{ticker} の終値",
-    "rango_vacio_titulo": "この期間に取引日はありません"
+    "rango_vacio_titulo": "この期間に取引日はありません",
+    "col_detalle": "詳細",
+    "ver_detalle": "{ticker}の詳細を見る"
   },
   "a11y": {
     "titulo": "アクセシビリティセンター",
@@ -1173,5 +1177,58 @@
     "anuncio_zona": "タイムゾーン：{zona}",
     "anuncio_colores": "上昇・下落の色を更新しました",
     "anuncio_numeros": "数字を更新しました"
+  },
+  "activo": {
+    "titulo_pagina": "銘柄の詳細 · Ernesto Investing AI",
+    "titulo": "銘柄の詳細",
+    "sub": "一つの銘柄の価格、出来高、リスクと、モデルの見方。",
+    "resumen_titulo": "銘柄の概要",
+    "cierre_de": "{fecha}の終値",
+    "operar": "取引する",
+    "crear_alerta": "アラートを作成",
+    "comparar": "他と比較",
+    "kpi_volumen": "直近取引日の出来高",
+    "modelos_titulo": "モデルの見方",
+    "modelos_clasif": "分類：上昇か下落か",
+    "modelos_votos": "分類器{n}個中{sube}個が上昇と判断。上昇確率の平均：{prob}。",
+    "modelos_regr": "回帰：予測価格",
+    "modelos_mediana": "{fecha}時点のモデルの中央値：{precio}。",
+    "modelos_aviso": "予測力の低い推定値です。売買の推奨ではありません。",
+    "modelos_sin_datos": "このモードにはこの銘柄のモデル予測がありません。",
+    "ver_regresion": "{ticker}の回帰を見る",
+    "corr_titulo": "他の銘柄との相関",
+    "corr_ayuda": "日次リターンの相関：一に近いほど同じように動き、ゼロに近いほど無関係、負なら逆方向に動きます。",
+    "corr_mas": "相関が高い銘柄",
+    "corr_menos": "相関が低い銘柄",
+    "col_correlacion": "相関",
+    "corr_sin_datos": "このモードには相関行列がありません。",
+    "nota_titulo": "授業資料の注記"
+  },
+  "comparador": {
+    "titulo_pagina": "銘柄の比較 · Ernesto Investing AI",
+    "titulo": "銘柄の比較",
+    "sub": "複数の銘柄の推移を同じ尺度で、リスクを同じ期間で比べます。",
+    "activos_titulo": "比較中の銘柄",
+    "agregar": "銘柄を追加",
+    "agregar_boton": "追加",
+    "quitar_aria": "{ticker}を比較から外す",
+    "maximo": "同時に比較できる銘柄の上限：{n}。",
+    "vacio_titulo": "比較する銘柄を選んでください",
+    "vacio_texto": "上の選択欄から少なくとも一つ追加してください。",
+    "grafico_titulo": "推移（基準 {base}）",
+    "tabla_titulo": "取引日ごとの各銘柄の値（基準 {base}）",
+    "resumen": "{desde}から{hasta}まで：{lista}。",
+    "serie_final": "{ticker}は{valor}で終了",
+    "metricas_titulo": "期間中のリターンとリスク",
+    "metricas_caption": "選んだ期間における各銘柄の指標",
+    "declaracion": "リターン、年率ボラティリティ、ベータは、選んだ期間の終値からブラウザーで計算します。相関はデータの行列の値です。",
+    "col_retorno": "期間リターン",
+    "col_vol": "年率ボラティリティ",
+    "col_beta": "{ref}に対するベータ",
+    "corr_titulo": "選んだ銘柄どうしの相関",
+    "corr_caption": "選んだ銘柄どうしの日次リターンの相関",
+    "corr_minimo": "相関を見るには銘柄を二つ以上選んでください。",
+    "anuncio_agregado": "{ticker}を比較に追加しました。",
+    "anuncio_quitado": "{ticker}を比較から外しました。"
   }
 }

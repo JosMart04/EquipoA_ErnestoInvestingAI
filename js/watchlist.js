@@ -89,7 +89,7 @@
     EIA.ui.tabla($("#lista"), {
       id: "tabla-watch", titulo: t("watchlist.tabla_caption"),
       columnas: [
-        { clave: "ticker", titulo: t("watchlist.col_ticker"), tipo: "texto", ordenable: true, fmt: v => esc(v) },
+        { clave: "ticker", titulo: t("watchlist.col_ticker"), tipo: "texto", ordenable: true, fmt: v => `<a href="activo.html?t=${encodeURIComponent(v)}">${esc(v)}</a>` },
         { clave: "ultimo", titulo: t("watchlist.col_ultimo"), tipo: "num", ordenable: true, valor: f => activo(f.ticker).ultimo, fmt: v => esc(EIA.fmt.usd(v)) },
         { clave: "var", titulo: t("watchlist.col_1d"), tipo: "num", ordenable: true, valor: f => activo(f.ticker).var_1d_pct, fmt: v => EIA.ui.variacion(v) },
         { clave: "mini", titulo: t("watchlist.col_mini", { n: SESIONES_MINIGRAFICO }), tipo: "texto", fmt: (v, f) => svgMini(f.ticker) },

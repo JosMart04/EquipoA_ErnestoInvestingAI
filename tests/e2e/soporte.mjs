@@ -11,6 +11,8 @@ export const paginas = [
   'index', 'watchlist', 'trading', 'leaderboard', 'clasificacion',
   'regresion', 'optimizador', 'portafolios', 'backtesting',
 ];
+/** Páginas de soporte y de la iteración 2 (Spec W13 G.4): también pasan axe. */
+export const paginasSoporte = ['configuracion', 'activo', 'comparador'];
 
 export async function faltaArchivo(nombre) {
   try { await access(path.join(raiz, 'data_real', nombre)); return false; }

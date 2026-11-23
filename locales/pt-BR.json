@@ -52,7 +52,9 @@
     "bloque_modelos": "Modelos",
     "bloque_cartera": "Carteira",
     "bloque_operacion": "Operações",
-    "bloque_cuenta": "Conta"
+    "bloque_cuenta": "Conta",
+    "activo": "Detalhe do ativo",
+    "comparador": "Comparador"
   },
   "shell": {
     "datos": "Dados:",
@@ -209,7 +211,9 @@
     "seleccionado": "Ativo selecionado: {ticker}.",
     "rango_velas": "Candles ({n} pregões)",
     "serie_cierre": "Fechamento de {ticker}",
-    "rango_vacio_titulo": "Sem sessões nesse intervalo"
+    "rango_vacio_titulo": "Sem sessões nesse intervalo",
+    "col_detalle": "Detalhe",
+    "ver_detalle": "Ver o detalhe de {ticker}"
   },
   "a11y": {
     "titulo": "Central de acessibilidade",
@@ -1196,5 +1200,58 @@
     "anuncio_zona": "Fuso horário: {zona}",
     "anuncio_colores": "Cores de alta e baixa atualizadas",
     "anuncio_numeros": "Algarismos atualizados"
+  },
+  "activo": {
+    "titulo_pagina": "Detalhe do ativo · Ernesto Investing AI",
+    "titulo": "Detalhe do ativo",
+    "sub": "Preço, volume, risco e o que os modelos dizem sobre um ativo.",
+    "resumen_titulo": "Resumo do ativo",
+    "cierre_de": "Fechamento de {fecha}",
+    "operar": "Negociar",
+    "crear_alerta": "Criar um alerta",
+    "comparar": "Comparar com outros",
+    "kpi_volumen": "Volume do último pregão",
+    "modelos_titulo": "O que os modelos dizem",
+    "modelos_clasif": "Classificação: sobe ou desce?",
+    "modelos_votos": "{sube} de {n} classificadores dizem SOBE; probabilidade média de subir: {prob}.",
+    "modelos_regr": "Regressão: preço projetado",
+    "modelos_mediana": "Mediana dos modelos em {fecha}: {precio}.",
+    "modelos_aviso": "São estimativas com pouco poder preditivo: não são uma recomendação de compra ou venda.",
+    "modelos_sin_datos": "Neste modo não há previsões dos modelos para o ativo.",
+    "ver_regresion": "Ver a regressão de {ticker}",
+    "corr_titulo": "Correlação com outros ativos",
+    "corr_ayuda": "Correlação dos retornos diários: perto de um, andam juntos; perto de zero, sem relação; negativa, andam em sentidos opostos.",
+    "corr_mas": "Mais correlacionados",
+    "corr_menos": "Menos correlacionados",
+    "col_correlacion": "Correlação",
+    "corr_sin_datos": "Neste modo não há matriz de correlação.",
+    "nota_titulo": "Nota do material do curso"
+  },
+  "comparador": {
+    "titulo_pagina": "Comparador de ativos · Ernesto Investing AI",
+    "titulo": "Comparador de ativos",
+    "sub": "Compare a evolução de vários ativos na mesma escala e o risco deles no mesmo período.",
+    "activos_titulo": "Ativos comparados",
+    "agregar": "Adicionar um ativo",
+    "agregar_boton": "Adicionar",
+    "quitar_aria": "Remover {ticker} da comparação",
+    "maximo": "Máximo de ativos ao mesmo tempo: {n}.",
+    "vacio_titulo": "Escolha ativos para comparar",
+    "vacio_texto": "Adicione pelo menos um com o seletor acima.",
+    "grafico_titulo": "Evolução na base {base}",
+    "tabla_titulo": "Valor de cada ativo por sessão na base {base}",
+    "resumen": "De {desde} a {hasta}: {lista}.",
+    "serie_final": "{ticker} termina em {valor}",
+    "metricas_titulo": "Retorno e risco no período",
+    "metricas_caption": "Métricas de cada ativo no período escolhido",
+    "declaracion": "O retorno, a volatilidade anualizada e o beta são calculados no seu navegador com os fechamentos do período escolhido; a correlação é a da matriz de dados.",
+    "col_retorno": "Retorno do período",
+    "col_vol": "Volatilidade anualizada",
+    "col_beta": "Beta em relação a {ref}",
+    "corr_titulo": "Correlação entre os ativos escolhidos",
+    "corr_caption": "Correlação dos retornos diários entre os ativos escolhidos",
+    "corr_minimo": "Escolha pelo menos dois ativos para ver a correlação.",
+    "anuncio_agregado": "{ticker} adicionado à comparação.",
+    "anuncio_quitado": "{ticker} removido da comparação."
   }
 }
