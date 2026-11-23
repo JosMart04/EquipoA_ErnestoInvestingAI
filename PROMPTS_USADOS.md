@@ -559,3 +559,11 @@ Autodetectar → No: siempre es-PE (Recommended)
 ```
 
 Josué aprobó el plan («Internacionalización de Ernesto Investing AI a 13 idiomas»).
+
+### 2026-11-23 (hora no registrada) · Claude Code · Claude Opus 5.5
+
+Respuesta de Josué al botón «¿Fusiono el PR #43 y abro el PR de T-105?»:
+
+```text
+Sí, fusiona y abre
+```
