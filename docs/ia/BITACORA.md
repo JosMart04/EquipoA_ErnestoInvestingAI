@@ -516,3 +516,23 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/docs-cierre-pr1` → PR #38
 - **Contrato:** sin cambios
 - **Prioridad:** media · **Para cuándo:** —
+
+### MSG-20261122-2300 · CC · INFO
+- **Asunto:** Lab 13 · Internacionalización a 13 idiomas: plan aprobado y medición «antes» (T-100)
+- **Qué cambió:** Josué aprobó el plan:
+  - **Idiomas** (13): es-PE, en-US, ar-EG, he-IL, ja-JP, zh-CN, ko-KR, hi-IN, ru-RU, pt-BR, fr-FR, de-DE y qu-PE. Todos salvo es-PE y en-US son borradores.
+  - **Alcance:** solo la página de Configuración en esta iteración; sin autodetección del idioma.
+  - **G.2:** se ignora, aunque no se convierte la divisa al cambiar de idioma (Lab L.2 y L.8).
+
+  Antes de tocar el código:
+  - etiqueta `i18n-antes` (versión A);
+  - `js/lib/i18n-calidad.js`: la función `medir()` del ejercicio 13.2 del profesor (columnas compatibles con su notebook) y su pseudolocalización;
+  - `tools/i18n/medir_i18n.mjs` con Playwright y Edge.
+
+  **Línea base A (es-PE y en-US, 9 páginas, 375 y 1280 px):**
+  - sin pseudolocalización, 0 desbordes;
+  - **con pseudolocalización a 375 px, las 9 páginas en es-PE se desplazan en horizontal** (un texto de la cabecera desborda);
+  - en Backtesting, un tramo de la barra apilada trunca su texto.
+- **Archivos / PR:** rama `cc/T-100-i18n-antes`
+- **Contrato:** sin cambios
+- **Prioridad:** alta · **Para cuándo:** —
