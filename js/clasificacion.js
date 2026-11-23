@@ -186,8 +186,8 @@
 <p>${esc(t("clasificacion.consenso_explica", { n: total, sube: p.votos_sube, baja: p.votos_baja, prob: pct(p.prob_media), senal: conSimbolo(consenso), confianza: EIA.nombre("confianza", p.confianza) }))}</p>
 <p class="mut">${esc(t("clasificacion.confianza_explica", { mitad: pct(EIA.K.UMBRAL_SENAL, 0), alta: EIA.fmt.num(EIA.K.CONFIANZA_ALTA * 100, 0), media: EIA.fmt.num(EIA.K.CONFIANZA_MEDIA * 100, 0) }))}</p>
 <p class="mut">${esc(t("clasificacion.consenso_recuerda", { min: pct(R.exactitudMin, 0), max: pct(R.exactitudMax, 0) }))}</p>
-<p class="acciones"><a class="btn primary" id="enlace-regresion" href="regresion.html?t=${encodeURIComponent(elegido)}">${esc(t("clasificacion.ver_regresion"))} <span aria-hidden="true">→</span></a>
-<a class="btn" id="enlace-optimizador" href="optimizador.html?t=${encodeURIComponent(elegido)}">${esc(t("clasificacion.ver_optimizador"))} <span aria-hidden="true">→</span></a></p>`;
+<p class="acciones"><a class="btn primary" id="enlace-regresion" href="regresion.html?t=${encodeURIComponent(elegido)}">${esc(t("clasificacion.ver_regresion"))} <span class="flecha" aria-hidden="true">→</span></a>
+<a class="btn" id="enlace-optimizador" href="optimizador.html?t=${encodeURIComponent(elegido)}">${esc(t("clasificacion.ver_optimizador"))} <span class="flecha" aria-hidden="true">→</span></a></p>`;
   }
 
   function pintarMatrizConfusion() {

@@ -237,6 +237,8 @@
 <thead><tr><th scope="col" class="l">${esc(t("comun.activo"))}</th><th scope="col">${esc(t("backtesting.col_peso"))}</th></tr></thead>
 <tbody>${r.pesos.map(w => `<tr><th scope="row" class="l">${esc(w.ticker)}</th><td>${esc(pctS(w.peso * 100, 1))}</td></tr>`).join("")}</tbody></table>
 <p>${esc(r.turnover == null ? t("backtesting.tl_inicial") : t("backtesting.tl_turnover", { turnover: pctS(r.turnover * 100, 0), medio: pctS(c.turnover_medio * 100, 0) }))}</p>`;
+    // Un tramo angosto no muestra su ticker si no cabe (sin texto truncado, Lab 13): sigue en la etiqueta y en la tabla
+    Array.from(document.querySelectorAll("#tl-detalle .barra-apilada .seg")).forEach(s => { if (s.scrollWidth > s.clientWidth + 1) s.textContent = ""; });
   }
 
   function pintarInterpretacion() {

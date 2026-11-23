@@ -563,3 +563,23 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-101-i18n-nucleo`
 - **Contrato:** sin cambios (`data/` intacto)
 - **Prioridad:** alta · **Para cuándo:** —
+
+### MSG-20261123-0200 · CC · INFO
+- **Asunto:** RTL para árabe y hebreo (T-102)
+- **Qué cambió:**
+  - **CSS lógico** (Lab L.3.6.5): 30 reglas pasan de izquierda/derecha a `inline-start/end`: márgenes, bordes de avisos y notas, alineación de tablas, columna fija del mapa de calor, radios de los controles segmentados y superposiciones fijas. Quedan físicos a propósito el puntero y la calibración de la cámara (coordenadas de la pantalla) y los rótulos centrados.
+  - **ECharts** (`EIA.espejarGrafico`, como pide el kit): en RTL se invierte el eje X, el eje Y pasa a la derecha y se intercambian los márgenes. Lo heredan los 5 módulos.
+  - **Teclado** (`EIA.teclaLogica`, WAI-ARIA APG): ← y → se invierten en RTL, en la exploración de gráficos, las pestañas y el Optimizador.
+  - **Flechas** de los botones y migas: se espejan.
+  - **Bidi:** los valores interpolados se aíslan con U+2068 y U+2069.
+  - **Fuentes del sistema** por `:lang()` para ar, he, ja, zh, ko y hi.
+  - **Palabras largas:** se parten antes que desbordar.
+  - **Barra apilada de Backtesting:** un tramo angosto ya no trunca su ticker.
+- **Medición** (10 páginas × es-PE, qps-ploc y qps-plocm × 375 y 1280 px):
+  - RTL no agrega desbordes;
+  - el único desborde, el aviso del pie con pseudolocalización a 375 px, queda corregido;
+  - la barra apilada ya no trunca;
+  - 173 pruebas JS.
+- **Archivos / PR:** rama `cc/T-102-rtl`
+- **Contrato:** sin cambios
+- **Prioridad:** alta · **Para cuándo:** —

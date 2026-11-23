@@ -90,7 +90,7 @@
     const texto = op.tipo === "fin" ? t("a11y.barrido_detener") : op.tipo === "salir" ? t("a11y.barrido_salir")
       : pila.length === 1 ? t("a11y.barrido_grupo", { n: i + 1, total, nombre: op.nombre })
         : t("a11y.barrido_elemento", { n: i + 1, total, nombre: op.nombre });
-    rotulo.textContent = camino.length ? t("a11y.barrido_ruta", { ruta: camino.join(" › "), texto }) : texto;
+    rotulo.textContent = camino.length ? t("a11y.barrido_ruta", { ruta: camino.join(EIA.dir() === "rtl" ? " ‹ " : " › "), texto }) : texto;
     // El marco rodea el grupo o el elemento; «salir» marca el grupo que se deja
     const r = op.tipo === "salir" ? rect({ tipo: "nodo", hijos: opciones.slice(0, -1) }) : rect(op);
     marco.hidden = !r; marco.classList.toggle("salir", op.tipo !== "nodo" && op.tipo !== "el");
