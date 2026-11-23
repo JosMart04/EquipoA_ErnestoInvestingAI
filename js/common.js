@@ -17,7 +17,16 @@
     DIAS_HABILES_VENCIDO: 5   // el Modo real avisa si los datos son más viejos que esto
   };
   EIA.SENALES = ["SUBE", "BAJA"]; // solo dos clases: nunca una tercera (R-CLA-06)
-  EIA.IDIOMAS = ["es-PE", "en-US"];
+  /* Idiomas: los declara locales/index.json (agregar uno = su JSON + una línea del manifiesto, sin tocar código).
+     Este respaldo mínimo solo se usa si el manifiesto no carga. Los pseudoidiomas (qps-*) se generan en tiempo de
+     ejecución desde es-PE para medir truncados y desbordes (Lab 13); no aparecen en la barra. */
+  const MANIFIESTO_RESPALDO = { fuente: "es-PE", idiomas: [
+    { tag: "es-PE", endonimo: "Español (Perú)", dir: "ltr", estado: "fuente" },
+    { tag: "en-US", endonimo: "English (United States)", dir: "ltr", estado: "completo" }] };
+  const PSEUDOIDIOMAS = [{ tag: "qps-ploc", dir: "ltr", pseudo: true }, { tag: "qps-plocm", dir: "rtl", pseudo: true }];
+  const ESCRITURAS_RTL = ["ar", "he", "fa", "ur"];
+  let _manifiesto = MANIFIESTO_RESPALDO;
+  EIA.IDIOMAS = MANIFIESTO_RESPALDO.idiomas.map(i => i.tag);
 
   /* Páginas del sitio: [archivo, clave i18n, id, es módulo nuevo]. Mismo orden que la base del profesor. */
   const PAGES = [
@@ -278,48 +287,132 @@
     EIA.estado.set("eia_activo", t);
   };
 
-  /* ───────────── Internacionalización (ES-PE / EN-US) ───────────── */
-  let _idioma = null, _dic = {};
+  /* ───────────── Internacionalización (13 idiomas · Lab 13 · Spec W13 G.5) ─────────────
+     Zona 2 del Lab (recursos externalizados): textos en locales/<tag>.json con claves por función, respaldo en es-PE
+     para la clave que falte, lang y dir en <html>, formatos con Intl en caché por idioma y zona, plurales con
+     Intl.PluralRules y orden con Intl.Collator. La divisa nunca se convierte al cambiar de idioma (Lab L.2 y L.8). */
+  let _idioma = null, _dic = {}, _dicRespaldo = null;
   const avisados = new Set();
+  /** Herramienta de calidad (pseudolocalización y medición): js/lib/i18n-calidad.js, cargado antes que este archivo. */
+  const calidad = () => (global.EIALib && global.EIALib.i18nCalidad) || (typeof require === "function" ? require("./lib/i18n-calidad.js") : null);
+  /** Datos de un idioma del manifiesto (o de un pseudoidioma); null si no existe. */
+  EIA.infoIdioma = tag => _manifiesto.idiomas.concat(PSEUDOIDIOMAS).find(i => i.tag === tag) || null;
+  EIA.fuente = () => _manifiesto.fuente || "es-PE";
+  /** Etiqueta BCP 47 conocida más cercana: exacta, o por idioma base («ar» → «ar-EG», «pt» → «pt-BR»). */
   function normalizarIdioma(v) {
     if (!v) return null;
-    const s = String(v).toLowerCase();
-    if (s === "en" || s === "en-us") return "en-US";
-    if (s === "es" || s === "es-pe") return "es-PE";
-    return null;
+    let tag;
+    try { tag = Intl.getCanonicalLocales(String(v).trim())[0]; } catch (e) { return null; }
+    if (!tag) return null;
+    const exacto = EIA.IDIOMAS.concat(PSEUDOIDIOMAS.map(p => p.tag)).find(t => t.toLowerCase() === tag.toLowerCase());
+    if (exacto) return exacto;
+    const base = tag.split("-")[0].toLowerCase();
+    return EIA.IDIOMAS.find(t => t.split("-")[0].toLowerCase() === base) || null;
   }
+  EIA.normalizarIdioma = normalizarIdioma;
+  /** Sin autodetección (decisión de Josué): ?lang= o la elección guardada; si no, es-PE. */
   EIA.idioma = function () {
     if (_idioma) return _idioma;
-    _idioma = normalizarIdioma(parametros().get("lang")) || normalizarIdioma(EIA.estado.get("eia_lang")) || "es-PE";
+    _idioma = normalizarIdioma(parametros().get("lang")) || normalizarIdioma(EIA.estado.get("eia_lang")) || EIA.fuente();
     return _idioma;
   };
+  EIA.esPseudo = tag => { const i = EIA.infoIdioma(tag || EIA.idioma()); return !!(i && i.pseudo); };
+  EIA.esBorrador = tag => { const i = EIA.infoIdioma(tag || EIA.idioma()); return !!(i && i.estado === "borrador"); };
+  /** Dirección de escritura del idioma: la del manifiesto o, si falta, la del idioma base (árabe, hebreo… → rtl). */
+  EIA.dir = function (tag) {
+    const t = tag || EIA.idioma(), i = EIA.infoIdioma(t);
+    if (i && i.dir) return i.dir;
+    return ESCRITURAS_RTL.includes(String(t).split("-")[0]) ? "rtl" : "ltr";
+  };
+  /** Locale para Intl: el pseudoidioma formatea como es-PE; un idioma sin datos de Intl usa la fuente; la preferencia
+      «dígitos latinos» agrega -u-nu-latn (en árabe los dígitos por defecto son ٠١٢…). */
+  EIA.localeFormato = function () {
+    const tag = EIA.idioma();
+    let base = EIA.esPseudo(tag) ? EIA.fuente() : tag;
+    try { if (!Intl.NumberFormat.supportedLocalesOf([base]).length) base = EIA.fuente(); } catch (e) { base = EIA.fuente(); }
+    return EIA.estado.get("eia_num") === "latn" ? base + "-u-nu-latn" : base;
+  };
   const buscar = (dic, clave) => clave.split(".").reduce((o, k) => (o && typeof o === "object" ? o[k] : undefined), dic);
-  /** ¿Existe la clave en el diccionario activo? */
-  EIA.hayTexto = clave => buscar(_dic, clave) !== undefined;
-  /** Texto traducido. Parámetros con nombre: «Votos: {sube} ▲». Si el valor es {one, other} elige el plural con params.n. */
+  /** ¿Existe la clave en el diccionario activo (o en el de respaldo)? */
+  EIA.hayTexto = clave => buscar(_dic, clave) !== undefined || (!!_dicRespaldo && buscar(_dicRespaldo, clave) !== undefined);
+  /** Texto traducido. Parámetros con nombre: «Votos: {sube} ▲». Un valor {zero, one, two, few, many, other} es un plural
+      y se elige con Intl.PluralRules según params.n. Si el idioma no tiene la clave, se usa es-PE (como el kit del curso). */
   EIA.t = function (clave, params) {
     let v = buscar(_dic, clave);
+    if (v === undefined && _dicRespaldo) {
+      v = buscar(_dicRespaldo, clave);
+      if (v !== undefined && !avisados.has("r:" + clave) && global.console) { avisados.add("r:" + clave); console.info("i18n: " + EIA.idioma() + " no tiene " + clave + "; se usa " + EIA.fuente()); }
+    }
     if (v && typeof v === "object" && typeof v.other === "string") {
-      const cat = new Intl.PluralRules(EIA.idioma()).select(Number(params && params.n));
+      const cat = reglasPlural().select(Number(params && params.n));
       v = typeof v[cat] === "string" ? v[cat] : v.other;
     }
     if (typeof v !== "string") {
       if (!avisados.has(clave) && global.console) { avisados.add(clave); console.warn("i18n: falta la clave " + clave); }
       return "⟦" + clave + "⟧";
     }
-    return params ? v.replace(/\{(\w+)\}/g, (m, k) => (k in params ? String(params[k]) : m)) : v;
+    // {n} es el conteo del plural: si llega como número, sale con los dígitos y separadores del idioma (١٢ en árabe)
+    return params ? v.replace(/\{(\w+)\}/g, (m, k) => (!(k in params) ? m : k === "n" && typeof params.n === "number" && Number.isInteger(params.n) ? EIA.fmt.ent(params.n) : String(params[k]))) : v;
   };
   /** Nombre de presentación de un valor del JSON (grupo, modelo, sector…). Si no está en el mapa, devuelve el valor tal cual. */
   EIA.nombre = function (categoria, valor) {
-    const m = _dic.datos && _dic.datos[categoria];
+    const m = (_dic.datos && _dic.datos[categoria]) || (_dicRespaldo && _dicRespaldo.datos && _dicRespaldo.datos[categoria]);
     return m && typeof m[valor] === "string" ? m[valor] : String(valor);
   };
-  /** Solo para pruebas y para el arranque: instala un diccionario ya cargado. */
-  EIA.usarDiccionario = function (dic, idioma) { _dic = dic || {}; if (idioma) _idioma = idioma; formateadores.clear(); };
+  /** Una cifra suelta dentro de un texto del JSON (no la de un identificador como «N2»): «17», «+5.35», «-2.0». */
+  const CIFRA_EN_TEXTO = /(?:(?<=^|\s)[+\-−])?(?<![\p{L}\p{N}.])\d+(?:\.\d+)?/gu;
+  EIA.patronTextoDatos = s => String(s == null ? "" : s).replace(CIFRA_EN_TEXTO, "{#}");
+  /** Texto libre en español de un JSON (descripción, restricciones, razón, método…) como HTML. Si el idioma tiene su
+      traducción en datos.textos (con las cifras cambiadas por {#}), sale traducido y con las cifras en formato local;
+      si no, queda en español marcado con lang="es". Los datos no se modifican. */
+  EIA.textoDatos = function (s) {
+    const texto = String(s == null ? "" : s);
+    if (EIA.esPseudo()) return esc(calidad().pseudolocalizar(texto));
+    const cifras = [];
+    const patron = texto.replace(CIFRA_EN_TEXTO, m => { cifras.push(m); return "{#}"; });
+    const mapa = _dic.datos && _dic.datos.textos;
+    const tr = mapa && typeof mapa[patron] === "string" ? mapa[patron] : null;
+    if (!tr) return `<span lang="es">${esc(texto)}</span>`;
+    let i = 0;
+    return esc(tr).replace(/\{#\}/g, () => {
+      const c = cifras[i++] || "", [ent, dec = ""] = c.replace(/^[+\-−]/, "").split(".");
+      // «05» (N2-05) conserva el cero; el signo + se conserva; los dígitos salen en la escritura del idioma
+      const n = nf({ minimumIntegerDigits: ent.length > 1 && ent[0] === "0" ? ent.length : 1, minimumFractionDigits: dec.length, maximumFractionDigits: dec.length });
+      return esc((c[0] === "+" ? "+" : "") + n.format(Number(c.replace("−", "-"))));
+    });
+  };
+  /** Solo para pruebas y para el arranque: instala un diccionario ya cargado (y, opcional, el de respaldo es-PE). */
+  EIA.usarDiccionario = function (dic, idioma, respaldo) {
+    _dic = dic || {}; _dicRespaldo = respaldo || null;
+    if (idioma) _idioma = idioma;
+    formateadores.clear();
+  };
+  /** Solo para pruebas y para el arranque: instala el manifiesto de idiomas. */
+  EIA.usarManifiesto = function (m) {
+    _manifiesto = m && Array.isArray(m.idiomas) && m.idiomas.length ? m : MANIFIESTO_RESPALDO;
+    EIA.IDIOMAS = _manifiesto.idiomas.map(i => i.tag);
+  };
+  EIA.manifiesto = () => _manifiesto;
+  EIA.cargarManifiesto = async function () {
+    try {
+      const r = await fetch("locales/index.json?v=" + EIA.version);
+      if (r.ok) EIA.usarManifiesto(await r.json());
+    } catch (e) { /* sin manifiesto: es-PE y en-US */ }
+  };
+  const diccionarios = new Map();
+  async function leerDiccionario(tag) {
+    if (diccionarios.has(tag)) return diccionarios.get(tag);
+    const r = await fetch("locales/" + tag + ".json?v=" + EIA.version);
+    if (!r.ok) throw new ErrorDatos("http", "locales/" + tag + ".json", r.status);
+    const d = await r.json();
+    diccionarios.set(tag, d);
+    return d;
+  }
   EIA.cargarIdioma = async function (idioma) {
-    const r = await fetch("i18n/" + idioma + ".json?v=" + EIA.version);
-    if (!r.ok) throw new ErrorDatos("http", "i18n/" + idioma + ".json", r.status);
-    EIA.usarDiccionario(await r.json(), idioma);
+    const fuente = EIA.fuente(), pseudo = EIA.esPseudo(idioma), base = pseudo ? fuente : idioma;
+    const dic = await leerDiccionario(base);
+    const respaldo = base === fuente ? null : await leerDiccionario(fuente).catch(() => null);
+    EIA.usarDiccionario(pseudo ? calidad().pseudoDiccionario(dic) : dic, idioma, respaldo);
   };
   /** Aplica data-i18n (texto) y data-i18n-attr="aria-label=clave,title=clave" (atributos). */
   EIA.traducir = function (raiz) {
@@ -329,26 +422,95 @@
       if (atributo && clave) el.setAttribute(atributo.trim(), EIA.t(clave.trim()));
     }));
   };
+  /** lang, dir y la convención de colores del idioma en <html>. */
+  function aplicarIdiomaDocumento() {
+    if (!hayDOM) return;
+    const h = document.documentElement;
+    h.lang = EIA.idioma(); h.dir = EIA.dir();
+    h.setAttribute("data-colores", EIA.colores());
+  }
   EIA.setIdioma = async function (idioma) {
     const l = normalizarIdioma(idioma);
     if (!l || l === EIA.idioma()) return;
-    try { await EIA.cargarIdioma(l); } catch (e) { EIA.ui.error(e); return; }
+    const anterior = _idioma;
+    _idioma = l;
+    try { await EIA.cargarIdioma(l); } catch (e) { _idioma = anterior; EIA.ui.error(e); return; }
     EIA.estado.set("eia_lang", l);
     quitarParametro("lang");
-    document.documentElement.lang = l;
+    aplicarIdiomaDocumento();
     pintarShell();
     EIA.traducir();
     EIA.emit("eia:idioma", { idioma: l });
     EIA.ui.anunciar(EIA.t("shell.anuncio_idioma"));
   };
+  /** Nombre de un idioma en ese mismo idioma (endónimo), para el selector: nunca banderas (Spec G.5.6). */
+  EIA.endonimo = function (tag) {
+    const i = EIA.infoIdioma(tag);
+    if (i && i.endonimo) return i.endonimo;
+    try { const n = new Intl.DisplayNames([tag], { type: "language" }).of(tag); return n.charAt(0).toLocaleUpperCase(tag) + n.slice(1); } catch (e) { return tag; }
+  };
+  /** Nombre de un idioma o de una escritura en el idioma de la interfaz («árabe (Egipto)», «hebreo»…). */
+  EIA.nombreIdioma = function (tag, tipo) {
+    try { return new Intl.DisplayNames([EIA.localeFormato()], { type: tipo || "language" }).of(tag); } catch (e) { return tag; }
+  };
 
-  /* ───────────── Formatos con Intl según el idioma activo ───────────── */
+  /* ───────────── Zona horaria y cierre del mercado (Spec W13 G.5.4) ─────────────
+     La persona elige su zona en Configuración; por defecto, la de su dispositivo. Los días de sesión de los JSON se
+     muestran como fechas (en UTC, sin correrse); la hora de cierre se calcula y se muestra en la zona elegida. */
+  const ZONA_MERCADO = "America/New_York", HORA_CIERRE = 16; // la NYSE cierra a las 16:00 hora de Nueva York
+  EIA.ZONA_MERCADO = ZONA_MERCADO;
+  const zonaValida = z => { try { new Intl.DateTimeFormat("en-US", { timeZone: z }); return true; } catch (e) { return false; } };
+  EIA.zonaDispositivo = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"; } catch (e) { return "UTC"; } };
+  EIA.zona = function () { const z = EIA.estado.get("eia_zona"); return z && zonaValida(z) ? z : EIA.zonaDispositivo(); };
+  /** z = una zona IANA, o null para volver a la del dispositivo. */
+  EIA.setZona = function (z) {
+    if (z && !zonaValida(z)) return;
+    EIA.estado.set("eia_zona", z || null);
+    formateadores.clear();
+    if (hayDOM && _listo) pintarShell();
+    EIA.emit("eia:zona", { zona: EIA.zona() });
+  };
+  /** Dígitos: v = "latn" (0-9 en todos los idiomas) o null (los del idioma: ٠١٢… en árabe). */
+  EIA.setNumeros = function (v) {
+    EIA.estado.set("eia_num", v === "latn" ? "latn" : null);
+    formateadores.clear();
+    if (hayDOM && _listo) pintarShell();
+    EIA.emit("eia:zona", { zona: EIA.zona() });
+  };
+  /** Pura: minutos de diferencia entre la hora de una zona y UTC en un instante. */
+  function desfase(zona, ms) {
+    const p = new Intl.DateTimeFormat("en-US", { timeZone: zona, hourCycle: "h23", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" }).formatToParts(new Date(ms));
+    const v = k => Number(p.find(x => x.type === k).value);
+    return (Date.UTC(v("year"), v("month") - 1, v("day"), v("hour"), v("minute"), v("second")) - ms) / 60000;
+  }
+  /** Pura: instante del cierre de la sesión del día ISO (16:00 en Nueva York, con o sin horario de verano). */
+  EIA.instanteCierre = function (iso) {
+    const [a, m, d] = String(iso).slice(0, 10).split("-").map(Number);
+    const local = Date.UTC(a, m - 1, d, HORA_CIERRE, 0, 0);
+    let ms = local - desfase(ZONA_MERCADO, local) * 60000;
+    ms = local - desfase(ZONA_MERCADO, ms) * 60000; // segunda pasada: el desfase puede cambiar ese mismo día
+    return new Date(ms);
+  };
+  /** «Cierre del 18 nov. 2026: 16:00 en Nueva York (15:00, hora de Perú)». */
+  EIA.textoCierre = function (iso) {
+    if (!ISO.test(String(iso))) return "";
+    const c = EIA.instanteCierre(iso);
+    return EIA.t("comun.cierre", { fecha: EIA.fmt.fecha(iso), hora_mercado: EIA.fmt.hora(c, ZONA_MERCADO), hora_local: EIA.fmt.hora(c), zona: EIA.fmt.zonaNombre(EIA.zona(), c) });
+  };
+
+  /* ───────────── Formatos con Intl según el idioma y la zona activos ───────────── */
   const formateadores = new Map();
-  function nf(op) {
-    const k = EIA.idioma() + JSON.stringify(op);
-    if (!formateadores.has(k)) formateadores.set(k, new Intl.NumberFormat(EIA.idioma(), op));
+  function intl(tipo, op) {
+    const k = tipo + EIA.localeFormato() + JSON.stringify(op || {});
+    if (!formateadores.has(k)) formateadores.set(k, new Intl[tipo](EIA.localeFormato(), op));
     return formateadores.get(k);
   }
+  const nf = op => intl("NumberFormat", op);
+  const dtf = op => intl("DateTimeFormat", op);
+  const reglasPlural = () => intl("PluralRules");
+  /** Orden alfabético del idioma (Á, Ñ, ü…) con números en su orden natural. */
+  EIA.collator = () => intl("Collator", { numeric: true, sensitivity: "base" });
+  EIA.ordenar = (lista, f) => lista.slice().sort((a, b) => EIA.collator().compare(String(f ? f(a) : a), String(f ? f(b) : b)));
   const ISO = /^\d{4}-\d{2}-\d{2}/;
   EIA.fmt = {
     /** Número con d decimales. */
@@ -358,7 +520,7 @@
     pct: (x, d = 2, op) => nf({ style: "percent", minimumFractionDigits: d, maximumFractionDigits: d, signDisplay: op && op.signo === false ? "auto" : "exceptZero" }).format(Number(x) / 100),
     /** Probabilidad 0–1 como número («0.62»). */
     prob: (p, d = 2) => nf({ minimumFractionDigits: d, maximumFractionDigits: d }).format(Number(p)),
-    /** Dólares; d decimales (2 por defecto). */
+    /** Dólares; d decimales (2 por defecto). La divisa no se convierte al cambiar de idioma: solo cambia el formato. */
     usd: (x, d) => nf(d == null ? { style: "currency", currency: "USD" } : { style: "currency", currency: "USD", minimumFractionDigits: d, maximumFractionDigits: d }).format(Number(x)),
     compacto: x => nf({ notation: "compact", maximumFractionDigits: 1 }).format(Number(x)),
     /** Fecha ISO (día de sesión) en UTC para que no se corra un día en Lima. Lo que no es fecha (p. ej. "inicio") se traduce. */
@@ -366,9 +528,37 @@
       const s = String(iso);
       if (!ISO.test(s)) return s === "inicio" ? EIA.t("comun.inicio") : s;
       const op = estilo === "larga" ? { dateStyle: "long", timeZone: "UTC" } : { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" };
-      return new Intl.DateTimeFormat(EIA.idioma(), op).format(new Date(s.slice(0, 10) + "T00:00:00Z"));
-    }
+      return dtf(op).format(new Date(s.slice(0, 10) + "T00:00:00Z"));
+    },
+    /** Hora de un instante en la zona elegida (o en la indicada). */
+    hora: (instante, zona) => dtf({ hour: "numeric", minute: "2-digit", timeZone: zona || EIA.zona() }).format(instante instanceof Date ? instante : new Date(instante)),
+    /** Fecha y hora de un instante (marca de tiempo ISO) en la zona elegida. */
+    fechaHora: (instante, zona) => dtf({ dateStyle: "medium", timeStyle: "short", timeZone: zona || EIA.zona() }).format(instante instanceof Date ? instante : new Date(instante)),
+    /** Nombre de la zona en el idioma activo («hora de Perú», «Peru Time»). */
+    zonaNombre(zona, instante) {
+      try {
+        const p = dtf({ timeZone: zona || EIA.zona(), timeZoneName: "longGeneric" }).formatToParts(instante || new Date()).find(x => x.type === "timeZoneName");
+        return p ? p.value : zona;
+      } catch (e) { return zona; }
+    },
+    /** Desfase de la zona con UTC («GMT-5»). */
+    desfase(zona, instante) {
+      try { const p = dtf({ timeZone: zona, timeZoneName: "shortOffset" }).formatToParts(instante || new Date()).find(x => x.type === "timeZoneName"); return p ? p.value : ""; } catch (e) { return ""; }
+    },
+    /** Tiempo relativo: rel(-2, "day") → «anteayer» / «2 days ago». */
+    rel: (valor, unidad) => intl("RelativeTimeFormat", { numeric: "auto" }).format(valor, unidad),
+    /** Tiempo relativo desde ahora hasta un instante pasado, en la unidad más natural. */
+    hace(instante, ahora) {
+      const seg = Math.round(((instante instanceof Date ? instante : new Date(instante)) - (ahora || new Date())) / 1000), a = Math.abs(seg);
+      if (a < 60) return EIA.fmt.rel(seg, "second");
+      if (a < 3600) return EIA.fmt.rel(Math.round(seg / 60), "minute");
+      if (a < 86400) return EIA.fmt.rel(Math.round(seg / 3600), "hour");
+      return EIA.fmt.rel(Math.round(seg / 86400), "day");
+    },
+    /** Lista con la conjunción del idioma: «AAPL, MSFT y NVDA». */
+    lista: (items, tipo) => intl("ListFormat", { type: tipo || "conjunction" }).format(items.map(String))
   };
+
   /** Compatibilidad con la base: fmt.n, fmt.pct, fmt.usd y fmt.cls. */
   const fmt = { n: EIA.fmt.num, pct: EIA.fmt.pct, usd: EIA.fmt.usd, cls: x => (x > 0 ? "up" : (x < 0 ? "dn" : "mut")) };
 
@@ -379,7 +569,7 @@
     return filas.map((f, i) => [f, i]).sort((a, b) => {
       const x = val(a[0]), y = val(b[0]);
       const c = typeof x === "number" && typeof y === "number" ? x - y
-        : String(x).localeCompare(String(y), EIA.idioma(), { numeric: true, sensitivity: "base" });
+        : EIA.collator().compare(String(x), String(y));
       return c !== 0 ? signo * c : a[1] - b[1];
     }).map(p => p[0]);
   };
@@ -469,6 +659,22 @@
     EIA.emit("eia:tema", { tema: t });
     if (global.onTheme) global.onTheme(t); // gancho de la base
     EIA.ui.anunciar(EIA.t(t === "dark" ? "shell.anuncio_tema_oscuro" : "shell.anuncio_tema_claro"));
+  };
+  /* ───────────── Colores de alza y baja (adaptación cultural, zona 3 del Lab 13) ─────────────
+     En Japón, China y Corea el alza se pinta en rojo. «Automático» sigue al idioma; la persona puede fijarlo.
+     El color nunca es el único indicador: ▲ ▼ y el signo se mantienen siempre. */
+  const ROJO_SUBE = ["ja", "zh", "ko"];
+  /** "verde-sube" | "rojo-sube" según la preferencia (eia_colores) o el idioma. */
+  EIA.colores = function () {
+    const p = EIA.estado.get("eia_colores");
+    if (p === "verde-sube" || p === "rojo-sube") return p;
+    return ROJO_SUBE.includes(String(EIA.idioma()).split("-")[0]) ? "rojo-sube" : "verde-sube";
+  };
+  /** v = "auto" | "verde-sube" | "rojo-sube". Los gráficos se repintan (leen los tokens --up y --dn). */
+  EIA.setColores = function (v) {
+    EIA.estado.set("eia_colores", v === "verde-sube" || v === "rojo-sube" ? v : null);
+    document.documentElement.setAttribute("data-colores", EIA.colores());
+    EIA.emit("eia:tema", { tema: EIA.tema() });
   };
   /** Colores de los gráficos leídos de los tokens CSS: una sola fuente de color para ambos temas. */
   EIA.coloresGrafico = function () {
@@ -573,18 +779,42 @@
       <button type="button" data-modo="real" aria-pressed="${modo === "real"}">${esc(rotuloReal)}</button>
     </div>
     <label class="sr" for="ctl-idioma">${esc(t("shell.idioma"))}</label>
-    <select id="ctl-idioma">${EIA.IDIOMAS.map(l => `<option value="${l}"${l === EIA.idioma() ? " selected" : ""}>${l.toUpperCase()}</option>`).join("")}</select>
+    <select id="ctl-idioma">${opcionesIdioma()}</select>
     <button id="tema" type="button" aria-pressed="${EIA.tema() === "dark"}" title="${esc(t("shell.tema_titulo"))}"><span aria-hidden="true">◐</span> ${esc(t("shell.tema"))}</button>
     <button id="btn-a11y" type="button" aria-haspopup="dialog" title="${esc(t("shell.accesibilidad_titulo"))}">${esc(t("shell.accesibilidad"))}</button>
+    <a id="btn-config" class="btn" href="configuracion.html"${pagina === "configuracion" ? ' aria-current="page"' : ""}><span aria-hidden="true">⚙</span> ${esc(t("shell.configuracion"))}</a>
   </div>
-</div>`;
+</div>${franjaIdioma()}`;
+  }
+  /** Opciones del selector de idioma: el endónimo de cada idioma, en su propia escritura y con su lang (Spec G.5.6);
+      los borradores lo dicen en su idioma. Un pseudoidioma activo también aparece, para poder volver. */
+  function opcionesIdioma() {
+    const actual = EIA.idioma(), lista = EIA.IDIOMAS.slice();
+    if (EIA.esPseudo(actual)) lista.push(actual);
+    return lista.map(tag => {
+      const i = EIA.infoIdioma(tag) || {};
+      const rotulo = i.pseudo ? EIA.t(i.dir === "rtl" ? "config.pseudo_rtl" : "config.pseudo_ltr")
+        : EIA.endonimo(tag) + (i.estado === "borrador" ? " · " + (i.etiqueta_borrador || "borrador") : "");
+      return `<option value="${esc(tag)}" lang="${esc(i.pseudo ? EIA.fuente() : tag)}"${tag === actual ? " selected" : ""}>${esc(rotulo)}</option>`;
+    }).join("");
+  }
+  /** Franja bajo la cabecera si el idioma es un borrador (traducción con IA sin revisar) o un pseudoidioma (Spec G.5.7). */
+  function franjaIdioma() {
+    const t = EIA.t;
+    if (EIA.esPseudo()) return `<p class="franja-idioma" role="note"><span aria-hidden="true">⚠</span> ${esc(t("shell.pseudo_activa"))} <a href="configuracion.html">${esc(t("shell.idioma_enlace"))}</a></p>`;
+    if (EIA.esBorrador()) return `<p class="franja-idioma" role="note"><span aria-hidden="true">✎</span> ${esc(t("shell.borrador"))} <a href="configuracion.html">${esc(t("shell.idioma_enlace"))}</a></p>`;
+    return "";
   }
   function plantillaPie() {
     const t = EIA.t, modo = EIA.modo(), mt = metaLista[modo];
     const fecha = mt && mt.fecha_corte ? EIA.fmt.fecha(mt.fecha_corte, "larga") : "";
     const claveAviso = modo === "real" && !(mt && mt.disponible) ? "aviso.real.sin_datos"
       : modo === "real" && _parcial ? "aviso.real.parcial" : "aviso." + modo + ".global";
+    const cierre = mt && mt.fecha_corte ? EIA.textoCierre(mt.fecha_corte) : "";
+    const actualizado = mt && mt.generado_en && !isNaN(new Date(mt.generado_en))
+      ? t("shell.actualizado", { fecha_hora: EIA.fmt.fechaHora(mt.generado_en), hace: EIA.fmt.hace(mt.generado_en) }) : "";
     return `<p class="aviso" data-aviso="global" role="note"><span class="aviso-ico" aria-hidden="true">⚠</span><span>${esc(t(claveAviso, { fecha }))}</span></p>
+${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].filter(Boolean).join(" · "))}</p>` : ""}
 <p class="pie-creditos">${esc(t("shell.pie_creditos"))}</p>`;
   }
   /** Repinta los textos del shell (idioma, modo, fecha de corte) conservando el foco. */
@@ -1344,20 +1574,24 @@
   EIA.repintar = () => (_modulo ? correr(false) : undefined);
 
   async function arrancar() {
+    await EIA.cargarManifiesto();
+    _idioma = null; // ahora que se conocen los idiomas, se vuelve a resolver ?lang= y la elección guardada
+    aplicarIdiomaDocumento();
     buildShell();
     try { await EIA.cargarIdioma(EIA.idioma()); }
     catch (e) {
       // Último recurso: sin diccionario no hay textos; se informa en los dos idiomas.
       const m = $("main");
-      if (m) m.insertAdjacentHTML("afterbegin", '<p class="err" role="alert">No se pudo cargar i18n/. Abra el sitio desde un servidor (GitHub Pages o <code>python -m http.server</code>). / Could not load i18n/. Open the site from a web server.</p>');
+      if (m) m.insertAdjacentHTML("afterbegin", '<p class="err" role="alert">No se pudo cargar locales/. Abra el sitio desde un servidor (GitHub Pages o <code>python -m http.server</code>). / Could not load locales/. Open the site from a web server.</p>');
       return;
     }
-    document.documentElement.lang = EIA.idioma();
+    aplicarIdiomaDocumento();
     pintarShell();
     EIA.traducir();
     EIA.on("eia:modo", () => { if (_modulo) correr(true); else global.location.reload(); });
     EIA.on("eia:corte", () => { if (_modulo) correr(true); else global.location.reload(); });
     EIA.on("eia:idioma", () => { if (_modulo) correr(false); else global.location.reload(); });
+    EIA.on("eia:zona", () => { if (_modulo) correr(false); });
     _listo = true;
     EIA.emit("eia:listo");
     await EIA.meta();
@@ -1371,11 +1605,37 @@
     reanudarAccesibilidad();
   }
 
+  /* ───────────── Fachada del investing_i18n_kit del curso ─────────────
+     Misma API que I18N del kit (t, num, money, pct, dt, rel, names, sort, dir, pseudoloc, state, set, locales), sin
+     duplicar código: todo delega en EIA. Así el sitio integra el kit y conserva un solo núcleo (R-INT-10). */
+  EIA.i18n = {
+    t: (clave, vars) => EIA.t(clave, vars),
+    num: (x, op) => nf(op || {}).format(Number(x)),
+    money: (x, divisa, op) => nf(Object.assign({ style: "currency", currency: divisa || "USD" }, op)).format(Number(x)),
+    pct: x => nf({ style: "percent", minimumFractionDigits: 2, maximumFractionDigits: 2, signDisplay: "exceptZero" }).format(Number(x)),
+    dt: (iso, op) => dtf(Object.assign({ dateStyle: "medium", timeStyle: "short", timeZone: EIA.zona() }, op)).format(new Date(iso)),
+    rel: (v, unidad) => EIA.fmt.rel(v, unidad),
+    names: tag => EIA.endonimo(tag),
+    sort: (lista, f) => EIA.ordenar(lista, f),
+    dir: () => EIA.dir(),
+    pseudoloc: s => calidad().pseudolocalizar(s),
+    state: () => ({ locale: EIA.idioma(), tz: EIA.zona(), pseudo: EIA.esPseudo(), dir: EIA.dir() }),
+    set(o) {
+      if (o && "tz" in o) EIA.setZona(o.tz);
+      if (o && o.locale) return EIA.setIdioma(o.locale);
+      return Promise.resolve();
+    },
+    /** Mide truncados y desbordes de la página actual (ejercicio 13.2). */
+    medir: () => calidad().medir(document, { locale: EIA.idioma(), dir: EIA.dir() }),
+    get locales() { return EIA.IDIOMAS.slice(); }
+  };
+
   /* ───────────── Publicación ───────────── */
   const api = { EIA, PAGES, $, $$, fmt, loadJSON, store, applyTheme, buildShell, showError };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   if (hayDOM) {
     Object.assign(global, api);
+    if (!global.I18N) global.I18N = EIA.i18n;
     document.addEventListener("DOMContentLoaded", arrancar);
   }
 })(typeof window !== "undefined" ? window : globalThis);

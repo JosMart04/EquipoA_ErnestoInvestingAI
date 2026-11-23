@@ -15,6 +15,9 @@ export default defineConfig({
   reporter: [['list'], ['json', { outputFile: '../test-results/resumen.json' }], ['html', { outputFolder: '../playwright-report', open: 'never' }]],
   use: {
     baseURL: 'http://127.0.0.1:8765',
+    // Idioma y zona fijos: el resultado no depende del equipo donde corre (el sitio arranca en es-PE; Spec G.5.4)
+    locale: 'es-PE',
+    timezoneId: 'America/Lima',
     browserName: 'chromium',
     channel: 'chromium',
     headless: true,

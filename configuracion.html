@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es-PE"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-i18n="config.titulo_pagina">Configuración · Ernesto Investing AI</title><link rel="stylesheet" href="css/styles.css">
+<link rel="alternate" hreflang="es-PE" href="configuracion.html?lang=es-PE">
+<link rel="alternate" hreflang="en-US" href="configuracion.html?lang=en-US">
+<link rel="alternate" hreflang="x-default" href="configuracion.html"></head>
+<body data-page="configuracion"><main>
+<h1 data-i18n="config.titulo">Configuración</h1>
+<p class="sub" data-i18n="config.sub">Idioma, región, zona horaria y apariencia. Se guardan solo en este navegador y valen para todas las páginas.</p>
+<!-- El aviso de simulación lo inserta js/common.js aquí, según el modo de datos -->
+
+<section class="card" aria-labelledby="h-idioma">
+  <h2 id="h-idioma" data-i18n="config.idioma_titulo">Idioma y región</h2>
+  <p class="mut" data-i18n="config.idioma_ayuda">Cada idioma aparece con su nombre en su propio idioma (endónimo), sin banderas.</p>
+  <fieldset class="idiomas"><legend data-i18n="config.idioma_leyenda">Idioma de la interfaz</legend><div id="idiomas" class="idiomas-lista"></div></fieldset>
+  <fieldset class="opciones-fila"><legend data-i18n="config.numeros_leyenda">Dígitos</legend><div id="numeros"></div></fieldset>
+</section>
+
+<section class="card" aria-labelledby="h-vista">
+  <h2 id="h-vista" data-i18n="config.vista_titulo">Vista previa con datos del sistema</h2>
+  <p class="mut" data-i18n="config.vista_ayuda">Los mismos datos con otro formato: la cantidad y la divisa no cambian al cambiar de idioma.</p>
+  <div id="vista"></div>
+</section>
+
+<section class="card" aria-labelledby="h-zona">
+  <h2 id="h-zona" data-i18n="config.zona_titulo">Zona horaria</h2>
+  <p class="mut" data-i18n="config.zona_ayuda">La hora de cierre del mercado se calcula en Nueva York y se muestra en la zona que elijas.</p>
+  <label for="zona" data-i18n="config.zona_rotulo">Tu zona horaria</label>
+  <select id="zona"></select>
+  <p id="zona-ejemplo" role="status"></p>
+</section>
+
+<section class="card" aria-labelledby="h-apariencia">
+  <h2 id="h-apariencia" data-i18n="config.apariencia_titulo">Apariencia</h2>
+  <fieldset class="opciones-fila"><legend data-i18n="config.tema_leyenda">Tema</legend><div id="temas"></div></fieldset>
+  <fieldset class="opciones-fila"><legend data-i18n="config.colores_leyenda">Colores de alza y baja</legend><div id="colores"></div>
+    <p class="mut" data-i18n="config.colores_ayuda">El color nunca va solo: ▲ ▼ y el signo lo acompañan siempre.</p><p id="colores-muestra"></p></fieldset>
+</section>
+
+<section class="card" aria-labelledby="h-herramientas">
+  <h2 id="h-herramientas" data-i18n="config.herramientas_titulo">Herramientas de internacionalización</h2>
+  <p class="mut" data-i18n="config.herramientas_ayuda">Para probar la interfaz: la pseudolocalización alarga los textos y la auditoría cuenta los textos truncados y los desbordes.</p>
+  <p class="acciones" id="pseudo"></p>
+  <p class="acciones"><button type="button" id="auditar" class="primary" data-i18n="config.auditar">Auditar las páginas en este idioma</button>
+    <button type="button" id="exportar" data-i18n="config.exportar" disabled>Exportar CSV</button></p>
+  <p id="auditoria-estado" role="status" aria-live="polite"></p>
+  <div id="auditoria"></div>
+</section>
+<script src="js/lib/i18n-calidad.js"></script>
+<script src="js/common.js"></script>
+<script src="js/configuracion.js"></script>
+</main></body></html>

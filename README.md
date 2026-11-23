@@ -106,7 +106,7 @@ El sitio funciona con dos fuentes de datos intercambiables:
 │   ├── lib/                        algoritmos puros: markowitz, nsga2, nsga3, backtest, estadística, señales…
 │   ├── workers/                    recálculo fuera del hilo de la interfaz (Modo real)
 │   └── a11y/                       panel, bus de entrada, puntero, cámara, cabeza, manos, barrido, voz, sonido
-├── i18n/es-PE.json · en-US.json    todos los textos visibles
+├── locales/                        textos visibles: un JSON por idioma + index.json (manifiesto)
 ├── data/                           13 JSON del profesor (no se modifican)
 ├── data_real/                      mismo esquema con datos reales + cortes/ + precios/
 ├── pipeline/                       descarga, entrenamiento de modelos, optimización y backtesting (Python)

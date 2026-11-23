@@ -119,7 +119,9 @@
   function anunciarDisparadas() {
     const al = alertas().filter(a => alertaDisparada(a, activo(a.ticker)));
     const texto = al.length ? t("watchlist.anuncio_disparadas", { n: al.length, lista: al.map(condicion).join("; ") }) : t("watchlist.anuncio_ninguna");
-    $("#resumen-alertas").textContent = texto;
+    // Las alertas se evalúan con el último cierre: se dice cuándo fue, en la zona elegida (Spec G.4: «hora local»)
+    const mt = D.meta || {}, cierre = mt.fecha_corte ? EIA.instanteCierre(mt.fecha_corte) : null;
+    $("#resumen-alertas").textContent = cierre ? texto + " " + t("watchlist.segun_cierre", { fecha: EIA.fmt.fecha(mt.fecha_corte), hora_local: EIA.fmt.hora(cierre), zona: EIA.fmt.zonaNombre(EIA.zona(), cierre) }) : texto;
     if (!anunciado) { anunciado = true; EIA.ui.anunciar(texto); }
   }
 
@@ -207,8 +209,8 @@
   EIA.modulo({
     id: "watchlist",
     async cargar() {
-      const [c10, c11, c02] = await EIA.todos([EIA.datos(ARCHIVO_MERCADO), EIA.datos(ARCHIVO_DEMO), EIA.datos(ARCHIVO_CIERRES)]);
-      return { c10, c11, c02 };
+      const [c10, c11, c02, meta] = await EIA.todos([EIA.datos(ARCHIVO_MERCADO), EIA.datos(ARCHIVO_DEMO), EIA.datos(ARCHIVO_CIERRES), EIA.meta()]);
+      return { c10, c11, c02, meta };
     },
     pintar
   });

@@ -19,7 +19,10 @@
     "recalculo_listo": "Recálculo terminado: la página muestra el resultado calculado en tu navegador.",
     "recalculo_cancelado": "Recálculo cancelado.",
     "recalculo_error": "No se pudo recalcular: {error}",
-    "recalculo_sin_cierres": "No se encontraron los cierres reales (cierres_historicos.json), así que no se puede recalcular."
+    "recalculo_sin_cierres": "No se encontraron los cierres reales (cierres_historicos.json), así que no se puede recalcular.",
+    "cierre": "Cierre de la sesión del {fecha}: {hora_mercado} en Nueva York ({hora_local}, {zona})",
+    "si": "Sí",
+    "no": "No"
   },
   "nav": {
     "etiqueta": "Módulos del sistema",
@@ -53,7 +56,12 @@
     "anuncio_tema_oscuro": "Tema oscuro activado.",
     "anuncio_tema_claro": "Tema claro activado.",
     "anuncio_idioma": "Idioma: español (Perú).",
-    "pie_creditos": "Equipo A · IHC 2026-II · FISI-UNMSM. Sistema base y datos sintéticos de Ernesto D. Cancho-Rodríguez (CC BY 4.0)."
+    "pie_creditos": "Equipo A · IHC 2026-II · FISI-UNMSM. Sistema base y datos sintéticos de Ernesto D. Cancho-Rodríguez (CC BY 4.0).",
+    "configuracion": "Configuración",
+    "borrador": "Traducción en borrador generada con IA: puede tener errores y está pendiente de revisión por personas hablantes.",
+    "pseudo_activa": "Pseudolocalización activa: los textos se alargan para probar la interfaz.",
+    "idioma_enlace": "Elegir idioma",
+    "actualizado": "Datos generados el {fecha_hora} ({hace})"
   },
   "aviso": {
     "profesor": {
@@ -373,7 +381,8 @@
     "agregado": "{ticker} agregado a tu watchlist.",
     "quitado": "{ticker} quitado de tu watchlist.",
     "alerta_creada": "Alerta creada: {condicion}.",
-    "alerta_borrada": "Alerta borrada: {condicion}."
+    "alerta_borrada": "Alerta borrada: {condicion}.",
+    "segun_cierre": "Según el cierre del {fecha}: {hora_local} ({zona})."
   },
   "trading": {
     "titulo_pagina": "Trading simulado · Ernesto Investing AI",
@@ -1077,5 +1086,72 @@
       "Elastic Net": "EN",
       "SVR (RBF)": "SVR"
     }
+  },
+  "config": {
+    "titulo_pagina": "Configuración · Ernesto Investing AI",
+    "titulo": "Configuración",
+    "sub": "Idioma, región, zona horaria y apariencia. Se guardan solo en este navegador y valen para todas las páginas.",
+    "idioma_titulo": "Idioma y región",
+    "idioma_ayuda": "Cada idioma aparece con su nombre en su propio idioma (endónimo), sin banderas. Los marcados como borrador son traducciones generadas con IA que todavía no revisa una persona hablante.",
+    "idioma_leyenda": "Idioma de la interfaz",
+    "estado_fuente": "Idioma original",
+    "estado_completo": "Completo",
+    "estado_borrador": "Borrador",
+    "completitud": "{pct} traducido",
+    "escritura": "Escritura: {escritura}",
+    "direccion_ltr": "de izquierda a derecha",
+    "direccion_rtl": "de derecha a izquierda",
+    "voz_si": "Comandos de voz en este idioma",
+    "voz_no": "Comandos de voz en español",
+    "numeros_leyenda": "Dígitos",
+    "numeros_idioma": "Los del idioma ({ejemplo})",
+    "numeros_latinos": "Latinos ({ejemplo})",
+    "vista_titulo": "Vista previa con datos del sistema",
+    "vista_ayuda": "Los mismos datos con otro formato: la cantidad y la divisa no cambian al cambiar de idioma.",
+    "vista_precio": "Precio de {ticker}",
+    "vista_variacion": "Variación de hoy de {ticker}",
+    "vista_cierre": "Cierre de la sesión",
+    "vista_alertas": {
+      "one": "{n} alerta activa",
+      "other": "{n} alertas activas"
+    },
+    "vista_alertas_rotulo": "Alertas (plural del idioma)",
+    "vista_lista": "Lista",
+    "vista_relativo": "Datos generados",
+    "vista_orden": "Orden alfabético del idioma",
+    "zona_titulo": "Zona horaria",
+    "zona_ayuda": "La hora de cierre del mercado se calcula en Nueva York y se muestra en la zona que elijas.",
+    "zona_rotulo": "Tu zona horaria",
+    "zona_dispositivo": "La de este dispositivo: {zona}",
+    "zona_ejemplo": "La sesión del {fecha} cerró a las {hora_mercado} en Nueva York: las {hora_local} en tu zona ({zona}).",
+    "apariencia_titulo": "Apariencia",
+    "tema_leyenda": "Tema",
+    "tema_claro": "Claro",
+    "tema_oscuro": "Oscuro",
+    "colores_leyenda": "Colores de alza y baja",
+    "colores_auto": "Según el idioma ({actual})",
+    "colores_verde": "Verde sube, rojo baja",
+    "colores_rojo": "Rojo sube, verde baja (Japón, China, Corea)",
+    "colores_ayuda": "El color nunca va solo: ▲ ▼ y el signo lo acompañan siempre.",
+    "herramientas_titulo": "Herramientas de internacionalización",
+    "herramientas_ayuda": "Para probar la interfaz: la pseudolocalización alarga los textos y la auditoría cuenta, como en el ejercicio del laboratorio, los textos truncados y los desbordes de las páginas en el idioma activo.",
+    "pseudo_ltr": "Pseudolocalización (texto alargado)",
+    "pseudo_rtl": "Pseudolocalización de derecha a izquierda",
+    "volver_idioma": "Volver a {idioma}",
+    "auditar": "Auditar las páginas en este idioma",
+    "auditando": "Auditando {pagina} ({n} de {total})…",
+    "auditoria_lista": "Auditoría terminada: {truncados} truncados y {desbordes} desbordes en {paginas} páginas.",
+    "exportar": "Exportar CSV",
+    "tabla_caption": "Truncados y desbordes por página (prueba técnica automática: no son datos de personas)",
+    "col_pagina": "Página",
+    "col_truncados": "Truncados",
+    "col_desbordes": "Desbordes",
+    "col_scroll": "Desplazamiento horizontal",
+    "col_lang": "lang correcto",
+    "col_dir": "dir correcto",
+    "col_caracteres": "Caracteres",
+    "anuncio_zona": "Zona horaria: {zona}",
+    "anuncio_colores": "Colores de alza y baja actualizados",
+    "anuncio_numeros": "Dígitos actualizados"
   }
 }

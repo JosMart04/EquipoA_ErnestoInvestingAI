@@ -60,3 +60,15 @@ test("el foco siempre es visible: nadie quita el contorno de :focus-visible", ()
   assert.match(css, /:focus-visible\s*\{\s*outline:\s*3px solid var\(--ac\)/);
   assert.ok(!/:focus-visible\s*\{[^}]*outline:\s*(none|0)/.test(css));
 });
+
+test("colores «rojo sube» (Japón, China, Corea): los mismos tokens de cada tema intercambiados, sin perder contraste (Lab 13, zona 3)", () => {
+  const casos = [[claro, /:root\[data-colores="rojo-sube"\]\s*\{([^}]*)\}/], [oscuro, /:root\[data-colores="rojo-sube"\]\[data-theme="dark"\]\s*\{([^}]*)\}/],
+    [oscuro, /:root\[data-colores="rojo-sube"\]:not\(\[data-theme="light"\]\)\s*\{([^}]*)\}/]];
+  for (const [tema, patron] of casos) {
+    const r = tokens(patron);
+    for (const suf of ["", "-1", "-2", "-3", "-t"]) {
+      assert.equal(r["--up" + suf], tema["--dn" + suf], "--up" + suf + " debe tomar el valor de --dn" + suf);
+      assert.equal(r["--dn" + suf], tema["--up" + suf], "--dn" + suf + " debe tomar el valor de --up" + suf);
+    }
+  }
+});

@@ -25,7 +25,7 @@ Sistema web integrado **Ernesto Investing AI** (IHC 2026-II, FISI-UNMSM, Equipo 
 
 ## Tus rutas (Claude Code)
 
-`*.html`, `css/`, `js/`, `i18n/`, `assets/`, `tests/unit/`, `docs/plan/`, `docs/CONTRATO_DATOS.md`.
+`*.html`, `css/`, `js/`, `locales/`, `assets/`, `tests/unit/`, `docs/plan/`, `docs/CONTRATO_DATOS.md`.
 
 **No edites** las rutas de Codex: `pipeline/`, `data_real/`, `tools/validar_contrato.py`, `tests/e2e|a11y|datos|fixtures/`, `.github/workflows/`, `README.md`, `PROMPTS_USADOS.md`, `docs/informe/`. Tampoco `figma-src/` ni `data/`.
 

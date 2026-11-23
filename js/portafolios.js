@@ -49,8 +49,9 @@
   const pct = (x, d) => EIA.fmt.pct(x, d == null ? 2 : d, { signo: false });
   const PRINCIPALES = 5;
   let D = null, visto = null, enlazado = false;
-  /** Los textos libres del JSON (descripción, restricciones, razón) están en español: se marcan con lang="es". */
-  const textoDatos = s => `<span lang="es">${esc(s)}</span>`;
+  /** Textos libres del JSON (origen, descripción, restricciones, razón): traducidos si el idioma los tiene; si no, en
+      español con lang="es" (EIA.textoDatos). */
+  const textoDatos = s => EIA.textoDatos(s);
   const elegido = () => { const e = EIA.estado.get("eia_elegido"); return e && e.modo === EIA.modo() ? e : null; };
   const leerExcluidos = nivel => (((EIA.estado.get("eia_filtros") || {}).portafolios || {}).excluidos || {})[nivel] || [];
   function guardarExcluidos(nivel, lista) {

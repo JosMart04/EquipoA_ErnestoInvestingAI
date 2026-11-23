@@ -482,3 +482,35 @@ body.modo-puntero button.enlace, body.modo-puntero th button.orden, body.modo-pu
 
 /* Voz: números sobre los controles empatados en «clic en …» (se dice el número para elegir) */
 .voz-marca { position: absolute; z-index: 9997; min-width: 1.6rem; height: 1.6rem; padding: 0 .35rem; border-radius: 999px; background: var(--ac); color: var(--on-ac); font-weight: 700; font-size: .95rem; line-height: 1.6rem; text-align: center; box-shadow: 0 0 0 3px var(--bg); pointer-events: none; }
+
+/* ───────────── Internacionalización (Lab 13 · Spec W13 G.5) ───────────── */
+/* Enlace con aspecto de botón (⚙ Configuración en la cabecera) */
+a.btn { display: inline-flex; align-items: center; gap: .35rem; text-decoration: none; }
+a.btn[aria-current="page"] { background: var(--ac); color: var(--on-ac); border-color: var(--ac); }
+/* Franja bajo la cabecera: traducción en borrador o pseudolocalización activa (Spec G.5.7) */
+.franja-idioma { max-width: 86rem; margin: 0 auto; padding: .35rem 1rem; font-size: .88rem; background: var(--aviso); color: var(--fg); border-block-start: 1px solid var(--bd); }
+.franja-idioma a { color: var(--ac); }
+/* Pie: hora de cierre de la sesión en la zona elegida y hora de generación de los datos */
+.pie-cierre { color: var(--mut); font-size: .85rem; margin: .5rem 0 0; }
+/* Configuración */
+fieldset { border: 1px solid var(--bd); border-radius: 10px; padding: .5rem .9rem .75rem; margin: .75rem 0; min-inline-size: 0; }
+legend { font-weight: 600; padding-inline: .3rem; }
+.idiomas-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: .5rem; }
+.opcion { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .5rem; font-weight: 400; margin: .25rem 0; padding: .45rem .6rem; border: 1px solid var(--bd); border-radius: 8px; cursor: pointer; }
+.opcion:has(input:checked) { border-color: var(--ac); background: var(--hl); }
+.opcion input { width: auto; min-height: 0; margin: 0; }
+.opciones-fila .opcion { display: inline-flex; margin-inline-end: .5rem; }
+.endonimo { font-weight: 600; font-size: 1.02rem; }
+.idioma-detalle { flex-basis: 100%; font-size: .82rem; }
+.insignia-estado { font-size: .75rem; font-weight: 600; padding: .05rem .45rem; border-radius: 999px; border: 1px solid var(--bd-ctl); color: var(--fg); }
+.insignia-estado.estado-borrador { background: var(--aviso); }
+.vista-previa th { font-weight: 600; width: 40%; }
+/* Colores de alza y baja: «rojo sube» (Japón, China, Corea). Mismos tokens de cada tema, intercambiados:
+   el contraste es el mismo que el de la convención occidental (lo vigila tests/unit/nucleo.css.test.mjs). */
+:root[data-colores="rojo-sube"] { --up: #b3261e; --dn: #0a7d3c; --up-1: #fbe5e3; --dn-1: #e3f4e8; --up-2: #f5c9c5; --dn-2: #c4e8cf; --up-3: #eea69f; --dn-3: #9fd8b0; --up-t: #5c1410; --dn-t: #0a3d1f; }
+:root[data-colores="rojo-sube"][data-theme="dark"] { --up: #ff8a80; --dn: #52d18a; --up-1: #3a1a18; --dn-1: #15331f; --up-2: #522320; --dn-2: #1c4a2b; --up-3: #6e2d29; --dn-3: #236339; --up-t: #ffe1de; --dn-t: #d8f5e2; }
+@media (prefers-color-scheme: dark) {
+  :root[data-colores="rojo-sube"]:not([data-theme="light"]) { --up: #ff8a80; --dn: #52d18a; --up-1: #3a1a18; --dn-1: #15331f; --up-2: #522320; --dn-2: #1c4a2b; --up-3: #6e2d29; --dn-3: #236339; --up-t: #ffe1de; --dn-t: #d8f5e2; }
+}
+:root[data-colores="rojo-sube"][data-contraste="alto"] { --up: #8c0f0a; --dn: #005a26; }
+:root[data-colores="rojo-sube"][data-contraste="alto"][data-theme="dark"] { --up: #ffb3ad; --dn: #7dffb0; }

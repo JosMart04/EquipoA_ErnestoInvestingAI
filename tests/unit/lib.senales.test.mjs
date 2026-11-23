@@ -82,7 +82,7 @@ test("D-12: MediaPipe solo se menciona en js/a11y/camara.js y ninguna página lo
 
 test("los textos del centro de accesibilidad existen en los dos idiomas", () => {
   for (const l of ["es-PE", "en-US"]) {
-    const a = leerJSON("i18n", l + ".json").a11y;
+    const a = leerJSON("locales", l + ".json").a11y;
     for (const k of ["contraste", "movimiento", "espaciado", "enlaces", "decal", "invertirX", "invertirY"]) { assert.ok(a[k], l + " " + k); assert.ok(a[k + "_ayuda"], l + " " + k + "_ayuda"); }
     for (const k of ["mod_cabeza", "mod_manos", "clic_permanencia", "clic_parpadeo", "clic_boca"]) assert.ok(a[k], l + " " + k);
   }
