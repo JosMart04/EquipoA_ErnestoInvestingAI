@@ -49,7 +49,8 @@
     const valor = EIA.cartera.valor(c, precio), inicial = EIA.cartera.valorInicial(D.c11.portafolio_demo);
     const ordenes = (EIA.estado.get(EIA.cartera.claveOrdenes()) || []).length;
     const alertas = EIA.alertas.lista(D.c11).filter(a => a.activa).length;
-    const kpi = (rot, html, href) => `<div class="card kpi kpi-chico"><div class="mut">${esc(rot)}</div><div class="v">${html}</div>${href ? `<a href="${href}" class="kpi-enlace">${esc(t("perfil.ver"))}</a>` : ""}</div>`;
+    // Lista compacta: la etiqueta es el enlace a la página de origen (sin «Ver» repetidos para el lector de pantalla)
+    const kpi = (rot, html, href) => `<div><dt>${href ? `<a href="${href}">${esc(rot)}</a>` : esc(rot)}</dt><dd>${html}</dd></div>`;
     $("#actividad").innerHTML = [
       kpi(t("perfil.act_valor"), esc(usd(valor)), "trading.html"),
       kpi(t("perfil.act_retorno"), EIA.ui.variacion((valor / inicial - 1) * 100)),

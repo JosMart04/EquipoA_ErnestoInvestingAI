@@ -1256,7 +1256,9 @@
       "Tope {#} % por activo; solo elegibles declarados": "Предел {#} % на актив; только заявленные допустимые активы",
       "Mayor Sharpe del frente": "Наибольший Sharpe фронта",
       "Mayor retorno esperado del frente": "Наибольшая ожидаемая доходность фронта",
-      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Скорректированные реальные данные Yahoo Finance. Walk-forward каждые {#} сессий; окно {#}; моментум {#}; комиссия {#} б. п. с оборота относительно весов, дрейфующих вместе с ценами. Решение на закрытии, исполнение в следующую сессию. Осторожный — минимальная дисперсия и Умеренный — максимальный Sharpe, предел {#} %; Динамичный — максимальная доходность, предел {#} %. Ориентиры «купить и держать» и {#}/N ежедневно без комиссии. Будущие прогнозы не используются. Результаты не подгонялись под выигрыш."
+      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Скорректированные реальные данные Yahoo Finance. Walk-forward каждые {#} сессий; окно {#}; моментум {#}; комиссия {#} б. п. с оборота относительно весов, дрейфующих вместе с ценами. Решение на закрытии, исполнение в следующую сессию. Осторожный — минимальная дисперсия и Умеренный — максимальный Sharpe, предел {#} %; Динамичный — максимальная доходность, предел {#} %. Ориентиры «купить и держать» и {#}/N ежедневно без комиссии. Будущие прогнозы не используются. Результаты не подгонялись под выигрыш.",
+      "Solo el ultimo precio de cada ticker y las estimaciones de volatilidad anual, beta y correlacion de las ultimas {#} sesiones.": "Только последняя цена каждого тикера и оценки годовой волатильности, беты и корреляции за последние {#} сессий.",
+      "Toda la historia de {#} sesiones, el OHLCV, las probabilidades de los clasificadores, los {#} precios futuros de cada regresor, los frentes de Markowitz/NSGA-II/NSGA-III, las carteras y el backtesting.": "Вся история из {#} сессий, OHLCV, вероятности классификаторов, {#} будущих цен каждого регрессора, фронты Markowitz/NSGA-II/NSGA-III, портфели и бэктестинг."
     }
   },
   "config": {
@@ -1423,7 +1425,6 @@
     "act_ordenes": "Исполненные заявки",
     "act_alertas": "Активные оповещения",
     "act_watch": "Активы в списке наблюдения",
-    "ver": "Открыть",
     "riesgo_titulo": "Профиль риска",
     "riesgo_intro": "Несколько коротких вопросов подскажут подходящий уровень портфеля.",
     "calcular": "Показать мой профиль",

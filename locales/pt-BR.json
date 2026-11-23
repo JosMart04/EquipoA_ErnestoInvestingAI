@@ -1208,7 +1208,9 @@
       "Tope {#} % por activo; solo elegibles declarados": "Teto de {#}% por ativo; só os elegíveis declarados",
       "Mayor Sharpe del frente": "Maior Sharpe da frente",
       "Mayor retorno esperado del frente": "Maior retorno esperado da frente",
-      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Dados reais ajustados do Yahoo Finance. Walk-forward a cada {#} pregões; janela {#}; momentum {#}; comissão de {#} pb sobre o giro contra pesos que derivam com os preços. Decisão no fechamento, execução no pregão seguinte. Conservador variância mínima e Moderado Sharpe máximo, teto de {#}%; Agressivo retorno máximo, teto de {#}%. Referências buy-and-hold e {#}/N diário sem comissão. Não se usam previsões futuras. Resultados sem ajuste para ganhar."
+      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Dados reais ajustados do Yahoo Finance. Walk-forward a cada {#} pregões; janela {#}; momentum {#}; comissão de {#} pb sobre o giro contra pesos que derivam com os preços. Decisão no fechamento, execução no pregão seguinte. Conservador variância mínima e Moderado Sharpe máximo, teto de {#}%; Agressivo retorno máximo, teto de {#}%. Referências buy-and-hold e {#}/N diário sem comissão. Não se usam previsões futuras. Resultados sem ajuste para ganhar.",
+      "Solo el ultimo precio de cada ticker y las estimaciones de volatilidad anual, beta y correlacion de las ultimas {#} sesiones.": "Apenas o último preço de cada ticker e as estimativas de volatilidade anual, beta e correlação das últimas {#} sessões.",
+      "Toda la historia de {#} sesiones, el OHLCV, las probabilidades de los clasificadores, los {#} precios futuros de cada regresor, los frentes de Markowitz/NSGA-II/NSGA-III, las carteras y el backtesting.": "Todo o histórico de {#} sessões, o OHLCV, as probabilidades dos classificadores, os {#} preços futuros de cada regressor, as fronteiras de Markowitz/NSGA-II/NSGA-III, as carteiras e o backtesting."
     }
   },
   "config": {
@@ -1369,7 +1371,6 @@
     "act_ordenes": "Ordens executadas",
     "act_alertas": "Alertas ativos",
     "act_watch": "Ativos na watchlist",
-    "ver": "Ver",
     "riesgo_titulo": "Perfil de risco",
     "riesgo_intro": "Algumas perguntas curtas indicam um dos níveis de carteira de Carteiras.",
     "calcular": "Ver meu perfil",

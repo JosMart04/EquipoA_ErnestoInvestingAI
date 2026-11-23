@@ -1162,17 +1162,24 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
       EIA.tour._ubicar(caja, obj);
       $("#tour-tit", caja).focus();
     },
-    /** Globo junto al elemento: debajo si cabe, si no encima; alineado al inicio (derecha en RTL) y dentro de la ventana. */
+    /** Globo junto al elemento: debajo si cabe, si no encima; si el elemento es muy alto (la barra lateral), a su lado.
+        Alineado al inicio (derecha en RTL) y siempre dentro de la ventana. */
     _ubicar(caja, obj) {
       const vw = document.documentElement.clientWidth, vh = global.innerHeight, ancho = Math.min(360, vw - 24);
       caja.style.width = ancho + "px";
       const r = obj ? obj.getBoundingClientRect() : { top: 80, bottom: 80, left: 12, right: 12 + ancho };
-      const alto = caja.offsetHeight || 200;
-      const top = r.bottom + 12 + alto < vh ? r.bottom + 12 : Math.max(12, r.top - 12 - alto);
-      const rtl = document.documentElement.dir === "rtl";
-      let left = rtl ? r.right - ancho : r.left;
-      left = Math.min(Math.max(12, left), vw - ancho - 12);
-      caja.style.top = Math.round(top) + "px"; caja.style.left = Math.round(left) + "px";
+      const alto = caja.offsetHeight || 200, rtl = document.documentElement.dir === "rtl";
+      const dentro = (v, max) => Math.min(Math.max(12, v), max);
+      let top, left;
+      if (r.bottom + 12 + alto < vh) { top = r.bottom + 12; left = rtl ? r.right - ancho : r.left; }
+      else if (r.top - 12 - alto > 0) { top = r.top - 12 - alto; left = rtl ? r.right - ancho : r.left; }
+      else {
+        // Ni debajo ni encima: al costado que mira al contenido (derecha en LTR, izquierda en RTL) si cabe
+        const lado = rtl ? r.left - 12 - ancho : r.right + 12;
+        left = lado >= 12 && lado + ancho <= vw - 12 ? lado : (rtl ? r.right - ancho : r.left);
+        top = r.top;
+      }
+      caja.style.top = Math.round(dentro(top, vh - alto - 12)) + "px"; caja.style.left = Math.round(dentro(left, vw - ancho - 12)) + "px";
     },
     terminar() {
       $$(".tour-objetivo").forEach(n => n.classList.remove("tour-objetivo"));

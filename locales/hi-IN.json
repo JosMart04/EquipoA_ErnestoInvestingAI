@@ -1208,7 +1208,9 @@
       "Tope {#} % por activo; solo elegibles declarados": "हर एसेट की सीमा {#} %; केवल घोषित योग्य एसेट",
       "Mayor Sharpe del frente": "फ़्रंट का सबसे ऊँचा Sharpe",
       "Mayor retorno esperado del frente": "फ़्रंट का सबसे ऊँचा अपेक्षित रिटर्न",
-      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Yahoo Finance का समायोजित वास्तविक डेटा। हर {#} सत्र में वॉक-फ़ॉरवर्ड; अवधि {#}; मोमेंटम {#}; भावों के साथ बदलते भारों के मुकाबले टर्नओवर पर {#} bp कमीशन। क्लोज़ पर निर्णय, अगले सत्र में अमल। सतर्क न्यूनतम प्रसरण और संतुलित अधिकतम Sharpe, सीमा {#} %; आक्रामक अधिकतम रिटर्न, सीमा {#} %। संदर्भ: खरीदो-और-रखो तथा बिना कमीशन दैनिक {#}/N। भविष्य के पूर्वानुमान इस्तेमाल नहीं होते। परिणाम जीतने के लिए समायोजित नहीं।"
+      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Yahoo Finance का समायोजित वास्तविक डेटा। हर {#} सत्र में वॉक-फ़ॉरवर्ड; अवधि {#}; मोमेंटम {#}; भावों के साथ बदलते भारों के मुकाबले टर्नओवर पर {#} bp कमीशन। क्लोज़ पर निर्णय, अगले सत्र में अमल। सतर्क न्यूनतम प्रसरण और संतुलित अधिकतम Sharpe, सीमा {#} %; आक्रामक अधिकतम रिटर्न, सीमा {#} %। संदर्भ: खरीदो-और-रखो तथा बिना कमीशन दैनिक {#}/N। भविष्य के पूर्वानुमान इस्तेमाल नहीं होते। परिणाम जीतने के लिए समायोजित नहीं।",
+      "Solo el ultimo precio de cada ticker y las estimaciones de volatilidad anual, beta y correlacion de las ultimas {#} sesiones.": "केवल हर टिकर की अंतिम कीमत, और पिछले {#} सत्रों की वार्षिक अस्थिरता, बीटा और सहसंबंध के अनुमान।",
+      "Toda la historia de {#} sesiones, el OHLCV, las probabilidades de los clasificadores, los {#} precios futuros de cada regresor, los frentes de Markowitz/NSGA-II/NSGA-III, las carteras y el backtesting.": "{#} सत्रों का पूरा इतिहास, OHLCV, वर्गीकरणकर्ताओं की संभावनाएँ, हर रिग्रेशन मॉडल की {#} भावी कीमतें, Markowitz/NSGA-II/NSGA-III मोर्चे, पोर्टफ़ोलियो और बैकटेस्टिंग।"
     }
   },
   "config": {
@@ -1369,7 +1371,6 @@
     "act_ordenes": "पूरे हुए ऑर्डर",
     "act_alertas": "सक्रिय अलर्ट",
     "act_watch": "वॉचलिस्ट के एसेट",
-    "ver": "देखें",
     "riesgo_titulo": "जोखिम प्रोफ़ाइल",
     "riesgo_intro": "कुछ छोटे सवाल आपको पोर्टफ़ोलियो के किसी स्तर की ओर इशारा करते हैं।",
     "calcular": "मेरी प्रोफ़ाइल देखें",

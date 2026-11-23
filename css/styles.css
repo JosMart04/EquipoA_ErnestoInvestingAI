@@ -736,10 +736,13 @@ kbd { font: inherit; font-size: .78em; padding: .05rem .35rem; border: 1px solid
 .avatar-grande { width: 3.5rem; height: 3.5rem; font-size: 1.3rem; }
 .avatar-grande .ico { width: 1.6rem; height: 1.6rem; }
 .perfil-saludo { margin: 0; font-weight: 600; font-size: 1.1rem; }
-.actividad { grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
-.actividad .v { white-space: nowrap; }
+.avatar-grande { flex: none; }
+.lista-kpi { margin: 0; }
+.lista-kpi > div { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .25rem 1rem; padding: .6rem 0; border-bottom: 1px solid var(--bd); }
+.lista-kpi > div:last-child { border-bottom: 0; }
+.lista-kpi dt { color: var(--mut); }
+.lista-kpi dd { margin: 0; font-weight: 700; font-size: 1.1rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .perfil-saludo.mut { font-weight: 400; font-size: 1rem; }
-.kpi-enlace { font-size: .85rem; }
 fieldset.pregunta { margin: .5rem 0; }
 fieldset.pregunta .opcion { display: flex; align-items: center; gap: .5rem; }
 .resultado-riesgo { margin-top: 1rem; padding: .9rem 1rem; border: 1px solid var(--bd); border-inline-start: 4px solid var(--ac); border-radius: var(--r-2); background: var(--panel-2); }

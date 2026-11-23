@@ -1232,7 +1232,9 @@
       "Tope {#} % por activo; solo elegibles declarados": "תקרה של {#} % לנכס; רק נכסים כשירים מוצהרים",
       "Mayor Sharpe del frente": "ה־Sharpe הגבוה ביותר בחזית",
       "Mayor retorno esperado del frente": "התשואה הצפויה הגבוהה ביותר בחזית",
-      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "נתונים אמיתיים מתואמים של Yahoo Finance. Walk-forward כל {#} ימי מסחר; חלון {#}; מומנטום {#}; עמלה של {#} נ״ב על המחזור לעומת משקלות שנסחפים עם המחירים. החלטה בסגירה, ביצוע ביום המסחר הבא. זהיר – שונות מזערית ומאוזן – Sharpe מרבי, תקרה של {#} %; נועז – תשואה מרבית, תקרה של {#} %. ייחוסים: קנה והשאר, ו־{#}/N יומי בלי עמלה. לא נעשה שימוש בתחזיות עתידיות. התוצאות לא כוונו כדי לנצח."
+      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "נתונים אמיתיים מתואמים של Yahoo Finance. Walk-forward כל {#} ימי מסחר; חלון {#}; מומנטום {#}; עמלה של {#} נ״ב על המחזור לעומת משקלות שנסחפים עם המחירים. החלטה בסגירה, ביצוע ביום המסחר הבא. זהיר – שונות מזערית ומאוזן – Sharpe מרבי, תקרה של {#} %; נועז – תשואה מרבית, תקרה של {#} %. ייחוסים: קנה והשאר, ו־{#}/N יומי בלי עמלה. לא נעשה שימוש בתחזיות עתידיות. התוצאות לא כוונו כדי לנצח.",
+      "Solo el ultimo precio de cada ticker y las estimaciones de volatilidad anual, beta y correlacion de las ultimas {#} sesiones.": "רק המחיר האחרון של כל נכס, ואומדני התנודתיות השנתית, הבטא והמתאם של {#} ימי המסחר האחרונים.",
+      "Toda la historia de {#} sesiones, el OHLCV, las probabilidades de los clasificadores, los {#} precios futuros de cada regresor, los frentes de Markowitz/NSGA-II/NSGA-III, las carteras y el backtesting.": "כל ההיסטוריה של {#} ימי מסחר, נתוני OHLCV, ההסתברויות של המסווגים, {#} המחירים העתידיים של כל מודל רגרסיה, החזיתות של Markowitz/NSGA-II/NSGA-III, התיקים והבדיקה לאחור."
     }
   },
   "config": {
@@ -1396,7 +1398,6 @@
     "act_ordenes": "הוראות שבוצעו",
     "act_alertas": "התראות פעילות",
     "act_watch": "נכסים ברשימת המעקב",
-    "ver": "הצגה",
     "riesgo_titulo": "פרופיל סיכון",
     "riesgo_intro": "כמה שאלות קצרות מכוונות אותך לאחת מרמות התיק בדף התיקים.",
     "calcular": "הצגת הפרופיל שלי",

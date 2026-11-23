@@ -1208,7 +1208,9 @@
       "Tope {#} % por activo; solo elegibles declarados": "Plafond de {#} % par actif ; seulement les éligibles déclarés",
       "Mayor Sharpe del frente": "Sharpe le plus élevé du front",
       "Mayor retorno esperado del frente": "Rendement attendu le plus élevé du front",
-      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Données réelles ajustées de Yahoo Finance. Walk-forward toutes les {#} séances ; fenêtre {#} ; momentum {#} ; commission de {#} pb sur la rotation par rapport à des poids qui dérivent avec les prix. Décision à la clôture, exécution à la séance suivante. Prudent variance minimale et Modéré Sharpe maximal, plafond de {#} % ; Dynamique rendement maximal, plafond de {#} %. Références achat-conservation et {#}/N quotidien sans commission. Aucune prédiction future n’est utilisée. Résultats non ajustés pour gagner."
+      "Datos reales ajustados de Yahoo Finance. Walk-forward cada {#} sesiones; ventana {#}; momentum {#}; comision {#} pb sobre turnover contra pesos que derivan con precios. Decision al cierre, publicacion en la sesion siguiente. Conservador minima varianza y Moderado maximo Sharpe, tope {#} %; Agresivo maximo retorno, tope {#} %. Referencias buy-and-hold y {#}/N diario sin comision. No se usan predicciones futuras. Resultados sin ajustar para ganar.": "Données réelles ajustées de Yahoo Finance. Walk-forward toutes les {#} séances ; fenêtre {#} ; momentum {#} ; commission de {#} pb sur la rotation par rapport à des poids qui dérivent avec les prix. Décision à la clôture, exécution à la séance suivante. Prudent variance minimale et Modéré Sharpe maximal, plafond de {#} % ; Dynamique rendement maximal, plafond de {#} %. Références achat-conservation et {#}/N quotidien sans commission. Aucune prédiction future n’est utilisée. Résultats non ajustés pour gagner.",
+      "Solo el ultimo precio de cada ticker y las estimaciones de volatilidad anual, beta y correlacion de las ultimas {#} sesiones.": "Uniquement le dernier prix de chaque ticker et les estimations de volatilité annuelle, de bêta et de corrélation sur les {#} dernières séances.",
+      "Toda la historia de {#} sesiones, el OHLCV, las probabilidades de los clasificadores, los {#} precios futuros de cada regresor, los frentes de Markowitz/NSGA-II/NSGA-III, las carteras y el backtesting.": "Tout l’historique de {#} séances, l’OHLCV, les probabilités des classifieurs, les {#} prix futurs de chaque régresseur, les frontières de Markowitz/NSGA-II/NSGA-III, les portefeuilles et le backtesting."
     }
   },
   "config": {
@@ -1369,7 +1371,6 @@
     "act_ordenes": "Ordres exécutés",
     "act_alertas": "Alertes actives",
     "act_watch": "Actifs de la liste de suivi",
-    "ver": "Voir",
     "riesgo_titulo": "Profil de risque",
     "riesgo_intro": "Quelques questions courtes vous orientent vers l’un des niveaux de portefeuille de Portefeuilles.",
     "calcular": "Voir mon profil",

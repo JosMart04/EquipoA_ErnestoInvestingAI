@@ -780,3 +780,33 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Para CX (rutas de Codex):** `tests/e2e/soporte.mjs` suma perfil, ayuda y acerca a `paginasSoporte`, como en T-111 y T-112.
 - **Archivos / PR:** rama `cc/T-113-cuenta`
 - **Contrato:** sin cambios
+
+### MSG-20261123-2330 · CC · INFO
+- **Asunto:** Evidencia de la iteración 2: capturas antes y después, medición de las 16 páginas y documentación (T-114)
+- **Qué cambió:**
+  - **`tools/capturas_ui.mjs`:**
+    - captura la interfaz **antes** (etiqueta `ui-antes`, en un worktree temporal) y **después** (esta rama) con Playwright y Edge;
+    - usa perfil limpio, «reducir movimiento» y la hora fija (20-nov-2026, 10:30 en Nueva York);
+    - las acciones se hacen con los controles reales: órdenes confirmadas, buscador, cajón, recorrido, perfil de riesgo.
+  - **`docs/capturas/ui/`:** 8 pares antes/después (Dashboard claro, oscuro, 375 px, menú móvil y árabe; Clasificación; Trading; Configuración) y 12 pantallas nuevas, con un índice (`README.md`).
+  - **Medición i18n de las 16 páginas:**
+    - `medir_i18n.mjs` (versión B) toma por defecto las páginas de `PAGINAS_NAV`;
+    - 832 mediciones con **0 truncados, 0 desbordes y 0 scroll horizontal**, y `lang`/`dir` correctos;
+    - resultado en `docs/i18n/iteracion2_16_paginas_PRUEBA_TECNICA_BOT.csv` y su sección en `docs/i18n/README.md`;
+    - `dinero_fijo` sigue siendo el falso positivo de los USD de `Intl`.
+  - **Documentación:**
+    - README con las pantallas de apoyo, las características de la interfaz y las cifras de pruebas al día;
+    - guía de uso para personas (`docs/guia-usuario/uso.md`);
+    - decisión **D-26**;
+    - HANDOFF y TABLERO.
+  - **Correcciones encontradas al revisar las capturas:**
+    - el globo del recorrido tapaba la barra lateral (no cabía ni arriba ni abajo): ahora va al costado;
+    - la actividad del Perfil eran cinco tarjetas apiladas con «Ver» repetidos: ahora es una lista compacta y cada etiqueta es el enlace;
+    - el avatar del Perfil se deformaba a 375 px;
+    - los textos «qué es real / sintético» del archivo 13 salían en español en Acerca de: se tradujeron en `datos.textos` de 11 idiomas.
+- **Pruebas:**
+  - 252 pruebas JS;
+  - axe local sin violaciones en Perfil, Acerca de y Dashboard × 1280/390 × claro/oscuro × profesor/real.
+- **PR:** #49 (T-113) fusionado con la CI en verde. Con T-114 se cierra la iteración 2.
+- **Archivos / PR:** rama `cc/T-114-evidencia`
+- **Contrato:** sin cambios
