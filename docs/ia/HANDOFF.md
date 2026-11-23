@@ -6,7 +6,7 @@
 ## Última actualización
 - Fecha y hora: 2026-11-23 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-110-shell-diseno` (iteración 2: shell con barra lateral y sistema de diseño)
+- Rama / último commit: `cc/T-113-cuenta` (iteración 2: Perfil, Ayuda, Acerca de, buscador y recorrido)
 
 ## Hecho (con evidencia)
 
@@ -74,13 +74,14 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 ## En curso (estado exacto)
 - **Lab 13 (internacionalización):** terminado y fusionado (PR #39…#44).
 - **Iteración 2 · interfaz «ultra-realista» (plan aprobado el 23-nov; Spec W13 G.1, G.4 y G.9):**
-  - **T-110** está en revisión en `cc/T-110-shell-diseno`: barra lateral por bloques, barra superior, cajón móvil, tokens de diseño, iconos propios y estados.
-  - Faltan **T-111** (detalle de activo, comparador y volumen), **T-112** (confirmación de orden, historial, notificaciones, estado del mercado y cinta), **T-113** (perfil, ayuda, acerca de, buscador Ctrl+K y tour) y **T-114** (evidencia).
+  - En `main`: **T-110** (PR #45: barra lateral, barra superior, cajón móvil, tokens, iconos y estados), **T-111** (PR #47: detalle de activo, comparador y volumen) y **T-112** (PR #48: confirmación de orden, historial, notificaciones, estado del mercado y cinta).
+  - **T-113** está en revisión en `cc/T-113-cuenta`: Perfil con perfil de riesgo, Ayuda, Acerca de, buscador Ctrl+K y recorrido guiado.
+  - Falta **T-114** (evidencia: capturas antes/después, medición i18n de 16 páginas, README, guía de usuario, D-26).
   - El plan completo está en `C:\Users\JosueMart\.claude\plans\mensaje-para-cc-snazzy-creek.md`.
 
 ## Siguiente paso exacto
 0. **Iteración 2:**
-   - fusionar T-110 con la CI en verde y seguir con T-111;
+   - fusionar T-113 con la CI en verde y hacer T-114 (en `tools/i18n/medir_i18n.mjs` y `tools/capturas.mjs`, la lista de páginas debe salir de `PAGINAS_NAV`);
    - cada PR trae sus claves en los 13 idiomas (`node tools/i18n/fusionar.mjs <lote.json>`);
    - la etiqueta `ui-antes` marca la interfaz anterior, para las capturas de antes.
 
@@ -125,7 +126,13 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
   - La barra lateral sale de `NAVEGACION` en `js/common.js`: `[bloque, [[archivo, clave, id, icono, ★]]]`. `PAGES` se conserva igual por compatibilidad con la base del profesor; las pruebas lo exigen.
   - Para agregar una página: su fila en `NAVEGACION`, su icono en `assets/iconos.svg` y sus claves en los 13 idiomas.
   - Se conservan los ID `#btn-modulos` (☰ del cajón), `#nav-modulos`, `#ctl-modo`, `#tema` y `#btn-a11y`, que usan E2E, el barrido y la voz.
-  - El cajón se usa por debajo de 1180 px (el mismo corte que usan las pruebas E2E).
+  - El cajón se usa por debajo de 1180 px (el mismo corte que usan las pruebas E2E). Cerrado sigue en el DOM con `visibility: hidden`: para saber si algo se ve no basta `offsetParent`.
+- **Iteración 2 (T-111…T-113):**
+  - Las alertas y las notificaciones viven en el núcleo (`EIA.alertas`, `EIA.notificaciones`) y se evalúan en todas las páginas; la cinta lleva `data-marquesina` para que `medir()` no la cuente como texto truncado.
+  - El buscador (`EIA.abrirBuscador`) arma sus fuentes con `PAGINAS_NAV` y el universo: una página nueva aparece sola. Sin texto, muestra páginas y acciones.
+  - El recorrido (`EIA.tour.PASOS`) **no se abre solo** (Modo profesor y E2E): se ofrece con una franja en el Dashboard mientras `eia_tour` no exista.
+  - Voz: en `interpretar` gana el nombre de módulo **más largo** («注文履歴» es el historial aunque «注文» sea Trading). Una prueba exige que ningún nombre se repita entre dos módulos en cada idioma.
+  - Ninguna regla `:focus-visible { outline: none }`: una prueba la prohíbe.
 - **Idiomas (Lab 13):**
   - **Agregar un idioma** = `locales/<tag>.json` + una línea en `locales/index.json`. Después corre `node tools/i18n/revisar.mjs --escribir` (completitud) y `node tools/i18n/hreflang.mjs` (enlaces `hreflang` de las 10 páginas). Para armar un diccionario por lotes: `node tools/i18n/ensamblar.mjs <carpeta> <tag> [--parcial]`.
   - **Las pruebas exigen:**

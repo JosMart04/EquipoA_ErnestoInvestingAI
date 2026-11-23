@@ -45,7 +45,8 @@
     ["cartera", [["optimizador.html", "nav.optimizador", "optimizador", "optimizador", 1], ["portafolios.html", "nav.portafolios", "portafolios", "portafolios", 1],
       ["backtesting.html", "nav.backtesting", "backtesting", "backtesting", 1]]],
     ["operacion", [["trading.html", "nav.trading", "trading", "trading"], ["leaderboard.html", "nav.leaderboard", "leaderboard", "trofeo"]]],
-    ["cuenta", [["configuracion.html", "shell.configuracion", "configuracion", "ajustes"]]]
+    ["cuenta", [["perfil.html", "nav.perfil", "perfil", "usuario"], ["configuracion.html", "shell.configuracion", "configuracion", "ajustes"],
+      ["ayuda.html", "nav.ayuda", "ayuda", "ayuda"], ["acerca.html", "nav.acerca", "acerca", "info"]]]
   ];
   /** Todas las páginas de la barra lateral, en orden: [archivo, clave, id, icono, nuevo, bloque]. */
   const PAGINAS_NAV = NAVEGACION.flatMap(([bloque, l]) => l.map(p => [p[0], p[1], p[2], p[3], p[4] || 0, bloque]));
@@ -907,13 +908,14 @@
   }
   function plantillaCabecera() {
     const t = EIA.t, modo = EIA.modo(), I = EIA.ui.icono;
+    const alias = String((EIA.estado.get("eia_perfil") || {}).alias || "").trim(), ini = EIA.iniciales(alias);
     const mp = metaLista.profesor, mr = metaLista.real;
     const rotuloProfesor = mp && mp.fecha_corte ? t("shell.modo_profesor", { fecha: EIA.fmt.fecha(mp.fecha_corte) }) : t("shell.modo_profesor_sin_fecha");
     const rotuloReal = mr && mr.disponible && mr.fecha_corte ? t("shell.modo_real", { fecha: EIA.fmt.fecha(mr.fecha_corte) }) : t("shell.modo_real_sin_fecha");
     return `<div class="bar">
   <button id="btn-modulos" type="button" class="solo-cajon ctl-ico" aria-expanded="${menuAbierto}" aria-controls="lateral" title="${esc(t("nav.modulos"))}">${I("menu")}<span class="sr">${esc(t("nav.modulos"))}</span></button>
   <span class="solo-cajon marca-bar">${marca()}</span>
-  <div id="bar-medio" class="bar-medio"><p id="estado-mercado" class="mercado"></p></div>
+  <div id="bar-medio" class="bar-medio"><button id="btn-buscar" type="button" class="buscar-disparador" aria-haspopup="dialog" title="${esc(t("shell.buscar_titulo"))}">${I("buscar")}<span class="buscar-txt">${esc(t("shell.buscar"))}</span><kbd aria-hidden="true">Ctrl K</kbd></button><p id="estado-mercado" class="mercado"></p></div>
   <div class="controles">
     <div id="ctl-modo" class="seg" role="group" aria-label="${esc(t("shell.datos_grupo"))}">
       <span class="seg-rot" aria-hidden="true">${esc(t("shell.datos"))}</span>
@@ -926,10 +928,11 @@
   </div>
   <div class="notif">${plantillaCampana()}</div>
   <div class="cuenta">
-      <button id="btn-cuenta" type="button" aria-expanded="${cuentaAbierta}" aria-controls="menu-cuenta" title="${esc(t("shell.cuenta"))}"><span class="avatar" aria-hidden="true">${I("usuario")}</span><span class="sr">${esc(t("shell.cuenta"))}</span>${I("abajo", "ico-chev")}</button>
+      <button id="btn-cuenta" type="button" aria-expanded="${cuentaAbierta}" aria-controls="menu-cuenta" title="${esc(t("shell.cuenta"))}"><span class="avatar" aria-hidden="true">${ini ? esc(ini) : I("usuario")}</span><span class="sr">${esc(t("shell.cuenta"))}</span>${I("abajo", "ico-chev")}</button>
       <div id="menu-cuenta" class="menu-cuenta"${cuentaAbierta ? "" : " hidden"}>
-        <p class="menu-cab">${esc(t("shell.cuenta_demo"))}</p>
-        <ul><li><a href="configuracion.html">${I("ajustes")}<span>${esc(t("shell.configuracion"))}</span></a></li></ul>
+        ${alias ? `<p class="menu-hola">${esc(t("shell.cuenta_saludo", { alias }))}</p>` : ""}<p class="menu-cab">${esc(t("shell.cuenta_demo"))}</p>
+        <ul>${NAVEGACION.find(b => b[0] === "cuenta")[1].map(p => `<li><a href="${p[0]}"${p[2] === document.body.dataset.page ? ' aria-current="page"' : ""}>${I(p[3])}<span>${esc(t(p[1]))}</span></a></li>`).join("")}
+          <li><button type="button" id="menu-tour" class="menu-accion">${I("ayuda")}<span>${esc(t("shell.accion_tour"))}</span></button></li></ul>
       </div>
   </div>
 </div>${franjaIdioma()}`;
@@ -1029,6 +1032,173 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     caja.innerHTML = `<button type="button" id="cinta-pausa" class="cinta-pausa" aria-pressed="${pausada}" title="${esc(t("shell.cinta_pausar"))}">${EIA.ui.icono(pausada ? "reproducir" : "pausa")}<span class="sr">${esc(t("shell.cinta_pausar"))}</span></button>
 <div class="cinta-ventana" data-marquesina><ul class="cinta-pista">${items}</ul><ul class="cinta-pista cinta-copia" aria-hidden="true">${items}</ul></div>`;
   }
+  /* ───────────── Buscador global (Ctrl+K o «/»): activos, páginas y acciones — patrón combobox con listbox (WAI-ARIA) ───────────── */
+  /** Minúsculas, sin tildes ni marcas combinantes, en cualquier escritura (la misma idea que la voz). Pura. */
+  EIA.normalizar = s => String(s == null ? "" : s).normalize("NFKC").toLowerCase().normalize("NFD").replace(/\p{M}/gu, "").replace(/\s+/g, " ").trim();
+  /** Pura: los resultados de un texto entre fuentes [{claves: [...], …}]: primero la coincidencia exacta, luego al inicio y luego contenida. */
+  EIA.buscarEn = function (fuentes, q, max) {
+    const n = EIA.normalizar(q);
+    if (!n) return [];
+    const puntos = f => f.claves.reduce((m, k) => { const c = EIA.normalizar(k); return Math.max(m, c === n ? 3 : c.startsWith(n) ? 2 : c.includes(n) ? 1 : 0); }, 0);
+    return fuentes.map((f, i) => ({ f, p: puntos(f), i })).filter(x => x.p).sort((a, b) => b.p - a.p || a.i - b.i).slice(0, max || 15).map(x => x.f);
+  };
+  /** Acciones del buscador: [id, clave del texto, icono, función]. */
+  const ACCIONES_BUSCADOR = () => [
+    ["tema", "shell.accion_tema", "tema", () => EIA.setTema(EIA.tema() === "dark" ? "light" : "dark")],
+    ["modo", EIA.modo() === "real" ? "shell.accion_modo_profesor" : "shell.accion_modo_real", "dashboard", () => EIA.setModo(EIA.modo() === "real" ? "profesor" : "real")],
+    ["a11y", "shell.accion_a11y", "accesibilidad", () => EIA.abrirAccesibilidad()],
+    ["voz", "shell.accion_voz", "info", () => EIA.cargar("js/a11y/voz.js").then(() => EIA.voz.alternar()).catch(() => {})],
+    ["tour", "shell.accion_tour", "ayuda", () => EIA.tour.iniciar()]
+  ];
+  let _buscadorUid = 0;
+  EIA.abrirBuscador = async function (inicial) {
+    if ($("#dlg-buscar")) return;
+    const t = EIA.t, I = EIA.ui.icono, previo = document.activeElement, uid = ++_buscadorUid;
+    let c10 = [];
+    try { c10 = await EIA.universo(); } catch (e) { c10 = []; }
+    const fuentes = [
+      ...c10.map(a => ({ tipo: "activos", icono: "activo", texto: a.ticker + " · " + a.nombre, extra: EIA.nombre("sector", a.sector), href: "activo.html?t=" + encodeURIComponent(a.ticker),
+        claves: [a.ticker, a.nombre, EIA.nombre("sector", a.sector), EIA.nombre("grupo", a.grupo)] })),
+      ...PAGINAS_NAV.map(p => ({ tipo: "paginas", icono: p[3], texto: t(p[1]), extra: t("nav.bloque_" + p[5]), href: p[0], claves: [t(p[1]), p[2], t("nav.bloque_" + p[5])] })),
+      ...ACCIONES_BUSCADOR().map(a => ({ tipo: "acciones", icono: a[2], texto: t(a[1]), extra: "", hacer: a[3], claves: [t(a[1]), a[0]] }))
+    ];
+    const d = document.createElement("dialog");
+    d.id = "dlg-buscar"; d.className = "dlg dlg-buscar"; d.setAttribute("aria-labelledby", "buscar-tit");
+    d.innerHTML = `<h2 id="buscar-tit" class="sr">${esc(t("shell.buscar_titulo"))}</h2>
+<div class="buscar-cab">${I("buscar")}<input id="buscar-q" type="text" role="combobox" aria-expanded="false" aria-controls="buscar-lista" aria-autocomplete="list" aria-describedby="buscar-ayuda"
+  autocomplete="off" spellcheck="false" aria-label="${esc(t("shell.buscar_titulo"))}" placeholder="${esc(t("shell.buscar_marcador"))}"><kbd>Esc</kbd></div>
+<div id="buscar-lista" role="listbox" aria-label="${esc(t("shell.buscar_titulo"))}"></div>
+<p id="buscar-ayuda" class="buscar-pie mut">${esc(t("shell.buscar_ayuda"))}</p>`;
+    document.body.appendChild(d);
+    const q = $("#buscar-q", d), lista = $("#buscar-lista", d);
+    let res = [], activo = -1;
+    // Sin texto se ofrecen las páginas y las acciones (así el buscador también sirve de menú)
+    const pintar = () => {
+      res = q.value.trim() ? EIA.buscarEn(fuentes, q.value) : fuentes.filter(f => f.tipo !== "activos");
+      activo = res.length ? 0 : -1;
+      const grupos = ["activos", "paginas", "acciones"].map(g => [g, res.filter(r => r.tipo === g)]).filter(x => x[1].length);
+      lista.innerHTML = !res.length ? `<p class="mut buscar-sin">${esc(t("shell.buscar_sin", { texto: q.value.trim() }))}</p>` : grupos.map(([g, l]) =>
+        `<div role="group" aria-labelledby="bg-${uid}-${g}"><div class="buscar-grupo" id="bg-${uid}-${g}">${esc(t("shell.buscar_grupo_" + g))}</div>${l.map(r => {
+          const i = res.indexOf(r);
+          return `<div role="option" id="bo-${uid}-${i}" data-i="${i}" aria-selected="${i === activo}" class="buscar-op">${I(r.icono)}<span class="buscar-op-txt">${esc(r.texto)}</span>${r.extra ? `<span class="mut buscar-op-extra">${esc(r.extra)}</span>` : ""}</div>`;
+        }).join("")}</div>`).join("");
+      q.setAttribute("aria-expanded", String(res.length > 0));
+      marcar();
+    };
+    const marcar = () => {
+      lista.querySelectorAll('[role="option"]').forEach(o => o.setAttribute("aria-selected", String(Number(o.dataset.i) === activo)));
+      if (activo >= 0) { q.setAttribute("aria-activedescendant", "bo-" + uid + "-" + activo); const o = $("#bo-" + uid + "-" + activo, d); if (o && o.scrollIntoView) o.scrollIntoView({ block: "nearest" }); }
+      else q.removeAttribute("aria-activedescendant");
+    };
+    const cerrar = () => { if (d.open) d.close(); d.remove(); if (previo && previo.focus && document.contains(previo)) previo.focus(); };
+    const elegir = i => {
+      const r = res[i]; if (!r) return;
+      cerrar();
+      if (r.href) global.location.href = r.href; else if (r.hacer) r.hacer();
+    };
+    q.addEventListener("input", () => { pintar(); EIA.ui.anunciar(res.length ? t("shell.buscar_resultados", { n: res.length }) : t("shell.buscar_sin", { texto: q.value.trim() })); });
+    q.addEventListener("keydown", e => {
+      if (e.key === "ArrowDown" && res.length) { e.preventDefault(); activo = (activo + 1) % res.length; marcar(); }
+      else if (e.key === "ArrowUp" && res.length) { e.preventDefault(); activo = (activo - 1 + res.length) % res.length; marcar(); }
+      else if (e.key === "Home" && res.length && e.ctrlKey) { e.preventDefault(); activo = 0; marcar(); }
+      else if (e.key === "End" && res.length && e.ctrlKey) { e.preventDefault(); activo = res.length - 1; marcar(); }
+      else if (e.key === "Enter") { e.preventDefault(); elegir(activo); }
+    });
+    lista.addEventListener("click", e => { const o = e.target.closest('[role="option"]'); if (o) elegir(Number(o.dataset.i)); });
+    d.addEventListener("cancel", e => { e.preventDefault(); cerrar(); });
+    d.addEventListener("click", e => { if (e.target === d) cerrar(); }); // clic en el fondo
+    q.value = inicial || "";
+    pintar();
+    d.showModal();
+    q.focus();
+  };
+
+  /* ───────────── Recorrido guiado: no se abre solo (Modo profesor y pruebas); se ofrece una vez en el Dashboard ───────────── */
+  const PASOS_TOUR = [
+    ["#lateral .lat-nav, #btn-modulos", "tour_1"], ["#btn-buscar", "tour_2"], ["#ctl-modo", "tour_3"],
+    [".ficha-ia, main h1", "tour_4"], ["#btn-a11y", "tour_5"], ["#btn-cuenta", "tour_6"]
+  ];
+  EIA.tour = {
+    PASOS: PASOS_TOUR,
+    activo: false,
+    iniciar() {
+      EIA.estado.set("eia_tour", "visto");
+      const franja = $(".franja-tour"); if (franja) franja.remove();
+      if (menuAbierto) alternarMenu(false);
+      EIA.tour.activo = true;
+      EIA.tour._previo = document.activeElement;
+      EIA.tour.ir(0);
+    },
+    ir(i) {
+      const t = EIA.t, total = PASOS_TOUR.length;
+      $$(".tour-objetivo").forEach(n => n.classList.remove("tour-objetivo"));
+      let caja = $("#tour");
+      if (i < 0 || i >= total) return EIA.tour.terminar();
+      // El primer selector visible del paso (la barra lateral fija o, en el celular, el botón ☰)
+      // (el cajón cerrado del celular sigue en el DOM con visibility: hidden, así que no basta con offsetParent)
+      const visible = n => n && n.offsetParent !== null && getComputedStyle(n).visibility !== "hidden";
+      const obj = PASOS_TOUR[i][0].split(",").map(s => $(s.trim())).find(visible);
+      if (!caja) {
+        caja = document.createElement("div");
+        caja.id = "tour"; caja.className = "tour"; caja.setAttribute("role", "dialog"); caja.setAttribute("aria-modal", "false"); caja.setAttribute("aria-labelledby", "tour-tit");
+        document.body.appendChild(caja);
+        caja.addEventListener("click", e => {
+          const b = e.target.closest("button[data-tour]"); if (!b) return;
+          const a = b.dataset.tour, n = Number(caja.dataset.paso);
+          if (a === "sig") EIA.tour.ir(n + 1); else if (a === "ant") EIA.tour.ir(n - 1); else EIA.tour.terminar();
+        });
+        caja.addEventListener("keydown", e => { if (e.key === "Escape") { e.stopPropagation(); EIA.tour.terminar(); } });
+      }
+      caja.dataset.paso = String(i);
+      const k = PASOS_TOUR[i][1];
+      caja.innerHTML = `<p class="tour-paso mut">${esc(t("shell.tour_paso", { n: EIA.fmt.ent(i + 1), total: EIA.fmt.ent(total) }))}</p>
+<h2 id="tour-tit" tabindex="-1">${esc(t("shell." + k + "_t"))}</h2><p>${esc(t("shell." + k))}</p>
+<div class="acciones"><button type="button" data-tour="fin" class="enlace">${esc(t("shell.tour_saltar"))}</button><span class="sp"></span>${
+        i > 0 ? `<button type="button" data-tour="ant">${esc(t("shell.tour_anterior"))}</button>` : ""}<button type="button" data-tour="sig" class="primary">${esc(t(i === total - 1 ? "shell.tour_terminar" : "shell.tour_siguiente"))}</button></div>`;
+      if (obj) {
+        obj.classList.add("tour-objetivo");
+        if (obj.scrollIntoView) obj.scrollIntoView({ block: "nearest", behavior: EIA.movimientoReducido() ? "auto" : "smooth" });
+      }
+      EIA.tour._ubicar(caja, obj);
+      $("#tour-tit", caja).focus();
+    },
+    /** Globo junto al elemento: debajo si cabe, si no encima; alineado al inicio (derecha en RTL) y dentro de la ventana. */
+    _ubicar(caja, obj) {
+      const vw = document.documentElement.clientWidth, vh = global.innerHeight, ancho = Math.min(360, vw - 24);
+      caja.style.width = ancho + "px";
+      const r = obj ? obj.getBoundingClientRect() : { top: 80, bottom: 80, left: 12, right: 12 + ancho };
+      const alto = caja.offsetHeight || 200;
+      const top = r.bottom + 12 + alto < vh ? r.bottom + 12 : Math.max(12, r.top - 12 - alto);
+      const rtl = document.documentElement.dir === "rtl";
+      let left = rtl ? r.right - ancho : r.left;
+      left = Math.min(Math.max(12, left), vw - ancho - 12);
+      caja.style.top = Math.round(top) + "px"; caja.style.left = Math.round(left) + "px";
+    },
+    terminar() {
+      $$(".tour-objetivo").forEach(n => n.classList.remove("tour-objetivo"));
+      const caja = $("#tour"); if (caja) caja.remove();
+      EIA.tour.activo = false;
+      // El foco vuelve a donde estaba; si era el cuerpo (o ya no existe), al contenido principal
+      const p = EIA.tour._previo, m = $("main");
+      if (p && p !== document.body && p.focus && document.contains(p)) p.focus(); else if (m) m.focus();
+      EIA.ui.anunciar(EIA.t("shell.tour_fin"));
+    }
+  };
+  /** Franja «¿Primera vez?» en el Dashboard mientras no se haya hecho ni descartado el recorrido. */
+  function ofrecerTour() {
+    if (document.body.dataset.page !== "dashboard" || EIA.estado.get("eia_tour") || $(".franja-tour")) return;
+    const t = EIA.t, cinta = $("#cinta");
+    const f = document.createElement("div");
+    f.className = "franja-tour"; f.setAttribute("role", "note");
+    f.innerHTML = `${EIA.ui.icono("ayuda")}<span>${esc(t("shell.tour_franja"))}</span><button type="button" class="primary" data-franja="si">${esc(t("shell.tour_iniciar"))}</button><button type="button" data-franja="no">${esc(t("shell.tour_descartar"))}</button>`;
+    f.addEventListener("click", e => {
+      const b = e.target.closest("button[data-franja]"); if (!b) return;
+      if (b.dataset.franja === "si") EIA.tour.iniciar(); else { EIA.estado.set("eia_tour", "descartado"); f.remove(); const m = $("main"); if (m) m.focus(); }
+    });
+    if (cinta) cinta.after(f); else { const cab = $("header.top"); if (cab) cab.after(f); }
+  }
+  /** Iniciales del alias del Perfil para el avatar («Ana María» → «AM»); vacío si no hay alias. Pura. */
+  EIA.iniciales = alias => String(alias || "").trim().split(/\s+/).filter(Boolean).slice(0, 2).map(p => Array.from(p)[0].toUpperCase()).join("");
   /** Repinta los textos del shell (idioma, modo, fecha de corte) conservando el foco. */
   function pintarShell() {
     const cab = $("header.top"), lat = $("#lateral"), pie = $("footer.pie");
@@ -1171,6 +1341,8 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
       else if (b.id === "btn-a11y") EIA.abrirAccesibilidad();
       else if (b.id === "btn-cuenta") alternarCuenta();
       else if (b.id === "btn-notif") alternarNotif();
+      else if (b.id === "btn-buscar") EIA.abrirBuscador();
+      else if (b.id === "menu-tour") { alternarCuenta(false); EIA.tour.iniciar(); }
       else if (b.id === "notif-leidas") { EIA.notificaciones.marcarLeidas(); const x = $("#btn-notif"); if (x) x.focus(); }
     });
     $("#cinta").addEventListener("click", e => {
@@ -1211,6 +1383,11 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
       }
       // Atajo con modificadores para no chocar con los lectores de pantalla (WCAG 2.1.4)
       if (e.altKey && e.shiftKey && !e.ctrlKey && !e.metaKey && e.code === "KeyA") { e.preventDefault(); EIA.abrirAccesibilidad(); }
+      // Buscador: Ctrl+K (⌘K) en cualquier lugar; «/» si no se está escribiendo en un campo
+      const escribiendo = e.target && (e.target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName));
+      if (((e.ctrlKey || e.metaKey) && !e.altKey && e.code === "KeyK") || (e.key === "/" && !escribiendo && !e.ctrlKey && !e.metaKey && !e.altKey)) {
+        if (!document.querySelector("dialog[open]")) { e.preventDefault(); EIA.abrirBuscador(); }
+      }
       // Alt+Shift+V: activar o detener los comandos de voz (T-90)
       if (e.altKey && e.shiftKey && !e.ctrlKey && !e.metaKey && e.code === "KeyV") { e.preventDefault(); EIA.cargar("js/a11y/voz.js").then(() => EIA.voz.alternar()).catch(() => {}); }
     });
@@ -1942,12 +2119,13 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     EIA.on("eia:idioma", () => { if (_modulo) correr(false); else global.location.reload(); });
     EIA.on("eia:zona", () => { if (_modulo) correr(false); });
     EIA.on("eia:modo", () => { pintarCinta(); revisarAlertas().then(pintarCampana); });
-    EIA.on("eia:idioma", () => pintarCinta());
+    EIA.on("eia:idioma", () => { pintarCinta(); const f = $(".franja-tour"); if (f) { f.remove(); ofrecerTour(); } });
+    EIA.on("eia:estado", d => { if (d.clave === "eia_perfil") pintarShell(); });
     _listo = true;
     EIA.emit("eia:listo");
     await EIA.meta();
     pintarShell();
-    pintarCinta();
+    pintarCinta().then(ofrecerTour);
     revisarAlertas().then(pintarCampana);
     if (_modulo) await correr(true);
     else {

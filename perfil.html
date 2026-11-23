@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es-PE"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title data-i18n="perfil.titulo_pagina">Perfil · Ernesto Investing AI</title><link rel="stylesheet" href="css/styles.css">
+<link rel="alternate" hreflang="es-PE" href="perfil.html?lang=es-PE">
+<link rel="alternate" hreflang="en-US" href="perfil.html?lang=en-US">
+<link rel="alternate" hreflang="ar-EG" href="perfil.html?lang=ar-EG">
+<link rel="alternate" hreflang="he-IL" href="perfil.html?lang=he-IL">
+<link rel="alternate" hreflang="ja-JP" href="perfil.html?lang=ja-JP">
+<link rel="alternate" hreflang="zh-CN" href="perfil.html?lang=zh-CN">
+<link rel="alternate" hreflang="ko-KR" href="perfil.html?lang=ko-KR">
+<link rel="alternate" hreflang="hi-IN" href="perfil.html?lang=hi-IN">
+<link rel="alternate" hreflang="ru-RU" href="perfil.html?lang=ru-RU">
+<link rel="alternate" hreflang="pt-BR" href="perfil.html?lang=pt-BR">
+<link rel="alternate" hreflang="fr-FR" href="perfil.html?lang=fr-FR">
+<link rel="alternate" hreflang="de-DE" href="perfil.html?lang=de-DE">
+<link rel="alternate" hreflang="qu-PE" href="perfil.html?lang=qu-PE">
+<link rel="alternate" hreflang="x-default" href="perfil.html">
+</head>
+<body data-page="perfil"><main data-esqueleto="kpis,texto">
+<h1 data-i18n="perfil.titulo">Perfil</h1>
+<p class="sub" data-i18n="perfil.sub">Tu alias, tu perfil de riesgo y tu actividad en la demo. Todo se guarda solo en este navegador.</p>
+<!-- El aviso de simulación lo inserta js/common.js aquí, según el modo de datos -->
+<div class="dos-col">
+  <section class="card" aria-labelledby="h-datos">
+    <h2 id="h-datos" data-i18n="perfil.datos_titulo">Tus datos</h2>
+    <div class="perfil-cab"><span class="avatar avatar-grande" id="avatar" aria-hidden="true"></span><p id="saludo" class="perfil-saludo"></p></div>
+    <form id="form-alias" novalidate>
+      <label for="alias" data-i18n="perfil.alias">Alias</label>
+      <input id="alias" type="text" autocomplete="nickname" aria-describedby="alias-ayuda alias-error">
+      <p id="alias-ayuda" class="mut" data-i18n="perfil.alias_ayuda">Sin datos personales: solo un nombre para la demo.</p>
+      <p id="alias-error" class="err" aria-live="polite"></p>
+      <button type="submit" class="primary" data-i18n="perfil.guardar">Guardar alias</button>
+    </form>
+  </section>
+  <section class="card" aria-labelledby="h-actividad">
+    <h2 id="h-actividad" data-i18n="perfil.actividad_titulo">Tu actividad</h2>
+    <div id="actividad" class="grid actividad"></div>
+  </section>
+</div>
+<section class="card" aria-labelledby="h-riesgo">
+  <h2 id="h-riesgo" data-i18n="perfil.riesgo_titulo">Perfil de riesgo</h2>
+  <p data-i18n="perfil.riesgo_intro">Unas preguntas cortas te orientan hacia uno de los niveles de cartera de Portafolios.</p>
+  <form id="form-riesgo" novalidate><div id="preguntas"></div>
+    <p id="riesgo-error" class="err" aria-live="polite"></p>
+    <button type="submit" class="primary" data-i18n="perfil.calcular">Ver mi perfil</button>
+  </form>
+  <div id="resultado" role="status"></div>
+</section>
+<div class="dos-col">
+  <section class="card" aria-labelledby="h-pref">
+    <h2 id="h-pref" data-i18n="perfil.preferencias_titulo">Preferencias</h2>
+    <p data-i18n="perfil.pref_texto">Idioma, zona horaria, tema y accesibilidad.</p>
+    <p class="acciones"><a class="btn" href="configuracion.html" data-i18n="shell.configuracion">Configuración</a><button type="button" id="abrir-a11y" data-i18n="shell.accesibilidad">Accesibilidad</button></p>
+  </section>
+  <section class="card" aria-labelledby="h-privacidad">
+    <h2 id="h-privacidad" data-i18n="perfil.privacidad_titulo">Privacidad</h2>
+    <p data-i18n="perfil.privacidad_texto">Este sitio no tiene cuentas ni servidores: tus datos viven en este navegador.</p>
+    <p><button type="button" id="borrar" class="peligro" data-i18n="perfil.borrar">Borrar mis datos locales</button></p>
+  </section>
+</div>
+<script src="js/lib/i18n-calidad.js"></script>
+<script src="js/common.js"></script>
+<script src="js/perfil.js"></script>
+</main></body></html>

@@ -743,3 +743,40 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **PR:** el #45 (T-110) se fusionó con la CI en verde. GitHub cerró el #46 al borrarse su rama base, así que T-111 sigue en el **#47**.
 - **Archivos / PR:** rama `cc/T-112-operacion` (sale de T-111)
 - **Contrato:** sin cambios
+
+### MSG-20261123-2100 · CC · INFO
+- **Asunto:** Cuenta: Perfil, Ayuda, Acerca de, buscador Ctrl+K y recorrido guiado (T-113)
+- **Qué cambió:**
+  - **Bloque Cuenta** de la barra lateral: Perfil, Configuración, Ayuda y Acerca de. El menú del avatar muestra el saludo, esas páginas y «Hacer el recorrido guiado».
+  - **`perfil.html` · Perfil:**
+    - alias local con validación en línea; el avatar muestra sus iniciales;
+    - actividad derivada de la cartera simulada, las órdenes, las alertas y la watchlist;
+    - **perfil de riesgo**: cinco preguntas sugieren uno de los niveles de Portafolios (08), con el aviso «orientativo, no es asesoría» y un enlace a `portafolios.html?nivel=`;
+    - «Borrar mis datos locales» (todas las claves `eia_*`), con confirmación.
+  - **`ayuda.html` · Ayuda:**
+    - primeros pasos y qué hay en cada página (los subtítulos de cada módulo, sin duplicar textos);
+    - atajos de teclado, comandos de voz, glosario y preguntas frecuentes;
+    - filtro que tolera tildes y mayúsculas, y un botón para el recorrido.
+  - **`acerca.html` · Acerca de:**
+    - propósito, fecha de corte de cada modo, qué es real y qué es sintético (13) y cuántos modelos hay (05 y 06);
+    - uso de IA declarado (G.10.3);
+    - tecnologías con versión y licencia. Una prueba comprueba que las versiones son las que el sitio carga de verdad.
+  - **Buscador Ctrl+K** (también «/» y la voz «buscar …»):
+    - combobox con listbox de WAI-ARIA;
+    - busca activos, páginas y acciones (tema, modo, accesibilidad, voz y recorrido);
+    - primero la coincidencia exacta, luego al inicio y luego contenida;
+    - sin texto, sirve de menú.
+  - **Recorrido guiado** de seis pasos:
+    - globo anclado al elemento y paso resaltado con contorno y texto;
+    - funciona con teclado y en RTL; Esc lo cierra y devuelve el foco;
+    - **no se abre solo**: en el Dashboard se ofrece con una franja descartable (`eia_tour`).
+  - **Voz:** «buscar …» y los siete módulos nuevos. En `interpretar` ahora gana el nombre de módulo más largo: en japonés y chino, el historial de órdenes empezaba igual que Trading.
+  - **i18n:** 187 claves en 12 idiomas, con plurales (qu-PE sigue parcial).
+- **Pruebas:**
+  - 252 pruebas JS. `cuenta.test.mjs` cubre: umbrales del perfil de riesgo y niveles de 08, alias, iniciales, buscador, recorrido, ayuda, versiones de Acerca de y voz en ES, EN, JA y ZH. Además verifica que, en cada idioma, ningún nombre de módulo de voz se repita;
+  - axe local sin violaciones en Perfil, Ayuda, Acerca de y Dashboard × 1280/390 × claro/oscuro × profesor/real. También se pasó con el buscador y el recorrido abiertos, en ar-EG;
+  - navegador: flujo del alias y del cuestionario, Ctrl+K → «nvda» → Enter → detalle, filtro de la ayuda, recorrido completo, franja y Esc en ar-EG a 390 px.
+- **PR:** #47 (T-111) y #48 (T-112) fusionados con la CI en verde.
+- **Para CX (rutas de Codex):** `tests/e2e/soporte.mjs` suma perfil, ayuda y acerca a `paginasSoporte`, como en T-111 y T-112.
+- **Archivos / PR:** rama `cc/T-113-cuenta`
+- **Contrato:** sin cambios
