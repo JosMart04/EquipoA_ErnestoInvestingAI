@@ -30,7 +30,9 @@
     "recalculo_sin_cierres": "वास्तविक क्लोज़िंग भाव (cierres_historicos.json) नहीं मिले, इसलिए फिर से गणना नहीं हो सकती।",
     "cierre": "{fecha} को सत्र का क्लोज़: न्यूयॉर्क में {hora_mercado} ({hora_local}, {zona})",
     "si": "हाँ",
-    "no": "नहीं"
+    "no": "नहीं",
+    "cargando": "डेटा लोड हो रहा है…",
+    "reintentar": "फिर से कोशिश करें"
   },
   "nav": {
     "etiqueta": "सिस्टम मॉड्यूल",
@@ -44,7 +46,13 @@
     "regresion": "30 सत्रों का रिग्रेशन",
     "optimizador": "ऑप्टिमाइज़र",
     "portafolios": "पोर्टफ़ोलियो",
-    "backtesting": "बैकटेस्टिंग"
+    "backtesting": "बैकटेस्टिंग",
+    "bloque_mercado": "बाज़ार",
+    "bloque_vigilancia": "निगरानी",
+    "bloque_modelos": "मॉडल",
+    "bloque_cartera": "पोर्टफ़ोलियो",
+    "bloque_operacion": "संचालन",
+    "bloque_cuenta": "खाता"
   },
   "shell": {
     "datos": "डेटा:",
@@ -69,7 +77,10 @@
     "borrador": "AI से बना अनुवाद मसौदा: इसमें गलतियाँ हो सकती हैं और मूल वक्ताओं की समीक्षा बाकी है।",
     "pseudo_activa": "छद्म-स्थानीयकरण चालू है: इंटरफ़ेस जाँचने के लिए पाठ लंबे किए गए हैं।",
     "idioma_enlace": "भाषा चुनें",
-    "actualizado": "डेटा बनाया गया {fecha_hora} ({hace})"
+    "actualizado": "डेटा बनाया गया {fecha_hora} ({hace})",
+    "menu_compacto": "संक्षिप्त मेनू",
+    "cuenta": "खाता मेनू",
+    "cuenta_demo": "डेमो खाता: आपका डेटा केवल इसी ब्राउज़र में सहेजा जाता है।"
   },
   "aviso": {
     "profesor": {
@@ -197,7 +208,8 @@
     "watch_quitado": "{ticker} आपकी वॉचलिस्ट से हटाया गया।",
     "seleccionado": "चुना गया एसेट: {ticker}।",
     "rango_velas": "कैंडल ({n} सत्र)",
-    "serie_cierre": "{ticker} का क्लोज़"
+    "serie_cierre": "{ticker} का क्लोज़",
+    "rango_vacio_titulo": "इस सीमा में कोई सत्र नहीं"
   },
   "a11y": {
     "titulo": "सुलभता केंद्र",
@@ -390,7 +402,9 @@
     "quitado": "{ticker} आपकी वॉचलिस्ट से हटाया गया।",
     "alerta_creada": "अलर्ट बनाया गया: {condicion}।",
     "alerta_borrada": "अलर्ट हटाया गया: {condicion}।",
-    "segun_cierre": "{fecha} के क्लोज़ के अनुसार: {hora_local} ({zona})।"
+    "segun_cierre": "{fecha} के क्लोज़ के अनुसार: {hora_local} ({zona})।",
+    "vacia_titulo": "निगरानी में कुछ नहीं",
+    "vacia_accion": "एसेट देखें"
   },
   "trading": {
     "titulo_pagina": "अभ्यास ट्रेडिंग · Ernesto Investing AI",
@@ -457,7 +471,10 @@
     "reiniciar_confirmar": "हाँ, रीसेट करें",
     "reiniciada": "डेमो रीसेट हुआ।",
     "aplicado_texto_opt": "आपने ऑप्टिमाइज़र से {origen} पोर्टफ़ोलियो लागू किया।",
-    "aplicado_excluidos": "आपने बाहर रखा: {lista}।"
+    "aplicado_excluidos": "आपने बाहर रखा: {lista}।",
+    "vacio_posiciones": "आपका पोर्टफ़ोलियो खाली है",
+    "vacio_ordenes": "इतिहास खाली है",
+    "vacio_accion": "ऑर्डर बनाएँ"
   },
   "leaderboard": {
     "titulo_pagina": "लीडरबोर्ड · Ernesto Investing AI",

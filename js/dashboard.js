@@ -102,7 +102,7 @@
     S = serieActivo(D.c02, D.c03, elegido, rangoActual());
     const est = estadisticas(S), num = v => esc(EIA.fmt.num(v));
     $("#nota-serie").textContent = S.tipo === "linea" ? t("dashboard.nota_linea", { n: D.c03.fechas.length }) : "";
-    if (!est) { $("#grafico").innerHTML = `<p class="card">${esc(t("dashboard.rango_vacio"))}</p>`; grafico = null; return; }
+    if (!est) { $("#grafico").innerHTML = EIA.ui.vacio({ icono: "mercado", titulo: t("dashboard.rango_vacio_titulo"), texto: t("dashboard.rango_vacio") }); grafico = null; return; }
     const columnas = [{ clave: "f", titulo: t("dashboard.col_fecha"), tipo: "texto", ordenable: true, fmt: v => esc(EIA.fmt.fecha(v)) }];
     if (S.tipo === "velas") columnas.push({ clave: "o", titulo: t("dashboard.col_apertura"), tipo: "num", ordenable: true, fmt: num }, { clave: "h", titulo: t("dashboard.col_maximo"), tipo: "num", ordenable: true, fmt: num }, { clave: "l", titulo: t("dashboard.col_minimo"), tipo: "num", ordenable: true, fmt: num });
     columnas.push({ clave: "c", titulo: t("dashboard.col_cierre"), tipo: "num", ordenable: true, fmt: num });

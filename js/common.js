@@ -36,6 +36,19 @@
     ["optimizador.html", "nav.optimizador", "optimizador", 1], ["portafolios.html", "nav.portafolios", "portafolios", 1],
     ["backtesting.html", "nav.backtesting", "backtesting", 1]
   ];
+  /* Barra lateral (Spec W13 G.4): las páginas agrupadas por bloque. [archivo, clave i18n, id, icono, es módulo nuevo].
+     PAGES se conserva tal cual por compatibilidad con la base; esta tabla agrega las páginas de soporte. */
+  const NAVEGACION = [
+    ["mercado", [["index.html", "nav.dashboard", "dashboard", "dashboard"]]],
+    ["vigilancia", [["watchlist.html", "nav.watchlist", "watchlist", "estrella"]]],
+    ["modelos", [["clasificacion.html", "nav.clasificacion", "clasificacion", "clasificacion", 1], ["regresion.html", "nav.regresion", "regresion", "regresion", 1]]],
+    ["cartera", [["optimizador.html", "nav.optimizador", "optimizador", "optimizador", 1], ["portafolios.html", "nav.portafolios", "portafolios", "portafolios", 1],
+      ["backtesting.html", "nav.backtesting", "backtesting", "backtesting", 1]]],
+    ["operacion", [["trading.html", "nav.trading", "trading", "trading"], ["leaderboard.html", "nav.leaderboard", "leaderboard", "trofeo"]]],
+    ["cuenta", [["configuracion.html", "shell.configuracion", "configuracion", "ajustes"]]]
+  ];
+  /** Todas las páginas de la barra lateral, en orden: [archivo, clave, id, icono, nuevo, bloque]. */
+  const PAGINAS_NAV = NAVEGACION.flatMap(([bloque, l]) => l.map(p => [p[0], p[1], p[2], p[3], p[4] || 0, bloque]));
 
   /* ───────────── Utilidades ───────────── */
   const $ = (s, r) => (r || document).querySelector(s);
@@ -764,29 +777,50 @@
     return { promesa, cancelar: () => cancelar() };
   };
 
-  /* ───────────── Shell: cabecera, menú de módulos, controles y pie ───────────── */
-  let menuAbierto = false;
+  /* ───────────── Shell: barra lateral por bloques, barra superior y pie (Spec W13 G.4: navegación común) ─────────────
+     Escritorio (≥ 1180 px): barra lateral fija, plegable a un riel de iconos (eia_lateral). Menos ancho: cajón que se
+     abre con ☰ (#btn-modulos), con el foco atrapado; Esc, ✕ o el fondo lo cierran y el foco vuelve a ☰. */
+  let menuAbierto = false, cuentaAbierta = false;
+  const MEDIA_CAJON = "(max-width: 1179.98px)";
+  const esCajon = () => !!(global.matchMedia && global.matchMedia(MEDIA_CAJON).matches);
+  const plegado = () => EIA.estado.get("eia_lateral") === "plegado";
+  /** Icono del sprite propio (assets/iconos.svg). Es decorativo: siempre va junto a un texto visible o accesible. */
+  EIA.ui.icono = (nombre, clase) => `<svg class="ico${clase ? " " + clase : ""}" aria-hidden="true" focusable="false"><use href="assets/iconos.svg?v=${EIA.version}#i-${nombre}"></use></svg>`;
+  const LOGO = '<svg class="logo" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><rect class="logo-fondo" width="32" height="32" rx="8"/><path class="logo-trazo" d="M7 21.5l6-6 4 4 8-9"/><path class="logo-trazo" d="M20 10.5h5v5"/></svg>';
+  const marca = () => `<a class="brand" href="index.html">${LOGO}<span class="brand-txt">Ernesto <span>Investing AI</span></span></a>`;
+  function plantillaLateral() {
+    const t = EIA.t, pagina = document.body.dataset.page, I = EIA.ui.icono;
+    const bloques = NAVEGACION.map(([b, l]) => `<p class="lat-bloque" id="lat-${b}">${esc(t("nav.bloque_" + b))}</p><ul aria-labelledby="lat-${b}">${l.map(p =>
+      `<li><a href="${p[0]}"${p[2] === pagina ? ' aria-current="page"' : ""} title="${esc(t(p[1]))}">${I(p[3])}<span class="lat-txt">${esc(t(p[1]))}</span>${p[4] ? '<span class="nuevo" aria-hidden="true">★</span>' : ""}</a></li>`).join("")}</ul>`).join("");
+    return `<div class="lat-cab">${marca()}<button id="btn-cerrar-menu" type="button" class="solo-cajon" aria-label="${esc(t("comun.cerrar"))}">${I("cerrar")}</button></div>
+<div id="nav-modulos" class="lat-nav">${bloques}</div>
+<div class="lat-pie"><button id="btn-plegar" type="button" class="solo-fijo" aria-pressed="${plegado()}" title="${esc(t("shell.menu_compacto"))}">${I("plegar")}<span class="lat-txt">${esc(t("shell.menu_compacto"))}</span></button></div>`;
+  }
   function plantillaCabecera() {
-    const t = EIA.t, pagina = document.body.dataset.page, modo = EIA.modo();
+    const t = EIA.t, modo = EIA.modo(), I = EIA.ui.icono;
     const mp = metaLista.profesor, mr = metaLista.real;
-    const enlaces = PAGES.map(p => `<li><a href="${p[0]}"${p[2] === pagina ? ' aria-current="page"' : ""}>${esc(t(p[1]))}${p[3] ? '<span class="nuevo" aria-hidden="true"> ★</span>' : ""}</a></li>`).join("");
     const rotuloProfesor = mp && mp.fecha_corte ? t("shell.modo_profesor", { fecha: EIA.fmt.fecha(mp.fecha_corte) }) : t("shell.modo_profesor_sin_fecha");
     const rotuloReal = mr && mr.disponible && mr.fecha_corte ? t("shell.modo_real", { fecha: EIA.fmt.fecha(mr.fecha_corte) }) : t("shell.modo_real_sin_fecha");
     return `<div class="bar">
-  <a class="brand" href="index.html">Ernesto <span>Investing AI</span></a>
-  <button id="btn-modulos" type="button" aria-expanded="${menuAbierto}" aria-controls="nav-modulos"><span aria-hidden="true">☰</span> ${esc(t("nav.modulos"))}</button>
-  <nav id="nav-modulos" aria-label="${esc(t("nav.etiqueta"))}"${menuAbierto ? ' class="abierto"' : ""}><ul>${enlaces}</ul></nav>
+  <button id="btn-modulos" type="button" class="solo-cajon ctl-ico" aria-expanded="${menuAbierto}" aria-controls="lateral" title="${esc(t("nav.modulos"))}">${I("menu")}<span class="sr">${esc(t("nav.modulos"))}</span></button>
+  <span class="solo-cajon marca-bar">${marca()}</span>
+  <div id="bar-medio" class="bar-medio"></div>
   <div class="controles">
     <div id="ctl-modo" class="seg" role="group" aria-label="${esc(t("shell.datos_grupo"))}">
       <span class="seg-rot" aria-hidden="true">${esc(t("shell.datos"))}</span>
       <button type="button" data-modo="profesor" aria-pressed="${modo === "profesor"}">${esc(rotuloProfesor)}</button>
       <button type="button" data-modo="real" aria-pressed="${modo === "real"}">${esc(rotuloReal)}</button>
     </div>
-    <label class="sr" for="ctl-idioma">${esc(t("shell.idioma"))}</label>
-    <select id="ctl-idioma">${opcionesIdioma()}</select>
-    <button id="tema" type="button" aria-pressed="${EIA.tema() === "dark"}" title="${esc(t("shell.tema_titulo"))}"><span aria-hidden="true">◐</span> ${esc(t("shell.tema"))}</button>
-    <button id="btn-a11y" type="button" aria-haspopup="dialog" title="${esc(t("shell.accesibilidad_titulo"))}">${esc(t("shell.accesibilidad"))}</button>
-    <a id="btn-config" class="btn" href="configuracion.html"${pagina === "configuracion" ? ' aria-current="page"' : ""}><span aria-hidden="true">⚙</span> ${esc(t("shell.configuracion"))}</a>
+    <span class="ctl-idioma">${I("idioma")}<label class="sr" for="ctl-idioma">${esc(t("shell.idioma"))}</label><select id="ctl-idioma">${opcionesIdioma()}</select></span>
+    <button id="tema" type="button" class="ctl-ico" aria-pressed="${EIA.tema() === "dark"}" title="${esc(t("shell.tema_titulo"))}">${I("tema")}<span class="ctl-txt">${esc(t("shell.tema"))}</span></button>
+    <button id="btn-a11y" type="button" class="ctl-ico" aria-haspopup="dialog" title="${esc(t("shell.accesibilidad_titulo"))}">${I("accesibilidad")}<span class="ctl-txt">${esc(t("shell.accesibilidad"))}</span></button>
+  </div>
+  <div class="cuenta">
+      <button id="btn-cuenta" type="button" aria-expanded="${cuentaAbierta}" aria-controls="menu-cuenta" title="${esc(t("shell.cuenta"))}"><span class="avatar" aria-hidden="true">${I("usuario")}</span><span class="sr">${esc(t("shell.cuenta"))}</span>${I("abajo", "ico-chev")}</button>
+      <div id="menu-cuenta" class="menu-cuenta"${cuentaAbierta ? "" : " hidden"}>
+        <p class="menu-cab">${esc(t("shell.cuenta_demo"))}</p>
+        <ul><li><a href="configuracion.html">${I("ajustes")}<span>${esc(t("shell.configuracion"))}</span></a></li></ul>
+      </div>
   </div>
 </div>${franjaIdioma()}`;
   }
@@ -823,16 +857,20 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
   }
   /** Repinta los textos del shell (idioma, modo, fecha de corte) conservando el foco. */
   function pintarShell() {
-    const cab = $("header.top"), pie = $("footer.pie");
+    const cab = $("header.top"), lat = $("#lateral"), pie = $("footer.pie");
     if (!cab || !pie) return;
-    const foco = cab.contains(document.activeElement) ? document.activeElement : null;
-    const selectorFoco = foco ? (foco.id ? "#" + foco.id : (foco.dataset.modo ? `[data-modo="${foco.dataset.modo}"]` : null)) : null;
+    const act = document.activeElement, zona = [cab, lat].find(z => z && z.contains(act));
+    const selectorFoco = zona ? (act.id ? "#" + act.id : act.dataset.modo ? `[data-modo="${act.dataset.modo}"]`
+      : act.getAttribute("href") ? `a[href="${act.getAttribute("href")}"]` : null) : null;
     cab.innerHTML = plantillaCabecera();
+    if (lat) { lat.innerHTML = plantillaLateral(); lat.setAttribute("aria-label", EIA.t("nav.etiqueta")); }
     pie.innerHTML = plantillaPie();
     const salto = $("a.skip"); if (salto) salto.textContent = EIA.t("comun.saltar");
     pintarMigas();
-    if (selectorFoco) { const n = $(selectorFoco, cab); if (n) n.focus(); }
+    if (selectorFoco) { const n = $(selectorFoco, zona); if (n) n.focus(); }
   }
+  /** Página del sitio por id, en la barra lateral o en la lista de la base. */
+  const paginaPorId = id => PAGINAS_NAV.find(x => x[2] === id) || PAGES.find(x => x[2] === id);
   /* ───────────── Migas de pan (R-INT-05; PLAN_MAESTRO §4: «Clasificación › NVDA › Regresión») ─────────────
      Solo aparecen al llegar por un enlace cruzado: la URL trae contexto (?t= o ?nivel=) y la página anterior es otro
      módulo. No se agregan parámetros a la URL: el recorrido se deduce de document.referrer y se guarda en
@@ -842,7 +880,7 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
   /** Pura: id del módulo de una ruta («/x/regresion.html» → «regresion»; «/x/» → «dashboard»). null si no es un módulo. */
   EIA.paginaDeRuta = function (ruta) {
     const archivo = String(ruta || "").split(/[?#]/)[0].split("/").pop() || "index.html";
-    const p = PAGES.find(x => x[0] === archivo);
+    const p = PAGINAS_NAV.find(x => x[0] === archivo) || PAGES.find(x => x[0] === archivo);
     return p ? p[2] : null;
   };
   /** Pura: recorrido de migas [{pagina, href}] hasta la página actual (sin incluirla); [] si no corresponde mostrarlas.
@@ -872,7 +910,7 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
       const r = document.referrer ? new URL(document.referrer) : null;
       if (r && r.origin === global.location.origin) {
         const id = EIA.paginaDeRuta(r.pathname);
-        if (id) anterior = { pagina: id, href: PAGES.find(x => x[2] === id)[0] + r.search };
+        if (id) anterior = { pagina: id, href: paginaPorId(id)[0] + r.search };
       }
     } catch (x) { anterior = null; }
     const tipo = contexto ? Object.keys(contexto)[0] : null;
@@ -885,7 +923,7 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     const main = $("main"); if (!main) return;
     let nav = $("nav.migas", main);
     if (!_migas.ruta.length) { if (nav) nav.remove(); return; }
-    const t = EIA.t, nombre = id => t(PAGES.find(x => x[2] === id)[1]);
+    const t = EIA.t, nombre = id => t(paginaPorId(id)[1]);
     const ticker = _migas.contexto.t ? EIA.activo() || _migas.contexto.t : null;
     // Los enlaces de vuelta llevan el activo que se mira ahora (si se cambió en esta página)
     const href = h => {
@@ -902,19 +940,44 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     nav.setAttribute("aria-label", t("nav.migas"));
     nav.innerHTML = "<ol>" + items.join("") + "</ol>";
   }
+  /** Abre o cierra el cajón de navegación (pantallas angostas). Al abrir, el foco pasa a la página actual. */
   function alternarMenu(abrir, devolverFoco) {
     menuAbierto = abrir === undefined ? !menuAbierto : abrir;
-    const b = $("#btn-modulos"), n = $("#nav-modulos");
+    const b = $("#btn-modulos"), lat = $("#lateral"), fondo = $(".lat-fondo");
     if (b) b.setAttribute("aria-expanded", String(menuAbierto));
-    if (n) n.classList.toggle("abierto", menuAbierto);
-    if (devolverFoco && b) b.focus();
+    if (lat) lat.classList.toggle("abierto", menuAbierto);
+    if (fondo) fondo.hidden = !menuAbierto;
+    document.documentElement.classList.toggle("cajon-abierto", menuAbierto && esCajon());
+    if (menuAbierto && lat && esCajon()) { const a = $('a[aria-current="page"]', lat) || $("a", lat); if (a) a.focus(); }
+    if (!menuAbierto && devolverFoco && b) b.focus();
+  }
+  /** Menú de la cuenta (patrón de divulgación: botón con aria-expanded y una lista de enlaces). */
+  function alternarCuenta(abrir, devolverFoco) {
+    cuentaAbierta = abrir === undefined ? !cuentaAbierta : abrir;
+    const b = $("#btn-cuenta"), m = $("#menu-cuenta");
+    if (b) b.setAttribute("aria-expanded", String(cuentaAbierta));
+    if (m) m.hidden = !cuentaAbierta;
+    if (cuentaAbierta && m) { const a = $("a,button", m); if (a) a.focus(); }
+    if (!cuentaAbierta && devolverFoco && b) b.focus();
+  }
+  /** Barra lateral completa o en riel de iconos (solo escritorio; se recuerda en eia_lateral). */
+  function aplicarLateral() {
+    if (plegado()) document.documentElement.setAttribute("data-lateral", "plegado");
+    else document.documentElement.removeAttribute("data-lateral");
+  }
+  function alternarPlegado() {
+    EIA.estado.set("eia_lateral", plegado() ? null : "plegado");
+    aplicarLateral();
+    const b = $("#btn-plegar"); if (b) b.setAttribute("aria-pressed", String(plegado()));
   }
   /** Construye la estructura fija de la página (una sola vez). Conserva el nombre de la base. */
   function buildShell() {
     applyTheme(EIA.estado.get("eia_theme"));
     EIA.aplicarPreferencias();
     if ($("header.top")) return;
-    document.body.insertAdjacentHTML("afterbegin", '<a class="skip" href="#contenido"></a><header class="top"></header>');
+    aplicarLateral();
+    document.body.classList.add("con-lateral");
+    document.body.insertAdjacentHTML("afterbegin", '<a class="skip" href="#contenido"></a><nav class="lateral" id="lateral"></nav><div class="lat-fondo" hidden></div><header class="top"></header>');
     const main = $("main");
     if (main) { main.id = "contenido"; main.setAttribute("tabindex", "-1"); }
     prepararMigas();
@@ -922,7 +985,7 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     document.body.insertAdjacentHTML("beforeend",
       '<footer class="pie"></footer><div id="eia-vivo" class="sr" aria-live="polite" aria-atomic="true"></div>' +
       '<div id="eia-alerta" class="sr" role="alert"></div><div id="eia-notas" aria-live="polite"></div>');
-    const cab = $("header.top");
+    const cab = $("header.top"), lat = $("#lateral");
     cab.addEventListener("click", e => {
       const b = e.target.closest("button");
       if (!b) return;
@@ -930,10 +993,34 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
       else if (b.id === "tema") EIA.setTema(EIA.tema() === "dark" ? "light" : "dark");
       else if (b.id === "btn-modulos") alternarMenu();
       else if (b.id === "btn-a11y") EIA.abrirAccesibilidad();
+      else if (b.id === "btn-cuenta") alternarCuenta();
     });
     cab.addEventListener("change", e => { if (e.target.id === "ctl-idioma") EIA.setIdioma(e.target.value); });
+    lat.addEventListener("click", e => {
+      const b = e.target.closest("button");
+      if (b && b.id === "btn-plegar") alternarPlegado();
+      else if (b && b.id === "btn-cerrar-menu") alternarMenu(false, true);
+    });
+    $(".lat-fondo").addEventListener("click", () => alternarMenu(false, true));
+    // El menú de la cuenta se cierra al hacer clic fuera o al salir con el foco
+    document.addEventListener("click", e => { if (cuentaAbierta && !e.target.closest(".cuenta")) alternarCuenta(false); });
+    cab.addEventListener("focusout", e => { if (cuentaAbierta && !(e.relatedTarget && e.relatedTarget.closest(".cuenta")) && e.relatedTarget) alternarCuenta(false); });
+    // Al pasar a escritorio, el cajón deja de ser un cajón
+    if (global.matchMedia) {
+      const mq = global.matchMedia(MEDIA_CAJON);
+      const alCambiar = q => { if (!q.matches && menuAbierto) alternarMenu(false); };
+      if (mq.addEventListener) mq.addEventListener("change", alCambiar);
+    }
     document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && cuentaAbierta) { alternarCuenta(false, true); return; }
       if (e.key === "Escape" && menuAbierto) alternarMenu(false, true);
+      // Foco atrapado en el cajón abierto (pantallas angostas)
+      if (e.key === "Tab" && menuAbierto && esCajon()) {
+        const f = $$("a[href],button:not([disabled])", lat).filter(el => el.offsetParent !== null);
+        if (f.length && e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (f.length && !e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+        else if (f.length && !lat.contains(document.activeElement)) { e.preventDefault(); f[0].focus(); }
+      }
       // Atajo con modificadores para no chocar con los lectores de pantalla (WCAG 2.1.4)
       if (e.altKey && e.shiftKey && !e.ctrlKey && !e.metaKey && e.code === "KeyA") { e.preventDefault(); EIA.abrirAccesibilidad(); }
       // Alt+Shift+V: activar o detener los comandos de voz (T-90)
@@ -1005,7 +1092,7 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
   EIA.ui.error = function (e) {
     const main = $("main"); if (!main) return;
     $$(".estado-error", main).forEach(n => n.remove());
-    const t = EIA.t, sinReales = e && e.codigo === "sin-datos-reales";
+    const t = EIA.t, sinReales = e && e.codigo === "sin-datos-reales", I = EIA.ui.icono;
     const caja = document.createElement("div");
     caja.className = "estado-error card"; caja.setAttribute("role", "alert");
     if (sinReales) {
@@ -1015,12 +1102,16 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
         const av = $(":scope > .aviso", main); if (av) EIA.ui.aviso(av.dataset.aviso);
         const pie = $("footer.pie"); if (pie) pie.innerHTML = plantillaPie();
       }
-      caja.innerHTML = `<h2>${esc(t("error.sin_reales_titulo"))}</h2><p>${esc(t("error.sin_reales_texto", { archivo: e.archivo }))}</p><button type="button" class="primary" data-volver>${esc(t("error.volver_profesor"))}</button>`;
+      caja.innerHTML = `<h2>${I("alerta", "estado-ico")}${esc(t("error.sin_reales_titulo"))}</h2><p>${esc(t("error.sin_reales_texto", { archivo: e.archivo }))}</p><p class="acciones"><button type="button" class="primary" data-volver>${esc(t("error.volver_profesor"))}</button></p>`;
       $("[data-volver]", caja).addEventListener("click", () => EIA.setModo("profesor"));
     } else {
       const msj = e && e.codigo === "http" ? t("error.http", { archivo: e.archivo, estado: e.estado })
         : e && e.codigo === "json" ? t("error.json", { archivo: e.archivo }) : String((e && e.message) || e);
-      caja.innerHTML = `<h2>${esc(t("error.titulo"))}</h2><p>${esc(msj)}</p><p class="mut">${esc(t("error.servidor"))}</p>`;
+      caja.innerHTML = `<h2>${I("alerta", "estado-ico")}${esc(t("error.titulo"))}</h2><p>${esc(msj)}</p><p class="mut">${esc(t("error.servidor"))}</p>
+<p class="acciones"><button type="button" class="primary" data-reintentar>${I("reintentar")}${esc(t("comun.reintentar"))}</button>${
+        EIA.modo() === "real" ? `<button type="button" data-volver>${esc(t("error.volver_profesor"))}</button>` : ""}</p>`;
+      $("[data-reintentar]", caja).addEventListener("click", () => (_modulo ? correr(true) : global.location.reload()));
+      const v = $("[data-volver]", caja); if (v) v.addEventListener("click", () => EIA.setModo("profesor"));
       if (global.console) console.error(e);
     }
     const ref = $(":scope > .aviso", main) || $("h1", main);
@@ -1029,6 +1120,44 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
   };
   /** Compatibilidad con la base. */
   const showError = e => EIA.ui.error(e);
+
+  /** Estado vacío con icono, título, texto y una llamada a la acción (Spec W13 G.9: estados). Devuelve HTML.
+      c = {icono, titulo, texto, accion: {texto, href} | {texto, id}} con textos ya traducidos. */
+  EIA.ui.vacio = function (c) {
+    const a = c.accion;
+    const boton = !a ? "" : a.href ? `<a class="btn primary" href="${esc(a.href)}">${esc(a.texto)}</a>` : `<button type="button" class="primary"${a.id ? ` id="${esc(a.id)}"` : ""}>${esc(a.texto)}</button>`;
+    return `<div class="vacio">${EIA.ui.icono(c.icono || "vacio", "vacio-ico")}<p class="vacio-titulo">${esc(c.titulo)}</p>${c.texto ? `<p class="mut">${esc(c.texto)}</p>` : ""}${boton}</div>`;
+  };
+  /** Confirmación antes de una acción (orden simulada, borrar datos): resuelve true si se acepta.
+      cfg = {titulo, contenido (HTML escapado o nodo), aceptar, cancelar} */
+  EIA.ui.confirmar = function (cfg) {
+    return new Promise(ok => {
+      const d = EIA.ui.dialogo({ titulo: cfg.titulo, contenido: cfg.contenido,
+        acciones: [{ texto: cfg.cancelar || EIA.t("comun.cancelar"), valor: "no" }, { texto: cfg.aceptar, valor: "si", primario: true }],
+        alCerrar: v => ok(v === "si") });
+      d.abrir();
+    });
+  };
+  /** Esqueleto de carga con la forma de la página (main[data-esqueleto] = "kpis,grafico,tabla"). Decorativo. */
+  const FORMAS_ESQUELETO = {
+    kpis: '<div class="esq-fila">' + '<div class="esq esq-kpi"></div>'.repeat(3) + "</div>",
+    grafico: '<div class="esq esq-grafico"></div>',
+    tabla: '<div class="esq-tabla">' + '<div class="esq esq-linea"></div>'.repeat(6) + "</div>",
+    texto: '<div class="esq-tabla">' + '<div class="esq esq-linea"></div>'.repeat(3) + "</div>"
+  };
+  EIA.ui.esqueleto = formas => `<div class="esqueleto-pagina" aria-hidden="true">${String(formas || "kpis,grafico,tabla").split(",").map(f => FORMAS_ESQUELETO[f.trim()] || "").join("")}</div>`;
+  function mostrarEsqueleto(main) {
+    if ($(":scope > .esqueleto-pagina", main)) return;
+    const ref = $(":scope > .aviso", main) || $(":scope > .sub", main) || $("h1", main);
+    const tmp = document.createElement("div"); tmp.innerHTML = EIA.ui.esqueleto(main.dataset.esqueleto);
+    if (ref) ref.after(tmp.firstChild); else main.prepend(tmp.firstChild);
+    main.classList.add("cargando");
+    EIA.ui.anunciar(EIA.t("comun.cargando"));
+  }
+  function quitarEsqueleto(main) {
+    $$(":scope > .esqueleto-pagina", main).forEach(n => n.remove());
+    main.classList.remove("cargando");
+  }
 
   /** Ficha de la IA (Amershi G1, G2, G11, G17, G10). filas = {que_hace, que_tan_bien, por_que, controlas, ignorar} ya traducidas. */
   EIA.ui.fichaIA = function (destino, filas) {
@@ -1579,6 +1708,8 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
   async function correr(recargar) {
     const vuelta = ++_vuelta, main = $("main");
     if (main) main.setAttribute("aria-busy", "true");
+    // El esqueleto solo aparece si la carga tarda: con datos en caché no parpadea
+    const reloj = main && (recargar || _datos === null) ? setTimeout(() => { if (vuelta === _vuelta) mostrarEsqueleto(main); }, 150) : null;
     try {
       _parcial = false;
       await EIA.meta();
@@ -1590,7 +1721,8 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     } catch (e) {
       if (vuelta === _vuelta) { EIA.ui.aviso(_modulo.id); EIA.ui.error(e); }
     } finally {
-      if (vuelta === _vuelta && main) main.removeAttribute("aria-busy");
+      clearTimeout(reloj);
+      if (vuelta === _vuelta && main) { main.removeAttribute("aria-busy"); quitarEsqueleto(main); }
     }
   }
   /** Registra el módulo de la página: {id, cargar: async () => datos, pintar: datos => void}.
@@ -1657,7 +1789,7 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
   };
 
   /* ───────────── Publicación ───────────── */
-  const api = { EIA, PAGES, $, $$, fmt, loadJSON, store, applyTheme, buildShell, showError };
+  const api = { EIA, PAGES, NAVEGACION, PAGINAS_NAV, $, $$, fmt, loadJSON, store, applyTheme, buildShell, showError };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   if (hayDOM) {
     Object.assign(global, api);

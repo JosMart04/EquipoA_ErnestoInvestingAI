@@ -30,7 +30,9 @@
     "recalculo_sin_cierres": "Die realen Schlusskurse (cierres_historicos.json) wurden nicht gefunden, daher ist keine Neuberechnung möglich.",
     "cierre": "Handelsschluss am {fecha}: {hora_mercado} in New York ({hora_local}, {zona})",
     "si": "Ja",
-    "no": "Nein"
+    "no": "Nein",
+    "cargando": "Daten werden geladen …",
+    "reintentar": "Erneut versuchen"
   },
   "nav": {
     "etiqueta": "Systemmodule",
@@ -44,7 +46,13 @@
     "regresion": "Regression über 30 Tage",
     "optimizador": "Optimierer",
     "portafolios": "Portfolios",
-    "backtesting": "Backtesting"
+    "backtesting": "Backtesting",
+    "bloque_mercado": "Markt",
+    "bloque_vigilancia": "Beobachtung",
+    "bloque_modelos": "Modelle",
+    "bloque_cartera": "Portfolio",
+    "bloque_operacion": "Handel",
+    "bloque_cuenta": "Konto"
   },
   "shell": {
     "datos": "Daten:",
@@ -69,7 +77,10 @@
     "borrador": "Mit KI erstellter Übersetzungsentwurf: Er kann Fehler enthalten und muss noch von Muttersprachlern geprüft werden.",
     "pseudo_activa": "Pseudolokalisierung ist aktiv: Die Texte werden verlängert, um die Oberfläche zu testen.",
     "idioma_enlace": "Sprache wählen",
-    "actualizado": "Daten erzeugt am {fecha_hora} ({hace})"
+    "actualizado": "Daten erzeugt am {fecha_hora} ({hace})",
+    "menu_compacto": "Kompaktes Menü",
+    "cuenta": "Kontomenü",
+    "cuenta_demo": "Demokonto: Ihre Daten werden nur in diesem Browser gespeichert."
   },
   "aviso": {
     "profesor": {
@@ -197,7 +208,8 @@
     "watch_quitado": "{ticker} wurde aus Ihrer Beobachtungsliste entfernt.",
     "seleccionado": "Ausgewähltes Wertpapier: {ticker}.",
     "rango_velas": "Kerzen ({n} Handelstage)",
-    "serie_cierre": "Schlusskurs von {ticker}"
+    "serie_cierre": "Schlusskurs von {ticker}",
+    "rango_vacio_titulo": "Keine Handelstage in diesem Zeitraum"
   },
   "a11y": {
     "titulo": "Barrierefreiheitszentrum",
@@ -390,7 +402,9 @@
     "quitado": "{ticker} wurde aus Ihrer Beobachtungsliste entfernt.",
     "alerta_creada": "Alarm erstellt: {condicion}.",
     "alerta_borrada": "Alarm gelöscht: {condicion}.",
-    "segun_cierre": "Stand Schlusskurs vom {fecha}: {hora_local} ({zona})."
+    "segun_cierre": "Stand Schlusskurs vom {fecha}: {hora_local} ({zona}).",
+    "vacia_titulo": "Nichts in Beobachtung",
+    "vacia_accion": "Wertpapiere entdecken"
   },
   "trading": {
     "titulo_pagina": "Simulierter Handel · Ernesto Investing AI",
@@ -457,7 +471,10 @@
     "reiniciar_confirmar": "Ja, zurücksetzen",
     "reiniciada": "Demo zurückgesetzt.",
     "aplicado_texto_opt": "Sie haben das Portfolio {origen} aus dem Optimierer übernommen.",
-    "aplicado_excluidos": "Sie haben ausgeschlossen: {lista}."
+    "aplicado_excluidos": "Sie haben ausgeschlossen: {lista}.",
+    "vacio_posiciones": "Ihr Portfolio ist leer",
+    "vacio_ordenes": "Leere Historie",
+    "vacio_accion": "Order erstellen"
   },
   "leaderboard": {
     "titulo_pagina": "Rangliste · Ernesto Investing AI",

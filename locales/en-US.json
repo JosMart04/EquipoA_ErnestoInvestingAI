@@ -22,7 +22,9 @@
     "recalculo_sin_cierres": "The real closes (cierres_historicos.json) were not found, so it cannot be recomputed.",
     "cierre": "Session close on {fecha}: {hora_mercado} in New York ({hora_local}, {zona})",
     "si": "Yes",
-    "no": "No"
+    "no": "No",
+    "cargando": "Loading data…",
+    "reintentar": "Try again"
   },
   "nav": {
     "etiqueta": "System modules",
@@ -36,7 +38,13 @@
     "regresion": "30-day regression",
     "optimizador": "Optimizer",
     "portafolios": "Portfolios",
-    "backtesting": "Backtesting"
+    "backtesting": "Backtesting",
+    "bloque_mercado": "Market",
+    "bloque_vigilancia": "Monitoring",
+    "bloque_modelos": "Models",
+    "bloque_cartera": "Portfolio",
+    "bloque_operacion": "Operations",
+    "bloque_cuenta": "Account"
   },
   "shell": {
     "datos": "Data:",
@@ -61,7 +69,10 @@
     "borrador": "Draft translation generated with AI: it may contain errors and is pending review by speakers.",
     "pseudo_activa": "Pseudolocalization is on: texts are lengthened to test the interface.",
     "idioma_enlace": "Choose language",
-    "actualizado": "Data generated {fecha_hora} ({hace})"
+    "actualizado": "Data generated {fecha_hora} ({hace})",
+    "menu_compacto": "Compact menu",
+    "cuenta": "Account menu",
+    "cuenta_demo": "Demo account: your data is saved only in this browser."
   },
   "aviso": {
     "profesor": {
@@ -189,7 +200,8 @@
     "watch_quitado": "{ticker} removed from your watchlist.",
     "seleccionado": "Selected asset: {ticker}.",
     "rango_velas": "Candles ({n} sessions)",
-    "serie_cierre": "{ticker} close"
+    "serie_cierre": "{ticker} close",
+    "rango_vacio_titulo": "No sessions in that range"
   },
   "a11y": {
     "titulo": "Accessibility center",
@@ -382,7 +394,9 @@
     "quitado": "{ticker} removed from your watchlist.",
     "alerta_creada": "Alert created: {condicion}.",
     "alerta_borrada": "Alert deleted: {condicion}.",
-    "segun_cierre": "As of the close on {fecha}: {hora_local} ({zona})."
+    "segun_cierre": "As of the close on {fecha}: {hora_local} ({zona}).",
+    "vacia_titulo": "Nothing tracked yet",
+    "vacia_accion": "Explore the assets"
   },
   "trading": {
     "titulo_pagina": "Paper trading · Ernesto Investing AI",
@@ -449,7 +463,10 @@
     "reiniciar_confirmar": "Yes, reset",
     "reiniciada": "Demo reset.",
     "aplicado_texto_opt": "You applied the {origen} portfolio from the Optimizer.",
-    "aplicado_excluidos": "You excluded: {lista}."
+    "aplicado_excluidos": "You excluded: {lista}.",
+    "vacio_posiciones": "Your portfolio is empty",
+    "vacio_ordenes": "Empty history",
+    "vacio_accion": "Create an order"
   },
   "leaderboard": {
     "titulo_pagina": "Leaderboard · Ernesto Investing AI",

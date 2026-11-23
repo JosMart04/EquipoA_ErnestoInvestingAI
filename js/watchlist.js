@@ -84,7 +84,7 @@
   function pintarLista() {
     const lista = EIA.watch.lista().filter(tk => activo(tk)), al = alertas();
     $("#contador").textContent = t("watchlist.contador", { n: lista.length });
-    if (!lista.length) { $("#lista").innerHTML = `<p>${esc(t("watchlist.vacia"))}</p>`; return; }
+    if (!lista.length) { $("#lista").innerHTML = EIA.ui.vacio({ icono: "estrella", titulo: t("watchlist.vacia_titulo"), texto: t("watchlist.vacia"), accion: { texto: t("watchlist.vacia_accion"), href: "index.html" } }); return; }
     const disparadas = tk => al.filter(a => a.ticker === tk && alertaDisparada(a, activo(tk)));
     EIA.ui.tabla($("#lista"), {
       id: "tabla-watch", titulo: t("watchlist.tabla_caption"),

@@ -30,7 +30,9 @@
     "recalculo_sin_cierres": "Реальные цены закрытия (cierres_historicos.json) не найдены, поэтому пересчитать нельзя.",
     "cierre": "Закрытие сессии {fecha}: {hora_mercado} в Нью-Йорке ({hora_local}, {zona})",
     "si": "Да",
-    "no": "Нет"
+    "no": "Нет",
+    "cargando": "Загрузка данных…",
+    "reintentar": "Повторить"
   },
   "nav": {
     "etiqueta": "Модули системы",
@@ -44,7 +46,13 @@
     "regresion": "Регрессия на 30 сессий",
     "optimizador": "Оптимизатор",
     "portafolios": "Портфели",
-    "backtesting": "Бэктестинг"
+    "backtesting": "Бэктестинг",
+    "bloque_mercado": "Рынок",
+    "bloque_vigilancia": "Наблюдение",
+    "bloque_modelos": "Модели",
+    "bloque_cartera": "Портфель",
+    "bloque_operacion": "Операции",
+    "bloque_cuenta": "Аккаунт"
   },
   "shell": {
     "datos": "Данные:",
@@ -69,7 +77,10 @@
     "borrador": "Черновой перевод, созданный ИИ: он может содержать ошибки и ещё не проверен носителями языка.",
     "pseudo_activa": "Включена псевдолокализация: тексты удлинены, чтобы проверить интерфейс.",
     "idioma_enlace": "Выбрать язык",
-    "actualizado": "Данные сформированы {fecha_hora} ({hace})"
+    "actualizado": "Данные сформированы {fecha_hora} ({hace})",
+    "menu_compacto": "Компактное меню",
+    "cuenta": "Меню аккаунта",
+    "cuenta_demo": "Демо-аккаунт: ваши данные сохраняются только в этом браузере."
   },
   "aviso": {
     "profesor": {
@@ -207,7 +218,8 @@
     "watch_quitado": "{ticker} убран из вашего списка наблюдения.",
     "seleccionado": "Выбран актив: {ticker}.",
     "rango_velas": "Свечи (сессий: {n})",
-    "serie_cierre": "Закрытие {ticker}"
+    "serie_cierre": "Закрытие {ticker}",
+    "rango_vacio_titulo": "В этом диапазоне нет сессий"
   },
   "a11y": {
     "titulo": "Центр доступности",
@@ -404,7 +416,9 @@
     "quitado": "{ticker} убран из вашего списка наблюдения.",
     "alerta_creada": "Оповещение создано: {condicion}.",
     "alerta_borrada": "Оповещение удалено: {condicion}.",
-    "segun_cierre": "По закрытию {fecha}: {hora_local} ({zona})."
+    "segun_cierre": "По закрытию {fecha}: {hora_local} ({zona}).",
+    "vacia_titulo": "Нет отслеживаемых активов",
+    "vacia_accion": "Посмотреть активы"
   },
   "trading": {
     "titulo_pagina": "Учебная торговля · Ernesto Investing AI",
@@ -479,7 +493,10 @@
     "reiniciar_confirmar": "Да, сбросить",
     "reiniciada": "Демо сброшено.",
     "aplicado_texto_opt": "Вы применили портфель {origen} из Оптимизатора.",
-    "aplicado_excluidos": "Вы исключили: {lista}."
+    "aplicado_excluidos": "Вы исключили: {lista}.",
+    "vacio_posiciones": "Ваш портфель пуст",
+    "vacio_ordenes": "История пуста",
+    "vacio_accion": "Создать заявку"
   },
   "leaderboard": {
     "titulo_pagina": "Рейтинг · Ernesto Investing AI",

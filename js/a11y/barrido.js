@@ -55,7 +55,7 @@
     const por = {};
     todos.forEach(el => {
       const g = clasificar({
-        cabecera: !!el.closest("header.top") || el.classList.contains("skip"), pie: !!el.closest("footer.pie"),
+        cabecera: !!el.closest("header.top, .lateral") || el.classList.contains("skip"), pie: !!el.closest("footer.pie"),
         grafico: !!el.closest(".grafico"), tabla: !!el.closest("table"),
         control: el.matches("select,input,textarea,[role=tab]") || !!el.closest(".seg,[role=group],[role=tablist],.filtros")
       });

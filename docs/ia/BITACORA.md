@@ -648,3 +648,33 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
   - En fr-FR, la insignia de borrador ahora dice «Brouillon».
 - **Archivos / PR:** rama `cc/T-105-i18n-despues` (sale de T-104; fusionar después del PR #43)
 - **Contrato:** sin cambios
+
+### MSG-20261123-1200 · CC · INFO
+- **Asunto:** Iteración 2 de la interfaz: shell con barra lateral y sistema de diseño (T-110)
+- **Qué cambió:**
+  - **Plan de la iteración 2 aprobado por Josué** (23-nov):
+    - barra lateral profesional;
+    - extras: buscador Ctrl+K, cinta de cotizaciones y estado del mercado, centro de notificaciones, perfil de riesgo y tour;
+    - realismo según criterio de CC.
+
+    Se divide en 5 PR (T-110…T-114).
+  - **Shell:**
+    - barra lateral agrupada por los bloques de la Spec G.4 (Mercado, Vigilancia, Modelos, Cartera, Operación, Cuenta), plegable a un riel de iconos;
+    - por debajo de 1180 px es un cajón con el foco atrapado; Esc y el fondo lo cierran;
+    - barra superior con modo de datos, idioma, tema, accesibilidad y menú de la cuenta;
+    - RTL con CSS lógico.
+  - **Diseño:**
+    - tokens nuevos (barra lateral, `--panel-2`, radios y sombras), cuyo contraste vigilan las pruebas;
+    - cifras tabulares;
+    - sprite de iconos propios en `assets/iconos.svg`.
+  - **Estados:**
+    - esqueleto de carga cuando los datos tardan más de 150 ms;
+    - estados vacíos con llamada a la acción en Trading, Watchlist y Dashboard;
+    - error con «Reintentar»;
+    - `EIA.ui.confirmar`.
+  - **Herramienta:** `tools/i18n/fusionar.mjs`, que agrega lotes de claves a los 13 idiomas. Este PR suma 17 claves en 12 idiomas; qu-PE cae a es-PE.
+  - **Pendientes del PR #44:** prompts copiados y T-105 marcado como hecho.
+  - **Etiqueta `ui-antes`:** marca la interfaz anterior, para las capturas de antes.
+- **Pruebas:** 226 pruebas JS. En el navegador: escritorio (claro, oscuro y plegado), 375 px en es-PE y ar-EG (cajón por la derecha, foco y Esc), consola sin errores y sin desborde.
+- **Archivos / PR:** rama `cc/T-110-shell-diseno`
+- **Contrato:** sin cambios

@@ -30,7 +30,9 @@
     "recalculo_sin_cierres": "実際の終値（cierres_historicos.json）が見つからないため、再計算できません。",
     "cierre": "{fecha} の取引終了：ニューヨーク {hora_mercado}（{hora_local}、{zona}）",
     "si": "はい",
-    "no": "いいえ"
+    "no": "いいえ",
+    "cargando": "データを読み込み中…",
+    "reintentar": "再試行"
   },
   "nav": {
     "etiqueta": "システムのモジュール",
@@ -44,7 +46,13 @@
     "regresion": "回帰 30 日",
     "optimizador": "最適化",
     "portafolios": "ポートフォリオ",
-    "backtesting": "バックテスト"
+    "backtesting": "バックテスト",
+    "bloque_mercado": "マーケット",
+    "bloque_vigilancia": "モニタリング",
+    "bloque_modelos": "モデル",
+    "bloque_cartera": "ポートフォリオ",
+    "bloque_operacion": "取引",
+    "bloque_cuenta": "アカウント"
   },
   "shell": {
     "datos": "データ：",
@@ -69,7 +77,10 @@
     "borrador": "AI が生成した下書きの翻訳です。誤りを含む可能性があり、話者による確認待ちです。",
     "pseudo_activa": "疑似ローカライズが有効です。画面を試すためにテキストを長くしています。",
     "idioma_enlace": "言語を選ぶ",
-    "actualizado": "データ生成：{fecha_hora}（{hace}）"
+    "actualizado": "データ生成：{fecha_hora}（{hace}）",
+    "menu_compacto": "コンパクトメニュー",
+    "cuenta": "アカウントメニュー",
+    "cuenta_demo": "デモアカウント：データはこのブラウザーにのみ保存されます。"
   },
   "aviso": {
     "profesor": {
@@ -192,7 +203,8 @@
     "watch_quitado": "{ticker} をウォッチリストから削除しました。",
     "seleccionado": "選択中の銘柄：{ticker}。",
     "rango_velas": "ローソク足（{n} 取引日）",
-    "serie_cierre": "{ticker} の終値"
+    "serie_cierre": "{ticker} の終値",
+    "rango_vacio_titulo": "この期間に取引日はありません"
   },
   "a11y": {
     "titulo": "アクセシビリティセンター",
@@ -383,7 +395,9 @@
     "quitado": "{ticker} をウォッチリストから削除しました。",
     "alerta_creada": "アラートを作成しました：{condicion}。",
     "alerta_borrada": "アラートを削除しました：{condicion}。",
-    "segun_cierre": "{fecha} の終値時点：{hora_local}（{zona}）。"
+    "segun_cierre": "{fecha} の終値時点：{hora_local}（{zona}）。",
+    "vacia_titulo": "ウォッチ中の銘柄はありません",
+    "vacia_accion": "銘柄を探す"
   },
   "trading": {
     "titulo_pagina": "模擬取引 · Ernesto Investing AI",
@@ -446,7 +460,10 @@
     "reiniciar_confirmar": "はい、リセットします",
     "reiniciada": "デモをリセットしました。",
     "aplicado_texto_opt": "最適化からポートフォリオ {origen} を適用しました。",
-    "aplicado_excluidos": "除外した銘柄：{lista}。"
+    "aplicado_excluidos": "除外した銘柄：{lista}。",
+    "vacio_posiciones": "ポートフォリオは空です",
+    "vacio_ordenes": "履歴はありません",
+    "vacio_accion": "注文を作成"
   },
   "leaderboard": {
     "titulo_pagina": "ランキング · Ernesto Investing AI",
