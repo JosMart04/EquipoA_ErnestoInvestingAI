@@ -30,7 +30,9 @@
     "recalculo_sin_cierres": "Les clôtures réelles (cierres_historicos.json) sont introuvables ; le recalcul est donc impossible.",
     "cierre": "Clôture de la séance du {fecha} : {hora_mercado} à New York ({hora_local}, {zona})",
     "si": "Oui",
-    "no": "Non"
+    "no": "Non",
+    "cargando": "Chargement des données…",
+    "reintentar": "Réessayer"
   },
   "nav": {
     "etiqueta": "Modules du système",
@@ -44,7 +46,13 @@
     "regresion": "Régression 30 jours",
     "optimizador": "Optimiseur",
     "portafolios": "Portefeuilles",
-    "backtesting": "Backtesting"
+    "backtesting": "Backtesting",
+    "bloque_mercado": "Marché",
+    "bloque_vigilancia": "Surveillance",
+    "bloque_modelos": "Modèles",
+    "bloque_cartera": "Portefeuille",
+    "bloque_operacion": "Opérations",
+    "bloque_cuenta": "Compte"
   },
   "shell": {
     "datos": "Données :",
@@ -69,7 +77,10 @@
     "borrador": "Traduction provisoire générée par IA : elle peut contenir des erreurs et attend une relecture par des locuteurs.",
     "pseudo_activa": "Pseudo-localisation active : les textes sont allongés pour tester l’interface.",
     "idioma_enlace": "Choisir la langue",
-    "actualizado": "Données générées le {fecha_hora} ({hace})"
+    "actualizado": "Données générées le {fecha_hora} ({hace})",
+    "menu_compacto": "Menu compact",
+    "cuenta": "Menu du compte",
+    "cuenta_demo": "Compte de démonstration : vos données ne sont enregistrées que dans ce navigateur."
   },
   "aviso": {
     "profesor": {
@@ -197,7 +208,8 @@
     "watch_quitado": "{ticker} retiré de votre liste de suivi.",
     "seleccionado": "Actif sélectionné : {ticker}.",
     "rango_velas": "Chandeliers ({n} séances)",
-    "serie_cierre": "Clôture de {ticker}"
+    "serie_cierre": "Clôture de {ticker}",
+    "rango_vacio_titulo": "Aucune séance sur cette période"
   },
   "a11y": {
     "titulo": "Centre d’accessibilité",
@@ -390,7 +402,9 @@
     "quitado": "{ticker} retiré de votre liste de suivi.",
     "alerta_creada": "Alerte créée : {condicion}.",
     "alerta_borrada": "Alerte supprimée : {condicion}.",
-    "segun_cierre": "Selon la clôture du {fecha} : {hora_local} ({zona})."
+    "segun_cierre": "Selon la clôture du {fecha} : {hora_local} ({zona}).",
+    "vacia_titulo": "Rien en suivi",
+    "vacia_accion": "Explorer les actifs"
   },
   "trading": {
     "titulo_pagina": "Trading simulé · Ernesto Investing AI",
@@ -457,7 +471,10 @@
     "reiniciar_confirmar": "Oui, réinitialiser",
     "reiniciada": "Démo réinitialisée.",
     "aplicado_texto_opt": "Vous avez appliqué le portefeuille {origen} depuis l’Optimiseur.",
-    "aplicado_excluidos": "Vous avez exclu : {lista}."
+    "aplicado_excluidos": "Vous avez exclu : {lista}.",
+    "vacio_posiciones": "Votre portefeuille est vide",
+    "vacio_ordenes": "Historique vide",
+    "vacio_accion": "Créer un ordre"
   },
   "leaderboard": {
     "titulo_pagina": "Classement · Ernesto Investing AI",

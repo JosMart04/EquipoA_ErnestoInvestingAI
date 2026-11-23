@@ -30,7 +30,9 @@
     "recalculo_sin_cierres": "Os fechamentos reais (cierres_historicos.json) não foram encontrados; por isso não é possível recalcular.",
     "cierre": "Fechamento do pregão de {fecha}: {hora_mercado} em Nova York ({hora_local}, {zona})",
     "si": "Sim",
-    "no": "Não"
+    "no": "Não",
+    "cargando": "Carregando dados…",
+    "reintentar": "Tentar novamente"
   },
   "nav": {
     "etiqueta": "Módulos do sistema",
@@ -44,7 +46,13 @@
     "regresion": "Regressão 30 dias",
     "optimizador": "Otimizador",
     "portafolios": "Carteiras",
-    "backtesting": "Backtesting"
+    "backtesting": "Backtesting",
+    "bloque_mercado": "Mercado",
+    "bloque_vigilancia": "Monitoramento",
+    "bloque_modelos": "Modelos",
+    "bloque_cartera": "Carteira",
+    "bloque_operacion": "Operações",
+    "bloque_cuenta": "Conta"
   },
   "shell": {
     "datos": "Dados:",
@@ -69,7 +77,10 @@
     "borrador": "Tradução em rascunho gerada por IA: pode conter erros e aguarda revisão de falantes.",
     "pseudo_activa": "Pseudolocalização ativa: os textos são alongados para testar a interface.",
     "idioma_enlace": "Escolher idioma",
-    "actualizado": "Dados gerados em {fecha_hora} ({hace})"
+    "actualizado": "Dados gerados em {fecha_hora} ({hace})",
+    "menu_compacto": "Menu compacto",
+    "cuenta": "Menu da conta",
+    "cuenta_demo": "Conta de demonstração: seus dados são salvos apenas neste navegador."
   },
   "aviso": {
     "profesor": {
@@ -197,7 +208,8 @@
     "watch_quitado": "{ticker} removido da sua watchlist.",
     "seleccionado": "Ativo selecionado: {ticker}.",
     "rango_velas": "Candles ({n} pregões)",
-    "serie_cierre": "Fechamento de {ticker}"
+    "serie_cierre": "Fechamento de {ticker}",
+    "rango_vacio_titulo": "Sem sessões nesse intervalo"
   },
   "a11y": {
     "titulo": "Central de acessibilidade",
@@ -390,7 +402,9 @@
     "quitado": "{ticker} removido da sua watchlist.",
     "alerta_creada": "Alerta criado: {condicion}.",
     "alerta_borrada": "Alerta excluído: {condicion}.",
-    "segun_cierre": "Conforme o fechamento de {fecha}: {hora_local} ({zona})."
+    "segun_cierre": "Conforme o fechamento de {fecha}: {hora_local} ({zona}).",
+    "vacia_titulo": "Nada em acompanhamento",
+    "vacia_accion": "Explorar os ativos"
   },
   "trading": {
     "titulo_pagina": "Negociação simulada · Ernesto Investing AI",
@@ -457,7 +471,10 @@
     "reiniciar_confirmar": "Sim, reiniciar",
     "reiniciada": "Demonstração reiniciada.",
     "aplicado_texto_opt": "Você aplicou a carteira {origen} a partir do Otimizador.",
-    "aplicado_excluidos": "Você excluiu: {lista}."
+    "aplicado_excluidos": "Você excluiu: {lista}.",
+    "vacio_posiciones": "Sua carteira está vazia",
+    "vacio_ordenes": "Histórico vazio",
+    "vacio_accion": "Criar uma ordem"
   },
   "leaderboard": {
     "titulo_pagina": "Ranking · Ernesto Investing AI",

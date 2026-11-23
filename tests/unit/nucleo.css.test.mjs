@@ -21,9 +21,14 @@ const TEXTO = [["--fg", "--bg"], ["--fg", "--panel"], ["--fg", "--hl"], ["--fg",
   ["--dn", "--panel"], ["--dn", "--bg"], ["--dn", "--hl"], ["--warn", "--panel"], ["--warn", "--aviso"], ["--on-ac", "--ac"],
   ["--up-t", "--up-1"], ["--up-t", "--up-2"], ["--up-t", "--up-3"], ["--dn-t", "--dn-1"], ["--dn-t", "--dn-2"], ["--dn-t", "--dn-3"],
   // Etiquetas dentro de barras de color (issue #21: barra apilada de Backtesting y composición de Portafolios)
-  ...[1, 2, 3, 4, 5, 6].map(i => ["--serie-texto-" + i, "--serie-" + i])];
+  ...[1, 2, 3, 4, 5, 6].map(i => ["--serie-texto-" + i, "--serie-" + i]),
+  // Barra lateral (oscura en los dos temas) y superficie secundaria (filas al pasar, estados vacíos) [T-110]
+  ["--lat-fg", "--lat-bg"], ["--lat-mut", "--lat-bg"], ["--lat-nuevo", "--lat-bg"], ["--lat-fg", "--lat-hl"], ["--lat-mut", "--lat-hl"],
+  ["--lat-act", "--lat-hl"], ["--lat-ac", "--lat-hl"], ["--fg", "--panel-2"], ["--mut", "--panel-2"], ["--ac", "--panel-2"],
+  ["--up", "--panel-2"], ["--dn", "--panel-2"]];
 // Bordes de controles, foco y marcas de gráficos: WCAG 1.4.11 pide 3:1
 const NO_TEXTO = [["--bd-ctl", "--panel"], ["--bd-ctl", "--bg"], ["--ac", "--panel"], ["--ac", "--bg"], ["--up", "--panel"], ["--dn", "--panel"],
+  ["--lat-ac", "--lat-bg"], ["--lat-ac", "--lat-hl"],
   ...[1, 2, 3, 4, 5, 6].map(i => ["--serie-" + i, "--panel"])];
 
 for (const [nombre, t] of [["claro", claro], ["oscuro", oscuro]]) {
@@ -53,7 +58,8 @@ test("el oscuro por preferencia del sistema es idéntico al oscuro elegido", () 
 
 test("el texto sobre el color de acción usa --on-ac, no blanco fijo (la base daba 2,08:1 en oscuro)", () => {
   assert.ok(!/background:\s*var\(--ac\);\s*color:\s*#fff/i.test(css));
-  assert.ok(/nav a\[aria-current="page"\]\s*\{[^}]*color:\s*var\(--on-ac\)/.test(css));
+  // La página actual de la barra lateral usa su propio texto sobre el resalte (medido arriba: --lat-act sobre --lat-hl)
+  assert.ok(/\.lateral \.lat-nav a\[aria-current="page"\]\s*\{[^}]*color:\s*var\(--lat-act\)/.test(css));
 });
 
 test("el foco siempre es visible: nadie quita el contorno de :focus-visible", () => {

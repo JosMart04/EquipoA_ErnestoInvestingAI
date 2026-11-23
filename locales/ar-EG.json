@@ -30,7 +30,9 @@
     "recalculo_sin_cierres": "لم يُعثر على أسعار الإغلاق الحقيقية (cierres_historicos.json)، لذا لا يمكن إعادة الحساب.",
     "cierre": "إغلاق جلسة {fecha}: {hora_mercado} في نيويورك ({hora_local}، {zona})",
     "si": "نعم",
-    "no": "لا"
+    "no": "لا",
+    "cargando": "جارٍ تحميل البيانات…",
+    "reintentar": "إعادة المحاولة"
   },
   "nav": {
     "etiqueta": "وحدات النظام",
@@ -44,7 +46,13 @@
     "regresion": "الانحدار ٣٠ جلسة",
     "optimizador": "المُحسِّن",
     "portafolios": "المحافظ",
-    "backtesting": "الاختبار التاريخي"
+    "backtesting": "الاختبار التاريخي",
+    "bloque_mercado": "السوق",
+    "bloque_vigilancia": "المراقبة",
+    "bloque_modelos": "النماذج",
+    "bloque_cartera": "المحفظة",
+    "bloque_operacion": "العمليات",
+    "bloque_cuenta": "الحساب"
   },
   "shell": {
     "datos": "البيانات:",
@@ -69,7 +77,10 @@
     "borrador": "ترجمة مسودة أُنشئت بالذكاء الاصطناعي: قد تحتوي على أخطاء وتنتظر مراجعة متحدثين باللغة.",
     "pseudo_activa": "الترجمة الزائفة مفعّلة: تُطال النصوص لاختبار الواجهة.",
     "idioma_enlace": "اختيار اللغة",
-    "actualizado": "أُنشئت البيانات في {fecha_hora} ({hace})"
+    "actualizado": "أُنشئت البيانات في {fecha_hora} ({hace})",
+    "menu_compacto": "قائمة مضغوطة",
+    "cuenta": "قائمة الحساب",
+    "cuenta_demo": "حساب تجريبي: تُحفظ بياناتك في هذا المتصفح فقط."
   },
   "aviso": {
     "profesor": {
@@ -217,7 +228,8 @@
     "watch_quitado": "أُزيل {ticker} من قائمة مراقبتك.",
     "seleccionado": "الأصل المحدد: {ticker}.",
     "rango_velas": "الشموع ({n} جلسة)",
-    "serie_cierre": "إغلاق {ticker}"
+    "serie_cierre": "إغلاق {ticker}",
+    "rango_vacio_titulo": "لا توجد جلسات في هذا النطاق"
   },
   "a11y": {
     "titulo": "مركز إمكانية الوصول",
@@ -418,7 +430,9 @@
     "quitado": "أُزيل {ticker} من قائمة مراقبتك.",
     "alerta_creada": "أُنشئ التنبيه: {condicion}.",
     "alerta_borrada": "حُذف التنبيه: {condicion}.",
-    "segun_cierre": "حسب إغلاق {fecha}: {hora_local} ({zona})."
+    "segun_cierre": "حسب إغلاق {fecha}: {hora_local} ({zona}).",
+    "vacia_titulo": "لا شيء قيد المتابعة",
+    "vacia_accion": "استكشاف الأصول"
   },
   "trading": {
     "titulo_pagina": "تداول تجريبي · Ernesto Investing AI",
@@ -501,7 +515,10 @@
     "reiniciar_confirmar": "نعم، أعد الضبط",
     "reiniciada": "أُعيد ضبط العرض.",
     "aplicado_texto_opt": "طبّقت المحفظة {origen} من المُحسِّن.",
-    "aplicado_excluidos": "استبعدت: {lista}."
+    "aplicado_excluidos": "استبعدت: {lista}.",
+    "vacio_posiciones": "محفظتك فارغة",
+    "vacio_ordenes": "السجل فارغ",
+    "vacio_accion": "إنشاء أمر"
   },
   "leaderboard": {
     "titulo_pagina": "لوحة الصدارة · Ernesto Investing AI",

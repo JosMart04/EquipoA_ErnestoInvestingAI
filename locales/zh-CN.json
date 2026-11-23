@@ -30,7 +30,9 @@
     "recalculo_sin_cierres": "未找到真实收盘价（cierres_historicos.json），因此无法重新计算。",
     "cierre": "{fecha} 交易日收盘：纽约时间 {hora_mercado}（{hora_local}，{zona}）",
     "si": "是",
-    "no": "否"
+    "no": "否",
+    "cargando": "正在加载数据…",
+    "reintentar": "重试"
   },
   "nav": {
     "etiqueta": "系统模块",
@@ -44,7 +46,13 @@
     "regresion": "30 个交易日回归",
     "optimizador": "优化器",
     "portafolios": "投资组合",
-    "backtesting": "回测"
+    "backtesting": "回测",
+    "bloque_mercado": "市场",
+    "bloque_vigilancia": "监控",
+    "bloque_modelos": "模型",
+    "bloque_cartera": "投资组合",
+    "bloque_operacion": "交易",
+    "bloque_cuenta": "账户"
   },
   "shell": {
     "datos": "数据：",
@@ -69,7 +77,10 @@
     "borrador": "由人工智能生成的翻译草稿：可能有错误，尚待母语者审校。",
     "pseudo_activa": "伪本地化已开启：文本被加长以测试界面。",
     "idioma_enlace": "选择语言",
-    "actualizado": "数据生成于 {fecha_hora}（{hace}）"
+    "actualizado": "数据生成于 {fecha_hora}（{hace}）",
+    "menu_compacto": "紧凑菜单",
+    "cuenta": "账户菜单",
+    "cuenta_demo": "演示账户：您的数据只保存在此浏览器中。"
   },
   "aviso": {
     "profesor": {
@@ -192,7 +203,8 @@
     "watch_quitado": "已将 {ticker} 从您的自选列表移除。",
     "seleccionado": "已选资产：{ticker}。",
     "rango_velas": "K 线（{n} 个交易日）",
-    "serie_cierre": "{ticker} 收盘价"
+    "serie_cierre": "{ticker} 收盘价",
+    "rango_vacio_titulo": "该范围内没有交易日"
   },
   "a11y": {
     "titulo": "无障碍中心",
@@ -383,7 +395,9 @@
     "quitado": "已将 {ticker} 从您的自选列表移除。",
     "alerta_creada": "已创建提醒：{condicion}。",
     "alerta_borrada": "已删除提醒：{condicion}。",
-    "segun_cierre": "截至 {fecha} 收盘：{hora_local}（{zona}）。"
+    "segun_cierre": "截至 {fecha} 收盘：{hora_local}（{zona}）。",
+    "vacia_titulo": "暂无关注的资产",
+    "vacia_accion": "浏览资产"
   },
   "trading": {
     "titulo_pagina": "模拟交易 · Ernesto Investing AI",
@@ -446,7 +460,10 @@
     "reiniciar_confirmar": "是，重置",
     "reiniciada": "演示已重置。",
     "aplicado_texto_opt": "您已从优化器应用了组合 {origen}。",
-    "aplicado_excluidos": "您已排除：{lista}。"
+    "aplicado_excluidos": "您已排除：{lista}。",
+    "vacio_posiciones": "您的投资组合是空的",
+    "vacio_ordenes": "历史为空",
+    "vacio_accion": "创建订单"
   },
   "leaderboard": {
     "titulo_pagina": "排行榜 · Ernesto Investing AI",

@@ -4,9 +4,9 @@
 > Opus: contrasta este archivo con el código y con `git log`; no confíes ciegamente.
 
 ## Última actualización
-- Fecha y hora: 2026-11-22 (Lima)
+- Fecha y hora: 2026-11-23 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-105-i18n-despues` (Lab 13: T-104 fusionado en el PR #43; T-105 en revisión)
+- Rama / último commit: `cc/T-110-shell-diseno` (iteración 2: shell con barra lateral y sistema de diseño)
 
 ## Hecho (con evidencia)
 
@@ -72,14 +72,19 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 - El atajo `Alt+Shift+A` con una pulsación real (el evento sintético llega y abre el panel).
 
 ## En curso (estado exacto)
-- **Lab 13 (internacionalización, plan aprobado el 22-nov):** T-100…T-104 fusionados (PR #39…#43). **T-105** está en revisión en `cc/T-105-i18n-despues`: medición A/B, capturas, figura del notebook, guía técnica, glosario, README y D-25.
+- **Lab 13 (internacionalización):** terminado y fusionado (PR #39…#44).
+- **Iteración 2 · interfaz «ultra-realista» (plan aprobado el 23-nov; Spec W13 G.1, G.4 y G.9):**
+  - **T-110** está en revisión en `cc/T-110-shell-diseno`: barra lateral por bloques, barra superior, cajón móvil, tokens de diseño, iconos propios y estados.
+  - Faltan **T-111** (detalle de activo, comparador y volumen), **T-112** (confirmación de orden, historial, notificaciones, estado del mercado y cinta), **T-113** (perfil, ayuda, acerca de, buscador Ctrl+K y tour) y **T-114** (evidencia).
+  - El plan completo está en `C:\Users\JosueMart\.claude\plans\mensaje-para-cc-snazzy-creek.md`.
 
 ## Siguiente paso exacto
-0. **Lab 13:**
-   - fusionar el PR de T-105 cuando la CI esté en verde;
-   - después, en la **siguiente iteración**: la interfaz «ultra-realista», Perfil, Ayuda y Acerca de, y la revisión de los borradores por hablantes.
-   
-   El experimento 13.3 con personas es tarea del equipo. Para repetir la medición o el notebook, sigue `docs/i18n/README.md`; el notebook necesita pandas y matplotlib, que no están instalados en el sistema (usa un venv).
+0. **Iteración 2:**
+   - fusionar T-110 con la CI en verde y seguir con T-111;
+   - cada PR trae sus claves en los 13 idiomas (`node tools/i18n/fusionar.mjs <lote.json>`);
+   - la etiqueta `ui-antes` marca la interfaz anterior, para las capturas de antes.
+
+   El experimento 13.3 con personas y la revisión de los borradores por hablantes son tareas del equipo. Para repetir la medición i18n o el notebook, sigue `docs/i18n/README.md`; el notebook necesita pandas y matplotlib, que no están instalados en el sistema (usa un venv).
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
 2. **Informe aprobado por Josué (18-nov).** Si cambia algo del sitio o de las cifras antes de la entrega, se editan los textos en `tools/informe/generar_informe.cjs` y se regenera (ver «Cómo probar»). No editar el PDF a mano.
 3. **Pendientes humanos** (Josué ya comprobó el 18-nov que el archivo de Figma Make se abre sin iniciar sesión): pruebas por rol del Anexo A (T-80, incluidos lectores de pantalla); registrar los enlaces en la tabla del curso; video opcional (T-64).
@@ -116,6 +121,11 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 - **A 390 px los puntos de NSGA-II y NSGA-III se superponen** (lo detectó CX en E2E): para elegir con el dedo hay que apagar series; con teclado o desde la tabla funciona. Mejora pendiente.
 - **Modo real hoy:** `data_real/` solo tiene `meta.json` y `cierres_historicos.json`. Cada módulo muestra «publicación parcial» y nombra el archivo que falta; es lo esperado hasta que CX publique 01–13.
 - **El navegador cachea `js/common.js` y los `locales/*.json`** con `python -m http.server`: tras editarlos, recarga forzada (Ctrl+F5).
+- **Shell (T-110):**
+  - La barra lateral sale de `NAVEGACION` en `js/common.js`: `[bloque, [[archivo, clave, id, icono, ★]]]`. `PAGES` se conserva igual por compatibilidad con la base del profesor; las pruebas lo exigen.
+  - Para agregar una página: su fila en `NAVEGACION`, su icono en `assets/iconos.svg` y sus claves en los 13 idiomas.
+  - Se conservan los ID `#btn-modulos` (☰ del cajón), `#nav-modulos`, `#ctl-modo`, `#tema` y `#btn-a11y`, que usan E2E, el barrido y la voz.
+  - El cajón se usa por debajo de 1180 px (el mismo corte que usan las pruebas E2E).
 - **Idiomas (Lab 13):**
   - **Agregar un idioma** = `locales/<tag>.json` + una línea en `locales/index.json`. Después corre `node tools/i18n/revisar.mjs --escribir` (completitud) y `node tools/i18n/hreflang.mjs` (enlaces `hreflang` de las 10 páginas). Para armar un diccionario por lotes: `node tools/i18n/ensamblar.mjs <carpeta> <tag> [--parcial]`.
   - **Las pruebas exigen:**

@@ -30,7 +30,9 @@
     "recalculo_sin_cierres": "실제 종가(cierres_historicos.json)를 찾을 수 없어 다시 계산할 수 없습니다.",
     "cierre": "{fecha} 장 마감: 뉴욕 {hora_mercado}({hora_local}, {zona})",
     "si": "예",
-    "no": "아니요"
+    "no": "아니요",
+    "cargando": "데이터를 불러오는 중…",
+    "reintentar": "다시 시도"
   },
   "nav": {
     "etiqueta": "시스템 모듈",
@@ -44,7 +46,13 @@
     "regresion": "30거래일 회귀",
     "optimizador": "최적화 도구",
     "portafolios": "포트폴리오",
-    "backtesting": "백테스트"
+    "backtesting": "백테스트",
+    "bloque_mercado": "시장",
+    "bloque_vigilancia": "모니터링",
+    "bloque_modelos": "모델",
+    "bloque_cartera": "포트폴리오",
+    "bloque_operacion": "거래",
+    "bloque_cuenta": "계정"
   },
   "shell": {
     "datos": "데이터:",
@@ -69,7 +77,10 @@
     "borrador": "AI로 생성한 번역 초안입니다. 오류가 있을 수 있으며 원어민의 검토를 기다리고 있습니다.",
     "pseudo_activa": "의사 현지화가 켜져 있습니다. 인터페이스를 시험하기 위해 텍스트를 늘렸습니다.",
     "idioma_enlace": "언어 선택",
-    "actualizado": "데이터 생성: {fecha_hora}({hace})"
+    "actualizado": "데이터 생성: {fecha_hora}({hace})",
+    "menu_compacto": "간단한 메뉴",
+    "cuenta": "계정 메뉴",
+    "cuenta_demo": "데모 계정: 데이터는 이 브라우저에만 저장됩니다."
   },
   "aviso": {
     "profesor": {
@@ -192,7 +203,8 @@
     "watch_quitado": "{ticker}을(를) 관심 목록에서 제거했습니다.",
     "seleccionado": "선택한 자산: {ticker}.",
     "rango_velas": "캔들({n}거래일)",
-    "serie_cierre": "{ticker} 종가"
+    "serie_cierre": "{ticker} 종가",
+    "rango_vacio_titulo": "이 범위에는 거래일이 없습니다"
   },
   "a11y": {
     "titulo": "접근성 센터",
@@ -383,7 +395,9 @@
     "quitado": "{ticker}을(를) 관심 목록에서 제거했습니다.",
     "alerta_creada": "알림을 만들었습니다: {condicion}.",
     "alerta_borrada": "알림을 삭제했습니다: {condicion}.",
-    "segun_cierre": "{fecha} 종가 기준: {hora_local}({zona})."
+    "segun_cierre": "{fecha} 종가 기준: {hora_local}({zona}).",
+    "vacia_titulo": "관심 자산이 없습니다",
+    "vacia_accion": "자산 둘러보기"
   },
   "trading": {
     "titulo_pagina": "모의 거래 · Ernesto Investing AI",
@@ -446,7 +460,10 @@
     "reiniciar_confirmar": "예, 초기화",
     "reiniciada": "데모를 초기화했습니다.",
     "aplicado_texto_opt": "최적화 도구에서 {origen} 포트폴리오를 적용했습니다.",
-    "aplicado_excluidos": "제외한 자산: {lista}."
+    "aplicado_excluidos": "제외한 자산: {lista}.",
+    "vacio_posiciones": "포트폴리오가 비어 있습니다",
+    "vacio_ordenes": "내역이 없습니다",
+    "vacio_accion": "주문 만들기"
   },
   "leaderboard": {
     "titulo_pagina": "순위표 · Ernesto Investing AI",

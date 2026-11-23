@@ -30,7 +30,9 @@
     "recalculo_sin_cierres": "מחירי הסגירה האמיתיים (cierres_historicos.json) לא נמצאו, ולכן אי אפשר לחשב מחדש.",
     "cierre": "סגירת המסחר ב־{fecha}: {hora_mercado} בניו יורק ({hora_local}, {zona})",
     "si": "כן",
-    "no": "לא"
+    "no": "לא",
+    "cargando": "טוען נתונים…",
+    "reintentar": "לנסות שוב"
   },
   "nav": {
     "etiqueta": "מודולי המערכת",
@@ -44,7 +46,13 @@
     "regresion": "רגרסיה ל־30 ימי מסחר",
     "optimizador": "מייעל",
     "portafolios": "תיקים",
-    "backtesting": "בדיקה לאחור"
+    "backtesting": "בדיקה לאחור",
+    "bloque_mercado": "שוק",
+    "bloque_vigilancia": "מעקב",
+    "bloque_modelos": "מודלים",
+    "bloque_cartera": "תיק",
+    "bloque_operacion": "פעילות",
+    "bloque_cuenta": "חשבון"
   },
   "shell": {
     "datos": "נתונים:",
@@ -69,7 +77,10 @@
     "borrador": "טיוטת תרגום שנוצרה בבינה מלאכותית: ייתכנו בה שגיאות, והיא ממתינה לבדיקת דוברי השפה.",
     "pseudo_activa": "לוקליזציה מדומה פעילה: הטקסטים הוארכו כדי לבדוק את הממשק.",
     "idioma_enlace": "בחירת שפה",
-    "actualizado": "הנתונים נוצרו ב־{fecha_hora} ({hace})"
+    "actualizado": "הנתונים נוצרו ב־{fecha_hora} ({hace})",
+    "menu_compacto": "תפריט מצומצם",
+    "cuenta": "תפריט החשבון",
+    "cuenta_demo": "חשבון הדגמה: הנתונים שלך נשמרים רק בדפדפן הזה."
   },
   "aviso": {
     "profesor": {
@@ -202,7 +213,8 @@
     "watch_quitado": "{ticker} הוסר מרשימת המעקב שלך.",
     "seleccionado": "הנכס שנבחר: {ticker}.",
     "rango_velas": "נרות ({n} ימי מסחר)",
-    "serie_cierre": "סגירה של {ticker}"
+    "serie_cierre": "סגירה של {ticker}",
+    "rango_vacio_titulo": "אין ימי מסחר בטווח הזה"
   },
   "a11y": {
     "titulo": "מרכז הנגישות",
@@ -397,7 +409,9 @@
     "quitado": "{ticker} הוסר מרשימת המעקב שלך.",
     "alerta_creada": "ההתראה נוצרה: {condicion}.",
     "alerta_borrada": "ההתראה נמחקה: {condicion}.",
-    "segun_cierre": "לפי הסגירה של {fecha}: {hora_local} ({zona})."
+    "segun_cierre": "לפי הסגירה של {fecha}: {hora_local} ({zona}).",
+    "vacia_titulo": "אין נכסים במעקב",
+    "vacia_accion": "עיון בנכסים"
   },
   "trading": {
     "titulo_pagina": "מסחר מדומה · Ernesto Investing AI",
@@ -468,7 +482,10 @@
     "reiniciar_confirmar": "כן, לאפס",
     "reiniciada": "ההדגמה אופסה.",
     "aplicado_texto_opt": "החלת את התיק {origen} מתוך המייעל.",
-    "aplicado_excluidos": "החרגת: {lista}."
+    "aplicado_excluidos": "החרגת: {lista}.",
+    "vacio_posiciones": "התיק שלך ריק",
+    "vacio_ordenes": "ההיסטוריה ריקה",
+    "vacio_accion": "יצירת הוראה"
   },
   "leaderboard": {
     "titulo_pagina": "טבלת דירוג · Ernesto Investing AI",

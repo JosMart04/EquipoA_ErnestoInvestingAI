@@ -1,4 +1,7 @@
 import { test, expect, paginas, leerJSON, sinDesborde } from './soporte.mjs';
+import comun from '../../js/common.js';
+
+const { PAGINAS_NAV } = comun; // enlaces de la barra lateral (T-110)
 
 // Regresión HTTP controlada del contrato §7. Persiste al publicar 01–13.
 // Se retienen meta y archivos reales; los JSON numerados se responden 404.
@@ -63,7 +66,7 @@ for (const idioma of ['es-PE', 'en-US']) {
         await page.locator('#btn-modulos').click();
         await expect(page.locator('#btn-modulos')).toHaveAttribute('aria-expanded', 'true');
       }
-      await expect(page.locator('#nav-modulos a:visible')).toHaveCount(9);
+      await expect(page.locator('#nav-modulos a:visible')).toHaveCount(PAGINAS_NAV.length);
     });
   }
 }

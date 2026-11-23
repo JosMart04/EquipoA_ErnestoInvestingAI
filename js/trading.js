@@ -67,7 +67,7 @@
 
   function pintarPosiciones() {
     const filas = EIA.cartera.filas(cartera(), precio);
-    if (!filas.length) { $("#posiciones").innerHTML = `<p>${esc(t("trading.sin_posiciones"))}</p>`; return; }
+    if (!filas.length) { $("#posiciones").innerHTML = EIA.ui.vacio({ icono: "cartera", titulo: t("trading.vacio_posiciones"), texto: t("trading.sin_posiciones"), accion: { texto: t("trading.vacio_accion"), id: "ir-orden" } }); return; }
     EIA.ui.tabla($("#posiciones"), {
       id: "tabla-posiciones", titulo: t("trading.posiciones_caption"),
       columnas: [
@@ -84,7 +84,7 @@
 
   function pintarHistorial() {
     const l = ordenes().slice(-MAX_HISTORIAL).reverse();
-    if (!l.length) { $("#historial").innerHTML = `<p>${esc(t("trading.sin_ordenes"))}</p>`; return; }
+    if (!l.length) { $("#historial").innerHTML = EIA.ui.vacio({ icono: "historial", titulo: t("trading.vacio_ordenes"), texto: t("trading.sin_ordenes") }); return; }
     const hora = iso => EIA.fmt.fechaHora(iso); // en la zona horaria elegida en Configuración (Spec G.5.4)
     EIA.ui.tabla($("#historial"), {
       id: "tabla-historial", titulo: t("trading.historial_caption"),
@@ -146,7 +146,11 @@
     main.addEventListener("submit", e => { if (e.target.id === "form-orden") { e.preventDefault(); enviar(); } });
     main.addEventListener("input", e => { if (e.target.closest("#form-orden")) actualizarVista(); });
     main.addEventListener("change", e => { if (e.target.closest("#form-orden")) { actualizarVista(); if (e.target.id === "orden-activo") EIA.setActivo(e.target.value); } });
-    main.addEventListener("click", e => { if (e.target.id === "reiniciar") reiniciar(); });
+    main.addEventListener("click", e => {
+      if (e.target.id === "reiniciar") reiniciar();
+      // Estado vacío de Posiciones: lleva al formulario de la orden
+      if (e.target.closest("#ir-orden")) $("#orden-activo").focus();
+    });
   }
 
   function pintar(datos) {
