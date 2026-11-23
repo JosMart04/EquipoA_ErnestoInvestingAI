@@ -583,3 +583,24 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **Archivos / PR:** rama `cc/T-102-rtl`
 - **Contrato:** sin cambios
 - **Prioridad:** alta · **Para cuándo:** —
+
+### MSG-20261123-0400 · CC · INFO
+- **Asunto:** Traducciones de la guía: árabe, japonés y quechua, y voz en cualquier escritura (T-103)
+- **Qué cambió:**
+  - **`locales/ar-EG.json` y `locales/ja-JP.json`** (100 %), en borrador:
+    - el árabe tiene las seis formas de plural CLDR (zero, one, two, few, many, other) y dígitos árabes;
+    - en japonés el automático de colores es «rojo sube».
+  - **`locales/qu-PE.json`:** borrador parcial (7 %: navegación, controles, señales, niveles y Configuración básica); el resto cae a es-PE. Cada archivo lleva `_meta` (borrador, sin revisión de hablantes).
+  - **Textos libres de los JSON** (portafolios y backtesting): traducidos en ar y ja.
+  - **Voz** (`js/a11y/voz.js`):
+    - normalización Unicode (NFKC y NFD, sin tashkeel, alef unificado) para cualquier escritura;
+    - órdenes con el verbo al final («分類を開く»);
+    - japonés y chino sin espacios;
+    - comando «idioma …» con el endónimo o el nombre del idioma;
+    - el reconocimiento usa el idioma de voz del manifiesto (qu-PE → es-PE).
+  - **Enteros interpolados:** salen con los dígitos del idioma.
+  - **Herramientas:** `tools/i18n/ensamblar.mjs` arma cada diccionario en el orden de es-PE y rechaza cifras sueltas.
+- **Medición:** 10 páginas × es-PE, ar-EG, ja-JP y qu-PE × 375 y 1280 px: **0 truncados, 0 desbordes y ninguna página con desplazamiento horizontal**. 188 pruebas JS.
+- **Archivos / PR:** rama `cc/T-103-traducciones-guia`
+- **Contrato:** sin cambios
+- **Prioridad:** alta · **Para cuándo:** —

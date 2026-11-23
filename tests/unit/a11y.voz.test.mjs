@@ -103,3 +103,23 @@ test("T-90b: sin espacios solo cuenta sobre palabras completas (una etiqueta lar
   assert.ok(V.puntuar("tres meses", "AAPL: último cierre USD 355.63 el 11 de noviembre; el mínimo fue USD 328.21", "es") < V.UMBRAL_CLIC);
   assert.ok(V.puntuar("3 m", "3M", "es") >= 1);
 });
+
+test("voz en cualquier escritura: normalización Unicode (NFKC/NFD), sin tashkeel y con el alef unificado en árabe (Lab 13)", () => {
+  assert.equal(V.normalizar("اَلتَّصْنِيفُ أداة"), "التصنيف اداه");
+  assert.equal(V.normalizar("ＡＢＣ　１２３"), "abc 123", "ancho completo → normal");
+  assert.equal(V.normalizar("Классификация!"), "классификация");
+});
+
+test("voz en japonés: el verbo va al final y no hay espacios («分類を開く»)", () => {
+  const G = leerJSON("locales", "ja-JP.json").voz;
+  assert.deepEqual(V.interpretar("分類を開く", G, activos), { accion: "ir", modulo: "clasificacion" });
+  assert.deepEqual(V.interpretar("バックテストに移動", G, activos), { accion: "ir", modulo: "backtesting" });
+  assert.equal(V.interpretar("購入をクリック", G, activos).texto, "購入");
+  assert.ok(V.puntuar("購入", "購入する") >= V.UMBRAL_CLIC, "en japonés «clic en» compara por subcadenas");
+});
+
+test("voz en árabe: «اذهب إلى التصنيف» abre Clasificación y «اللغة …» pide otro idioma", () => {
+  const G = leerJSON("locales", "ar-EG.json").voz;
+  assert.deepEqual(V.interpretar("اذهب إلى التصنيف", G, activos), { accion: "ir", modulo: "clasificacion" });
+  assert.deepEqual(V.interpretar("اللغة اليابانية", G, activos), { accion: "idioma", texto: "اليابانيه" });
+});

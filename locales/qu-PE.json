@@ -1,0 +1,101 @@
+{
+  "_meta": {
+    "estado": "borrador",
+    "parcial": true,
+    "revisado_por": null,
+    "generado_con": "Claude Opus 5.5 (Claude Code), desde es-PE",
+    "fecha": "2026-11-23",
+    "nota": "Traducción en borrador generada con IA: requiere revisión de una persona hablante competente (Spec W13 G.10.4)."
+  },
+  "comun": {
+    "saltar": "Willakuyman pasay",
+    "inicio": "Qallariy",
+    "cerrar": "Wichqay",
+    "todos": "Llapan",
+    "activo": "Qullqi churana",
+    "grupo": "Huñu",
+    "familia": "Ayllu",
+    "modelo": "Yachaq rikch'aq",
+    "cancelar": "Saqiy",
+    "si": "Arí",
+    "no": "Manam"
+  },
+  "nav": {
+    "etiqueta": "Llamk'ana t'aqakuna",
+    "modulos": "T'aqakuna",
+    "migas": "Ñan qatipay",
+    "dashboard": "Qhawana",
+    "watchlist": "Qhawana sinru, willakuykuna",
+    "trading": "Rantiy-qatuy pukllay",
+    "leaderboard": "Ñawpaqkuna",
+    "clasificacion": "Rakiy",
+    "regresion": "Ñawpaqman qhaway 30 p'unchaw",
+    "optimizador": "Allinchaq",
+    "portafolios": "Qullqi q'ipikuna",
+    "backtesting": "Ñawpa pacha pruebay"
+  },
+  "shell": {
+    "datos": "Willakuykuna:",
+    "datos_grupo": "Willakuy laya",
+    "modo_profesor_sin_fecha": "Yachachiq",
+    "modo_real_sin_fecha": "Cheqaq · Yahoo",
+    "idioma": "Simi",
+    "tema": "Rikch'ay",
+    "accesibilidad": "Llapanpaq yaykuy",
+    "anuncio_idioma": "Simi: runasimi (Perú).",
+    "configuracion": "Allichana",
+    "borrador": "IA nisqawan ruwasqa ñawpaq qillqa: pantaykuna kanmanmi, runasimi rimaqkunaraq qhawananku.",
+    "idioma_enlace": "Simita akllay"
+  },
+  "aviso": {
+    "profesor": {
+      "generico": "Yuyaychasqa willakuykuna · pukllay tukuykuna",
+      "portafolios": "Yuyaychasqa willakuykuna · pukllay tukuykuna"
+    }
+  },
+  "ficha": {
+    "titulo": "IA nisqapa willakuynin",
+    "que_hace": "Imatam ruwan",
+    "que_tan_bien": "Hayk'a allintam ruwan",
+    "por_que": "Imanaqtinmi chayta nin",
+    "controlas": "Imatam kamachiwaq",
+    "ignorar": "Imaynatam mana uyariwaq"
+  },
+  "grafico": {
+    "pestana_grafico": "Siq'i",
+    "pestana_tabla": "Siq'i t'aqa",
+    "pestana_resumen": "Pisillapi"
+  },
+  "datos": {
+    "senal": {
+      "SUBE": "WICHAY",
+      "BAJA": "URAY"
+    },
+    "confianza": {
+      "alta": "hatun",
+      "media": "chawpi",
+      "baja": "huch'uy"
+    },
+    "nivel": {
+      "Conservador": "Waqaychaq",
+      "Moderado": "Chawpi",
+      "Agresivo": "Kallpasapa"
+    }
+  },
+  "config": {
+    "titulo_pagina": "Allichana · Ernesto Investing AI",
+    "titulo": "Allichana",
+    "idioma_titulo": "Simi, suyu",
+    "idioma_leyenda": "Rikuchiypa siminkuna",
+    "estado_fuente": "Qallariq simi",
+    "estado_completo": "Tukusqa",
+    "estado_borrador": "Ñawpaq qillqa",
+    "zona_titulo": "Pacha suyu",
+    "zona_rotulo": "Qampa pacha suyuyki",
+    "apariencia_titulo": "Rikch'ay",
+    "tema_leyenda": "Rikch'ay",
+    "tema_claro": "K'anchay",
+    "tema_oscuro": "Tutayaq",
+    "exportar": "CSV hurquy"
+  }
+}

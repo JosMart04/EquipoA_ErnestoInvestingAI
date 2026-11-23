@@ -15,9 +15,14 @@
 
   /** Minúsculas, sin tildes ni signos, espacios simples. Pura. */
   function normalizar(texto) {
-    return String(texto || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
-      .replace(/[^a-z0-9ñ\s]/g, " ").replace(/\s+/g, " ").trim();
+    // NFKC (ancho completo → normal), minúsculas, NFD y sin marcas combinantes (tildes, tashkeel árabe, niqqud hebreo):
+    // vale para cualquier escritura (Lab 13: normalización Unicode). En árabe se unifican las formas del alef y la ta marbuta.
+    return String(texto || "").normalize("NFKC").toLowerCase().normalize("NFD").replace(/\p{M}/gu, "")
+      .replace(/[أإآ]/g, "ا").replace(/ة/g, "ه").replace(/ى/g, "ي")
+      .replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ").trim();
   }
+  /** ¿El texto está en una escritura sin espacios entre palabras (chino, japonés)? Pura. */
+  const sinEspacios = t => /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(t);
   /** Activo dicho por ticker («NVDA», «n v d a») o por empresa («Apple»). activos = [{ticker, nombre}]. Pura. */
   function buscarActivo(texto, activos) {
     const t = normalizar(texto); if (!t) return null;
@@ -53,10 +58,13 @@
     es: { mes: "m", meses: "m", ano: "a", anos: "a", semana: "s", semanas: "s", dia: "d", dias: "d" },
     en: { month: "m", months: "m", year: "y", years: "y", week: "w", weeks: "w", day: "d", days: "d" }
   };
-  const lengua = idioma => (String(idioma || "es").slice(0, 2) === "en" ? "en" : "es");
+  /** Números dichos, ordinales y palabras vacías solo están en español e inglés; en los demás idiomas el reconocedor
+      entrega las cifras y no se quitan palabras. */
+  const lengua = idioma => { const b = String(idioma || "es").slice(0, 2); return b === "en" ? "en" : b === "es" ? "es" : "otra"; };
   /** Números dichos con palabras → cifras: «treinta y siete» → 37, «dos mil veinticinco» → 2025. Texto ya normalizado. Pura. */
   function palabrasANumeros(texto, idioma) {
     const L = lengua(idioma), num = NUM[L], salida = [], tk = String(texto || "").split(" ").filter(Boolean);
+    if (!num) return String(texto || "");
     let actual = null, total = 0;
     const cerrar = () => { if (actual !== null || total) { salida.push(String(total + (actual || 0))); actual = null; total = 0; } };
     for (let i = 0; i < tk.length; i++) {
@@ -73,7 +81,7 @@
   }
   /** «el segundo comprar», «comprar número dos», «la última» → {indice (1, 2… o −1 = último), resto}. Pura. */
   function extraerOrdinal(texto, idioma) {
-    const L = lengua(idioma), ord = ORD[L], t = palabrasANumeros(normalizar(texto), L), tk = t.split(" ").filter(Boolean);
+    const L = lengua(idioma), ord = ORD[L] || {}, t = palabrasANumeros(normalizar(texto), L), tk = t.split(" ").filter(Boolean);
     let indice = null;
     const resto = [];
     for (let i = 0; i < tk.length; i++) {
@@ -88,12 +96,12 @@
   function palabras(texto, idioma) {
     const L = lengua(idioma);
     const tk = palabrasANumeros(normalizar(texto), L).split(" ").filter(Boolean), salida = [];
-    const uno = L === "es" ? ["un", "una"] : ["a", "an"];
+    const uno = L === "es" ? ["un", "una"] : L === "en" ? ["a", "an"] : [], unidades = UNIDADES[L] || {}, vacias = VACIAS[L] || new Set();
     // «3 meses» → «3m» y «un año» → «1a»: así coincide con los botones de periodo «1M», «3M», «1A»
     for (let i = 0; i < tk.length; i++) {
       const cantidad = /^\d+$/.test(tk[i]) ? tk[i] : uno.includes(tk[i]) ? "1" : null;
-      if (cantidad && UNIDADES[L][tk[i + 1]]) { salida.push(cantidad + UNIDADES[L][tk[i + 1]]); i++; }
-      else if (!VACIAS[L].has(tk[i])) salida.push(tk[i]);
+      if (cantidad && unidades[tk[i + 1]]) { salida.push(cantidad + unidades[tk[i + 1]]); i++; }
+      else if (!vacias.has(tk[i])) salida.push(tk[i]);
     }
     return salida;
   }
@@ -101,6 +109,12 @@
       Cuenta las palabras dichas que aparecen (iguales, abreviadas como «nov» por «noviembre», o en plural) y compara
       también sin espacios para que «3 m» encuentre «3M». Penaliza un poco los nombres con muchas palabras de más. */
   function puntuar(dicho, nombre, idioma) {
+    if (sinEspacios(String(dicho)) || sinEspacios(String(nombre))) {
+      const q = normalizar(dicho).replace(/ /g, ""), n = normalizar(nombre).replace(/ /g, "");
+      if (!q || !n) return 0;
+      if (q === n) return 1.5;
+      return n.includes(q) ? Math.max(0.6, 1 - Math.min(0.3, (n.length - q.length) / (4 * n.length))) : q.includes(n) && n.length >= 2 ? 0.7 : 0;
+    }
     const Q = palabras(dicho, idioma), N = palabras(nombre, idioma);
     if (!Q.length || !N.length) return 0;
     const raiz = w => w.replace(/(es|s)$/, "");
@@ -124,15 +138,20 @@
   /** Frase → acción. G = {g_*: "alt1|alt2", m_<modulo>: "…"} del idioma activo. Devuelve null si no se entiende. Pura. */
   function interpretar(texto, G, activos) {
     const t = normalizar(texto); if (!t) return null;
+    const juntas = sinEspacios(t);
     const alt = k => (G[k] ? G[k].split("|").map(normalizar).filter(Boolean).sort((a, b) => b.length - a.length) : []);
-    const prefijo = k => alt(k).find(p => t === p || t.startsWith(p + " "));
+    const prefijo = k => alt(k).find(p => t === p || t.startsWith(p + " ") || (juntas && t.startsWith(p) && t !== p));
+    // El verbo al final («分類を開く», «분류 열기»): el argumento va antes
+    const sufijo = k => alt(k).find(p => t.endsWith(" " + p) || (juntas && t.endsWith(p) && t !== p));
+    const argumento = k => { let p = prefijo(k); if (p) return t.slice(p.length).trim(); p = sufijo(k); return p ? t.slice(0, t.length - p.length).trim() : null; };
     const igual = k => alt(k).includes(t);
-    const modulo = s => { const r = s.replace(/^(el|la|los|las|al|the)\s+/, ""); return MODULOS.find(id => alt("m_" + id).some(n => r === n || r.startsWith(n + " "))) || null; };
-    let p;
+    const modulo = s => { const r = s.replace(/^(el|la|los|las|al|the)\s+/, ""); return MODULOS.find(id => alt("m_" + id).some(n => r === n || r.startsWith(n + " ") || (juntas && r.startsWith(n)))) || null; };
+    let resto;
     // 1) Comandos con argumento
-    if ((p = prefijo("g_ir"))) { const m = modulo(t.slice(p.length).trim()); if (m) return { accion: "ir", modulo: m }; }
-    if ((p = prefijo("g_clic"))) { const resto = t.slice(p.length).trim(); if (resto) return { accion: "clic", texto: resto }; }
-    if ((p = prefijo("g_activo"))) { const resto = t.slice(p.length).trim(); if (resto) return { accion: "activo", valor: buscarActivo(resto, activos), texto: resto }; }
+    if ((resto = argumento("g_ir"))) { const m = modulo(resto); if (m) return { accion: "ir", modulo: m }; }
+    if ((resto = argumento("g_idioma"))) return { accion: "idioma", texto: resto };
+    if ((resto = argumento("g_clic"))) return { accion: "clic", texto: resto };
+    if ((resto = argumento("g_activo"))) return { accion: "activo", valor: buscarActivo(resto, activos), texto: resto };
     // 2) Comandos fijos
     const fijos = [["g_siguiente", { accion: "siguiente" }], ["g_anterior", { accion: "anterior" }], ["g_volver", { accion: "volver" }],
       ["g_bajar", { accion: "desplazar", sentido: 1 }], ["g_subir", { accion: "desplazar", sentido: -1 }],
@@ -165,7 +184,7 @@
     const G = {};
     ["g_ir", "g_clic", "g_activo", "g_siguiente", "g_anterior", "g_volver", "g_bajar", "g_subir", "g_tema_oscuro", "g_tema_claro",
       "g_modo_real", "g_modo_profesor", "g_solo_ml", "g_solo_dl", "g_todos", "g_leer", "g_escuchar", "g_llevar", "g_ayuda", "g_detener",
-      "g_ingles", "g_espanol", "g_cancelar"].concat(MODULOS.map(m => "m_" + m)).forEach(k => { G[k] = t("voz." + k); });
+      "g_ingles", "g_espanol", "g_cancelar", "g_idioma"].concat(MODULOS.map(m => "m_" + m)).forEach(k => { G[k] = t("voz." + k); });
     return G;
   }
 
@@ -308,10 +327,17 @@
       case "desplazar": await bus("DESPLAZAR", { dy: a.sentido * global.innerHeight * DESPLAZAMIENTO }); pintarChip(t(a.sentido > 0 ? "voz.ok_bajar" : "voz.ok_subir")); return;
       case "tema": EIA.setTema(a.valor); confirmar(t(a.valor === "dark" ? "voz.ok_tema_oscuro" : "voz.ok_tema_claro")); return;
       case "modo": EIA.setModo(a.valor); confirmar(t(a.valor === "real" ? "voz.ok_modo_real" : "voz.ok_modo_profesor")); return;
-      case "idioma":
+      case "idioma": {
+        if (!a.valor) {
+          const dicho = normalizar(a.texto);
+          const tag = EIA.IDIOMAS.find(x => [EIA.endonimo(x), EIA.nombreIdioma(x), EIA.nombreIdioma(x.split("-")[0])].some(n => { const m = normalizar(n); return m && (m === dicho || m.startsWith(dicho) || dicho.startsWith(m)); }));
+          if (!tag) { confirmar(t("voz.no_entendi", { texto: oido }), "error"); return; }
+          a.valor = tag;
+        }
         await EIA.setIdioma(a.valor);
         reiniciarIdioma();
         confirmar(t("voz.ok_idioma")); return;
+      }
       case "familia": {
         const b = $(`#filtro-familia button[data-valor="${a.valor}"]`);
         if (!b) { confirmar(t("voz.no_aqui"), "error"); return; }
@@ -364,7 +390,8 @@
   /* ── Reconocimiento ── */
   function crearReconocedor() {
     const r = new Reconocedor();
-    r.lang = EIA.idioma(); r.continuous = true; r.interimResults = false; r.maxAlternatives = 1;
+    const info = EIA.infoIdioma(EIA.idioma()) || {};
+    r.lang = info.voz || (EIA.esPseudo() ? EIA.fuente() : EIA.idioma()); r.continuous = true; r.interimResults = false; r.maxAlternatives = 1;
     r.onresult = e => {
       reinicios = 0;
       for (let i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) ejecutarTexto(e.results[i][0].transcript);
