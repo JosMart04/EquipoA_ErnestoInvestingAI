@@ -91,7 +91,7 @@
 <h3>${esc(t("portafolios.principales", { n: top.length }))}</h3>
 <ul class="lista-pesos">${top.map(w => `<li><span class="tk">${esc(w.ticker)}</span> <span class="barra-peso"><span style="width:${(100 * w.peso / top[0].peso).toFixed(1)}%"></span></span> ${esc(pct(w.peso * 100, 1))}</li>`).join("")}</ul>
 <p class="acciones"><button type="button" data-elegir-nivel="${esc(n.nivel)}" aria-pressed="${!!es}">${esc(t(es ? "portafolios.elegido" : "portafolios.elegir", { nivel: EIA.nombre("nivel", n.nivel) }))}</button>
-<a class="btn" href="backtesting.html?nivel=${encodeURIComponent(n.nivel)}">${esc(t("portafolios.ver_backtesting"))} <span aria-hidden="true">→</span></a></p>
+<a class="btn" href="backtesting.html?nivel=${encodeURIComponent(n.nivel)}">${esc(t("portafolios.ver_backtesting"))} <span class="flecha" aria-hidden="true">→</span></a></p>
 </article>`;
     }).join("");
   }
@@ -142,7 +142,7 @@
 ${r.menores.length ? `<p class="mut">${esc(t("portafolios.menores", { lista: r.menores.map(m => t("portafolios.menor", { ticker: m.ticker, peso: pct(m.peso * 100, 2) })).join(", "), umbral: pct(UMBRAL_DETALLE * 100, 0) }))}</p>` : ""}
 <p class="comprobacion">${esc(t("portafolios.comprobacion", { n: r.quedan, suma: pct(r.sumaRenormalizada * 100, 1) }))}</p>
 <p class="acciones"><button type="button" class="primary" id="llevar"${r.quedan ? "" : " disabled"}>${esc(t("portafolios.llevar", { nivel: EIA.nombre("nivel", n.nivel) }))}</button>
-<a class="btn" href="trading.html">${esc(t("portafolios.ir_trading"))} <span aria-hidden="true">→</span></a></p>`;
+<a class="btn" href="trading.html">${esc(t("portafolios.ir_trading"))} <span class="flecha" aria-hidden="true">→</span></a></p>`;
   }
 
   function elegirNivel(nivel) {

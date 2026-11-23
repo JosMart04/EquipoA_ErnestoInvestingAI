@@ -248,8 +248,8 @@
       esc(t(sube ? "regresion.retorno_sube" : "regresion.retorno_baja", { pct: EIA.fmt.pct(V.retorno), n: R.horizonte }))}</p>
 <p>${esc(textoResumen())}</p>
 <p class="mut">${esc(t("regresion.sin_banda"))}</p>
-<p class="acciones"><a class="btn" id="enlace-clasificacion" href="clasificacion.html?t=${encodeURIComponent(V.ticker)}"><span aria-hidden="true">←</span> ${esc(t("regresion.ver_clasificacion"))}</a>
-<a class="btn primary" id="enlace-optimizador" href="optimizador.html?t=${encodeURIComponent(V.ticker)}">${esc(t("regresion.ver_optimizador"))} <span aria-hidden="true">→</span></a></p>`;
+<p class="acciones"><a class="btn" id="enlace-clasificacion" href="clasificacion.html?t=${encodeURIComponent(V.ticker)}"><span class="flecha" aria-hidden="true">←</span> ${esc(t("regresion.ver_clasificacion"))}</a>
+<a class="btn primary" id="enlace-optimizador" href="optimizador.html?t=${encodeURIComponent(V.ticker)}">${esc(t("regresion.ver_optimizador"))} <span class="flecha" aria-hidden="true">→</span></a></p>`;
   }
 
   /** R-REG-09 con honestidad: la comprobación literal de la guía y la igualdad inversa del contrato (I-03b, nota N-1). */

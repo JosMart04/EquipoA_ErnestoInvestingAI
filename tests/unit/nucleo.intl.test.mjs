@@ -23,9 +23,10 @@ test("plurales: la categoría sale de Intl.PluralRules y {n} se escribe con los 
   assert.equal(EIA.t("config.vista_alertas", { n: 1 }), "1 alerta activa");
   assert.equal(EIA.t("config.vista_alertas", { n: 1234 }), "1,234 alertas activas", "es-PE agrupa con coma (Intl)");
   usar("ar-EG", { p: { zero: "صفر {n}", one: "واحد", two: "اثنان", few: "{n} قليلة", many: "{n} كثيرة", other: "{n} أخرى" } });
-  assert.equal(EIA.t("p", { n: 0 }), "صفر ٠");
-  assert.equal(EIA.t("p", { n: 3 }), "٣ قليلة", "árabe: «few» y dígitos ٣");
-  assert.equal(EIA.t("p", { n: 11 }), "١١ كثيرة", "árabe: «many»");
+  const sinAislar = x => x.replace(/[⁨⁩]/g, "");
+  assert.equal(sinAislar(EIA.t("p", { n: 0 })), "صفر ٠");
+  assert.equal(sinAislar(EIA.t("p", { n: 3 })), "٣ قليلة", "árabe: «few» y dígitos ٣");
+  assert.equal(sinAislar(EIA.t("p", { n: 11 })), "١١ كثيرة", "árabe: «many»");
 });
 
 test("normalización BCP 47: etiqueta exacta, idioma base y pseudoidiomas; sin autodetección", () => {
@@ -108,4 +109,28 @@ test("colores de alza y baja: automático según el idioma (rojo sube en ja, zh 
   assert.equal(EIA.colores(), "rojo-sube");
   usar("es-PE", ES);
   assert.equal(EIA.colores(), "verde-sube");
+});
+
+test("RTL: los valores interpolados se aíslan (U+2068…U+2069) para que un ticker o una cifra no desordene la frase", () => {
+  usar("ar-EG", { a: "سعر {ticker}" });
+  assert.equal(EIA.t("a", { ticker: "SPY" }), "سعر ⁨SPY⁩");
+  usar("es-PE", ES);
+  assert.equal(EIA.t("config.vista_precio", { ticker: "SPY" }), "Precio de SPY", "en LTR no se agrega nada");
+});
+
+test("RTL: ECharts se espeja como pide el kit del curso (eje X invertido, eje Y al otro lado, márgenes intercambiados)", () => {
+  const op = EIA.espejarGrafico({ grid: { left: 52, right: 96, top: 5 }, xAxis: { type: "category" }, yAxis: [{}, { position: "right" }], legend: { left: "center" }, visualMap: { right: 10 } });
+  assert.equal(op.xAxis.inverse, true);
+  assert.deepEqual(op.yAxis.map(a => a.position), ["right", "left"]);
+  assert.deepEqual([op.grid.left, op.grid.right, op.grid.top], [96, 52, 5]);
+  assert.equal(op.legend.left, "center", "lo centrado no cambia");
+  assert.equal(op.visualMap.left, 10);
+});
+
+test("RTL: las flechas horizontales se invierten (WAI-ARIA APG); en LTR quedan igual", () => {
+  usar("ar-EG", {});
+  assert.equal(EIA.teclaLogica("ArrowLeft"), "ArrowRight");
+  assert.equal(EIA.teclaLogica("Home"), "Home");
+  usar("es-PE", ES);
+  assert.equal(EIA.teclaLogica("ArrowLeft"), "ArrowLeft");
 });

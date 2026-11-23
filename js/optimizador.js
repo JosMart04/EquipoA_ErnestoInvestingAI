@@ -311,7 +311,7 @@
     main.addEventListener("keydown", e => {
       if (!e.target.matches("#frontera .chart")) return;
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); seleccionar(pos, true); $("#composicion").focus(); return; }
-      const n = navegar(pos, e.key, VIS.map(s => s.puntos.length));
+      const n = navegar(pos, EIA.teclaLogica(e.key), VIS.map(s => s.puntos.length)); // en RTL el eje X está espejado
       if (!n) return;
       e.preventDefault();
       pos = n; marcarFoco();

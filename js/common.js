@@ -351,8 +351,10 @@
       if (!avisados.has(clave) && global.console) { avisados.add(clave); console.warn("i18n: falta la clave " + clave); }
       return "⟦" + clave + "⟧";
     }
-    // {n} es el conteo del plural: si llega como número, sale con los dígitos y separadores del idioma (١٢ en árabe)
-    return params ? v.replace(/\{(\w+)\}/g, (m, k) => (!(k in params) ? m : k === "n" && typeof params.n === "number" && Number.isInteger(params.n) ? EIA.fmt.ent(params.n) : String(params[k]))) : v;
+    // {n} es el conteo del plural: si llega como número, sale con los dígitos y separadores del idioma (١٢ en árabe).
+    // En RTL cada valor se aísla (U+2068…U+2069, algoritmo bidireccional): un ticker o una cifra no desordena la frase.
+    const aislar = EIA.dir() === "rtl" ? x => "⁨" + x + "⁩" : x => x;
+    return params ? v.replace(/\{(\w+)\}/g, (m, k) => (!(k in params) ? m : aislar(k === "n" && typeof params.n === "number" && Number.isInteger(params.n) ? EIA.fmt.ent(params.n) : String(params[k])))) : v;
   };
   /** Nombre de presentación de un valor del JSON (grupo, modelo, sector…). Si no está en el mapa, devuelve el valor tal cual. */
   EIA.nombre = function (categoria, valor) {
@@ -1193,6 +1195,27 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
 
   /* ───────────── Accesibilidad de los gráficos (PLAN_MAESTRO §9.2; T-27) ───────────── */
 
+  /** En RTL las flechas horizontales se invierten (WAI-ARIA APG): la flecha que apunta al inicio de la lectura retrocede.
+      Con el eje X espejado de los gráficos, ← avanza en el tiempo. */
+  EIA.teclaLogica = tecla => (EIA.dir() === "rtl" ? ({ ArrowLeft: "ArrowRight", ArrowRight: "ArrowLeft" }[tecla] || tecla) : tecla);
+  /** Pura: espeja las opciones de ECharts para una escritura de derecha a izquierda, como pide el kit del curso
+      («espeje el eje con inverse en RTL»): los ejes X se invierten, los ejes Y pasan al otro lado y se intercambian los
+      márgenes y posiciones left/right de la cuadrícula, la leyenda, el título y el mapa de color. */
+  EIA.espejarGrafico = function (op) {
+    const lista = x => (Array.isArray(x) ? x : x ? [x] : []);
+    lista(op.xAxis).forEach(a => { a.inverse = !a.inverse; });
+    lista(op.yAxis).forEach(a => { a.position = a.position === "right" ? "left" : "right"; });
+    for (const k of ["grid", "legend", "title", "visualMap", "dataZoom"]) lista(op[k]).forEach(o => {
+      if (!o || typeof o !== "object") return;
+      const izq = o.left, der = o.right;
+      if ((izq === undefined && der === undefined) || izq === "center") return;
+      if (izq === "left" || izq === "right") { o.left = izq === "left" ? "right" : "left"; return; }
+      delete o.left; delete o.right;
+      if (der !== undefined) o.left = der;
+      if (izq !== undefined) o.right = izq;
+    });
+    return op;
+  };
   /** Pura: nueva posición del cursor de exploración tras una tecla; null si la tecla no mueve. */
   EIA.moverCursor = function (i, tecla, n) {
     if (!(n > 0)) return null;
@@ -1308,7 +1331,8 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
       const a11y = EIA.estado.get("eia_a11y") || {};
       // aria.label.description: sin ella, ECharts reescribe el aria-label del lienzo con su descripción automática en inglés
       const base = { animation: !EIA.movimientoReducido(), aria: { enabled: true, label: { description: resumen }, decal: { show: !!a11y.decal } } };
-      inst.setOption(Object.assign(base, cfg.opciones(EIA.coloresGrafico())), true);
+      const op = Object.assign(base, cfg.opciones(EIA.coloresGrafico()));
+      inst.setOption(EIA.dir() === "rtl" ? EIA.espejarGrafico(op) : op, true);
     }
     function textoResumen() {
       const lista = seriesSonido(cfg).series.map(textoSerie).filter(Boolean);
@@ -1386,13 +1410,13 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     destino.addEventListener("keydown", e => {
       if (explorable && e.target === lienzo && !e.altKey && !e.ctrlKey && !e.metaKey) {
         if (e.key === "s" || e.key === "S") { e.preventDefault(); const b = $(".escuchar", destino); if (b) escuchar(b); return; }
-        if (explorar(e.key)) e.preventDefault();
+        if (explorar(EIA.teclaLogica(e.key))) e.preventDefault();
         return;
       }
       const b = e.target.closest("[data-pest]"); if (!b) return;
-      const i = pest.findIndex(p => p[0] === b.dataset.pest);
-      const j = e.key === "ArrowRight" ? (i + 1) % pest.length : e.key === "ArrowLeft" ? (i + pest.length - 1) % pest.length
-        : e.key === "Home" ? 0 : e.key === "End" ? pest.length - 1 : -1;
+      const i = pest.findIndex(p => p[0] === b.dataset.pest), k = EIA.teclaLogica(e.key);
+      const j = k === "ArrowRight" ? (i + 1) % pest.length : k === "ArrowLeft" ? (i + pest.length - 1) % pest.length
+        : k === "Home" ? 0 : k === "End" ? pest.length - 1 : -1;
       if (j >= 0) { e.preventDefault(); elegir(pest[j][0], true); }
     }, senal);
     if (explorable) lienzo.addEventListener("blur", () => { if (inst) inst.dispatchAction({ type: "hideTip" }); }, senal);
