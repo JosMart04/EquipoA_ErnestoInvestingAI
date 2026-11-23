@@ -31,6 +31,16 @@
       "completitud": 100
     },
     {
+      "tag": "he-IL",
+      "endonimo": "עברית (ישראל)",
+      "dir": "rtl",
+      "escritura": "Hebr",
+      "estado": "borrador",
+      "voz": "he-IL",
+      "etiqueta_borrador": "טיוטה",
+      "completitud": 100
+    },
+    {
       "tag": "ja-JP",
       "endonimo": "日本語（日本）",
       "dir": "ltr",
@@ -38,6 +48,76 @@
       "estado": "borrador",
       "voz": "ja-JP",
       "etiqueta_borrador": "下書き",
+      "completitud": 100
+    },
+    {
+      "tag": "zh-CN",
+      "endonimo": "中文（中国）",
+      "dir": "ltr",
+      "escritura": "Hans",
+      "estado": "borrador",
+      "voz": "zh-CN",
+      "etiqueta_borrador": "草稿",
+      "completitud": 100
+    },
+    {
+      "tag": "ko-KR",
+      "endonimo": "한국어(대한민국)",
+      "dir": "ltr",
+      "escritura": "Kore",
+      "estado": "borrador",
+      "voz": "ko-KR",
+      "etiqueta_borrador": "초안",
+      "completitud": 100
+    },
+    {
+      "tag": "hi-IN",
+      "endonimo": "हिन्दी (भारत)",
+      "dir": "ltr",
+      "escritura": "Deva",
+      "estado": "borrador",
+      "voz": "hi-IN",
+      "etiqueta_borrador": "मसौदा",
+      "completitud": 100
+    },
+    {
+      "tag": "ru-RU",
+      "endonimo": "Русский (Россия)",
+      "dir": "ltr",
+      "escritura": "Cyrl",
+      "estado": "borrador",
+      "voz": "ru-RU",
+      "etiqueta_borrador": "черновик",
+      "completitud": 100
+    },
+    {
+      "tag": "pt-BR",
+      "endonimo": "Português (Brasil)",
+      "dir": "ltr",
+      "escritura": "Latn",
+      "estado": "borrador",
+      "voz": "pt-BR",
+      "etiqueta_borrador": "rascunho",
+      "completitud": 100
+    },
+    {
+      "tag": "fr-FR",
+      "endonimo": "Français (France)",
+      "dir": "ltr",
+      "escritura": "Latn",
+      "estado": "borrador",
+      "voz": "fr-FR",
+      "etiqueta_borrador": "brouillon",
+      "completitud": 100
+    },
+    {
+      "tag": "de-DE",
+      "endonimo": "Deutsch (Deutschland)",
+      "dir": "ltr",
+      "escritura": "Latn",
+      "estado": "borrador",
+      "voz": "de-DE",
+      "etiqueta_borrador": "Entwurf",
       "completitud": 100
     },
     {
