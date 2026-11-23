@@ -34,7 +34,7 @@
     ACTIVAR() { const el = document.activeElement; if (el && el !== document.body && el.click) el.click(); },
     DESPLAZAR(d) { global.scrollBy({ top: d.dy || 0, behavior: "auto" }); },
     VOLVER() { const dlg = document.querySelector("dialog[open]"); if (dlg) dlg.close(); else global.history.back(); },
-    IR_A_MODULO(d) { const p = global.PAGES.find(x => x[2] === d.id); if (p) global.location.href = p[0]; },
+    IR_A_MODULO(d) { const p = (global.PAGINAS_NAV || []).find(x => x[2] === d.id) || global.PAGES.find(x => x[2] === d.id); if (p) global.location.href = p[0]; },
     SIGUIENTE_MODULO() { cambiarModulo(1); },
     MODULO_ANTERIOR() { cambiarModulo(-1); },
     AYUDA() { if (EIA.abrirAccesibilidad) EIA.abrirAccesibilidad(); },

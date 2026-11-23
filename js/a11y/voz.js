@@ -11,7 +11,8 @@
    Formato dual: lo puro (normalizar, interpretar) se prueba en Node. */
 (function (global) {
   "use strict";
-  const MODULOS = ["dashboard", "watchlist", "trading", "leaderboard", "clasificacion", "regresion", "optimizador", "portafolios", "backtesting"];
+  const MODULOS = ["dashboard", "watchlist", "trading", "leaderboard", "clasificacion", "regresion", "optimizador", "portafolios", "backtesting",
+    "activo", "comparador", "ordenes", "perfil", "configuracion", "ayuda", "acerca"];
 
   /** Minúsculas, sin tildes ni signos, espacios simples. Pura. */
   function normalizar(texto) {
@@ -145,11 +146,20 @@
     const sufijo = k => alt(k).find(p => t.endsWith(" " + p) || (juntas && t.endsWith(p) && t !== p));
     const argumento = k => { let p = prefijo(k); if (p) return t.slice(p.length).trim(); p = sufijo(k); return p ? t.slice(0, t.length - p.length).trim() : null; };
     const igual = k => alt(k).includes(t);
-    const modulo = s => { const r = s.replace(/^(el|la|los|las|al|the)\s+/, ""); return MODULOS.find(id => alt("m_" + id).some(n => r === n || r.startsWith(n + " ") || (juntas && r.startsWith(n)))) || null; };
+    // Gana el nombre más largo que coincida: «注文履歴» es el historial de órdenes, aunque «注文» también nombre a Trading
+    const modulo = s => {
+      const r = s.replace(/^(el|la|los|las|al|the)\s+/, "");
+      let mejor = null, largo = 0;
+      for (const id of MODULOS) for (const n of alt("m_" + id)) {
+        if (n.length > largo && (r === n || r.startsWith(n + " ") || (juntas && r.startsWith(n)))) { mejor = id; largo = n.length; }
+      }
+      return mejor;
+    };
     let resto;
     // 1) Comandos con argumento
     if ((resto = argumento("g_ir"))) { const m = modulo(resto); if (m) return { accion: "ir", modulo: m }; }
     if ((resto = argumento("g_idioma"))) return { accion: "idioma", texto: resto };
+    if ((resto = argumento("g_buscar"))) return { accion: "buscar", texto: resto };
     if ((resto = argumento("g_clic"))) return { accion: "clic", texto: resto };
     if ((resto = argumento("g_activo"))) return { accion: "activo", valor: buscarActivo(resto, activos), texto: resto };
     // 2) Comandos fijos
@@ -184,7 +194,7 @@
     const G = {};
     ["g_ir", "g_clic", "g_activo", "g_siguiente", "g_anterior", "g_volver", "g_bajar", "g_subir", "g_tema_oscuro", "g_tema_claro",
       "g_modo_real", "g_modo_profesor", "g_solo_ml", "g_solo_dl", "g_todos", "g_leer", "g_escuchar", "g_llevar", "g_ayuda", "g_detener",
-      "g_ingles", "g_espanol", "g_cancelar", "g_idioma"].concat(MODULOS.map(m => "m_" + m)).forEach(k => { G[k] = t("voz." + k); });
+      "g_ingles", "g_espanol", "g_cancelar", "g_idioma", "g_buscar"].concat(MODULOS.map(m => "m_" + m)).forEach(k => { G[k] = t("voz." + k); });
     return G;
   }
 
@@ -313,7 +323,7 @@
     el.click();
   }
   async function bus(comando, datos) { await EIA.cargar("js/a11y/bus-entrada.js"); EIA.bus.emitir(comando, datos || {}); }
-  const nombreModulo = id => t((global.PAGES.find(p => p[2] === id) || [])[1] || id);
+  const nombreModulo = id => t(((global.PAGINAS_NAV || []).find(p => p[2] === id) || global.PAGES.find(p => p[2] === id) || [])[1] || id);
 
   async function ejecutar(a, oido) {
     switch (a.accion) {
@@ -321,6 +331,7 @@
         sesion.set(CLAVE, "1"); // se reanuda en la página nueva
         confirmar(t("voz.ok_ir", { modulo: nombreModulo(a.modulo) }));
         await bus("IR_A_MODULO", { id: a.modulo }); return;
+      case "buscar": confirmar(t("voz.ok_buscar", { texto: a.texto })); EIA.abrirBuscador(a.texto); return;
       case "siguiente": await bus("SIGUIENTE"); pintarChip(t("voz.ok_siguiente")); return;
       case "anterior": await bus("ANTERIOR"); pintarChip(t("voz.ok_anterior")); return;
       case "volver": await bus("VOLVER"); pintarChip(t("voz.ok_volver")); return;
