@@ -6,7 +6,7 @@
 ## Última actualización
 - Fecha y hora: 2026-11-22 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-104-traducciones-extra` (Lab 13: los 13 idiomas completos; falta T-105, medición y documentación)
+- Rama / último commit: `cc/T-105-i18n-despues` (Lab 13: T-104 fusionado en el PR #43; T-105 en revisión)
 
 ## Hecho (con evidencia)
 
@@ -48,7 +48,8 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 | #40 | T-101 | **Núcleo i18n:** `i18n/` → `locales/` + manifiesto `locales/index.json`; respaldo a es-PE; `lang`/`dir`; zona horaria (cierre 16:00 de Nueva York en la zona de la persona); Collator; pseudolocales `qps-ploc`/`qps-plocm`; fachada `I18N` del kit; selector por endónimo y franja de borrador; página **Configuración**; colores «rojo sube» para ja/zh/ko; hreflang | Pruebas JS; navegador |
 | #41 | T-102 | **RTL:** CSS lógico, ECharts espejado (`EIA.espejarGrafico`), flechas ← → invertidas (`EIA.teclaLogica`), fuentes por `:lang()`, bidi | RTL no agrega desbordes |
 | #42 | T-103 | **ar-EG, ja-JP (100 %) y qu-PE (parcial, 7 %)** + voz en cualquier escritura (normalización Unicode, CJK sin espacios, comando «idioma …») | 188 pruebas; 0 truncados y 0 desbordes (10 páginas × 4 idiomas × 375/1280) |
-| (este) | T-104 | **he-IL, zh-CN, ko-KR, hi-IN, ru-RU, pt-BR, fr-FR, de-DE** al 100 % (borradores con `_meta`), con su gramática de voz y los textos libres de los JSON | 220 pruebas; medición B de los 8 idiomas en el mensaje de la bitácora |
+| #43 | T-104 | **he-IL, zh-CN, ko-KR, hi-IN, ru-RU, pt-BR, fr-FR, de-DE** al 100 % (borradores con `_meta`), con su gramática de voz y los textos libres de los JSON | 220 pruebas; medición B de los 8 idiomas en el mensaje de la bitácora |
+| (este) | T-105 | **Medición A/B** en 13 idiomas (936 filas: A 26 truncados, 45 desbordes, 432 `lang` y 72 `dir` incorrectos; B todo en 0), figura del notebook del profesor, 20 capturas, `docs/i18n/guia_tecnica.md`, `glosario.md`, sección «Idiomas» del README y D-25 | 220 pruebas; CSV en `docs/i18n/` |
 
 ### Accesibilidad: qué está probado y qué no
 
@@ -71,16 +72,14 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 - El atajo `Alt+Shift+A` con una pulsación real (el evento sintético llega y abre el panel).
 
 ## En curso (estado exacto)
-- **Lab 13 (internacionalización, plan aprobado el 22-nov):** T-100…T-104 listos; falta **T-105**.
+- **Lab 13 (internacionalización, plan aprobado el 22-nov):** T-100…T-104 fusionados (PR #39…#43). **T-105** está en revisión en `cc/T-105-i18n-despues`: medición A/B, capturas, figura del notebook, guía técnica, glosario, README y D-25.
 
 ## Siguiente paso exacto
-0. **T-105 (Lab 13):**
-   - medición completa A/B (versión A desde un worktree de la etiqueta `i18n-antes` con el diccionario de cada idioma inyectado; versión B con los 13 idiomas), con y sin pseudo, a 375 y 1280 px, en `docs/i18n/ejercicio_13_2_auditoria_investing_ai_PRUEBA_TECNICA_BOT.csv`;
-   - capturas antes y después en `docs/capturas/i18n/`;
-   - el notebook del profesor (`.py`) con nuestro CSV;
-   - `docs/i18n/guia_tecnica.md` y `docs/i18n/glosario.md`, la sección «Idiomas» del README y D-25 en DECISIONES.
+0. **Lab 13:**
+   - fusionar el PR de T-105 cuando la CI esté en verde;
+   - después, en la **siguiente iteración**: la interfaz «ultra-realista», Perfil, Ayuda y Acerca de, y la revisión de los borradores por hablantes.
    
-   La interfaz «ultra-realista», Perfil, Ayuda y Acerca de son de la **siguiente iteración**.
+   El experimento 13.3 con personas es tarea del equipo. Para repetir la medición o el notebook, sigue `docs/i18n/README.md`; el notebook necesita pandas y matplotlib, que no están instalados en el sistema (usa un venv).
 1. `git pull`; `node --test "tests/unit/*.test.mjs"`; `js/clasificacion.js` es el patrón de módulo.
 2. **Informe aprobado por Josué (18-nov).** Si cambia algo del sitio o de las cifras antes de la entrega, se editan los textos en `tools/informe/generar_informe.cjs` y se regenera (ver «Cómo probar»). No editar el PDF a mano.
 3. **Pendientes humanos** (Josué ya comprobó el 18-nov que el archivo de Figma Make se abre sin iniciar sesión): pruebas por rol del Anexo A (T-80, incluidos lectores de pantalla); registrar los enlaces en la tabla del curso; video opcional (T-64).
