@@ -830,6 +830,7 @@
     poner("data-enlaces", p.enlaces ? "subrayados" : "");
     poner("data-fuente", p.fuente ? "legible" : "");
     poner("data-cursor", p.cursor ? "grande" : "");
+    ajustarBarra(); // el tamaño de texto y el espaciado cambian lo que cabe en la barra superior
   };
 
   /** Abre el Centro de accesibilidad (js/a11y/panel.js se carga la primera vez). */
@@ -978,9 +979,41 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     const ayuda = t("shell.mercado_ayuda", { apertura: EIA.fmt.hora(h.apertura, ZONA_MERCADO), cierre: EIA.fmt.hora(h.cierre, ZONA_MERCADO) });
     el.className = "mercado " + (m.abierto ? "mercado-abierto" : "mercado-cerrado");
     // Visible, el estado corto; el detalle (hora en Nueva York y en tu zona) va al texto accesible y a la ayuda emergente
-    el.innerHTML = `<span class="mercado-punto" aria-hidden="true"></span><span aria-hidden="true">${esc(t(m.abierto ? "shell.mercado_abierto_corto" : "shell.mercado_cerrado_corto"))}</span><span class="sr">${esc(texto)}</span>`;
+    el.innerHTML = `<span class="mercado-punto" aria-hidden="true"></span><span class="mercado-txt" aria-hidden="true">${esc(t(m.abierto ? "shell.mercado_abierto_corto" : "shell.mercado_cerrado_corto"))}</span><span class="sr">${esc(texto)}</span>`;
     el.title = texto + ". " + ayuda;
+    ajustarBarra();
   }
+  /* ───────────── Barra superior que se ajusta a su ancho real ─────────────
+     Su espacio depende de la barra lateral (abierta o plegada), del tamaño de texto, del idioma y del modo de datos: no
+     basta con anchos fijos de ventana. Con la barra lateral fija, la barra se mide sin saltos de línea y va ocultando
+     textos secundarios por niveles hasta caber en una fila: 1, los textos de Tema y Accesibilidad; 2, «Datos:»; 3, un
+     buscador más angosto; 4, el texto del buscador (queda el icono, con su ayuda emergente); 5, el estado del mercado (un
+     punto sin texto no se entiende: queda solo para el lector de pantalla y vuelve cuando hay espacio). Si ni así
+     cabe, en el nivel 6 los controles pasan juntos a una segunda fila. En el cajón (< 1180 px) los controles ya van en su
+     propia fila: se mide solo la primera y los niveles son 3, 4, 5 y 7 (la marca queda solo con el logo).
+     data-barra en <header> lista los niveles activos («1 2 3»), para que el CSS los acumule con [data-barra~="n"].
+     Lo oculto sigue en el nombre accesible de cada control. */
+  const NIVELES_FIJA = [[], [1], [1, 2], [1, 2, 3], [1, 2, 3, 4], [1, 2, 3, 4, 5], [1, 2, 3, 4, 5, 6]];
+  const NIVELES_CAJON = [[], [3], [3, 4], [3, 4, 5], [3, 4, 5, 7]];
+  let _anchoBarra = 0;
+  function ajustarBarra() {
+    const cab = $("header.top"), bar = cab && $(".bar", cab);
+    if (!bar) return;
+    const cajon = esCajon(), niveles = cajon ? NIVELES_CAJON : NIVELES_FIJA;
+    const nivel = l => { if (l.length) cab.setAttribute("data-barra", l.join(" ")); else cab.removeAttribute("data-barra"); };
+    // Cabe si el ancho natural de los elementos visibles más los espacios entre ellos entra en el ancho sin relleno
+    // (scrollWidth no sirve: no cuenta el relleno del final, que es justo donde la barra empieza a partirse)
+    const cabe = () => {
+      bar.classList.add("midiendo");
+      const est = getComputedStyle(bar), hijos = Array.from(bar.children).filter(n => n.offsetParent !== null && !(cajon && n.classList.contains("controles")));
+      const usado = hijos.reduce((s, n) => s + Math.max(n.getBoundingClientRect().width, n.scrollWidth), 0) + (parseFloat(est.columnGap) || 0) * Math.max(0, hijos.length - 1);
+      const libre = bar.clientWidth - (parseFloat(est.paddingLeft) || 0) - (parseFloat(est.paddingRight) || 0);
+      bar.classList.remove("midiendo");
+      return usado + 0.5 <= libre; // el navegador parte la fila por una fracción de píxel: margen a favor de ocultar antes
+    };
+    for (const l of niveles) { nivel(l); if (cabe()) return; }
+  }
+  EIA.ajustarBarra = ajustarBarra;
   /* Campanita: botón con el número de no leídas (texto accesible con plural) y panel de divulgación */
   function plantillaCampana() {
     const t = EIA.t, n = EIA.notificaciones.noLeidas();
@@ -1218,7 +1251,7 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
     pie.innerHTML = plantillaPie();
     const salto = $("a.skip"); if (salto) salto.textContent = EIA.t("comun.saltar");
     pintarMigas();
-    pintarMercado();
+    pintarMercado(); // y ajusta la barra superior a su ancho
     if (selectorFoco) { const n = $(selectorFoco, zona); if (n) n.focus(); }
   }
   /** Página del sitio por id, en la barra lateral o en la lista de la base. */
@@ -1371,6 +1404,14 @@ ${cierre || actualizado ? `<p class="pie-cierre">${esc([cierre, actualizado].fil
       if (notifAbierta && !e.target.closest(".notif")) alternarNotif(false);
     });
     cab.addEventListener("focusout", e => { if (cuentaAbierta && !(e.relatedTarget && e.relatedTarget.closest(".cuenta")) && e.relatedTarget) alternarCuenta(false); });
+    // La barra superior se vuelve a ajustar cuando cambia su ancho (ventana, barra lateral plegada o abierta, barra de
+    // desplazamiento); solo el ancho, para no entrar en un ciclo con la altura que cambia al ajustarla
+    if (global.ResizeObserver) {
+      new global.ResizeObserver(entradas => {
+        const ancho = Math.round(entradas[0].contentRect.width);
+        if (ancho !== _anchoBarra) { _anchoBarra = ancho; ajustarBarra(); }
+      }).observe(cab);
+    } else global.addEventListener("resize", ajustarBarra);
     // Al pasar a escritorio, el cajón deja de ser un cajón
     if (global.matchMedia) {
       const mq = global.matchMedia(MEDIA_CAJON);

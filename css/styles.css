@@ -230,7 +230,25 @@ header.top { background: var(--panel); border-bottom: 1px solid var(--bd); posit
 .menu-cuenta ul { list-style: none; margin: 0; padding: 0; }
 .menu-cuenta a { display: flex; align-items: center; gap: .6rem; padding: .5rem .6rem; border-radius: var(--r-1); color: var(--fg); text-decoration: none; min-height: 2.5rem; }
 .menu-cuenta a:hover { background: var(--hl); }
-@media (max-width: 1499.98px) { .ctl-txt { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } }
+/* La barra superior se ajusta a su ancho real (js/common.js · ajustarBarra): los textos no se parten en dos líneas y,
+   con la barra lateral fija, se ocultan por niveles (data-barra) hasta caber en una fila. Lo oculto queda para el
+   lector de pantalla. En el cajón (< 1180 px) los textos de Tema y Accesibilidad no se muestran nunca y el nivel 7 deja
+   la marca solo con el logo. */
+@media (min-width: 1180px) { .mercado, .seg-rot, .seg button, .ctl-ico, .buscar-disparador, #btn-cuenta { white-space: nowrap; } }
+.bar.midiendo, .bar.midiendo .bar-medio, .bar.midiendo .controles { flex-wrap: nowrap; }
+.bar.midiendo > *, .bar.midiendo .bar-medio > * { flex: none !important; }
+.bar.midiendo .bar-medio { min-width: auto; }
+.bar.midiendo .buscar-disparador { min-width: 17rem; } /* sin porcentaje: al medir, min(17rem, 100%) se resolvería contra un ancho aún desconocido */
+header.top[data-barra~="1"] .ctl-txt,
+header.top[data-barra~="4"] .buscar-txt,
+header.top[data-barra~="5"] .mercado,
+header.top[data-barra~="7"] .marca-bar .brand-txt { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+header.top[data-barra~="2"] .seg-rot { display: none; }
+header.top[data-barra~="3"] .buscar-disparador { min-width: 11rem; }
+header.top[data-barra~="4"] .buscar-disparador { min-width: 0; }
+header.top[data-barra~="4"] .buscar-disparador kbd { display: none; }
+header.top[data-barra~="6"] .controles { order: 5; width: 100%; }
+@media (max-width: 1179.98px) { .ctl-txt { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; } }
 
 /* Disposición: barra lateral fija o cajón */
 @media (min-width: 1180px) {
@@ -253,7 +271,11 @@ header.top { background: var(--panel); border-bottom: 1px solid var(--bd); posit
   .bar { padding: .5rem 1rem; }
   .controles { order: 5; width: 100%; }
 }
-@media (max-width: 640px) { .controles select { max-width: 11.5rem; } }
+@media (max-width: 640px) {
+  .controles select { max-width: min(11.5rem, calc(100vw - 3.75rem)); } /* con texto grande, el selector no sale de la pantalla */
+  #ctl-modo { display: flex; width: 100%; } /* el modo de datos ocupa su fila; si se parte, cada botón llena su línea */
+  #ctl-modo > button { flex: 1 1 auto; }
+}
 footer.pie { max-width: 86rem; margin: 0 auto; padding: 1rem 1.5rem 2.5rem; border-top: 1px solid var(--bd); }
 .pie-creditos { color: var(--mut); font-size: .85rem; margin: .6rem 0 0; }
 
