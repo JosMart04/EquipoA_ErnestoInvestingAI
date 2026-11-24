@@ -617,3 +617,29 @@ Respuesta al botón «¿Fusiono el #49 cuando su CI esté en verde y sigo con T-
 ```text
 Sí, fusiona y sigue
 ```
+
+Respuesta al botón «¿Fusiono el #50 cuando su CI esté en verde?»:
+
+```text
+Sí, fusiónalo
+```
+
+Respuesta al botón «¿Registro el prompt y T-114 como hecho ahora o junto al próximo PR?»:
+
+```text
+Junto al próximo
+```
+
+### 2026-11-23 (hora no registrada) · Claude Code · Claude Opus 5.5
+
+Con dos capturas adjuntas (Acerca de en Modo real y tema oscuro, con la barra lateral abierta; y un recorte de la barra superior):
+
+```text
+Necesito que arregles un problema con la interfaz, cuando se abre el menú lateral izquierdo, la parte superior, se distorsiona, arregla eso
+```
+
+Tras un apagado de la laptop a mitad del trabajo:
+
+```text
+Continua, mi laptop se apagó
+```

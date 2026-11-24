@@ -6,7 +6,7 @@
 ## Última actualización
 - Fecha y hora: 2026-11-23 (Lima)
 - Modelo: Claude Opus 5.5 (Claude Code)
-- Rama / último commit: `cc/T-114-evidencia` (iteración 2: capturas antes/después, medición i18n de 16 páginas y documentación)
+- Rama / último commit: `cc/T-115-barra-superior` (barra superior que se ajusta a su ancho real)
 
 ## Hecho (con evidencia)
 
@@ -76,16 +76,13 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
 - **Iteración 2 · interfaz «ultra-realista» (plan aprobado el 23-nov; Spec W13 G.1, G.4 y G.9):**
   - En `main`: **T-110** (PR #45: barra lateral, barra superior, cajón móvil, tokens, iconos y estados), **T-111** (PR #47: detalle de activo, comparador y volumen) y **T-112** (PR #48: confirmación de orden, historial, notificaciones, estado del mercado y cinta).
   - **T-113** (PR #49): Perfil con perfil de riesgo, Ayuda, Acerca de, buscador Ctrl+K y recorrido guiado.
-  - **T-114** está en revisión en `cc/T-114-evidencia`:
-    - capturas antes/después en `docs/capturas/ui/` (`tools/capturas_ui.mjs`);
-    - medición i18n de las 16 páginas en `docs/i18n/`;
-    - README, guía de uso (`docs/guia-usuario/uso.md`) y D-26.
-  - Con T-114 se cierra la iteración 2.
+  - **T-114** (PR #50): capturas antes/después en `docs/capturas/ui/` (`tools/capturas_ui.mjs`), medición i18n de las 16 páginas en `docs/i18n/`, README, guía de uso (`docs/guia-usuario/uso.md`) y D-26. Con él se cerró la iteración 2.
+  - **T-115** está en revisión en `cc/T-115-barra-superior`. Corrige la barra superior, que se distorsionaba con la barra lateral abierta (reporte de Josué con texto al 120 %): «Mercado cerrado» se partía sobre «Datos:» y el avatar quedaba solo en otra fila. Ahora `ajustarBarra` mide y oculta textos por niveles; se agregaron 4 pruebas en `tests/e2e/barra.spec.mjs`.
   - El plan completo está en `C:\Users\JosueMart\.claude\plans\mensaje-para-cc-snazzy-creek.md`.
 
 ## Siguiente paso exacto
 0. **Iteración 2:**
-   - fusionar T-114 con la CI en verde;
+   - fusionar T-115 con la CI en verde;
    - si cambia algo visible: `node tools/capturas_ui.mjs <nombre>` (la etiqueta `ui-antes` es la interfaz anterior) y, si afecta al informe, `node tools/capturas.mjs <nombre>`;
    - `tools/i18n/medir_i18n.mjs` (versión B) ya mide por defecto todas las páginas de `PAGINAS_NAV`;
    - cada cambio de textos trae sus claves en los 13 idiomas (`node tools/i18n/fusionar.mjs <lote.json>`).
@@ -138,6 +135,11 @@ Todo está en `main` por PR. `node --test "tests/unit/*.test.mjs"` → **144/144
   - El recorrido (`EIA.tour.PASOS`) **no se abre solo** (Modo profesor y E2E): se ofrece con una franja en el Dashboard mientras `eia_tour` no exista.
   - Voz: en `interpretar` gana el nombre de módulo **más largo** («注文履歴» es el historial aunque «注文» sea Trading). Una prueba exige que ningún nombre se repita entre dos módulos en cada idioma.
   - Ninguna regla `:focus-visible { outline: none }`: una prueba la prohíbe.
+- **Barra superior (T-115):**
+  - No se decide con anchos de ventana. `ajustarBarra` (en `js/common.js`) la mide y pone en `<header>` los niveles activos (`data-barra="1 2 3"`); el CSS los acumula con `[data-barra~="n"]`.
+  - Se vuelve a ajustar al cambiar el ancho del `<header>` (ResizeObserver), al repintar el shell o el mercado y al cambiar el tamaño de texto.
+  - Si agregas algo a la barra, revisa a 1280 px con la barra lateral abierta y a 1862 px con texto al 120 %; `tests/e2e/barra.spec.mjs` lo comprueba.
+  - Al medir, nada puede tener un ancho mínimo en porcentaje: se resuelve contra un ancho aún desconocido.
 - **Idiomas (Lab 13):**
   - **Agregar un idioma** = `locales/<tag>.json` + una línea en `locales/index.json`. Después corre `node tools/i18n/revisar.mjs --escribir` (completitud) y `node tools/i18n/hreflang.mjs` (enlaces `hreflang` de las 10 páginas). Para armar un diccionario por lotes: `node tools/i18n/ensamblar.mjs <carpeta> <tag> [--parcial]`.
   - **Las pruebas exigen:**

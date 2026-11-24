@@ -810,3 +810,36 @@ Tipos: `INFO` · `PREGUNTA` · `BLOQUEO` · `ENTREGA` · `REVISIÓN` · `CAMBIO-
 - **PR:** #49 (T-113) fusionado con la CI en verde. Con T-114 se cierra la iteración 2.
 - **Archivos / PR:** rama `cc/T-114-evidencia`
 - **Contrato:** sin cambios
+
+### MSG-20261124-0100 · CC · INFO
+- **Asunto:** La barra superior ya no se distorsiona con la barra lateral abierta (T-115)
+- **Reporte de Josué:** con capturas a 1862 px, texto al 120 %, tema oscuro y Modo real:
+  - «Mercado cerrado» se partía en dos líneas encima de «Datos:»;
+  - el avatar quedaba solo en una segunda fila.
+- **Causa:** los textos de Tema y Accesibilidad se mostraban según el ancho de la **ventana** (≥ 1500 px), sin contar la barra lateral abierta ni el tamaño de texto. La barra no cabía y sus elementos se partían donde podían.
+- **Qué cambió:**
+  - **`ajustarBarra`** (`js/common.js`): mide la barra sin saltos de línea y oculta textos secundarios por niveles hasta caber en una fila. Los niveles son:
+    1. textos de Tema y Accesibilidad;
+    2. «Datos:»;
+    3. buscador más angosto;
+    4. texto del buscador;
+    5. estado del mercado;
+    6. controles en una segunda fila ordenada.
+  - Lo oculto sigue en el nombre accesible de cada control.
+  - Se reajusta al cambiar el ancho (ResizeObserver: ventana, barra lateral plegada o abierta), al repintar y al cambiar el tamaño de texto.
+  - **En el cajón (< 1180 px)** se mide solo la primera fila. El nivel 7 deja la marca solo con el logo, para que ☰, buscar, campana y cuenta quepan juntos; antes la campana y la cuenta quedaban solas en otra línea.
+  - En el celular, el selector de modo ocupa su fila y el de idioma ya no sale de la pantalla con texto grande.
+  - La medición compara sumas de anchos con el espacio sin relleno. `scrollWidth` no servía porque no cuenta el relleno final, y una tolerancia de 1 px dejaba pasar filas que el navegador parte por fracciones de píxel.
+- **Pruebas:**
+  - 252 pruebas JS;
+  - 4 E2E nuevas en `tests/e2e/barra.spec.mjs`: el caso reportado, plegar y abrir la barra lateral, la primera fila móvil y el móvil con texto al 200 %;
+  - matrices locales sin problemas: 400 combinaciones de escritorio (5 anchos × 4 tamaños de texto × 5 idiomas × 2 modos × barra lateral abierta o plegada) y 120 del cajón;
+  - axe local sin violaciones en Dashboard, Acerca de y Trading.
+- **Fuera de alcance (ya pasaba en `main`):** en el celular con texto al 150–200 %, las tarjetas KPI del Dashboard sobresalen unos píxeles.
+- **Incidente:** la laptop se apagó mientras se creaba la rama.
+  - Quedaron en bytes nulos: `.git/HEAD`, la referencia de la rama, `PROMPTS_USADOS.md` y lo recién agregado a `docs/ia/prompts/CC.md`.
+  - Se repararon HEAD y la referencia, apuntándola a `ea5f2c0` según el reflog. Los dos archivos se restauraron desde el commit y se regeneraron.
+  - `git fsck` no encontró objetos dañados.
+- **Registro pendiente (pedido «Junto al próximo»):** prompts del 23-nov en `CC.md` y T-114 como hecho (PR #50).
+- **Archivos / PR:** rama `cc/T-115-barra-superior`
+- **Contrato:** sin cambios
